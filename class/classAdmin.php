@@ -1,9 +1,6 @@
 <?php
 class AdminClass
 {
-	/*@ ########################################
-	function52[CONSTRUCT - {3}] 
-	######################################## @*/
 	public $arrayLang;
 	public $navigAdmin;
 	

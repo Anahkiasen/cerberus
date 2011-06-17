@@ -4,12 +4,8 @@ session_start();
 function loadModule($module)
 {
 	if(file_exists('cerberus/tools/' .$module. '.php')) include_once('cerberus/tools/' .$module. '.php');
-	else $erreurs[] = 'Module ' .$module . ' non existant';
-}
-function loadClass($class)
-{
-	if(file_exists('cerberus/class/class' .$class. '.php')) include_once('cerberus/class/class' .$class. '.php');
-	else $erreurs[] = 'Classe ' .$class . ' non existant';
+	elseif(file_exists('cerberus/class/class' .$module. '.php')) include_once('cerberus/class/class' .$module. '.php');
+	else $erreurs[] = 'Module' .$module. ' non existant.';
 }
 
 function cerberus($modules = '')
