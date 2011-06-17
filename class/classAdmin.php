@@ -161,8 +161,8 @@ class AdminClass
 			
 			echo '<tr>';
 			foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
-			echo '<td><a href="' .$this->thisPage. '&edit=' .$key. '"><img src="img/pencil.png" /></a></td>
-			<td><a href="' .$this->thisPage. '&delete=' .$key. '"><img src="img/cross.png" /></a></td></tr>';
+			echo '<td><a href="' .$this->thisPage. '&edit=' .$key. '"><img src="css/pencil.png" /></a></td>
+			<td><a href="' .$this->thisPage. '&delete=' .$key. '"><img src="css/cross.png" /></a></td></tr>';
 		}
 		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
 	}
