@@ -7,11 +7,14 @@ class Cerberus
 	private $render;
 	private $erreur;
 		
-	function __construct($modules = '')
+	function __construct($modules = '', $reset = FALSE)
 	{
 		// Packs
 		$packages = array(
 		'[SQL]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'));
+		
+		// Regénération du fichier coeur
+		if($reset == TRUE) unlink('cerberus.php');
 		
 		// Chargement des modules
 		if(!empty($modules))
@@ -26,7 +29,7 @@ class Cerberus
 		
 		// Rapport d'erreur
 		if(!empty($this->erreur)) foreach($this->erreur as $value) echo $value. '<br />';
-		else if(file_exists('cerberus/cerberus.php')) sfputs('cerberus/cerberus.php', $this->render);
+		else if(!file_exists('cerberus/cerberus.php')) sfputs('cerberus/cerberus.php', $this->render);
 		
 		include_once('cerberus.php');
 	}
