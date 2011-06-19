@@ -1,31 +1,41 @@
 <?php
 session_start();
+include('tools/sfputs.php');
 
-function loadModule($module)
+class Cerberus
 {
-	if(file_exists('cerberus/tools/' .$module. '.php')) include_once('cerberus/tools/' .$module. '.php');
-	elseif(file_exists('cerberus/class/class' .$module. '.php')) include_once('cerberus/class/class' .$module. '.php');
-	else $erreurs[] = 'Module' .$module. ' non existant.';
-}
-
-function cerberus($modules = '')
-{
-	// Packs
-	$packages = array(
-	'[SQL]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd')	);
-	
-	// Chargement des modules
-	if(!empty($modules))
+	private $render;
+	private $erreur;
+		
+	function __construct($modules = '')
 	{
-		if(is_array($modules)) foreach($modules as $value)
+		// Packs
+		$packages = array(
+		'[SQL]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'));
+		
+		// Chargement des modules
+		if(!empty($modules))
 		{
-			if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) loadModule($includePack);
-			else loadModule($value);
+			if(is_array($modules)) foreach($modules as $value)
+			{
+				if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) $this->loadModule($includePack);
+				else $this->loadModule($value);
+			}
+			else $this->loadModule($modules);
 		}
-		else loadModule($modules);
+		
+		// Rapport d'erreur
+		if(!empty($this->erreur)) foreach($this->erreur as $value) echo $value. '<br />';
+		else if(file_exists('cerberus/cerberus.php')) sfputs('cerberus/cerberus.php', $this->render);
+		
+		include_once('cerberus.php');
 	}
 	
-	// Rapport d'erreur
-	if(!empty($erreurs)) foreach($erreurs as $value) echo $value. '<br />';
+	function loadModule($module)
+	{
+		if(file_exists('cerberus/tools/' .$module. '.php')) $this->render = file_get_contents('cerberus/tools/' .$module. '.php');
+		elseif(file_exists('cerberus/class/class' .$module. '.php')) $this->render = file_get_contents('cerberus/class/class' .$module. '.php');
+		else $this->erreurs[] = 'Module' .$module. ' non existant.';
+	}
 }
 ?>
