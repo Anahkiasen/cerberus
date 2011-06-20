@@ -3,6 +3,7 @@ class AdminClass
 {
 	public $arrayLang;
 	public $navigAdmin;
+	public $facultativeFields;
 	
 	private $thisPage;
 	private $result;
@@ -21,9 +22,9 @@ class AdminClass
 		else $this->multilangue = FALSE;
 	}
 	
-	/*@ ########################################
-	function53[IDENTIFICATION - {2}] 
-	######################################## @*/
+	/* ########################################
+	############### IDENTIFICATION ###########
+	######################################## */
 	function admin_login()
 	{
 		$admin_form = '<form method="post">
@@ -48,9 +49,9 @@ class AdminClass
 		else echo '<p class="infoblock">Veuillez entrer votre identifiant et mot de passe.</p>' .$admin_form;
 	}
 	
-	/*@ ########################################
-	function54[NAVIGATION - {2}] 
-	######################################## @*/
+	/* ########################################
+	############### NAVIGATION ###############
+	######################################## */
 	function admin_navigation()
 	{
 		echo '<div id="navbar" style="position:relative">';
@@ -79,9 +80,9 @@ class AdminClass
 		echo '<a href="index.php?logoff">Déconnexion</a></div><br />';
 	}
 	
-	/*@ ########################################
-	function55[CRéATION DE L'ADMIN - {2}] 
-	######################################## @*/
+	/* ########################################
+	############### CONSTRUCT #################
+	######################################## */
 	function build($navigAdmin)
 	{	
 		global $_SESSION;
@@ -120,9 +121,9 @@ class AdminClass
 		}
 	}
 	
-	/*@ ########################################
-	function58[CRéATION D'UNE PAGE - {3}] 
-	######################################## @*/
+	/* ########################################
+	############### LISTE DES DONNEES ########
+	######################################## */
 	function createList($fieldsList, $groupBy = '')
 	{	
 		if(!isset($this->manualQuery)) $this->manualQuery = FALSE;
@@ -167,9 +168,9 @@ class AdminClass
 		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
 	}
 	
-	/*@ ########################################
-	function60[RéCUPéRATION DES DONNéES POST - {1}] 
-	######################################## @*/
+	/* ########################################
+	############### FORMATTAGE POST ###########
+	######################################## */
 	function formValues()
 	{
 		if(isset($_GET['edit']))
@@ -185,13 +186,16 @@ class AdminClass
 		return $post;
 	}
 	
-	/*@ ########################################
-	function57[PRéPARATION D'UNE PAGE - {3}] 
-	######################################## @*/
+	/* ########################################
+	########TRAITEMENT DES DONNEES ###########
+	######################################## */
 	function setPage($table)
 	{
 		$this->table = $table;
 		$this->thisPage = 'index.php?page=admin&admin=' .$_GET['admin'];
+		
+		// Champs facultatifs
+		if(isset($this->facultativeFields) and !empty($this->facultativeFields)) if(!is_array($this->facultativeFields)) $this->facultativeFields = array($this->facultativeFields);
 		
 		// Récupération du nom des champs
 		$querySQL = mysql_query('SHOW COLUMNS FROM ' .$table);
@@ -201,19 +205,19 @@ class AdminClass
 		if(isset($_POST['edit'])) 
 		{
 			// Vérification des champs disponibles
-			$emptyFields = FALSE;
+			$emptyFields = '';
 			foreach($_POST as $key => $value)
 			{
 				if(in_array($key, $this->fields))
 				{
 					if(!empty($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
-					else $emptyFields = TRUE;
+					else if(!in_array($key, $this->facultativeFields)) $emptyFields[] = $key;
 				}
 			}
 			if($this->multilangue == TRUE) $fieldsUpdate[] = 'langue="' .$_SESSION['admin']['langue']. '"';
 		
 			// Execution de la requête
-			if($emptyFields == FALSE)
+			if($emptyFields == '')
 			{
 				if($_POST['edit'] == 'add')
 				{
@@ -228,7 +232,7 @@ class AdminClass
 					echo '<p class="infoblock">Objet modifié</p>';
 				}
 			}
-			else echo '<p class="infoblock">Un ou plusieurs champs sont incomplets</p>';
+			else echo '<p class="infoblock">Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields). '</p>';
 		}
 		// SUPPRESSION
 		if(isset($_GET['delete']))
@@ -247,9 +251,9 @@ class AdminClass
 	
 	}
 	
-	/*@ ########################################
-	function56[ENVOI D'IMAGES - {3}] 
-	######################################## @*/
+	/* ########################################
+	############### ENVOI D'IMAGES ###########
+	######################################## */
 	function uploadImage($field, $name)
 	{
 		if(isset($_FILES[$field]['name']))
