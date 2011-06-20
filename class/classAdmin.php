@@ -3,14 +3,12 @@ class AdminClass
 {
 	public $arrayLang;
 	public $navigAdmin;
-	public $facultativeFields;
 	
-	private $thisPage;
-	private $result;
-	private $fields;
-	private $table;
-	private $fieldsDisplay;
-	private $manualQuery;	
+	private $thisPage; // URL de la Page
+	private $result; // Identification
+	private $fields; // Liste des champs
+	private $table; // Table actuelle
+	private $tableThumb; // Existence d'une table des images
 	
 	function __construct($arrayLang = '')
 	{
@@ -126,11 +124,11 @@ class AdminClass
 	######################################## */
 	function createList($fieldsList, $groupBy = '')
 	{	
-		if(!isset($this->manualQuery)) $this->manualQuery = FALSE;
+		if(findString('SELECT', key($fieldsList))) $manualQuery = TRUE;
 	
 		// LISTE DES ENTREES
 		echo '<table><thead><tr class="entete">';
-		if($this->manualQuery == TRUE)
+		if($manualQuery == TRUE)
 		{
 			$thisQuery = key($fieldsList);
 			$fieldsList = explode(',', $fieldsList[$thisQuery]);
@@ -138,7 +136,7 @@ class AdminClass
 		foreach($fieldsList as $value) echo '<td>' .ucfirst($value). '</td>';
 		echo '<td>Modifier</td><td>Supprimer</td></tr></thead><tbody>';
 		
-		if($this->manualQuery == FALSE)
+		if($manualQuery == FALSE)
 		{
 			// Multilingue ou non
 			$isLang = ($this->multilangue) 
@@ -189,13 +187,13 @@ class AdminClass
 	/* ########################################
 	########TRAITEMENT DES DONNEES ###########
 	######################################## */
-	function setPage($table)
+	function setPage($table, $facultativeFields = '')
 	{
 		$this->table = $table;
 		$this->thisPage = 'index.php?page=admin&admin=' .$_GET['admin'];
-		
+				
 		// Champs facultatifs
-		if(isset($this->facultativeFields) and !empty($this->facultativeFields)) if(!is_array($this->facultativeFields)) $this->facultativeFields = array($this->facultativeFields);
+		if(isset($facultativeFields) and !empty($facultativeFields)) if(!is_array($facultativeFields)) $facultativeFields = array($facultativeFields);
 		
 		// Récupération du nom des champs
 		$querySQL = mysql_query('SHOW COLUMNS FROM ' .$table);
@@ -211,7 +209,7 @@ class AdminClass
 				if(in_array($key, $this->fields))
 				{
 					if(!is_blank($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
-					else if(!in_array($key, $this->facultativeFields)) $emptyFields[] = $key;
+					else if(!in_array($key, $facultativeFields)) $emptyFields[] = $key;
 				}
 			}
 			if($this->multilangue == TRUE) $fieldsUpdate[] = 'langue="' .$_SESSION['admin']['langue']. '"';
@@ -256,6 +254,8 @@ class AdminClass
 	######################################## */
 	function uploadImage($field, $name)
 	{
+		if(!isset($this->tableThumb)) $this->tableThumb = (in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES'))) ? TRUE : FALSE;
+	
 		if(isset($_FILES[$field]['name']))
 		{
 			$fileErreur = '';
@@ -265,7 +265,14 @@ class AdminClass
 					
 			if($fileErreur == '')
 			{	
-				$file = $name. '.' .$extension_upload;
+				if($this->tableThumb == TRUE)
+				{
+					$futureID = getLastID($this->table. '_thumb');
+					$file = $futureID. '_' .normalize($_FILES[$field]['name']);
+					mysql_query('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$name. '", "' .$file. '")');
+				}
+				else $file = $name. '.' .$extension_upload;
+
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'file/' .$this->table. '/' .$file);
 				if($resultat) echo '<p class="infoblock">Image ajoutée au serveur</p>';
 			}

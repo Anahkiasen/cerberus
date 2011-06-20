@@ -20,7 +20,7 @@ class Cerberus
 				// Packs
 				$packages = array(
 				'[SQL]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
-				'[admin]' => array('Admin', 'is_blank', 'getLastID'));
+				'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'));
 			
 				if(is_array($modules)) foreach($modules as $value)
 				{
