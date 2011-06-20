@@ -174,7 +174,7 @@ class AdminClass
 		if(isset($_GET['edit']))
 		{
 			$modif = mysql_fetch_assoc(mysql_query('SELECT ' .implode(',', $this->fields). ' FROM ' .$this->table. ' WHERE id=' .$_GET['edit']));
-			foreach($this->fields as $value) $post[$value] = html($modif[$value]);
+			foreach($this->fields as $value) $post[$value] = html($modif[$value]); 
 		}
 		else foreach($this->fields as $value) $post[$value] = '';
 		

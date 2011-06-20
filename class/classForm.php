@@ -63,8 +63,8 @@ class form
 		$type = $params['type'];
 		$label = $params['label'];
 		if(empty($params['label'])) $label = $params['name'];
-		if(isset($_POST[$params['name']]) && empty($params['value'])) $params['value'] = $_POST[$params['name']];
-		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = stripslashes($this->valuesArray[$params['name']]);
+		if(isset($_POST[$params['name']]) && empty($params['value'])) $params['value'] = stripslashes($_POST[$params['name']]);
+		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = $this->valuesArray[$params['name']];
 		
 		if($this->openStat == false and $type != "hidden")
 		{
