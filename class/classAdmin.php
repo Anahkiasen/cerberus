@@ -210,7 +210,7 @@ class AdminClass
 			{
 				if(in_array($key, $this->fields))
 				{
-					if(!empty($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
+					if(!is_blank($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
 					else if(!in_array($key, $this->facultativeFields)) $emptyFields[] = $key;
 				}
 			}
