@@ -63,6 +63,7 @@ class form
 		$type = $params['type'];
 		$label = $params['label'];
 		if(empty($params['label'])) $label = $params['name'];
+		$params['name'] = normalize($params['name']);
 		if(isset($_POST[$params['name']]) && empty($params['value'])) $params['value'] = stripslashes($_POST[$params['name']]);
 		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = $this->valuesArray[$params['name']];
 		
@@ -143,6 +144,7 @@ class form
 			}
 						
 			$this->render .= '<select ';
+			unset($params['select'], $params['value']);
 			foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 			$this->render .= '>' .$options. '</select>';
 		}
