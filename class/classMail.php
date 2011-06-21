@@ -95,12 +95,7 @@ class sendMail
 		$message .= "charset=\"iso-8859-1\"\n";
 		$message .= "Content-Transfer-Encoding: 8bit\n\n";
 		$message .= $this->messageText;
-				
-		// Message texte
-		$message.= "Content-Type: text/plain; charset=\"UTF-8\"\r\n";
-		$message.= "Content-Transfer-Encoding: 8bit\r\n";
-		$message.= "\r\n".$this->messageText. "\r\n";
-		
+						
 		// Message HTML
 		if($this->messageHTML)
 		{
@@ -127,10 +122,7 @@ class sendMail
 			$message .= "\r\n--".$this->boundary. "\r\n";
 		}
 		$message .= "\n--".$this->boundary_alt."--";
-		
-		echo $header;
-		echo $message;
-		
+				
 		if(mail($this->destinataire, $this->sujet, $message, $header)) echo '<p class="infoblock">Le message a bien été envoyé.</p>';
 	}
 }
