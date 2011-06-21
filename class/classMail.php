@@ -74,45 +74,41 @@ class sendMail
 	function setExpediteur($alias, $email)
 	{
 		$this->expediteurAlias = $alias;
-		$this->expediteurMail = $mail;
+		$this->expediteurMail = $email;
 	}
-	
-	// Envoyer les résultats d'un formulaire
-	function sendForm()
-	{
-	
-	}
-	
+		
 	// Envoi du mail
 	function send($header = '')
 	{
-		if($this->expediteurMail) $header .= "From: \"" .$this->expediteur. "\"<" .$this->expditeurMail. ">\r\n";
+		if(!empty($this->expediteurMail)) $header .= "From: \"" .$this->expediteurAlias. "\"<" .$this->expediteurMail. ">\r\n";
 		if(is_array($this->destinataire))
 		{
 			foreach($this->destinataire as $key => $value) $destinataires[$key] = '<' .$value. '>'; 
-			$header.= "Bcc: " .implode(',', $destinataires). "\r\n";
+			$header .= "Bcc: " .implode(',', $destinataires). "\r\n";
 			$this->destinataire = '';
 		}
-		$header .= "MIME-Version: 1.0\r\n";
-		$header .= "Content-Type: multipart/mixed;\r\n boundary=\"$this->boundary\"\r\n";
+		$header .= "MIME-Version: 1.0\n";
+		$header .= "Content-Type: multipart/alternative; boundary=\"".$this->boundary_alt."\"";
 		
-		$message = "\r\n--".$this->boundary. "\r\n";
-		$message .= "Content-Type: multipart/alternative;\r\n boundary=\"$this->boundary_alt\"\r\n";
-		$message .= "\r\n--".$this->boundary_alt. "\r\n";
-		
+		$message = "--".$this->boundary_alt."\n";
+		$message .= "Content-Type: text/plain\n";
+		$message .= "charset=\"iso-8859-1\"\n";
+		$message .= "Content-Transfer-Encoding: 8bit\n\n";
+		$message .= $this->messageText;
+				
 		// Message texte
 		$message.= "Content-Type: text/plain; charset=\"UTF-8\"\r\n";
 		$message.= "Content-Transfer-Encoding: 8bit\r\n";
 		$message.= "\r\n".$this->messageText. "\r\n";
-		$message.= "\r\n--".$this->boundary_alt. "\r\n";
 		
 		// Message HTML
 		if($this->messageHTML)
 		{
-			$message.= "Content-Type: text/html; charset=\"UTF-8\"\r\n";
-			$message.= "Content-Transfer-Encoding: 8bit\r\n";
-			$message.= "\r\n".$this->messageHTML. "\r\n";
-			$message.= "\r\n--".$this->boundary_alt."--\r\n";
+			$message .= "\n\n--".$this->boundary_alt."\n";
+			$message .= "Content-Type: text/html; ";
+			$message .= "charset=\"iso-8859-1\"; ";
+			$message .= "Content-Transfer-Encoding: 8bit;\n\n";
+			$message .= $this->messageHTML;
 		}
 		
 		// Pièce jointe
@@ -130,6 +126,7 @@ class sendMail
 			$message .= $data;
 			$message .= "\r\n--".$this->boundary. "\r\n";
 		}
+		$message .= "\n--".$this->boundary_alt."--";
 		
 		echo $header;
 		echo $message;
