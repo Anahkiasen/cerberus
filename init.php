@@ -17,10 +17,13 @@ class Cerberus
 		{
 			if(!empty($modules))
 			{
+				asort($modules);
+				
 				// Packs
 				$packages = array(
-				'[SQL]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
-				'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'));
+				'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
+				'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'),
+				'[mail]' => array('Mail', 'postVar', 'stripHTML'));
 			
 				if(is_array($modules)) foreach($modules as $value)
 				{
