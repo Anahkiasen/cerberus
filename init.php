@@ -7,6 +7,13 @@ class Cerberus
 	private $render;
 	private $erreur;
 		
+	function file_get_contents_utf8($fn)
+	{
+		$content = file_get_contents($fn);
+		return mb_convert_encoding($content, 'UTF-8',
+		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
+	}	
+		
 	function __construct($modules = '', $reset = FALSE)
 	{		
 		// Regénération du fichier coeur
@@ -44,8 +51,8 @@ class Cerberus
 	function loadModule($module)
 	{
 		// Récupération des données
-		if(file_exists('cerberus/tools/' .$module. '.php')) $thisModule = file_get_contents('cerberus/tools/' .$module. '.php');
-		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = file_get_contents('cerberus/class/class' .$module. '.php');
+		if(file_exists('cerberus/tools/' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
+		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
 		else $this->erreurs[] = 'Module' .$module. ' non existant.';
 		
 		// Traitement de la fonction obtenue
