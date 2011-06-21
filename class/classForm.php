@@ -24,13 +24,13 @@ class form
 	function openFieldset($name)
 	{
 		$fieldName = ($this->multi == false) ? $name : index('form-' .$name);
-		$this->render .= '<fieldset><legend>' .$fieldName. '</legend>';
+		$this->render .= PHP_EOL. "<fieldset>" .PHP_EOL. "\t<legend>" .$fieldName. '</legend>';
 		if($this->openStat == true) $this->openStat = false;
 	}
 	function closeFieldset()
 	{
 		if($this->openStat == true) $this->closeManual();
-		$this->render .= '</fieldset>';
+		$this->render .= PHP_EOL. '</fieldset>';
 	}
 	function openManual($name)
 	{
@@ -69,14 +69,18 @@ class form
 		
 		if($this->openStat == false and $type != "hidden")
 		{
+			$this->render .= PHP_EOL. "\t";
 			$this->render .= '<dl class="' .$type. '">';
+			$this->render .= PHP_EOL. "\t";
 			if(!empty($label) && $type != 'submit')
 			{
 				$fieldName = ($this->multi == false) ? $label : index('form-' .$label);
+				$this->render .= "\t";
 				$this->render .= '<dt><label for="' .$label. '">' .$fieldName. '</label></dt>';
-				$this->render .= '<dd>';
+				$this->render .= PHP_EOL. "\t\t";
+				$this->render .= "<dd>";
 			}
-			else $this->render .= '<dd style="float: none; width: 100%">';
+			else $this->render .= PHP_EOL. "\t<dd style=\"float: none; width: 100%\">";
 		}
 		
 		unset($params['label'], $params['type']);
@@ -131,6 +135,7 @@ class form
 				{
 					$options .= ($key == $params['value']) ? '<option value="' .$key. '" selected="selected">' : '<option value="' .$key. '">';
 					$options .= $value. '</option>';
+					$options .= PHP_EOL;
 				}
 			}
 			else
@@ -148,9 +153,8 @@ class form
 			foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 			$this->render .= '>' .$options. '</select>';
 		}
-		$this->render .= PHP_EOL;
 		
-		if($this->openStat == false and $type != "hidden") $this->render .= '</dd></dl>';
+		if($this->openStat == false and $type != "hidden") $this->render .= "</dd>" .PHP_EOL. "\t</dl>";
 	}
 	
 	// Raccourcis
