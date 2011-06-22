@@ -125,6 +125,7 @@ class AdminClass
 	function createList($fieldsList, $groupBy = '')
 	{	
 		if(findString('SELECT', key($fieldsList))) $manualQuery = TRUE;
+		else $manualQuery = FALSE;
 	
 		// LISTE DES ENTREES
 		echo '<table><thead><tr class="entete">';
