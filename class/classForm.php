@@ -40,7 +40,7 @@ class form
 	}
 	function closeFieldset()
 	{
-		if($this->openedManual == true) $this->closeManual();
+		if($this->openedManual == true) $this->closeManualField();
 		$this->render .= PHP_EOL. '</fieldset>';
 	}
 	
@@ -49,15 +49,18 @@ class form
 	{
 		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
 		
-		$this->render .= '<dl>';
-		if($full == false)	echo '<dt><label for="' .$name. '">' .$fieldName. '</label></dt>';
-		echo '<dd>';
+		if($this->formType != 'plain')
+		{
+			$this->render .= '<dl>';
+			if($full == false)	echo '<dt><label for="' .$name. '">' .$fieldName. '</label></dt>';
+			$this->render .= '<dd>';
+		}
 			
 		$this->openedManual = true;
 	}
-	function closeManual()
+	function closeManualField()
 	{
-		$this->render .= '</dd></dl>';
+		if($this->formType != 'plain') $this->render .= '</dd></dl>';
 		$this->openedManual = false;
 	}
 	
@@ -211,19 +214,19 @@ class form
 	function addDate($name, $label = '', $value = '--', $additionalParams = '')
 	{
 		$valueDate = explode('-', $value);
-		$this->openManual($name);
+		$this->manualField($name);
 		$this->addSelect($name. '_jour', 31, '', '', $valueDate[2], $additionalParams);
 		$this->addSelect($name. '_mois', 12, '', '', $valueDate[1], $additionalParams);
 		$this->addSelect($name. '_annee', 15, date('Y'), '', $valueDate[0], $additionalParams);
-		$this->closeManual();
+		$this->closeManualField();
 	}
 	function addHour($name, $label = '', $value = '-', $additionalParams = '')
 	{
 		$valueDate = explode('-', $value);
-		$this->openManual($name);
+		$this->manualField($name);
 		$this->addSelect($name. '_hour', 10, 9, $valueDate[0], $additionalParams);
 		$this->addSelect($name. '_min', 59, 0, $valueDate[1], $additionalParams);
-		$this->closeManual();
+		$this->closeManualField();
 	}
 	
 	// Raccourcis généraux
