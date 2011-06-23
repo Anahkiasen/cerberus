@@ -1,7 +1,7 @@
 <?php
-function checkMail($mail)
+function checkMail($email)
 {
-	if(preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail)) return true;
+	if(!empty($email) and preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email)) return true;
 	else return false;
 }
 ?>

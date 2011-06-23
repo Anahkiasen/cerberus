@@ -137,7 +137,8 @@ class form
 		if($type == 'submit')
 		{
 			$fieldName = ($this->multilangue == false) ? $label : index('form-submit-' .$label);
-			$this->render .= '<p style="text-align:center"><input type="submit" value="' .$fieldName. '" /></p>';
+			if($this->formType != 'plain') $this->render .= '<p style="text-align:center"><input type="submit" value="' .$fieldName. '" /></p>';
+			else $this->render .= '<input type="submit" value="' .$fieldName. '" />';
 		}
 		if($type == 'textarea')
 		{
