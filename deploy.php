@@ -1,10 +1,13 @@
 <?php
-include('tools/sfputs.php');
-
-mkdir('../css/');
-mkdir('../include/');
+if(!file_exists('../index.php'))
+{
+	include('tools/sfputs.php');
 	
-$indexFile = '<?php
+	mkdir('../css/');
+	mkdir('../include/');
+	
+$indexFile = 
+'<?php
 include_once(\'cerberus/init.php\');
 $cerberus = new Cerberus(array(\'browserSelector\', \'desiredPage\', \'connectSQL\'));
 
@@ -34,6 +37,8 @@ $thisAgent = browserSelector();
 </body>
 </html>';
 
-sfputs('../css/styles.css', '');
-sfputs('../index.php', $indexFile);
+	sfputs('../css/styles.css', '');
+	sfputs('../index.php', $indexFile);
+}
+else echo 'Cerberus déjà déployé';
 ?>
