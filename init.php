@@ -25,7 +25,7 @@ class Cerberus
 		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
 	}	
 			
-	function __construct($modules, $mode = 'core', $reset = FALSE)
+	function __construct($modules, $mode = 'core', $reset = true)
 	{
 		// Préparation des variables
 		if($mode != 'core')
@@ -55,8 +55,7 @@ class Cerberus
 		// Chargement des modules
 		if(!empty($modules))
 		{
-			if(!is_array($modules)) $modules = array($modules);
-			asort($modules);
+			if(!is_array($modules)) $modulesArray = array($modules);
 			
 			// Packs
 			$packages = array(
@@ -67,9 +66,13 @@ class Cerberus
 		
 			foreach($modules as $value)
 			{
-				if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) $this->loadModule($includePack);
-				else $this->loadModule($value);
+				if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) $modulesArray[] = $includePack;
+				else $modulesArray[] = $value;
 			}
+			
+			$modulesArray = array_unique($modulesArray);
+			asort($modulesArray);
+			foreach($modulesArray as $value) $this->loadModule($value);
 		}
 	}
 	

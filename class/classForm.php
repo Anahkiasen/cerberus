@@ -1,49 +1,67 @@
-<?php
-	
+<?php	
 class form
 {
 	private $render;
-	private $openStat;
-	private $multi;
+	private $openedManual = false;
+	
+	private $multilangue = false;
+	private $formType = 'ilec';
 	
 	/* ########################################
-	############### FONCTIONS MOTEUR ##########
+	############## FONCTIONS MOTEUR ##########
 	######################################## */
 	
-	public function __construct($method, $fieldUnder = false, $multiL = true)
+	// Construction
+	function __construct($method = 'post', $multilangue = true)
 	{
-		$this->multi = $multiL;
-		$class = ($fieldUnder == true) ? 'class="fieldUnder"' : '';
-		$this->render .= '<form method="' .$method. '" ' .$class. '>';
+		$this->multilangue = $multilangue;
+		$this->render = '<form method="' .$method. '">';
 	}
 	function __toString()
 	{
 		$this->render .= '</form>';
 		return $this->render;
 	}
+	function setFormType($type)
+	{
+		$this->formType = $type;
+	}
 	
+	// Fieldsets
 	function openFieldset($name)
 	{
-		$fieldName = ($this->multi == false) ? $name : index('form-' .$name);
-		$this->render .= PHP_EOL. "<fieldset>" .PHP_EOL. "\t<legend>" .$fieldName. '</legend>';
-		if($this->openStat == true) $this->openStat = false;
+		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
+		
+		$this->render .= PHP_EOL. "
+		<fieldset>" .PHP_EOL. "
+			\t<legend>" .$fieldName. '</legend>';
+		
+		if($this->openedManual == true) $this->openedManual = false;
 	}
 	function closeFieldset()
 	{
-		if($this->openStat == true) $this->closeManual();
+		if($this->openedManual == true) $this->closeManual();
 		$this->render .= PHP_EOL. '</fieldset>';
 	}
-	function openManual($name)
+	
+	// Champs manuels
+	function manualField($name, $full = false)
 	{
-		$fieldName = ($this->multi == false) ? $name : index('form-' .$name);
-		$this->render .= '<dl><dt><label for="' .$name. '">' .$fieldName. '</label></dt><dd>';
-		$this->openStat = true;
+		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
+		
+		$this->render .= '<dl>';
+		if($full == false)	echo '<dt><label for="' .$name. '">' .$fieldName. '</label></dt>';
+		echo '<dd>';
+			
+		$this->openedManual = true;
 	}
 	function closeManual()
 	{
 		$this->render .= '</dd></dl>';
-		$this->openStat = false;
+		$this->openedManual = false;
 	}
+	
+	// Texte manuel
 	function insertText($text)
 	{
 		$this->render .= $text;
@@ -52,6 +70,11 @@ class form
 	/* #######################################
 	######### CREATION DE L'ELEMENT ##########
 	######################################## */
+	
+	/* fieldset
+			dl
+				dt label
+				dd input */
 	
 	// Fonctions moteur
 	function addElement($label, $name, $type, $value = '', $additionalParams = '')
@@ -66,30 +89,43 @@ class form
 		global $index;
 				
 		$type = $params['type'];
-		$label = $params['label'];
+
+		// Nom du champ
 		if(empty($params['label'])) $label = $params['name'];
+		else $label = $params['label'];
+		
+		// Variable du champ
 		$params['name'] = normalize(str_replace('-', '', $params['name']));
+		
+		// Valeur du champ
 		if(isset($_POST[$params['name']]) && empty($params['value'])) $params['value'] = stripslashes($_POST[$params['name']]);
 		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = $this->valuesArray[$params['name']];
 		
-		if($this->openStat == false and $type != "hidden")
+		// State Fieldset
+		$stateField = (
+		$this->openedManual == false
+		or $type != 'hidden'
+		or $this->formType == 'plain') 
+			? true
+			: false;
+		
+		// Ouverture du champ
+		if($stateField)
 		{
-			$this->render .= PHP_EOL. "\t";
-			$this->render .= '<dl class="' .$type. '">';
-			$this->render .= PHP_EOL. "\t";
-			if(!empty($label) && $type != 'submit')
-			{
-				$fieldName = ($this->multi == false) ? $label : index('form-' .$label);
-				$this->render .= "\t";
-				$this->render .= '<dt><label for="' .$label. '">' .$fieldName. '</label></dt>';
-				$this->render .= PHP_EOL. "\t\t";
-				$this->render .= "<dd>";
-			}
-			else $this->render .= PHP_EOL. "\t<dd style=\"float: none; width: 100%\">";
+			$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label);
+	
+			$this->render .= PHP_EOL. "
+				\t<dl class=\"$type\">" .PHP_EOL. "
+					\t\t<dt><label for=\"$label\">$fieldName</label></dt>" .PHP_EOL. "
+					\t\t<dd>";
+
+			// $this->render .= PHP_EOL. "\t<dd style=\"float: none; width: 100%\">";
 		}
 		
+		// Suppression des paramètres inutiles		
 		unset($params['label'], $params['type']);
 		
+		// LISTE DES CHAMPS
 		if($type == 'text')
 		{
 			$this->render .= '<input type="text" ';
@@ -98,7 +134,7 @@ class form
 		}
 		if($type == 'submit')
 		{
-			$fieldName = ($this->multi == false) ? $label : index('form-submit-' .$label);
+			$fieldName = ($this->multilangue == false) ? $label : index('form-submit-' .$label);
 			$this->render .= '<p style="text-align:center"><input type="submit" value="' .$fieldName. '" /></p>';
 		}
 		if($type == 'textarea')
@@ -120,7 +156,7 @@ class form
 			{	
 				$this->render .= '<input type="radio" ';
 				foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
-				$fieldName = ($this->multi == false) ? $label : index('form-' .$label. '-'.$i);
+				$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label. '-'.$i);
 				if(isset($_POST[$label]) && $_POST[$label] == $i) $this->render .= 'checked="checked"';
 				$this->render .= ' value="' .$i. '"> ' .$fieldName;
 			}
@@ -159,7 +195,7 @@ class form
 			$this->render .= '>' .$options. '</select>';
 		}
 		
-		if($this->openStat == false and $type != "hidden") $this->render .= "</dd>" .PHP_EOL. "\t</dl>";
+		if($stateField) $this->render .= "</dd>" .PHP_EOL. "\t</dl>";
 	}
 	
 	/* #######################################
