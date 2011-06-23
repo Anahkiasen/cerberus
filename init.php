@@ -2,9 +2,9 @@
 session_start();
 include('tools/sfputs.php');
 
-function cerberusDispatch($array)
+function cerberusDispatch($array, $page)
 {
-	if(isset($_GET['page']) and isset($array[$_GET['page']])) $cerberus = new Cerberus($array[$_GET['page']], 'include');
+	if(!empty($page)) $cerberus = new Cerberus($array[$page], 'include');
 }
 
 class Cerberus
@@ -55,7 +55,7 @@ class Cerberus
 		// Chargement des modules
 		if(!empty($modules))
 		{
-			if(!is_array($modules)) $modulesArray = array($modules);
+			if(!is_array($modules)) $modules = array($modules);
 			
 			// Packs
 			$packages = array(
