@@ -2,50 +2,75 @@
 session_start();
 include('tools/sfputs.php');
 
+function cerberusDispatch($array)
+{
+	if(isset($_GET['page']) and isset($array[$_GET['page']])) $cerberus = new Cerberus($array[$_GET['page']], 'include');
+}
+
 class Cerberus
 {
+	/* ########################################
+	############### PREPARATION ############
+	######################################## */
+
+	// Paramètres
 	private $render;
 	private $erreur;
-		
+	private $mode = 'core';
+	
 	function file_get_contents_utf8($fn)
 	{
 		$content = file_get_contents($fn);
 		return mb_convert_encoding($content, 'UTF-8',
 		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
 	}	
-		
-	function __construct($modules = '', $reset = FALSE)
-	{		
-		// Regénération du fichier coeur
-		if($reset == TRUE and file_exists('cerberus/cerberus.php')) unlink('cerberus/cerberus.php'); 
-		
-		// Chargement des modules
-		if(!file_exists('cerberus/cerberus.php'))
-		{
-			if(!empty($modules))
-			{
-				asort($modules);
-				
-				// Packs
-				$packages = array(
-				'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
-				'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'),
-				'[mail]' => array('Mail', 'postVar', 'stripHTML'));
 			
-				if(is_array($modules)) foreach($modules as $value)
-				{
-					if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) $this->loadModule($includePack);
-					else $this->loadModule($value);
-				}
-				else $this->loadModule($modules);
-			}
-		
-			// Rapport d'erreur
-			if(!empty($this->erreurs)) foreach($this->erreur as $value) echo $value. '<br />';
-			else sfputs('cerberus/cerberus.php', '<?php' .$this->render. '?>');
+	function __construct($modules, $mode = 'core', $reset = FALSE)
+	{
+		// Préparation des variables
+		if($mode != 'core')
+		{
+			if(isset($_GET['page'])) $this->mode = $_GET['page'];
+			else $this->mode = $mode;
+		}
+
+		// Création ou non du fichier
+		if(!file_exists('cerberus/cache/' .$this->mode. '.php')) $reset = TRUE;
+		if($reset == TRUE)
+		{
+			$this->loadCerberus($modules);
+			$this->generate();
 		}
 		
-		include_once('cerberus.php');
+		// Include du fichier
+		$this->inclure();
+	}
+	
+	/* ########################################
+	###### RECUPERATION DES FONCTIONS #########
+	######################################## */
+	
+	function loadCerberus($modules = '')
+	{				
+		// Chargement des modules
+		if(!empty($modules))
+		{
+			if(!is_array($modules)) $modules = array($modules);
+			asort($modules);
+			
+			// Packs
+			$packages = array(
+			'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
+			'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'),
+			'[mail]' => array('Mail', 'postVar', 'stripHTML'),
+			'[form]' => array('Form', 'normalize'));
+		
+			foreach($modules as $value)
+			{
+				if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) $this->loadModule($includePack);
+				else $this->loadModule($value);
+			}
+		}
 	}
 	
 	function loadModule($module)
@@ -62,6 +87,23 @@ class Cerberus
 			$thisModule = substr($thisModule, 5, -2);
 			$this->render .= $thisModule;
 		}
+	}
+	
+	/* ########################################
+	########### RENDU DU FICHIER #############
+	######################################## */
+	
+	function generate()
+	{
+		// Affichage des erreurs et création du fichier
+		if(!empty($this->erreurs)) foreach($this->erreurs as $value) echo $value. '<br />';
+		else sfputs('cerberus/cache/' .$this->mode. '.php', '<?php' .$this->render. '?>');
+	}
+	
+	function inclure()
+	{
+		if(file_exists('cerberus/cache/' .$this->mode. '.php')) include_once('cerberus/cache/' .$this->mode. '.php');
+		else echo 'Fichier ' .$this->mode. ' non trouvé';
 	}
 }
 ?>

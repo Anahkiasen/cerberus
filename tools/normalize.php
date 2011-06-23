@@ -3,6 +3,8 @@ function normalize($string)
 {
 	$specialChar = array(
 	' ' => '_',
+	'.' => '',
+	'=' => '-',
 	'"' => '',
 	'\'' => '',
 	'/' => '',

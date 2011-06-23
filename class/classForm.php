@@ -1,13 +1,14 @@
 <?php
 	
-/*@ ########################################
-function52[CLASSE FORM - {3}] 
-######################################## @*/
 class form
 {
 	private $render;
 	private $openStat;
 	private $multi;
+	
+	/* ########################################
+	############### FONCTIONS MOTEUR ##########
+	######################################## */
 	
 	public function __construct($method, $fieldUnder = false, $multiL = true)
 	{
@@ -47,6 +48,10 @@ class form
 	{
 		$this->render .= $text;
 	}
+	
+	/* #######################################
+	######### CREATION DE L'ELEMENT ##########
+	######################################## */
 	
 	// Fonctions moteur
 	function addElement($label, $name, $type, $value = '', $additionalParams = '')
@@ -157,7 +162,11 @@ class form
 		if($this->openStat == false and $type != "hidden") $this->render .= "</dd>" .PHP_EOL. "\t</dl>";
 	}
 	
-	// Raccourcis
+	/* #######################################
+	############## RACCOURCIS ################
+	######################################## */
+
+	// Raccourcis personnels
 	function addEdit()
 	{
 		$diff = isset($_GET['edit']) ? $_GET['edit'] : 'add';
