@@ -103,9 +103,8 @@ class form
 		
 		// State Fieldset
 		$stateField = (
-		$this->openedManual == false
-		or $type != 'hidden'
-		or $this->formType == 'plain') 
+		($this->openedManual == false or $type != 'hidden') 
+		and ($this->formType != 'plain'))
 			? true
 			: false;
 		
@@ -257,7 +256,7 @@ class form
 	{
 		$this->addElement($label, $name, "textarea", $value, $additionalParams);
 	}
-	function addSubmit($name = '', $label = '', $value = '', $additionalParams = '')
+	function addSubmit($name = 'Valider', $label = '', $value = '', $additionalParams = '')
 	{
 		$this->addElement($label, $name, "submit", $value, $additionalParams);
 	}
