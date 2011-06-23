@@ -41,7 +41,7 @@ class Cerberus
 			}
 		
 			// Rapport d'erreur
-			if(!empty($this->erreur)) foreach($this->erreur as $value) echo $value. '<br />';
+			if(!empty($this->erreurs)) foreach($this->erreur as $value) echo $value. '<br />';
 			else sfputs('cerberus/cerberus.php', '<?php' .$this->render. '?>');
 		}
 		
