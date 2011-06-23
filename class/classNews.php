@@ -27,7 +27,7 @@ class getNews
 	###############################
 	FONCTIONS DE DEFINITION
 	############################ */
-	
+		
 	function setTable($table)
 	{
 		$this->table = $table;
