@@ -5,6 +5,7 @@ if(!file_exists('../index.php'))
 	
 	mkdir('../css/');
 	mkdir('../include/');
+	mkdir('cache/');
 	
 $indexFile = 
 '<?php
