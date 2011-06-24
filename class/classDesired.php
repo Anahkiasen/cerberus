@@ -43,8 +43,8 @@ class desired
 		
 		// Inclusion de la page
 		$filename = '' .$this->page.$this->subString;
-		if(file_exists('include/' .$filename. '.html')) $this->extension = '.html';
-		elseif(file_exists('include/' .$filename. '.php')) $this->extension = '.php';
+		if(file_exists('pages/' .$filename. '.html')) $this->extension = '.html';
+		elseif(file_exists('pages/' .$filename. '.php')) $this->extension = '.php';
 		else 
 		{
 			$this->page = 'home';

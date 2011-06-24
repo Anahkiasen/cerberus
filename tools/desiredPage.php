@@ -12,8 +12,8 @@ function desiredPage($navigation, $subnav = FALSE)
 	}
 	else $subPage = $subPageString = '';
 	
-	if(file_exists('include/' .$thisPage.$subPageString. '.html')) $thisExtension = '.html';
-	elseif(file_exists('include/' .$thisPage.$subPageString. '.php')) $thisExtension = '.php';
+	if(file_exists('pages/' .$thisPage.$subPageString. '.html')) $thisExtension = '.html';
+	elseif(file_exists('pages/' .$thisPage.$subPageString. '.php')) $thisExtension = '.php';
 	else 
 	{
 		$thisPage = 'home';
