@@ -4,7 +4,7 @@ include('tools/sfputs.php');
 
 function cerberusDispatch($array, $page)
 {
-	if(!empty($page)) $cerberus = new Cerberus($array[$page], 'include');
+	if(!empty($page) and isset($array[$page])) $cerberus = new Cerberus($array[$page], 'include');
 }
 
 class Cerberus
