@@ -12,13 +12,13 @@ function desiredPage($navigation, $subnav = FALSE)
 	}
 	else $subPage = $subPageString = '';
 	
-	if(file_exists('include/page-' .$thisPage.$subPageString. '.html')) $thisExtension = '.html';
-	elseif(file_exists('include/page-' .$thisPage.$subPageString. '.php')) $thisExtension = '.php';
+	if(file_exists('include/' .$thisPage.$subPageString. '.html')) $thisExtension = '.html';
+	elseif(file_exists('include/' .$thisPage.$subPageString. '.php')) $thisExtension = '.php';
 	else 
 	{
 		$thisPage = 'home';
 		$thisExtension = '.php';
 	}
-	return array($thisPage, $subPage, $thisExtension, 'page-' .$thisPage.$subPageString.$thisExtension);
+	return array($thisPage, $subPage, $thisExtension, '' .$thisPage.$subPageString.$thisExtension);
 }
 ?>

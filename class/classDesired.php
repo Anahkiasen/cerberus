@@ -42,7 +42,7 @@ class desired
 		}
 		
 		// Inclusion de la page
-		$filename = 'page-' .$this->page.$this->subString;
+		$filename = '' .$this->page.$this->subString;
 		if(file_exists('include/' .$filename. '.html')) $this->extension = '.html';
 		elseif(file_exists('include/' .$filename. '.php')) $this->extension = '.php';
 		else 
@@ -51,7 +51,7 @@ class desired
 			$this->subString = '-home';
 			$this->extension = '.php';
 		}
-		$filenameFinal = 'page-' .$this->page.$this->subString.$this->extension;
+		$filenameFinal = '' .$this->page.$this->subString.$this->extension;
 		
 		// Rendu de la navigation
 		$toMain = array_keys($navigation);
