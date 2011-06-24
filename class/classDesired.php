@@ -51,7 +51,7 @@ class desired
 			$this->subString = '-home';
 			$this->extension = '.php';
 		}
-		$filenameFinal = '' .$this->page.$this->subString.$this->extension;
+		$filenameFinal = $this->page.$this->subString.$this->extension;
 		
 		// Rendu de la navigation
 		$toMain = array_keys($navigation);

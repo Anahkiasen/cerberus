@@ -19,6 +19,6 @@ function desiredPage($navigation, $subnav = FALSE)
 		$thisPage = 'home';
 		$thisExtension = '.php';
 	}
-	return array($thisPage, $subPage, $thisExtension, '' .$thisPage.$subPageString.$thisExtension);
+	return array($thisPage, $subPage, $thisExtension, $thisPage.$subPageString.$thisExtension);
 }
 ?>
