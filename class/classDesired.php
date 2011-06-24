@@ -48,8 +48,10 @@ class desired
 		else 
 		{
 			$this->page = 'home';
+			$this->subString = '-home';
 			$this->extension = '.php';
 		}
+		$filenameFinal = 'page-' .$this->page.$this->subString.$this->extension;
 		
 		// Rendu de la navigation
 		$toMain = array_keys($navigation);
@@ -59,7 +61,7 @@ class desired
 		$this->renderNavigation = $this->formatLinks($toMain);
 		$this->renderSubnav = $this->formatLinks($toSub, TRUE);
 		
-		$this->render(array($this->page, $this->subpage, $this->renderNavigation, $this->renderSubnav, $filename.$this->extension));
+		$this->render(array($this->page, $this->subpage, $this->renderNavigation, $this->renderSubnav, $filenameFinal));
 	}
 	
 	// Retourner la variable
