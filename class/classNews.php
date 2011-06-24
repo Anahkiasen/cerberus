@@ -89,6 +89,32 @@ class getNews
 		}
 	}
 	
+	// Liste des archives
+	function selectArchives()
+	{
+		$news = mysqlQuery('
+		SELECT date, DATE_FORMAT(date, "%Y-%m") AS mois, id, titre
+		FROM ' .$this->table. '
+		ORDER BY date DESC', 'date', TRUE);
+		
+		$actualDate = NULL;
+		
+		echo '<div class="news-archives">';
+		foreach($news as $key => $value)
+		{
+			// Date actuelle
+			if($value['mois'] != $actualDate)
+			{
+				if($actualDate != '') echo '</ul>';
+				echo '<h2>' .$value['mois']. '</h2><ul>';
+				$actualDate = $value['mois'];
+			}
+			
+			echo '<li>' .$value['id']. ' - ' .$value['titre']. '</li>';
+		}
+		echo '</ul></div>';
+	}
+	
 	// Page d'admin
 	function adminNews()
 	{
