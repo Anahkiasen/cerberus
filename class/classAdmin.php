@@ -255,7 +255,7 @@ class AdminClass
 	######################################## */
 	function uploadImage($field, $name)
 	{
-		if(!isset($this->tableThumb)) $this->tableThumb = (in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES'))) ? TRUE : FALSE;
+		if(!isset($this->tableThumb)) $this->tableThumb = (in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES')));
 	
 		if(isset($_FILES[$field]['name']))
 		{

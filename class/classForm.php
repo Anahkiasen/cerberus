@@ -105,11 +105,8 @@ class form
 		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = $this->valuesArray[$params['name']];
 		
 		// State Fieldset
-		$stateField = (
-		($this->openedManual == false or $type != 'hidden') 
-		and ($this->formType != 'plain'))
-			? true
-			: false;
+		$stateField = (($this->openedManual == false or $type != 'hidden') 
+		and ($this->formType != 'plain'));
 		
 		// Ouverture du champ
 		if($stateField)
