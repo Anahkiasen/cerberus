@@ -1,11 +1,13 @@
 <?php
-function createIndex($arrayLang = array('en', 'fr'), $database = 'langue', $overwrite = FALSE)
+function createIndex($arrayLang = array('en', 'fr'), $database = 'langue', $overwrite = TRUE)
 {
 	$filename = $database. '.php';
 	$renderPHP = "<?php \n";
+	$renderCSV = '';
 	
 	if(file_exists($filename) and $overwrite == TRUE) unlink($filename); // Suppression de la version existante
-	elseif(file_exists($filename) and $overwrite == FALSE) include_once($filename);
+	
+	if(file_exists($filename) and $overwrite == FALSE) include_once($filename);
 	else
 	{
 		// Récupération de la base de langues
@@ -25,12 +27,8 @@ function createIndex($arrayLang = array('en', 'fr'), $database = 'langue', $over
 			// Ecriture du fichier PHP
 			foreach($arrayLang as $cle)
 				foreach($index[$cle] as $key => $value)
-				{
-					$renderCSV .= $cle. '#' .$key. '#' .$value. "#\n";
 					$renderPHP .= '$index[\'' .$cle. "']['" .$key. "'] = '" .addslashes($value). "';\n";
-				}
 				
-			sfputs($database. '.csv', $renderCSV);
 			sfputs($filename, $renderPHP. ' ?>');
 		}
 	}
@@ -45,6 +43,15 @@ function createIndex($arrayLang = array('en', 'fr'), $database = 'langue', $over
 	if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], $arrayLang)) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
 	
 	return $index;
+}
+function indexCSV($database = 'langue')
+{
+	$renderCSV = '';
+	
+	$CSV = mysqlQuery('SELECT * FROM langue ORDER BY tag ASC', 'tag', TRUE);
+	foreach($CSV as $key => $value) $renderCSV .= $key. "\t" .implode("\t", $value). "\t\n";
+	
+	sfputs($database. '.csv', $renderCSV);
 }
 function index($string, $langue = '')
 {
