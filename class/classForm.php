@@ -105,8 +105,9 @@ class form
 		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = $this->valuesArray[$params['name']];
 		
 		// State Fieldset
-		$stateField = (($this->openedManual == false or $type != 'hidden') 
-		and ($this->formType != 'plain'));
+		$stateField = ($this->openedManual == false 
+		and $type != 'hidden' 
+		and $this->formType != 'plain');
 		
 		// Ouverture du champ
 		if($stateField)
@@ -114,9 +115,9 @@ class form
 			$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label);
 	
 			$this->render .= PHP_EOL. "
-				\t<dl class=\"$type\">" .PHP_EOL. "
-					\t\t<dt><label for=\"$label\">$fieldName</label></dt>" .PHP_EOL. "
-					\t\t<dd>";
+				\t<dl class=\"$type\">" .PHP_EOL;
+			if($type != "submit") $this->render .= "\t\t<dt><label for=\"$label\">$fieldName</label></dt>" .PHP_EOL;
+			$this->render .= "\t\t<dd>";
 
 			// $this->render .= PHP_EOL. "\t<dd style=\"float: none; width: 100%\">";
 		}
