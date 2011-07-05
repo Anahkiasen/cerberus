@@ -62,7 +62,8 @@ class Cerberus
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
 			'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'),
 			'[mail]' => array('Mail', 'postVar', 'stripHTML'),
-			'[form]' => array('Form', 'normalize'));
+			'[form]' => array('Form', 'normalize'),
+			'[check]' => array('checkMail', 'checkPhone'));
 		
 			foreach($modules as $value)
 			{
