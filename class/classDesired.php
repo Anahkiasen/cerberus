@@ -77,10 +77,18 @@ class desired
 		elseif($toSub == TRUE and $this->optionHTML == FALSE) $link = 'index.php?page=' .$this->page. '&subPage=';
 		elseif($toSub == FALSE and $this->optionHTML == TRUE) $link = '';
 		elseif($toSub == FALSE and $this->optionHTML == FALSE) $link = 'index.php?page=';
+		
+		// Hover
 		$html = ($this->optionHTML == TRUE) ? '.html' : '';
+		$hoverReference = ($toSub == TRUE) ? $this->subpage : $this->page;
+	
+		$indexSub = ($toSub == TRUE) ? $this->page. '-' : '';
 		
 		foreach($links as $key => $value)
-			$keys[$key] = '<a href="' .$link.$value.$html. '">' .index('menu-' .$value). '</a>';
+		{
+			$hover = ($value == $hoverReference) ? 'class="hover"' : '';
+			$keys[$key] = '<a href="' .$link.$value.$html. '" ' .$hover. '>' .index('menu-' .$indexSub.$value). '</a>';
+		}
 		
 		return implode(' ', $keys);			
 	}
