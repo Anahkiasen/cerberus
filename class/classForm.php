@@ -212,7 +212,9 @@ class form
 	}
 	function addDate($name, $label = '', $value = '--', $additionalParams = '')
 	{
+		if($value = '--') $value = date('Y-m-d');
 		$valueDate = explode('-', $value);
+		
 		$this->manualField($name);
 		$this->addSelect($name. '_jour', 31, '', '', $valueDate[2], $additionalParams);
 		$this->addSelect($name. '_mois', 12, '', '', $valueDate[1], $additionalParams);

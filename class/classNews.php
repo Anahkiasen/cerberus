@@ -92,13 +92,15 @@ class getNews
 	// Liste des archives
 	function selectArchives()
 	{
+		$nomsMois = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre');
+	
 		$news = mysqlQuery('
-		SELECT date, DATE_FORMAT(date, "%Y-%m") AS mois, id, titre
+		SELECT id, date, DATE_FORMAT(date, "%Y-%m") AS mois, YEAR(date) AS year, MONTH(date) AS month, titre
 		FROM ' .$this->table. '
-		ORDER BY date DESC', 'date', TRUE);
+		ORDER BY date DESC', 'id', TRUE);
 		
 		$actualDate = NULL;
-		
+
 		echo '<div class="news-archives">';
 		foreach($news as $key => $value)
 		{
@@ -106,11 +108,10 @@ class getNews
 			if($value['mois'] != $actualDate)
 			{
 				if($actualDate != '') echo '</ul>';
-				echo '<h2>' .$value['mois']. '</h2><ul>';
-				$actualDate = $value['mois'];
+				echo '<h2>' .$nomsMois[$value['month']-1]. ' ' .$value['year']. '</h2><ul>';
 			}
 			
-			echo '<li>' .$value['id']. ' - ' .$value['titre']. '</li>';
+			echo '<li>' .$key. ' - ' .$value['titre']. '</li>';
 		}
 		echo '</ul></div>';
 	}
