@@ -81,7 +81,7 @@ class getNews
 			
 			// News
 			echo '
-			<div class="news">
+			<div class="news" id="' .$key. '">
 				<h2>' .html($value['titre']).$thisDate. '</h2>
 				<p class="contenu">' .$thisThumb.html($value['contenu']). '</p>
 				<p class="clear"></p>
@@ -107,13 +107,14 @@ class getNews
 			// Date actuelle
 			if($value['mois'] != $actualDate)
 			{
-				if($actualDate != '') echo '</ul>';
-				echo '<h2>' .$nomsMois[$value['month']-1]. ' ' .$value['year']. '</h2><ul>';
+				if($actualDate != '') echo '</ul></div>';
+				echo '<div class="news-archives-month"><h2>' .$nomsMois[$value['month']-1]. ' ' .$value['year']. '</h2><ul>';
+				$actualDate = $value['mois'];
 			}
 			
-			echo '<li>' .$key. ' - ' .$value['titre']. '</li>';
+			echo '<li><a href="#' .$key. '">' .$value['titre']. '</a></li>';
 		}
-		echo '</ul></div>';
+		echo '</ul></div><p class="clear"></p></div>';
 	}
 	
 	// Page d'admin
