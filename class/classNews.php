@@ -8,11 +8,13 @@ class getNews
 
 	// Paramètres
 	private $table = 'news';
+	private $page = 'news';
 	
 	// Affichage des news
 	private $newsNumber = 5;
 	private $newsPaginate = FALSE;
 	private $newsOrder = 'date';
+	private $newsStart;
 	
 	// Composantes
 	private $displayThumb = TRUE;
@@ -28,6 +30,10 @@ class getNews
 	FONCTIONS DE DEFINITION
 	############################ */
 		
+	function __construct($page)
+	{
+		$this->page = $page;
+	}
 	function setTable($table)
 	{
 		$this->table = $table;
@@ -51,6 +57,8 @@ class getNews
 		$this->newsNumber = $newsNumber;
 		$this->newsPaginate = $newsPaginate;
 		$this->newsOrder = $newsOrder;
+		
+		if(isset($_GET['pagenews'])) $this->newsStart = ($_GET['pagenews'] - 1) * $this->newsNumber;
 	}
 	
 	/* 
@@ -60,14 +68,18 @@ class getNews
 
 	function selectNews()
 	{
+		$limit = ($this->newsPaginate == FALSE)
+			? $this->newsNumber
+			: $this->newsStart. ',' .$this->newsNumber;
+		
 		// Requête
 		$news = mysqlQuery('
 		SELECT id, titre, date, contenu
 		FROM ' .$this->table. '
 		ORDER BY ' .$this->newsOrder. ' DESC
-		LIMIT ' .$this->newsNumber,
+		LIMIT ' .$limit,
 		'id', TRUE);
-		
+				
 		// Récupération des news
 		foreach($news as $key => $value)
 		{
@@ -118,6 +130,19 @@ class getNews
 			echo '<li><a href="#' .$key. '">' .html($value['titre']). '</a></li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
+	}
+	
+	// Pagination
+	function paginate()
+	{
+		$nombreNews = mysqlQuery('SELECT COUNT(id) FROM ' .$this->table);
+		$nombrePages = ceil($nombreNews / $this->newsNumber);
+				
+		// Pagination
+		echo '<div id="news-pagination">Pages - ';
+		for($i = 1; $i <= $nombrePages; $i++)
+			echo '<a href="index.php?page=' .$this->page. '&pagenews=' .$i. '">' .$i. '</a>';
+		echo '</div>';
 	}
 	
 	// Page d'admin
