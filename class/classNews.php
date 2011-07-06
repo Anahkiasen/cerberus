@@ -12,6 +12,7 @@ class getNews
 	
 	// Affichage des news
 	private $newsNumber = 5;
+	private $currentPage = 1;
 	private $newsPaginate = FALSE;
 	private $newsOrder = 'date';
 	private $newsStart;
@@ -58,7 +59,11 @@ class getNews
 		$this->newsPaginate = $newsPaginate;
 		$this->newsOrder = $newsOrder;
 		
-		if(isset($_GET['pagenews'])) $this->newsStart = ($_GET['pagenews'] - 1) * $this->newsNumber;
+		if($this->newsPaginate == TRUE)
+		{
+			if(isset($_GET['pagenews'])) $this->currentPage = $_GET['pagenews'];
+			$this->newsStart = ($this->currentPage - 1) * $this->newsNumber;
+		}
 	}
 	
 	/* 
@@ -141,7 +146,10 @@ class getNews
 		// Pagination
 		echo '<div id="news-pagination">Pages - ';
 		for($i = 1; $i <= $nombrePages; $i++)
-			echo '<a href="index.php?page=' .$this->page. '&pagenews=' .$i. '">' .$i. '</a>';
+		{
+			$classHover = ($i == $this->currentPage) ? 'class="hover"' : '';	
+			echo '<a href="index.php?page=' .$this->page. '&pagenews=' .$i. '" ' .$classHover. '>' .$i. '</a>';
+		}
 		echo '</div>';
 	}
 	
