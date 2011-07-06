@@ -112,6 +112,9 @@ class getNews
 	// Liste des archives
 	function selectArchives()
 	{
+		$startingPage = 1;
+		$newsCounter = 0;
+		
 		$nomsMois = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre');
 	
 		$news = mysqlQuery('
@@ -132,7 +135,13 @@ class getNews
 				$actualDate = $value['mois'];
 			}
 			
-			echo '<li><a href="#' .$key. '">' .html($value['titre']). '</a></li>';
+			$newsCounter++;
+			if($newsCounter == $this->newsNumber)
+			{
+				$startingPage++;
+				$newsCounter = 0;
+			}
+			echo '<li><a href="index.php?page=' .$this->page. '&pagenews=' .$startingPage. '#' .$key. '">' .html($value['titre']). '</a></li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
 	}
