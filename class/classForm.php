@@ -51,9 +51,9 @@ class form
 		
 		if($this->formType != 'plain')
 		{
-			$this->render .= '<dl>';
-			if($full == false)	echo '<dt><label for="' .$name. '">' .$fieldName. '</label></dt>';
-			$this->render .= '<dd>';
+				$this->render .= '<dl>';
+				if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName. '</label></dt>';
+				$this->render .= '<dd>';
 		}
 			
 		$this->openedManual = true;

@@ -71,6 +71,9 @@ class getNews
 		// Récupération des news
 		foreach($news as $key => $value)
 		{
+			if(isset($alt) and $alt == 'alt') $alt = '';
+			else $alt = 'alt';
+		
 			// Display
 			if($this->displayDate == TRUE) $thisDate = '<br ><p class="date">' .$value['date']. '</p>';
 			else $thisDate = NULL;
@@ -81,9 +84,9 @@ class getNews
 			
 			// News
 			echo '
-			<div class="news" id="' .$key. '">
+			<div class="news ' .$alt. '" id="' .$key. '">
 				<h2>' .html($value['titre']).$thisDate. '</h2>
-				<p class="contenu">' .$thisThumb.html($value['contenu']). '</p>
+				<p class="contenu">' .$thisThumb.nl2br(html($value['contenu'])). '</p>
 				<p class="clear"></p>
 			</div>';
 		}
@@ -112,7 +115,7 @@ class getNews
 				$actualDate = $value['mois'];
 			}
 			
-			echo '<li><a href="#' .$key. '">' .$value['titre']. '</a></li>';
+			echo '<li><a href="#' .$key. '">' .html($value['titre']). '</a></li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
 	}

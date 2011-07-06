@@ -74,7 +74,7 @@ class desired
 	function formatLinks($links, $toSub = FALSE)
 	{
 		if($toSub == TRUE and $this->optionHTML == TRUE) $link = $this->page. '-';
-		elseif($toSub == TRUE and $this->optionHTML == FALSE) $link = 'index.php?page=' .$this->page. '&subPage=';
+		elseif($toSub == TRUE and $this->optionHTML == FALSE) $link = 'index.php?page=' .$this->page. '&subpage=';
 		elseif($toSub == FALSE and $this->optionHTML == TRUE) $link = '';
 		elseif($toSub == FALSE and $this->optionHTML == FALSE) $link = 'index.php?page=';
 		
@@ -87,7 +87,7 @@ class desired
 		foreach($links as $key => $value)
 		{
 			$hover = ($value == $hoverReference) ? 'class="hover"' : '';
-			$keys[$key] = '<a href="' .$link.$value.$html. '" ' .$hover. '>' .index('menu-' .$indexSub.$value). '</a>';
+			$keys[$key] = '<a href="' .$link.$value.$html. '#corps" ' .$hover. '>' .index('menu-' .$indexSub.$value). '</a>';
 		}
 		
 		return implode(' ', $keys);			
