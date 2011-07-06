@@ -214,6 +214,7 @@ class form
 	{
 		if($value = '--') $value = date('Y-m-d');
 		$valueDate = explode('-', $value);
+		$additionalParams['class'] = 'dateForm';
 		
 		$this->manualField($name);
 		$this->addSelect($name. '_jour', 31, '', '', $valueDate[2], $additionalParams);

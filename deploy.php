@@ -101,7 +101,7 @@ table
 table td { padding: 3px; }
 table tr:hover
 {
-	background-color: #0077b3;
+	background-image: url(overlay-noir-50.png);
 	color:white
 }
 table thead td
@@ -176,7 +176,7 @@ fieldset dl
 }
 fieldset dl:hover
 {
-	background-color:#adc9cf;
+	background-image:url(overlay-noir-50.png);
 	color:black;
 }
 fieldset dl:hover input[type=text],
@@ -194,6 +194,19 @@ fieldset dd
 	right: 5px;
 	top: 5px;
 	z-index: 50;
+}
+fieldset dl.textarea textarea
+{
+	width: 97%;
+	height: 190px;
+	top: 4px;
+}
+fieldset dl.textarea { height: 200px; }
+fieldset dl.textarea dd { width: 60%; }
+select.dateForm
+{
+	min-width: 0px;
+	width: 75px;
 }';
 
 	sfputs('../css/styles.css', $cssFile);

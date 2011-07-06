@@ -100,11 +100,11 @@ class getNews
 		$news = mysqlQuery('
 		SELECT id, date, DATE_FORMAT(date, "%Y-%m") AS mois, YEAR(date) AS year, MONTH(date) AS month, titre
 		FROM ' .$this->table. '
-		ORDER BY date DESC', 'id', TRUE);
+		ORDER BY date ASC', 'id', TRUE);
 		
 		$actualDate = NULL;
 
-		echo '<div class="news-archives">';
+		echo '<div class="news-archives"><h1>Archives par mois</h1>';
 		foreach($news as $key => $value)
 		{
 			// Date actuelle
