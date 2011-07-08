@@ -257,7 +257,7 @@ select.dateForm
 }';
 
 	sfputs('../css/styles.css', $cssFile);
-	sfputs('../css/tableForm.css', $cssTable);
+	sfputs('../css/cerberus.css', $cssTable);
 	sfputs('../index.php', $indexFile);
 }
 else echo 'Cerberus déjà déployé';
