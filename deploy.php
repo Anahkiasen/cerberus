@@ -74,6 +74,50 @@ body
 }
 /*
 ########################################
+############ ADMIN ###############
+########################################
+*/
+.admin #navbar
+{
+	text-align:center;
+	padding: 5px 0;
+	background-color: #006699;
+	width: 100%;
+	margin: 0 auto;
+}
+.admin #navbar a
+{
+	padding: 5px 10px;
+	color: white;
+	filter: none;
+	text-shadow: none;
+	text-transform: uppercase;
+}
+.admin #navbar a:hover { background-image: url(overlay-blanc-25.png); }
+.admin #navbar a.hover { background-image: url(overlay-blanc-50.png); }
+.admin table .additem td
+{
+	background-color: #9ab32d;
+	text-align: center;
+}
+.admin table .additem:hover td { background-color: #0090d9 }
+.admin table .additem td a:hover { color: white; }
+.admin #contenu table .additem td a
+{
+	color: white;
+	text-shadow: none;
+	filter: none;
+}
+.admin dl.textarea textarea
+{
+	width: 97%;
+	height: 290px;
+	top: 4px;
+}
+.admin dl.textarea { height: 300px; }
+.admin dl.textarea dd { width: 70%; }
+/*
+########################################
 ############# BALISES ##################
 ########################################
 */
@@ -82,6 +126,8 @@ p.infoblock
 {
 	background-color: #e3004f;
 	margin: 0;
+	margin-botom: 10px;
+	width: 100%;
 	color: white;
 	text-align: center;
 	padding: 5px;

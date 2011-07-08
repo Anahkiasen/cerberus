@@ -103,9 +103,9 @@ class AdminClass
 		if($this->result == true)
 		{
 			// INTERFACE D'ADMINISTRATION
-			if(isset($_GET['admin']) && in_array($_GET['admin'], $this->navigAdmin) && file_exists('include/page-admin-' .$_GET['admin']. '.php'))
+			if(isset($_GET['admin']) && in_array($_GET['admin'], $this->navigAdmin) && file_exists('pages/admin-' .$_GET['admin']. '.php'))
 			{
-				if($this->multilangue) $title = index('page-admin-' .$_GET['admin']);
+				if($this->multilangue) $title = index('admin-' .$_GET['admin']);
 				else $title = ucfirst($_GET['admin']);
 			}
 			else $title = 'Administration';
@@ -114,7 +114,7 @@ class AdminClass
 			$this->admin_navigation();
 			
 			echo '<div id="admin">';
-			if($title != 'Administration') include('include/page-admin-' .$_GET['admin']. '.php');
+			if($title != 'Administration') include('pages/admin-' .$_GET['admin']. '.php');
 			echo '</div>';
 		}
 	}
