@@ -195,7 +195,7 @@ class getNews
 					<a href="index.php?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();
-				$form->addHidden('date', date('Y-m-d'));
+				if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d'));
 				$form->addSubmit($diffText);
 			$form->closeFieldset();
 			
