@@ -74,6 +74,24 @@ body
 }
 /*
 ########################################
+############# BALISES ##################
+########################################
+*/
+p.clear { clear:both }
+p.infoblock
+{
+	background-color: #e3004f;
+	margin: 0;
+	margin-botom: 10px;
+	width: 100%;
+	color: white;
+	text-align: center;
+	padding: 5px;
+}';
+
+$cssTable = 
+'/*
+########################################
 ############ ADMIN ###############
 ########################################
 */
@@ -97,17 +115,12 @@ body
 .admin #navbar a.hover { background-image: url(overlay-blanc-50.png); }
 .admin table .additem td
 {
-	background-color: #9ab32d;
+	background-image: url(overlay-blanc-25.png);
 	text-align: center;
 }
-.admin table .additem:hover td { background-color: #0090d9 }
+.admin table .additem:hover td { background-image: url(overlay-blanc-50.png); }
 .admin table .additem td a:hover { color: white; }
-.admin #contenu table .additem td a
-{
-	color: white;
-	text-shadow: none;
-	filter: none;
-}
+.admin #contenu table .additem td a { color: white; }
 .admin dl.textarea textarea
 {
 	width: 97%;
@@ -118,41 +131,19 @@ body
 .admin dl.textarea dd { width: 70%; }
 /*
 ########################################
-############# BALISES ##################
-########################################
-*/
-p.clear { clear:both }
-p.infoblock
-{
-	background-color: #e3004f;
-	margin: 0;
-	margin-botom: 10px;
-	width: 100%;
-	color: white;
-	text-align: center;
-	padding: 5px;
-}';
-
-$cssTable = 
-'/*
-########################################
 ############# TABLEAUX #################
 ########################################
 */
 table
 {
 	width: 100%;
-	background-color: #EEE;
+	background: #EEE;
 }
 table td { padding: 3px; }
-table tr:hover
-{
-	background-image: url(overlay-noir-50.png);
-	color:white
-}
+table tr:hover { background-image: url(overlay-noir-10.png); }
 table thead td
 {
-	background: #666666;
+	background-image: url(overlay-noir-25.png);
 	color: white
 }
 /*
@@ -160,6 +151,7 @@ table thead td
 ############# FORMULAIRES ##############
 ########################################
 */
+form { width: 99% }
 fieldset
 {
 	border: none;
@@ -181,29 +173,38 @@ textarea
 	font-size: 1em;
 }
 select { min-width: 262px; }
+.submit dd,
+.submit,
+.submit p
+{
+	position: static;
+	margin: 0;
+	padding: 0 5px;
+}
+.submit:hover { background: #EEE }
 form input[type=submit]
 {
-	width: 100%;
+	width: 80%;
 	background-color: #006699;
 	border: none;
-	font-size: 20px;
+	font-size: 12px;
 	color: white;
-	padding: 10px;
+	padding: 5px;
 	text-align:center;
 	cursor:pointer;
-	margin: 0;
-	border-bottom: 10px solid #005580;
+	margin: 10px;
+	border-bottom: 5px solid #005580;
 }
 form input[type=submit]:active
 {
-	margin: 10px 0 0px;
+	margin-top: 15px;
 	background:#0099FF;
 	border: none;
 }
 form input[type=submit]:hover { background-color: #008bcc }
 fieldset legend
 {
-	background-color: #0082b8;
+	background-color: #7c885f;
 	color: white;
 	letter-spacing: -1px;
 	font-size: medium;
@@ -222,16 +223,16 @@ fieldset dl
 }
 fieldset dl:hover
 {
-	background-image:url(overlay-noir-50.png);
-	color:black;
+	background-image: url(overlay-noir-10.png);
+	background-repeat:repeat;
 }
 fieldset dl:hover input[type=text],
 fieldset dl:hover input[type=password],
 fieldset dl:hover select,
 fieldset dl:hover textarea
 {
-	background-color: #424D4F;
-	border: 4px solid #6d7f82;
+	background-color: #555;
+	border: 4px solid #999;
 	color:white;
 }
 fieldset dd
