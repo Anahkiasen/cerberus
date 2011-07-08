@@ -165,6 +165,12 @@ class getNews
 	// Page d'admin
 	function adminNews()
 	{
+		if(isset($_GET['deleteThumb']))
+		{
+			if(file_exists('file/news/' .$_GET['deleteThumb']. '.jpg')) unlink('file/news/' .$_GET['deleteThumb']. '.jpg');
+			echo '<p class="infoblock">Miniature supprimée</p>';
+		}
+	
 		$newsAdmin = new AdminClass();
 		$newsAdmin->setPage('news');
 		$newsAdmin->createList(array('titre', 'date'));
@@ -172,15 +178,22 @@ class getNews
 		// Formulaire
 		if(isset($_GET['add']) || isset($_GET['edit']))
 		{	
+			// Paramètres ajout/modif
 			$diffText = (isset($_GET['edit'])) ? 'Modifier' : 'Ajouter';
+			$urlAction = ($diffText == 'Modifier') ? 'edit=' .$_GET['edit'] : 'add';
 		
-			$form = new form('post', false, false);
+			$form = new form('post', false, array('action' => 'index.php?page=admin&admin=news&' .$urlAction));
 			$form->valuesArray = $newsAdmin->formValues();
 			
-			$form->openFieldset($diffText. ' une formation');
+			$form->openFieldset($diffText. ' une news');
 				$form->addText('titre', 'Titre de la news');
 				$form->addTextarea('contenu', 'Texte de la news');
-				$form->addFile('thumb', 'Envoi de la miniature');
+				if($diffText == 'Modifier' and file_exists('file/news/' .$_GET['edit']. '.jpg')) $form->insertText('
+					<dl style="height: 150px">
+					<dt>Supprimer la miniature actuelle</dt>
+					<dd style="text-align:center"><img src="file/timthumb.php?src=file/news/' .$_GET['edit']. '.jpg&w=125&h=125&zc=1" /><br /><br />
+					<a href="index.php?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></dd></dl>');
+				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();
 				$form->addHidden('date', date('Y-m-d'));
 				$form->addSubmit($diffText);

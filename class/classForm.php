@@ -12,10 +12,12 @@ class form
 	######################################## */
 	
 	// Construction
-	function __construct($method = 'post', $multilangue = true)
+	function __construct($method = 'post', $multilangue = true, $params)
 	{
 		$this->multilangue = $multilangue;
-		$this->render = '<form method="' .$method. '">';
+		$this->render = '<form method="' .$method. '"';
+		if(is_array($params) and !empty($params)) foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
+		$this->render .= '>';
 	}
 	function __toString()
 	{
@@ -68,6 +70,10 @@ class form
 	function insertText($text)
 	{
 		$this->render .= $text;
+	}
+	function insertDText($text)
+	{
+		$this->render .= '<dl><dt>' .$text. '</dt></dl>';
 	}
 	
 	/* #######################################
