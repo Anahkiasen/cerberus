@@ -95,7 +95,7 @@ class getNews
 			if($this->displayDate == TRUE) $thisDate = '<br /><p class="date">' .$value['date']. '</p>';
 			else $thisDate = NULL;
 			
-			if($this->displayThumb == TRUE) $thisThumb = '<a class="colorbox" href="file/news/' .$key. '.jpg">
+			if($this->displayThumb == TRUE and file_exists('file/news/' .$key. '.jpg')) $thisThumb = '<a class="colorbox" href="file/news/' .$key. '.jpg">
 			<img src="file/timthumb.php?src=file/news/' .$key. '.jpg&h=' .$this->thumbHeight. '&w=' .$this->thumbWidth. '&zc=' .$this->thumbCrop. '" class="float" /></a>';
 			else $thisThumb = NULL;
 			
