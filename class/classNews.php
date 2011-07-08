@@ -31,7 +31,7 @@ class getNews
 	FONCTIONS DE DEFINITION
 	############################ */
 		
-	function __construct($page)
+	function __construct($page = 'news')
 	{
 		$this->page = $page;
 	}
