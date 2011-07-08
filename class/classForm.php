@@ -12,7 +12,7 @@ class form
 	######################################## */
 	
 	// Construction
-	function __construct($method = 'post', $multilangue = true, $params)
+	function __construct($method = 'post', $multilangue = true, $params = '')
 	{
 		$this->multilangue = $multilangue;
 		$this->render = '<form method="' .$method. '"';
