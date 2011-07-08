@@ -147,7 +147,7 @@ class AdminClass
 		}
 		
 		$thisGroup = '';
-		$items = mysqlQuery($thisQuery);
+		$items = mysqlQuery($thisQuery, 'id', TRUE);
 		if($items) foreach($items as $key => $value)
 		{
 			if(!empty($groupBy))

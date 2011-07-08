@@ -92,7 +92,7 @@ class getNews
 			else $alt = 'alt';
 		
 			// Display
-			if($this->displayDate == TRUE) $thisDate = '<br ><p class="date">' .$value['date']. '</p>';
+			if($this->displayDate == TRUE) $thisDate = '<br /><p class="date">' .$value['date']. '</p>';
 			else $thisDate = NULL;
 			
 			if($this->displayThumb == TRUE) $thisThumb = '<a class="colorbox" href="file/news/' .$key. '.jpg">
