@@ -2,6 +2,7 @@
 session_start();
 include('tools/sfputs.php');
 include('tools/display.php');
+include('tools/getURL.php');
 
 function cerberusDispatch($array, $page)
 {
