@@ -1,17 +1,27 @@
 <?php
 class AdminClass
 {
-	public $arrayLang;
 	public $navigAdmin;
 	
-	private $thisPage; // URL de la Page
-	private $result; // Identification
 	private $fields; // Liste des champs
 	private $table; // Table actuelle
 	private $tableThumb; // Existence d'une table des images
 	
+	// Login
+	private $loginAdmin;
+	private $loginPass;
+	private $granted = FALSE;
+	
+	// Options
+	private $arrayLang;
+	private $multilangue;
+		
 	function __construct($arrayLang = '')
 	{
+		global $cerberus;
+		$this->url = $cerberus->url;
+		$this->modeSQL = $cerberus->modeSQL;
+		
 		if(is_array($arrayLang) and !empty($arrayLang)) 
 		{
 			$this->arrayLang = $arrayLang;
@@ -21,36 +31,9 @@ class AdminClass
 	}
 	
 	/* ########################################
-	############### IDENTIFICATION ###########
-	######################################## */
-	function admin_login()
-	{
-		$admin_form = '<form method="post">
-		<fieldset class="login"><legend>Identification</legend>
-		<dl><dt>Identifiant</dt><dd><input type="text" name="user" /></dd></dl>
-		<dl><dt>Mot de passe</dt><dd><input type="password" name="password" /></dd></dl>
-		<dl><dd class="unirow" style="text-align:left"><input type="submit" value="Valider" /></dd></dl>
-		</fieldset></form>';
-		
-		// Vérification du formulaire
-		if(isset($_POST['user']) && isset($_POST['password']))
-		{
-			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($_POST['user']). '"');
-			if(isset($queryQ) && (md5($_POST['password']) == $queryQ))
-			{
-				$_SESSION['admin']['user'] = $_POST['user'];
-				$_SESSION['admin']['password'] = $_POST['password'];
-				$this->result = true;
-			}
-			else echo display('Les identifiants entrés sont incorrects.').$admin_form;
-		}
-		else echo display('Veuillez entrer votre identifiant et mot de passe.').$admin_form;
-	}
-	
-	/* ########################################
 	############### NAVIGATION ###############
 	######################################## */
-	function admin_navigation()
+	function admin_navigation($navigation)
 	{
 		echo '<div id="navbar" style="position:relative">';
 		
@@ -62,56 +45,99 @@ class AdminClass
 			{
 				$getAdmin = (isset($_GET['admin'])) ? '&admin=' .$_GET['admin'] : '';
 				$urlFlag = ($_SESSION['admin']['langue'] == $lg) ? 'flag_' .$lg : 'flag_' .$lg. '_off';
-				echo '<a href="index.php?page=admin&adminLangue=' .$lg.$getAdmin. '"><img src="css/' .$urlFlag. '.png" alt="' .$lg. '" /></a> ';
+				echo '<a href="' .$this->url. '?page=admin&adminLangue=' .$lg.$getAdmin. '"><img src="css/' .$urlFlag. '.png" alt="' .$lg. '" /></a> ';
 			}
 			echo '</p>';
 			
-			foreach($this->navigAdmin as $value) echo '<a href="index.php?page=admin&admin=' .$value. '">' .index('admin-' .$value). '</a>';
+			foreach($navigation as $value) echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '">' .index('admin-' .$value). '</a>';
 		}
 	
 		// Navigation de l'admin
-		foreach($this->navigAdmin as $key => $value)
+		if(!empty($navigation)) foreach($navigation as $key => $value)
 		{
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
-			echo '<a href="index.php?page=admin&admin=' .$value. '" ' .$thisActive. '>' .ucfirst($value). '</a>';	
+			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .ucfirst($value). '</a>';	
 		}
-		echo '<a href="index.php?logoff">Déconnexion</a></div><br />';
+		echo '<a href="' .$this->url. '?logoff">Déconnexion</a></div><br />';
 	}
 	
 	/* ########################################
+	############### IDENTIFICATION ###########
+	######################################## */
+	
+	// Formulaire d'identification et vérification
+	function adminLogin()
+	{
+		$admin_form = '<form method="post">
+		<fieldset class="login"><legend>Identification</legend>
+		<dl><dt>Identifiant</dt><dd><input type="text" name="user" /></dd></dl>
+		<dl><dt>Mot de passe</dt><dd><input type="password" name="password" /></dd></dl>
+		<dl><dd class="unirow" style="text-align:left"><input type="submit" value="Valider" /></dd></dl>
+		</fieldset></form>';
+		
+		// Vérification du formulaire		
+		if(isset($_POST['user'], $_POST['password']))
+		{
+			if($this->checkLogin($_POST['user'], $_POST['password']))
+			{
+				$_SESSION['admin']['user'] = $_POST['user'];
+				$_SESSION['admin']['password'] = $_POST['password'];
+				$this->granted = TRUE;
+			}
+			else echo display('Les identifiants entrés sont incorrects.').$admin_form;
+		}
+		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = TRUE;
+		else echo display('Veuillez entrer votre identifiant et mot de passe.').$admin_form;
+	}
+	
+	// Vérification des identifiants
+	function checkLogin($user, $password)
+	{
+		if($this->modeSQL == TRUE)
+		{
+			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($password). '"');
+			return isset($queryQ) && md5($password) == $queryQ;
+		}
+		elseif($this->modeSQL == FALSE and isset($this->loginAdmin)) return md5($user) == $this->loginAdmin and md5($password) == $this->loginPass;
+		else return FALSE;
+	}
+	
+	// Paramétrage d'identifiants manuels
+	function setLogin($user, $password = '')
+	{
+		$this->loginAdmin = $user;
+		$this->loginPass = (!empty($password)) ? $password : $user;
+	}
+	
+	// Recupération de l'identification
+	function getGranted()
+	{
+		return $this->granted;
+	}
+		
+	/* ########################################
 	############### CONSTRUCT #################
 	######################################## */
-	function build($navigAdmin)
+	function build($thisNavigation = '')
 	{	
 		global $_SESSION;
-		$this->navigAdmin = $navigAdmin;		
+		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
+		 
+		$this->adminLogin();
 		
-		// Vérification du compte actuel
-		if(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']))
-		{
-			$user = $_SESSION['admin']['user'];
-			$mdp = $_SESSION['admin']['password'];
-			
-			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
-			if(isset($queryQ) && (md5($mdp) == $queryQ)) $this->result = true;
-			else $this->result = false;
-		}
-		else $this->result = false;
-		
-		// Si le compte n'est pas valide
-		if($this->result == false) $this->admin_login();
-		if($this->result == true)
+		// Variables d'identification
+		if($this->granted == TRUE)
 		{
 			// INTERFACE D'ADMINISTRATION
-			if(isset($_GET['admin']) && in_array($_GET['admin'], $this->navigAdmin) && file_exists('pages/admin-' .$_GET['admin']. '.php'))
+			$title = 'Administration';
+			if(!empty($thisNavigation))
 			{
-				if($this->multilangue) $title = index('admin-' .$_GET['admin']);
-				else $title = ucfirst($_GET['admin']);
+				if(isset($_GET['admin']) && in_array($_GET['admin'], $thisNavigation) && file_exists('pages/admin-' .$_GET['admin']. '.php'))
+					$title = ($this->multilangue) ? index('admin-' .$_GET['admin']) : ucfirst($_GET['admin']);
 			}
-			else $title = 'Administration';
 			
 			echo '<h1>' .$title. '</h1>';
-			$this->admin_navigation();
+			$this->admin_navigation($thisNavigation);
 			
 			echo '<div id="admin">';
 			if($title != 'Administration') include('pages/admin-' .$_GET['admin']. '.php');
@@ -191,7 +217,7 @@ class AdminClass
 	function setPage($table, $facultativeFields = '')
 	{
 		$this->table = $table;
-		$this->thisPage = 'index.php?page=admin&admin=' .$_GET['admin'];
+		$this->thisPage = '' .$this->url. '?page=admin&admin=' .$_GET['admin'];
 				
 		// Champs facultatifs
 		if(isset($facultativeFields) and !empty($facultativeFields)) if(!is_array($facultativeFields)) $facultativeFields = array($facultativeFields);

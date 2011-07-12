@@ -15,6 +15,10 @@ function getURL($truncate = false)
 	{
 		$pageName = explode('/', $_SERVER['REQUEST_URI']);
 		$pageName = $pageName[2];
+		
+		$pageName = explode('?', $pageName);
+		$pageName = $pageName[0];
+		
 		return $pageName;
 	}
 }

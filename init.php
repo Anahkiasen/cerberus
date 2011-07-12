@@ -19,6 +19,9 @@ class Cerberus
 	private $erreur;
 	private $mode = 'core';
 	
+	public $url = 'index.php';
+	public $modeSQL = TRUE;
+	
 	function file_get_contents_utf8($fn)
 	{
 		$content = file_get_contents($fn);
@@ -45,6 +48,10 @@ class Cerberus
 		
 		// Include du fichier
 		$this->inclure();
+		
+		$this->url = getURL(TRUE);
+		$this->modeSQL = function_exists('mysqlQuery');
+
 	}
 	
 	/* ########################################
@@ -61,7 +68,7 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
-			'[admin]' => array('Admin', 'normalize', 'is_blank', 'getLastID'),
+			'[admin]' => array('Admin', 'findString', 'getLastID', 'getURL', 'is_blank', 'normalize'),
 			'[mail]' => array('Mail', 'postVar', 'stripHTML'),
 			'[form]' => array('Form', 'normalize'),
 			'[check]' => array('checkMail', 'checkPhone'));

@@ -33,6 +33,9 @@ class getNews
 		
 	function __construct($page = 'news')
 	{
+		global $cerberus;
+		$this->url = $cerberus->url;
+
 		$this->page = $page;
 	}
 	function setTable($table)
@@ -141,7 +144,7 @@ class getNews
 				$startingPage++;
 				$newsCounter = 0;
 			}
-			echo '<li><a href="index.php?page=' .$this->page. '&pagenews=' .$startingPage. '#' .$key. '">' .html($value['titre']). '</a></li>';
+			echo '<li><a href="' .$this->url. '?page=' .$this->page. '&pagenews=' .$startingPage. '#' .$key. '">' .html($value['titre']). '</a></li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
 	}
@@ -157,7 +160,7 @@ class getNews
 		for($i = 1; $i <= $nombrePages; $i++)
 		{
 			$classHover = ($i == $this->currentPage) ? 'class="hover"' : '';	
-			echo '<a href="index.php?page=' .$this->page. '&pagenews=' .$i. '" ' .$classHover. '>' .$i. '</a>';
+			echo '<a href="' .$this->url. '?page=' .$this->page. '&pagenews=' .$i. '" ' .$classHover. '>' .$i. '</a>';
 		}
 		echo '</div>';
 	}
@@ -182,7 +185,7 @@ class getNews
 			$diffText = (isset($_GET['edit'])) ? 'Modifier' : 'Ajouter';
 			$urlAction = ($diffText == 'Modifier') ? 'edit=' .$_GET['edit'] : 'add';
 		
-			$form = new form('post', false, array('action' => 'index.php?page=admin&admin=news&' .$urlAction));
+			$form = new form('post', false, array('action' => $this->url. '?page=admin&admin=news&' .$urlAction));
 			$form->valuesArray = $newsAdmin->formValues();
 			
 			$form->openFieldset($diffText. ' une news');
@@ -192,7 +195,7 @@ class getNews
 					<dl style="height: 150px">
 					<dt>Supprimer la miniature actuelle</dt>
 					<dd style="text-align:center"><img src="file/timthumb.php?src=file/news/' .$_GET['edit']. '.jpg&w=125&h=125&zc=1" /><br /><br />
-					<a href="index.php?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></dd></dl>');
+					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();
 				if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d'));
