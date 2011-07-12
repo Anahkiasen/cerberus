@@ -168,7 +168,7 @@ class getNews
 		if(isset($_GET['deleteThumb']))
 		{
 			if(file_exists('file/news/' .$_GET['deleteThumb']. '.jpg')) unlink('file/news/' .$_GET['deleteThumb']. '.jpg');
-			echo '<p class="infoblock">Miniature supprimée</p>';
+			echo display('Miniature supprimée');
 		}
 	
 		$newsAdmin = new AdminClass();

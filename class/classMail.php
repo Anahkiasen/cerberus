@@ -123,7 +123,7 @@ class sendMail
 		}
 		$message .= "\n--".$this->boundary_alt."--";
 				
-		if(mail($this->destinataire, $this->sujet, $message, $header)) echo '<p class="infoblock">Le message a bien été envoyé.</p>';
+		if(mail($this->destinataire, $this->sujet, $message, $header)) echo display('Le message a bien été envoyé.');
 	}
 }
 ?>

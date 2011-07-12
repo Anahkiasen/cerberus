@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('tools/sfputs.php');
+include('tools/display.php');
 
 function cerberusDispatch($array, $page)
 {

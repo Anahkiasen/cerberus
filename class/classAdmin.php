@@ -42,9 +42,9 @@ class AdminClass
 				$_SESSION['admin']['password'] = $_POST['password'];
 				$this->result = true;
 			}
-			else echo '<p class="infoblock">Les identifiants entrés sont incorrects.</p>' .$admin_form;
+			else echo display('Les identifiants entrés sont incorrects.').$admin_form;
 		}
-		else echo '<p class="infoblock">Veuillez entrer votre identifiant et mot de passe.</p>' .$admin_form;
+		else echo display('Veuillez entrer votre identifiant et mot de passe.').$admin_form;
 	}
 	
 	/* ########################################
@@ -222,16 +222,16 @@ class AdminClass
 				{
 					$this->uploadImage('thumb', getLastID($this->table));
 					mysql_query('INSERT INTO ' .$this->table. ' SET ' .implode(',', $fieldsUpdate)) or die(mysql_error());
-					echo '<p class="infoblock">Objet ajouté</p>';
+					echo display('Objet ajouté');
 				}
 				else
 				{
 					$this->uploadImage('thumb', $_POST['edit']);
 					mysql_query('UPDATE ' .$this->table. ' SET ' .implode(',', $fieldsUpdate). ' WHERE id=' .$_POST['edit']) or die(mysql_error());
-					echo '<p class="infoblock">Objet modifié</p>';
+					echo display('Objet modifié');
 				}
 			}
-			else echo '<p class="infoblock">Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields). '</p>';
+			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
 		// SUPPRESSION
 		if(isset($_GET['delete']))
@@ -245,7 +245,7 @@ class AdminClass
 			}
 			
 			mysql_query('DELETE FROM ' .$this->table. ' WHERE id=' .$_GET['delete']);
-			echo '<p class="infoblock">Objet supprimé</p>';
+			echo display('Objet supprimé');
 		}
 	
 	}
@@ -275,7 +275,7 @@ class AdminClass
 				else $file = $name. '.' .$extension_upload;
 
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'file/' .$this->table. '/' .$file);
-				if($resultat) echo '<p class="infoblock">Image ajoutée au serveur</p>';
+				if($resultat) echo display('Image ajoutée au serveur');
 			}
 		}
 	}
