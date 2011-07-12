@@ -90,7 +90,13 @@ p.infoblock
 }';
 
 $cssTable = 
-'/*
+'.admin #navbar,
+form input[type=submit],
+fieldset legend
+{
+	background-color: white;
+}
+/*
 ########################################
 ############ ADMIN ###############
 ########################################
@@ -99,7 +105,7 @@ $cssTable =
 {
 	text-align:center;
 	padding: 5px 0;
-	background-color: #006699;
+	background-image: url(overlay/noir-50.png);
 	width: 100%;
 	margin: 0 auto;
 }
@@ -193,7 +199,6 @@ select { min-width: 262px; }
 form input[type=submit]
 {
 	width: 80%;
-	background-color: #006699;
 	border: none;
 	font-size: 12px;
 	color: white;
@@ -209,10 +214,10 @@ form input[type=submit]:active
 	background:#0099FF;
 	border: none;
 }
-form input[type=submit]:hover { background-color: #008bcc }
+form input[type=submit]:hover { background-image: url(overlay/blanc-25.png) }
 fieldset legend
 {
-	background-color: #7c885f;
+	background-image: url(overlay/noir-25.png);
 	color: white;
 	letter-spacing: -1px;
 	font-size: medium;
