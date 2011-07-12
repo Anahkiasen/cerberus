@@ -111,14 +111,14 @@ $cssTable =
 	text-shadow: none;
 	text-transform: uppercase;
 }
-.admin #navbar a:hover { background-image: url(overlay-blanc-25.png); }
-.admin #navbar a.hover { background-image: url(overlay-blanc-50.png); }
+.admin #navbar a:hover { background-image: url(overlay/blanc-25.png); }
+.admin #navbar a.hover { background-image: url(overlay/blanc-50.png); }
 .admin table .additem td
 {
-	background-image: url(overlay-blanc-25.png);
+	background-image: url(overlay/blanc-25.png);
 	text-align: center;
 }
-.admin table .additem:hover td { background-image: url(overlay-blanc-50.png); }
+.admin table .additem:hover td { background-image: url(overlay/blanc-50.png); }
 .admin table .additem td a:hover { color: white; }
 .admin #contenu table .additem td a { color: white; }
 .admin dl.textarea textarea
@@ -140,12 +140,20 @@ table
 	background: #EEE;
 }
 table td { padding: 3px; }
-table tr:hover { background-image: url(overlay-noir-10.png); }
+table tr:hover { background-image: url(overlay/noir-10.png); }
 table thead td
 {
-	background-image: url(overlay-noir-25.png);
+	background-image: url(overlay/noir-25.png);
 	color: white
 }
+table .additem
+{
+	background-image: url(overlay/blanc-25.png);
+	text-transform:uppercase;
+	padding: 3px;
+	text-align:center;
+}
+table .additem a { color: white; }
 /*
 ########################################
 ############# FORMULAIRES ##############
@@ -223,7 +231,7 @@ fieldset dl
 }
 fieldset dl:hover
 {
-	background-image: url(overlay-noir-10.png);
+	background-image: url(overlay/noir-10.png);
 	background-repeat:repeat;
 }
 fieldset dl:hover input[type=text],
