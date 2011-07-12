@@ -21,7 +21,6 @@ class Cerberus
 	private $mode = 'core';
 	
 	public $url = 'index.php';
-	public $modeSQL = TRUE;
 	
 	function file_get_contents_utf8($fn)
 	{
@@ -49,10 +48,7 @@ class Cerberus
 		
 		// Include du fichier
 		$this->inclure();
-		
 		$this->url = getURL(TRUE);
-		$this->modeSQL = function_exists('mysqlQuery');
-
 	}
 	
 	/* ########################################
@@ -88,17 +84,20 @@ class Cerberus
 	
 	function loadModule($module)
 	{
-		// Récupération des données
-		if(file_exists('cerberus/tools/' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
-		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
-		else $this->erreurs[] = 'Module' .$module. ' non existant.';
-		
-		// Traitement de la fonction obtenue
-		if(isset($thisModule))
+		if(!function_exists($module))
 		{
-			$thisModule = trim($thisModule);
-			$thisModule = substr($thisModule, 5, -2);
-			$this->render .= $thisModule;
+			// Récupération des données
+			if(file_exists('cerberus/tools/' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
+			elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
+			else $this->erreurs[] = 'Module' .$module. ' non existant.';
+			
+			// Traitement de la fonction obtenue
+			if(isset($thisModule))
+			{
+				$thisModule = trim($thisModule);
+				$thisModule = substr($thisModule, 5, -2);
+				$this->render .= $thisModule;
+			}
 		}
 	}
 	

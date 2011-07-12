@@ -20,7 +20,7 @@ class AdminClass
 	{
 		global $cerberus;
 		$this->url = $cerberus->url;
-		$this->modeSQL = $cerberus->modeSQL;
+		$this->modeSQL = function_exists('connectSQL');
 		
 		if(is_array($arrayLang) and !empty($arrayLang)) 
 		{
@@ -95,7 +95,7 @@ class AdminClass
 	{
 		if($this->modeSQL == TRUE)
 		{
-			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($password). '"');
+			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
 			return isset($queryQ) && md5($password) == $queryQ;
 		}
 		elseif($this->modeSQL == FALSE and isset($this->loginAdmin)) return md5($user) == $this->loginAdmin and md5($password) == $this->loginPass;
