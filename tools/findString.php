@@ -1,29 +1,47 @@
 <?php
-function findString($needle, $haystack)
+/*
+	Fonction findString
+	# Trouve un/des terme(s) dans une/des phrase(s)
+	
+	$needle
+		Terme(s) recherchée(s)
+	$haystack
+		Phrase(s) dans laquelle/lesquelles rechercher
+	$exclusive
+		TRUE	Pour que la fonction renvoit true, toutes les $needle devront avoir été trouvées
+				dans $haystack [ou] la $needle devra avoir été trouvée dans tous les $haystack.
+		FALSE	Renverra true dès que la fonction trouvera n'importe quelle $needle dans n'importe
+				quelle $haystack.
+*/
+function findString($needle, $haystack, $exclusive = true)
 {
-	if(is_array($needle))
+	// Si nous avons plusieurs termes/phrases
+	if(is_array($needle) or is_array($haystack))
 	{
-		// Si array de needles
 		$result = 0;
-		foreach($needle as $value)
+		if(is_array($needle))
 		{
-			$pos = strpos($haystack, $value);
-			if($pos !== false) $result++;
+			$numberEntry = count($needle);
+			foreach($needle as $value)
+			{
+				$pos = strpos($haystack, $value);
+				if($pos !== false) $result++;
+			}
 		}
-		if($result == count($needle)) return TRUE;
-		else return FALSE;
-	}
-	elseif(is_array($haystack))
-	{
-		// Si array de haystack
-		$result = 0;
-		foreach($haystack as $value)
+		elseif(is_array($haystack))
 		{
-			$pos = strpos($value, $needle);
-			if($pos !== false) $result++;
+			$numberEntry = count($haystack);
+			foreach($haystack as $value)
+			{
+				$pos = strpos($value, $needle);
+				if($pos !== false) $result++;
+			}
 		}
-		if($result == count($haystack)) return TRUE;
-		else return FALSE;
+		
+		// Résultat selon le mode exclusif
+		if($exclusive == true and $result == $numberEntry) return true;
+		elseif($exclusive == false and $result != 0) return true;
+		else return false;
 	}
 	else
 	{
