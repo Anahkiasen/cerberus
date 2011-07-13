@@ -109,7 +109,7 @@ class Cerberus
 		if(!empty($page) and isset($array[$page])) 
 		{
 			$newModules = array_values(array_diff($array[$page], $this->cacheCore));
-			$cerberus = new Cerberus($newModules, 'include', $this->resetMode);
+			if(!empty($newModules)) $cerberus = new Cerberus($newModules, 'include', $this->resetMode);
 		}
 	}
 	
