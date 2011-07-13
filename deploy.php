@@ -89,10 +89,12 @@ p.infoblock
 	padding: 5px;
 }';
 
-$cssTable = 
+$cerberus = 
 '.admin #navbar,
 form input[type=submit],
-fieldset legend
+fieldset legend,
+table thead td,
+table .additem
 {
 	background-color: white;
 }
@@ -145,20 +147,31 @@ table
 	width: 100%;
 	background: #EEE;
 }
-table td { padding: 3px; }
+table td
+{
+	padding: 3px;
+	text-align:center;
+	width: 10%;
+}
+table td:first-child
+{
+	text-align:left;
+	width: 80%
+}
 table tr:hover { background-image: url(overlay/noir-10.png); }
 table thead td
 {
 	background-image: url(overlay/noir-25.png);
 	color: white
 }
-table .additem
+table td.additem
 {
 	background-image: url(overlay/blanc-25.png);
 	text-transform:uppercase;
 	padding: 3px;
 	text-align:center;
 }
+table .additem:hover { background-image: url(overlay/blanc-50.png); }
 table .additem a { color: white; }
 /*
 ########################################
@@ -270,7 +283,7 @@ select.dateForm
 }';
 
 	sfputs('../css/styles.css', $cssFile);
-	sfputs('../css/cerberus.css', $cssTable);
+	sfputs('../css/cerberus.css', $cerberus);
 	sfputs('../index.php', $indexFile);
 }
 else echo 'Cerberus déjà déployé';
