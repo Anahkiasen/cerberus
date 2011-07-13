@@ -1,4 +1,19 @@
 <?php
+/*
+	Fonction connectSQL
+	# Etablit un lien avec la base de données
+	
+	$localhost
+		Nom de la base de données si travail en local
+	$host
+		Serveur SQL
+	$user
+		Login SQL
+	$mdp
+		Mot de passe SQL
+	$db
+		Base de donnée SQL
+*/
 function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $db = '')
 {
 	if($_SERVER['HTTP_HOST'] == 'localhost:8888')
