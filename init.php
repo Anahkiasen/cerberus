@@ -79,7 +79,7 @@ class Cerberus
 			// Nettoyage de l'array des fonctions et mise en cache du core ; chargement des modules
 			$modulesArray = array_unique($modulesArray);
 			asort($modulesArray);
-						
+			
 			if($this->mode == 'core') $this->cacheCore = $modulesArray; 
 			foreach($modulesArray as $value) $this->loadModule($value);
 		}
@@ -108,6 +108,7 @@ class Cerberus
 	// Répartition des fonctions entre les pages
 	function cerberusDispatch($array, $page)
 	{
+		if(!file_exists('cerberus/cache/stats.txt')) $this->stats($array);
 		if(!empty($page) and isset($array[$page])) 
 		{
 			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
@@ -116,6 +117,32 @@ class Cerberus
 			
 			if(!empty($newModules)) $cerberus = new Cerberus($newModules, 'include', $this->resetMode);
 		}
+	}
+	
+	function stats($module)
+	{
+		// Création de l'array final
+		$array = $this->cacheCore;
+		foreach($module as $key => $value) 
+		{
+			if(!is_array($value)) $value = array($value);
+			$array = array_merge($value, $array);
+		}
+		foreach($array as $value)
+		{
+			if(!isset($finale[$value])) $finale[$value] = 1;
+			else $finale[$value] = $finale[$value] + 1;
+		}
+		
+		// Ecriture dans le fichier
+		arsort($finale);
+		$finaleString = '';
+		foreach($finale as $key => $value)
+		{
+			$finaleString .= $key. "\t" .$value. "\n";
+		}
+		
+		sfputs('cerberus/cache/stats.txt', $finaleString);
 	}
 	
 	/* ########################################
