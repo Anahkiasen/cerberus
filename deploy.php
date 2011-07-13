@@ -10,7 +10,7 @@ if(!file_exists('../index.php'))
 $indexFile = 
 '<?php
 include_once(\'cerberus/init.php\');
-$cerberus = new Cerberus(array(\'browserSelector\', \'cssFont\', \'connectSQL\', \'desiredPage\'));
+$cerberus = new Cerberus(array(\'browserSelector\', \'cssFont\', \'connectSQL\', \'Desired\'));
 
 // Page en cours
 $navigation = array();
@@ -71,10 +71,20 @@ body
 #footer
 {
 	text-align: center;
+}';
+
+$cerberus = 
+'.admin #navbar,
+form input[type=submit],
+fieldset legend,
+table thead td,
+table .additem
+{
+	background-color: white;
 }
 /*
 ########################################
-############# BALISES ##################
+######### BALISES COMMUNES #############
 ########################################
 */
 p.clear { clear:both }
@@ -87,16 +97,6 @@ p.infoblock
 	color: white;
 	text-align: center;
 	padding: 5px;
-}';
-
-$cerberus = 
-'.admin #navbar,
-form input[type=submit],
-fieldset legend,
-table thead td,
-table .additem
-{
-	background-color: white;
 }
 /*
 ########################################

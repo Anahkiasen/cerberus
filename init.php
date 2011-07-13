@@ -4,11 +4,6 @@ include('tools/sfputs.php');
 include('tools/display.php');
 include('tools/getURL.php');
 
-function cerberusDispatch($array, $page)
-{
-	if(!empty($page) and isset($array[$page])) $cerberus = new Cerberus($array[$page], 'include');
-}
-
 class Cerberus
 {
 	/* ########################################
@@ -19,28 +14,34 @@ class Cerberus
 	private $render;
 	private $erreur;
 	private $mode = 'core';
+	private $resetMode = TRUE;
 	
+	// URL de la page principale
 	public $url = 'index.php';
 	
 	function file_get_contents_utf8($fn)
 	{
 		$content = file_get_contents($fn);
 		return mb_convert_encoding($content, 'UTF-8',
-		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
+		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', TRUE));
 	}	
 			
-	function __construct($modules, $mode = 'core', $reset = true)
+	function __construct($modules, $mode = 'core', $reset = TRUE)
 	{
-		// Préparation des variables
+		$this->resetMode = $reset;
+		$this->url = getURL(TRUE);
+	
+		// Mode de Cerberus (core/include)
 		if($mode != 'core')
 		{
-			if(isset($_GET['page'])) $this->mode = $_GET['page'];
-			else $this->mode = $mode;
+			$this->mode = (isset($_GET['page']))
+				? $_GET['page']
+				: $mode;
 		}
 
 		// Création ou non du fichier
-		if(!file_exists('cerberus/cache/' .$this->mode. '.php')) $reset = TRUE;
-		if($reset == TRUE)
+		if(!file_exists('cerberus/cache/' .$this->mode. '.php')) $this->resetMode = TRUE;
+		if($this->resetMode == TRUE)
 		{
 			$this->loadCerberus($modules);
 			$this->generate();
@@ -48,7 +49,6 @@ class Cerberus
 		
 		// Include du fichier
 		$this->inclure();
-		$this->url = getURL(TRUE);
 	}
 	
 	/* ########################################
@@ -76,8 +76,10 @@ class Cerberus
 				else $modulesArray[] = $value;
 			}
 			
+			// Nettoyage de l'array des fonctions et mise en cache du core ; chargement des modules
 			$modulesArray = array_unique($modulesArray);
 			asort($modulesArray);
+			if($this->mode == 'core') $this->cacheCore = $modulesArray; 
 			foreach($modulesArray as $value) $this->loadModule($value);
 		}
 	}
@@ -98,6 +100,16 @@ class Cerberus
 				$thisModule = substr($thisModule, 5, -2);
 				$this->render .= $thisModule;
 			}
+		}
+	}
+	
+	// Répartition des fonctions entre les pages
+	function cerberusDispatch($array, $page)
+	{
+		if(!empty($page) and isset($array[$page])) 
+		{
+			$newModules = array_values(array_diff($array[$page], $this->cacheCore));
+			$cerberus = new Cerberus($newModules, 'include', $this->resetMode);
 		}
 	}
 	
