@@ -79,6 +79,7 @@ class Cerberus
 			// Nettoyage de l'array des fonctions et mise en cache du core ; chargement des modules
 			$modulesArray = array_unique($modulesArray);
 			asort($modulesArray);
+						
 			if($this->mode == 'core') $this->cacheCore = $modulesArray; 
 			foreach($modulesArray as $value) $this->loadModule($value);
 		}
@@ -86,20 +87,17 @@ class Cerberus
 	
 	function loadModule($module)
 	{
-		if(!function_exists($module))
+		// Récupération des données
+		if(file_exists('cerberus/tools/' .$module. '.php') and !function_exists($module)) $thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
+		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
+		else $this->erreurs[] = 'Module' .$module. ' non existant.';
+		
+		// Traitement de la fonction obtenue
+		if(isset($thisModule))
 		{
-			// Récupération des données
-			if(file_exists('cerberus/tools/' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
-			elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
-			else $this->erreurs[] = 'Module' .$module. ' non existant.';
-			
-			// Traitement de la fonction obtenue
-			if(isset($thisModule))
-			{
-				$thisModule = trim($thisModule);
-				$thisModule = substr($thisModule, 5, -2);
-				$this->render .= $thisModule;
-			}
+			$thisModule = trim($thisModule);
+			$thisModule = substr($thisModule, 5, -2);
+			$this->render .= $thisModule;
 		}
 	}
 	
@@ -108,7 +106,9 @@ class Cerberus
 	{
 		if(!empty($page) and isset($array[$page])) 
 		{
-			$newModules = array_values(array_diff($array[$page], $this->cacheCore));
+			if(isset($this->cacheCore)) $newModules = array_values(array_diff($array[$page], $this->cacheCore));
+			else $newModules = $array[$page];
+			
 			if(!empty($newModules)) $cerberus = new Cerberus($newModules, 'include', $this->resetMode);
 		}
 	}
