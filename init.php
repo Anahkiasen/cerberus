@@ -88,8 +88,12 @@ class Cerberus
 	function loadModule($module)
 	{
 		// Récupération des données
-		if(file_exists('cerberus/tools/' .$module. '.php')) if(!function_exists($module)) $thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
-		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
+		if(file_exists('cerberus/tools/' .$module. '.php'))
+		{
+			if(!function_exists($module))
+				$thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
+		}
+		elseif(file_exists('cerberus/class/class' .$module. '.php'))  $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
 		else $this->erreurs[] = 'Module ' .$module. ' non existant.';
 		
 		// Traitement de la fonction obtenue
