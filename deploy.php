@@ -221,13 +221,13 @@ form input[type=submit]
 	margin: 10px;
 	border-bottom: 5px solid #005580;
 }
+form input[type=submit]:hover { background-image: url(overlay/blanc-25.png) }
 form input[type=submit]:active
 {
 	margin-top: 15px;
-	background:#0099FF;
+	background-image: url(overlay/blanc-50.png);
 	border: none;
 }
-form input[type=submit]:hover { background-image: url(overlay/blanc-25.png) }
 fieldset legend
 {
 	background-image: url(overlay/noir-25.png);
