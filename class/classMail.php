@@ -14,15 +14,18 @@ class sendMail
 	private $expediteurAlias;
 	private $expediteurMail;
 	
+	private $endReturn = TRUE;
+	
 	// Barrières
 	private $boundary;
 	private $boundary_alt;
 	
 	// Constructeur
-	function __construct($destinataire, $sujet, $contenu)
+	function __construct($destinataire, $sujet, $contenu, $endReturn = TRUE)
 	{
 		$this->destinataire = $destinataire;
 		$this->sujet = $sujet;
+		$this->endReturn = $endReturn;
 		
 		// Formulaire ou texte
 		if(is_array($contenu))
@@ -122,8 +125,13 @@ class sendMail
 			$message .= "\r\n--".$this->boundary. "\r\n";
 		}
 		$message .= "\n--".$this->boundary_alt."--";
-				
-		if(mail($this->destinataire, $this->sujet, $message, $header)) echo display('Le message a bien été envoyé.');
+		
+		if(mail($this->destinataire, $this->sujet, $message, $header))
+		{
+			if($this->endReturn == false) echo display('Votre message a bien été envoyé');
+			return true;
+		}
+		else return false;
 	}
 }
 ?>

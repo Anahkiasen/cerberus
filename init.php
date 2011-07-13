@@ -106,6 +106,7 @@ class Cerberus
 	{
 		if(!empty($page) and isset($array[$page])) 
 		{
+			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
 			if(isset($this->cacheCore)) $newModules = array_values(array_diff($array[$page], $this->cacheCore));
 			else $newModules = $array[$page];
 			
