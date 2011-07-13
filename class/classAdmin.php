@@ -96,9 +96,9 @@ class AdminClass
 		if($this->modeSQL == TRUE)
 		{
 			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
-			return isset($queryQ) && md5($password) == $queryQ;
+			return (isset($queryQ) && md5($password) == $queryQ);
 		}
-		elseif($this->modeSQL == FALSE and isset($this->loginAdmin)) return md5($user) == $this->loginAdmin and md5($password) == $this->loginPass;
+		elseif($this->modeSQL == FALSE and isset($this->loginAdmin)) return (md5($user) == $this->loginAdmin and md5($password) == $this->loginPass);
 		else return FALSE;
 	}
 	
@@ -110,7 +110,7 @@ class AdminClass
 	}
 	
 	// Recupération de l'identification
-	function getGranted()
+	function accessGranted()
 	{
 		return $this->granted;
 	}
