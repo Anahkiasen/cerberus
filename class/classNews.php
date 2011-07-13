@@ -74,44 +74,58 @@ class getNews
 	AFFICHAGE DES NEWS
 	############################ */
 
-	function selectNews()
+	function selectNews($id = '')
 	{
-		$limit = ($this->newsPaginate == FALSE)
-			? $this->newsNumber
-			: $this->newsStart. ',' .$this->newsNumber;
+		if(!empty($id))
+		{
+			$queryNews = mysqlQuery('
+			SELECT id, titre, date, contenu
+			FROM ' .$this->table. '
+			WHERE id=' .$id, TRUE);
+	
+			$news[$id] = array('titre' => $queryNews['titre'], 'date' => $queryNews['date'], 'contenu' => $queryNews['contenu']);
+		}
+		else
+		{
+			$limit = ($this->newsPaginate == FALSE)
+				? $this->newsNumber
+				: $this->newsStart. ',' .$this->newsNumber;
 		
-		// Requête
-		$news = mysqlQuery('
-		SELECT id, titre, date, contenu
-		FROM ' .$this->table. '
-		ORDER BY ' .$this->newsOrder. ' DESC
-		LIMIT ' .$limit,
-		'id', TRUE);
-				
+			$news = mysqlQuery('
+			SELECT id, titre, date, contenu
+			FROM ' .$this->table. '
+			ORDER BY ' .$this->newsOrder. ' DESC
+			LIMIT ' .$limit,
+			'id', TRUE);
+		}		
+		
 		// Récupération des news
 		foreach($news as $key => $value)
 		{
-			if(isset($alt) and $alt == 'alt') $alt = '';
-			else $alt = 'alt';
+			if(!empty($id)) $alt = 'wide';
+			else $alt = (isset($alt) and $alt == 'alt') ? '' : 'alt';
 		
 			// Display
-			if($this->displayDate == TRUE) $thisDate = '<br /><p class="date">' .$value['date']. '</p>';
-			else $thisDate = NULL;
-			
-			if($this->displayThumb == TRUE and file_exists('file/news/' .$key. '.jpg')) $thisThumb = '<a class="colorbox" href="file/news/' .$key. '.jpg">
-			<img src="file/timthumb.php?src=file/news/' .$key. '.jpg&h=' .$this->thumbHeight. '&w=' .$this->thumbWidth. '&zc=' .$this->thumbCrop. '" class="float" /></a>';
-			else $thisThumb = NULL;
+			$thisDate = ($this->displayDate == TRUE)
+				? '<br /><p class="date">' .$value['date']. '</p>'
+				: NULL;
+			$thisThumb = ($this->displayThumb == TRUE and file_exists('file/news/' .$key. '.jpg'))
+				? '<a class="colorbox" href="file/news/' .$key. '.jpg">
+				<img src="file/timthumb.php?src=file/news/' .$key. '.jpg&h=' .$this->thumbHeight. '&w=' .$this->thumbWidth. '&zc=' .$this->thumbCrop. '" class="float" />
+				</a>'
+				: NULL;
 			
 			// News
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
-				<h2>' .html($value['titre']).$thisDate. '</h2>
+				<h2><a href="' .$this->url. '?page=' .$this->page. '&news=' .$key. '">' .html($value['titre']). '</a>' .$thisDate. '</h2>
 				<p class="contenu">' .$thisThumb.nl2br(html($value['contenu'])). '</p>
-				<p class="clear"></p>
+				<p class="clear">&nbsp;</p>
 			</div>';
 		}
+		echo '<p class="clear"></p>';
 	}
-	
+		
 	// Liste des archives
 	function selectArchives()
 	{
@@ -144,7 +158,7 @@ class getNews
 				$startingPage++;
 				$newsCounter = 0;
 			}
-			echo '<li><a href="' .$this->url. '?page=' .$this->page. '&pagenews=' .$startingPage. '#' .$key. '">' .html($value['titre']). '</a></li>';
+			echo '<li><a href="' .$this->url. '?page=' .$this->page. '&news=' .$key. '">' .html($value['titre']). '</a></li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
 	}
@@ -159,13 +173,17 @@ class getNews
 		echo '<div id="news-pagination">Pages - ';
 		for($i = 1; $i <= $nombrePages; $i++)
 		{
-			$classHover = ($i == $this->currentPage) ? 'class="hover"' : '';	
+			$classHover = (!isset($_GET['news']) and $i == $this->currentPage) ? 'class="hover"' : '';	
 			echo '<a href="' .$this->url. '?page=' .$this->page. '&pagenews=' .$i. '" ' .$classHover. '>' .$i. '</a>';
 		}
 		echo '</div>';
 	}
 	
-	// Page d'admin
+	/* 
+	###############################
+	ADMIN DES NEWS
+	############################ */
+	
 	function adminNews()
 	{
 		if(isset($_GET['deleteThumb']))
