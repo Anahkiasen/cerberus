@@ -151,13 +151,8 @@ table td
 {
 	padding: 3px;
 	text-align:center;
-	width: 10%;
 }
-table td:first-child
-{
-	text-align:left;
-	width: 80%
-}
+table td:first-child { text-align:left }
 table tr:hover { background-image: url(overlay/noir-10.png); }
 table thead td
 {
