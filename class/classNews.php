@@ -20,6 +20,7 @@ class getNews
 	// Composantes
 	private $displayThumb = TRUE;
 	private $displayDate = TRUE;
+	private $displayLink = TRUE;
 	
 	// Affichage de la miniature
 	private $thumbWidth = 100;
@@ -43,10 +44,11 @@ class getNews
 		$this->table = $table;
 	}
 	
-	function setDisplay($thumb, $date)
+	function setDisplay($thumb, $date, $link)
 	{
 		$this->displayThumb = $thumb;
 		$this->displayDate = $date;
+		$this->displayLink = $link;
 	}
 	
 	function sizeThumb($width, $height, $crop)
@@ -114,11 +116,14 @@ class getNews
 				<img src="file/timthumb.php?src=file/news/' .$key. '.jpg&h=' .$this->thumbHeight. '&w=' .$this->thumbWidth. '&zc=' .$this->thumbCrop. '" class="float" />
 				</a>'
 				: NULL;
+			$thisLink = ($this->displayLink == TRUE)
+				? $this->url. '?page=' .$this->page. '&news=' .$key
+				: '#' .$key;
 			
 			// News
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
-				<h2><a href="' .$this->url. '?page=' .$this->page. '&news=' .$key. '">' .html($value['titre']). '</a>' .$thisDate. '</h2>
+				<h2><a href="' .$thisLink. '">' .html($value['titre']). '</a>' .$thisDate. '</h2>
 				<p class="contenu">' .$thisThumb.nl2br(html($value['contenu'])). '</p>
 				<p class="clear">&nbsp;</p>
 			</div>';
