@@ -214,7 +214,7 @@ class AdminClass
 	/* ########################################
 	########TRAITEMENT DES DONNEES ###########
 	######################################## */
-	function setPage($table, $facultativeFields = '')
+	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
 		$this->thisPage = '' .$this->url. '?page=admin&admin=' .$_GET['admin'];
