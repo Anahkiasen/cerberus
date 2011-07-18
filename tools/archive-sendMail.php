@@ -1,4 +1,14 @@
 <?php
+function stripHTML($chain)
+{
+	$contenu = str_replace('<br />', "\n", $chain);
+	$contenu = preg_replace('#<p>(.+)</p>#isU', '$1',$contenu);
+	$contenu = preg_replace('#<em>(.+)</em>#isU', '$1', $contenu);
+	$contenu = preg_replace('#<p class="navbar">(.+)</p>#isU', '$1', $contenu);
+	$contenu = preg_replace('#<img src="(.+)" />#isU', '', $contenu);
+	$contenu = preg_replace('#<span class="(.+)">(.+)</span>#isU', '$2', $contenu);
+	return $contenu;
+}
 function send_mail($mail, $sujet, $contenu, $expediteur = "4G Technology")
 {
 	global $index;
@@ -11,7 +21,7 @@ function send_mail($mail, $sujet, $contenu, $expediteur = "4G Technology")
 	</div></body></html>';
 	$message_html = preg_replace('#<img src="(.+)" />#isU', '<img src="' .$index['http']. '$1">', $message_html);
 	$message_html = str_replace($index['http']. 'http:', 'http:', $message_html);
-	$message_text = strip($contenu);
+	$message_text = stripHTML($contenu);
 	
 	// Header
 	$header = "From: \"" .$expediteur. "\"<" .$index['mail']. ">\r\n";
@@ -52,6 +62,6 @@ function send_mail($mail, $sujet, $contenu, $expediteur = "4G Technology")
 	
 	$melto = str_replace('<', '', $mail);
 	$melto = str_replace('>', '', $melto);
-	if(mail('', $sujet, $message, $header)) echo '<p class="navbargreen">L\'email a bien été envoyé à ' .$melto. '.</p>';
+	if(mail('', $sujet, $message, $header)) echo display('L\'email a bien été envoyé à ' .$melto. '.');
 }
 ?>
