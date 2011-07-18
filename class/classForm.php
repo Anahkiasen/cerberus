@@ -12,10 +12,10 @@ class form
 	######################################## */
 	
 	// Construction
-	function __construct($method = 'post', $multilangue = true, $params = '')
+	function __construct($multilangue = false, $params = '')
 	{
 		$this->multilangue = $multilangue;
-		$this->render = '<form method="' .$method. '"';
+		$this->render = '<form method="post"';
 		if(is_array($params) and !empty($params)) foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 		$this->render .= '>';
 	}
@@ -146,7 +146,7 @@ class form
 		}
 		if($type == 'textarea')
 		{
-			if(isset($params['bbcode'])) $this->render .= file_get_contents('include/scripts-bbcode.php');
+			if(isset($params['bbcode'])) $this->render .= file_get_contents('pages/scripts-bbcode.php');
 			$this->render .= '<textarea id="textarea" ';
 			foreach($params as $key => $value) if($key != 'value') $this->render .= $key. '="' .$value. '" ';
 			$this->render .= '>' .$params['value']. '</textarea><p></p>';

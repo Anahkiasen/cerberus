@@ -53,9 +53,9 @@ class AdminClass
 		// Navigation de l'admin
 		if(!empty($navigation)) foreach($navigation as $key => $value)
 		{
-			$value = ($this->multilangue) ? index('admin-' .$value) : ucfirst($value);
+			$textLien = ($this->multilangue) ? index('admin-' .$value) : ucfirst($value);
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
-			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .$value. '</a>';	
+			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .$textLien. '</a>';	
 		}
 		echo '<a href="' .$this->url. '?logoff">Déconnexion</a></div><br />';
 	}
