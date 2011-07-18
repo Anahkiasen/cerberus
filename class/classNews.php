@@ -208,7 +208,7 @@ class getNews
 			$diffText = (isset($_GET['edit'])) ? 'Modifier' : 'Ajouter';
 			$urlAction = ($diffText == 'Modifier') ? 'edit=' .$_GET['edit'] : 'add';
 		
-			$form = new form('post', false, array('action' => $this->url. '?page=admin&admin=news&' .$urlAction));
+			$form = new form(false, array('action' => $this->url. '?page=admin&admin=news&' .$urlAction));
 			$form->valuesArray = $newsAdmin->formValues();
 			
 			$form->openFieldset($diffText. ' une news');
