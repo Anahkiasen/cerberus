@@ -48,15 +48,14 @@ class AdminClass
 				echo '<a href="' .$this->url. '?page=admin&adminLangue=' .$lg.$getAdmin. '"><img src="css/' .$urlFlag. '.png" alt="' .$lg. '" /></a> ';
 			}
 			echo '</p>';
-			
-			foreach($navigation as $value) echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '">' .index('admin-' .$value). '</a>';
 		}
 	
 		// Navigation de l'admin
 		if(!empty($navigation)) foreach($navigation as $key => $value)
 		{
+			$value = ($this->multilangue) ? index('admin-' .$value) : ucfirst($value);
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
-			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .ucfirst($value). '</a>';	
+			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .$value. '</a>';	
 		}
 		echo '<a href="' .$this->url. '?logoff">Déconnexion</a></div><br />';
 	}
