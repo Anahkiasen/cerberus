@@ -118,18 +118,26 @@ class Cerberus
 	{
 		if(!empty($page) and isset($array[$page])) 
 		{
-			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
-			
 			$availableAPI = array(
 			'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 			'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
+			'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 			'ColorBox' => 'js/jquery.colorbox-min.js',
 			'nivoSlider' => 'js/jquery.nivo.slider.pack.js');
+		
+			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
 			
+			// Rendu général
+			$css = $js = "\n";
+			if(isset($array['*'])) 
+			{
+				if(!is_array($array['*'])) $array['*'] = array($array['*']);
+				$renderArray = array_merge($array['*'], $array[$page]);	
+			}
+			else $renderArray = $array[$page];
+						
 			// Rendus
-			$css = "\n";
-			$js = "\n";
-			foreach($array[$page] as $value) 
+			foreach($renderArray as $value) 
 			{
 				$thisScript = strtolower($value);
 				if(isset($availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
