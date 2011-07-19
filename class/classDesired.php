@@ -87,7 +87,9 @@ class desired
 		foreach($links as $key => $value)
 		{
 			$hover = ($value == $hoverReference) ? 'class="hover"' : '';
-			$keys[$key] = '<a href="' .$link.$value.$html. '#corps" ' .$hover. '>' .index('menu-' .$indexSub.$value). '</a>';
+			$keys[$key] = ($this->optionMulti == TRUE)
+				? '<a href="' .$link.$value.$html. '#corps" ' .$hover. '>' .index('menu-' .$indexSub.$value). '</a>'
+				: '<a href="' .$link.$value.$html. '#corps" ' .$hover. '>' .$value. '</a>';
 		}
 		
 		return implode(' ', $keys);			

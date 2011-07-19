@@ -1,24 +1,22 @@
 <?php
 session_start();
 include('tools/sfputs.php');
-include('tools/display.php');
 include('tools/getURL.php');
 
 class Cerberus
 {
-	/* ########################################
+	/* ######################################
 	############### PREPARATION ############
 	######################################## */
 
 	// Paramètres
 	private $render;
 	private $erreur;
-	private $mode = 'core';
-	private $resetMode = TRUE;
 	
-	// URL de la page principale
-	public $url = 'index.php';
-	
+	// Modes
+	private $mode;
+	private $resetMode;
+		
 	function file_get_contents_utf8($fn)
 	{
 		$content = file_get_contents($fn);
@@ -26,22 +24,17 @@ class Cerberus
 		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', TRUE));
 	}	
 			
-	function __construct($modules, $mode = 'core', $reset = TRUE)
+	function __construct($modules, $resetMode = TRUE, $mode = 'core')
 	{
-		$this->resetMode = $reset;
-		$this->url = getURL(TRUE);
+		$this->resetMode = $resetMode;
 	
-		// Mode de Cerberus (core/include)
-		if($mode != 'core')
-		{
-			$this->mode = (isset($_GET['page']))
-				? $_GET['page']
-				: $mode;
-		}
+		// Mode de Cerberus (core/include)		
+		$this->mode = ($mode != 'core' and isset($_GET['page']))
+			? $_GET['page']
+			: $mode;		
 
 		// Création ou non du fichier
-		if(!file_exists('cerberus/cache/' .$this->mode. '.php')) $this->resetMode = TRUE;
-		if($this->resetMode == TRUE)
+		if($this->resetMode == TRUE or !file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
 			$this->loadCerberus($modules);
 			$this->generate();
@@ -55,7 +48,7 @@ class Cerberus
 	###### RECUPERATION DES FONCTIONS #########
 	######################################## */
 	
-	function loadCerberus($modules = '')
+	function loadCerberus($modules)
 	{				
 		// Chargement des modules
 		if(!empty($modules))
@@ -65,22 +58,22 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
-			'[admin]' => array('Admin', 'findString', 'getLastID', 'getURL', 'is_blank', 'normalize'),
-			'[mail]' => array('Mail', 'postVar', 'stripHTML'),
-			'[form]' => array('Form', 'normalize'),
-			'[check]' => array('checkMail', 'checkPhone'));
+			'[check]' => array('checkMail', 'checkPhone'),
+			'classAdmin' => array('Admin', 'findString', 'getLastID', 'getURL', 'is_blank', 'normalize'),
+			'classMail' => array('Mail', 'postVar', 'stripHTML'),
+			'classForm' => array('Form', 'normalize'));
 		
 			foreach($modules as $value)
 			{
-				if(strpos($value, '[') !== FALSE and isset($packages[$value])) foreach($packages[$value] as $includePack) $modulesArray[] = $includePack;
+				if(isset($packages[$value])) foreach($packages[$value] as $includePack) $modulesArray[] = $includePack;
 				else $modulesArray[] = $value;
 			}
 			
 			// Nettoyage de l'array des fonctions et mise en cache du core ; chargement des modules
 			$modulesArray = array_unique($modulesArray);
 			asort($modulesArray);
+			$this->cacheCore = $modulesArray;
 			
-			if($this->mode == 'core') $this->cacheCore = $modulesArray; 
 			foreach($modulesArray as $value) $this->loadModule($value);
 		}
 	}
@@ -93,7 +86,7 @@ class Cerberus
 			if(!function_exists($module))
 				$thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
 		}
-		elseif(file_exists('cerberus/class/class' .$module. '.php'))  $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
+		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
 		else $this->erreurs[] = 'Module ' .$module. ' non existant.';
 		
 		// Traitement de la fonction obtenue
@@ -108,43 +101,47 @@ class Cerberus
 	// Répartition des fonctions entre les pages
 	function cerberusDispatch($array, $page)
 	{
-		if(!file_exists('cerberus/cache/stats.txt')) $this->stats($array);
 		if(!empty($page) and isset($array[$page])) 
 		{
 			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
+			
 			if(isset($this->cacheCore)) $newModules = array_values(array_diff($array[$page], $this->cacheCore));
 			else $newModules = $array[$page];
 			
-			if(!empty($newModules)) $cerberus = new Cerberus($newModules, 'include', $this->resetMode);
+			if(!empty($newModules)) $cerberus = new Cerberus($newModules, $this->resetMode, 'include');
 		}
 	}
 	
-	function stats($module)
+	// Fonctions API
+	function cerberusAPI($array, $page)
 	{
-		// Création de l'array final
-		$array = $this->cacheCore;
-		foreach($module as $key => $value) 
+		if(!empty($page) and isset($array[$page])) 
 		{
-			if(!is_array($value)) $value = array($value);
-			$array = array_merge($value, $array);
+			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
+			
+			$availableAPI = array(
+			'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js',
+			'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
+			'ColorBox' => 'js/jquery.colorbox-min.js',
+			'nivoSlider' => 'js/jquery.nivo.slider.pack.js',
+			'marquee' => 'js/jquery.marquee.js');
+			
+			// Rendus
+			$css = "\n";
+			$js = "\n";
+			foreach($array[$page] as $value) 
+			{
+				$thisScript = strtolower($value);
+				if(isset($availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+				if(file_exists('css/' .$thisScript. '.css')) $css .= '<link href="css/' .$thisScript. '.css" rel="stylesheet" type="text/css" />';
+				$js .= "\n";
+				$css .= "\n";
+			}
+			
+			return array($css, $js, $array[$page]);
 		}
-		foreach($array as $value)
-		{
-			if(!isset($finale[$value])) $finale[$value] = 1;
-			else $finale[$value] = $finale[$value] + 1;
-		}
-		
-		// Ecriture dans le fichier
-		arsort($finale);
-		$finaleString = '';
-		foreach($finale as $key => $value)
-		{
-			$finaleString .= $key. "\t" .$value. "\n";
-		}
-		
-		sfputs('cerberus/cache/stats.txt', $finaleString);
 	}
-	
+		
 	/* ########################################
 	########### RENDU DU FICHIER #############
 	######################################## */
@@ -158,8 +155,17 @@ class Cerberus
 	
 	function inclure()
 	{
-		if(file_exists('cerberus/cache/' .$this->mode. '.php')) include_once('cerberus/cache/' .$this->mode. '.php');
-		else echo 'Fichier ' .$this->mode. ' non trouvé';
+		include_once('cerberus/cache/' .$this->mode. '.php');
 	}
+	
+	/* ########################################
+	########### FONCTIONS OUTILS #############
+	######################################## */
+
+	function url()
+	{
+		return getURL(TRUE);
+	}
+
 }
 ?>
