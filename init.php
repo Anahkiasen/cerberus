@@ -29,10 +29,10 @@ class Cerberus
 	{
 		$this->resetMode = $resetMode;
 	
-		// Mode de Cerberus (core/include)		
-		$this->mode = ($mode != 'core' and isset($_GET['page']))
-			? $_GET['page']
-			: $mode;		
+		// Mode de Cerberus (core/include)	
+		if($mode != 'core' and isset($_GET['page'])) $this->mode = $_GET['page'];
+		elseif($mode != 'core' and !isset($_GET['page'])) $this->mode = 'home';
+		else $this->mode = 'core';
 
 		// Création ou non du fichier
 		if($this->resetMode == TRUE or !file_exists('cerberus/cache/' .$this->mode. '.php'))
