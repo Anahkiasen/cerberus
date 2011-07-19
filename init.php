@@ -30,7 +30,7 @@ class Cerberus
 		$this->resetMode = $resetMode;
 	
 		// Mode de Cerberus (core/include)	
-		if($mode != 'core' and isset($_GET['page'])) $this->mode = $_GET['page'];
+		if($mode != 'core' and isset($_GET['page']) and !empty($_GET['page'])) $this->mode = $_GET['page'];
 		elseif($mode != 'core' and !isset($_GET['page'])) $this->mode = 'home';
 		else $this->mode = 'core';
 
