@@ -2,6 +2,7 @@
 session_start();
 include('tools/sfputs.php');
 include('tools/getURL.php');
+include('tools/display.php');
 
 class Cerberus
 {
@@ -120,11 +121,10 @@ class Cerberus
 			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
 			
 			$availableAPI = array(
-			'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js',
+			'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 			'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
 			'ColorBox' => 'js/jquery.colorbox-min.js',
-			'nivoSlider' => 'js/jquery.nivo.slider.pack.js',
-			'marquee' => 'js/jquery.marquee.js');
+			'nivoSlider' => 'js/jquery.nivo.slider.pack.js');
 			
 			// Rendus
 			$css = "\n";
@@ -133,6 +133,8 @@ class Cerberus
 			{
 				$thisScript = strtolower($value);
 				if(isset($availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+				else $js .= '<script type="text/javascript" src="js/' .$value. '.js"></script>';
+				
 				if(file_exists('css/' .$thisScript. '.css')) $css .= '<link href="css/' .$thisScript. '.css" rel="stylesheet" type="text/css" />';
 				$js .= "\n";
 				$css .= "\n";
