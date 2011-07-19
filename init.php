@@ -171,13 +171,16 @@ class Cerberus
 	}
 	
 	/* ########################################
-	########### FONCTIONS OUTILS #############
+	########### FONCTIONS EXPORT #############
 	######################################## */
 
 	function url()
 	{
 		return getURL(TRUE);
 	}
-
+	function debugMode()
+	{
+		return $this->resetMode;	
+	}
 }
 ?>

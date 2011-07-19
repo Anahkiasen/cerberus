@@ -1,5 +1,5 @@
 <?php
-function createIndex($arrayLang = array('en', 'fr'), $database = 'langue', $overwrite = TRUE)
+function createIndex($arrayLang = array('en', 'fr'), $overwrite = TRUE, $database = 'langue')
 {
 	$filename = $database. '.php';
 	$renderPHP = "<?php \n";
