@@ -79,9 +79,10 @@ $cerberus =
 form input[type=submit],
 fieldset legend,
 table thead td,
-table .additem
+table .additem,
+p.infoblock
 {
-	background-color: white;
+	background-color: #333333;
 }
 /*
 ########################################
@@ -91,13 +92,23 @@ table .additem
 p.clear { clear:both }
 p.infoblock
 {
-	background-color: #e3004f;
+	background-image: url(overlay/noir-50.png);
 	margin: 0;
-	margin-botom: 10px;
+	margin-bottom: 10px;
 	width: 100%;
 	color: white;
 	text-align: center;
 	padding: 5px;
+}
+.float-left
+{
+	float:left;
+	margin-right: 10px;
+}
+.float-right
+{
+	float:right;
+	margin-left: 10px;
 }
 /*
 ########################################
@@ -239,7 +250,7 @@ fieldset dl
 	background-color: #EEE;
 	color: #666;
 	margin: 0;
-	padding: 10px 5px;
+	padding: 13px 5px;
 	position: relative;
 	width: 100%;
 }

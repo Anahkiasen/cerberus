@@ -2,8 +2,12 @@
 class form
 {
 	private $render;
-	private $openedManual = false;
 	
+	// Etats
+	private $openedManual = false;
+	private $mandatory = false;
+	
+	// Options
 	private $multilangue = false;
 	private $formType = 'ilec';
 	
@@ -30,9 +34,10 @@ class form
 	}
 	
 	// Fieldsets
-	function openFieldset($name)
+	function openFieldset($name, $mandatory = false)
 	{
 		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
+		$this->mandatory = $mandatory;
 		
 		$this->render .= PHP_EOL. "
 		<fieldset>" .PHP_EOL. "
@@ -50,11 +55,14 @@ class form
 	function manualField($name, $full = false)
 	{
 		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
+		$mandatoryStar = ($this->mandatory == true)
+			? ' <span class="mandatory">*</span>'
+			: '';
 		
 		if($this->formType != 'plain')
 		{
 				$this->render .= '<dl>';
-				if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName. '</label></dt>';
+				if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName.$mandatoryStar. '</label></dt>';
 				$this->render .= '<dd>';
 		}
 			
@@ -119,10 +127,13 @@ class form
 		if($stateField)
 		{
 			$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label);
+			$mandatoryStar = ($this->mandatory == true)
+				? ' <span class="mandatory">*</span>'
+				: '';
 	
 			$this->render .= PHP_EOL. "
 				\t<dl class=\"$type\">" .PHP_EOL;
-			if($type != "submit") $this->render .= "\t\t<dt><label for=\"$label\">$fieldName</label></dt>" .PHP_EOL;
+			if($type != "submit") $this->render .= "\t\t<dt><label for=\"$label\">$fieldName$mandatoryStar</label></dt>" .PHP_EOL;
 			$this->render .= "\t\t<dd>";
 
 			// $this->render .= PHP_EOL. "\t<dd style=\"float: none; width: 100%\">";

@@ -57,7 +57,7 @@ class AdminClass
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
 			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .$textLien. '</a>';	
 		}
-		echo '<a href="' .$this->url. '?logoff">Déconnexion</a></div><br />';
+		echo '<a href="' .$this->url. '?page=admin&logoff">Déconnexion</a></div><br />';
 	}
 	
 	/* ########################################
@@ -71,7 +71,8 @@ class AdminClass
 		<fieldset class="login"><legend>Identification</legend>
 		<dl><dt>Identifiant</dt><dd><input type="text" name="user" /></dd></dl>
 		<dl><dt>Mot de passe</dt><dd><input type="password" name="password" /></dd></dl>
-		<dl><dd class="unirow" style="text-align:left"><input type="submit" value="Valider" /></dd></dl>
+		<dl class="submit"><dd><p style="text-align:center"><input type="submit" value="Connexion" /></p></dd> 
+	</dl>
 		</fieldset></form>';
 		
 		// Vérification du formulaire		
