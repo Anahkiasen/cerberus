@@ -1,7 +1,16 @@
 <?php
-function bbcode (&$contenu, $html = 0)
+/*
+	Fonction bbcode
+	# Formate une chaîne selon des REGEX de mise en forme
+	
+	$contenu
+		La chaine à formater
+	$css
+		Utilisation ou non de classes CSS pour la mise en forme
+*/
+function bbcode($contenu, $css = TRUE)
 {
-	if($html == 0)
+	if($css == FALSE)
 	{
 		$contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<span class="b">$1</span>', nl2br($contenu));
 		$contenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<span class="i">$1</span>', $contenu);
@@ -20,6 +29,7 @@ function bbcode (&$contenu, $html = 0)
 	$contenu = preg_replace('#\[couleur="(.+)"\](.+)\[/couleur\]#isU', '<span style="color:$1">$2</span>', $contenu);
 	$contenu = preg_replace('#\[lien\](.+)\[/lien\]#isU', '<a href="$1">$1</a>', $contenu);
 	$contenu = preg_replace('#\[lien="(.+)"\](.+)\[/lien\]#isU', '<a href="$1">$2</a>', $contenu);
+	
 	return $contenu;
 }
 ?>

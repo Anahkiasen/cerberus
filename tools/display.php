@@ -1,6 +1,13 @@
 <?php
-function display($text)
+/*
+	Fonction display
+	# Affiche un message d'information/erreur
+	
+	$message
+		Message à afficher
+*/
+function display($message)
 {
-	return '<p class="infoblock">' .$text. '</p>';
+	return '<p class="infoblock">' .$message. '</p>';
 }
 ?>

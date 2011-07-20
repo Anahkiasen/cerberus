@@ -1,37 +1,41 @@
 <?php
-function browserSelector($ua = NULL)
+/*
+	Fonction browserSelector
+	# Crée une chaine contenant la définition exacte de l'user-agent de l'internaute
+*/
+function browserSelector()
 {
-	$ua = ($ua) ? strtolower($ua) : strtolower($_SERVER['HTTP_USER_AGENT']);
+	$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
 	
-	$g = 'gecko';
-	$w = 'webkit';
-	$s = 'safari';
-	$b = array();
+	$gecko = 'gecko';
+	$webkit = 'webkit';
+	$safari = 'safari';
+	$return = array();
 	
 	// Navigateur
-	if(!preg_match('/opera|webtv/i', $ua) && preg_match('/msie\s(\d)/', $ua, $array)) $b[] = 'ie ie' .$array[1];
-	else if(strstr($ua, 'firefox/2')) $b[] = $g. ' ff2';
-	else if(strstr($ua, 'firefox/3.5')) $b[] = $g. ' ff3 ff3_5';
-	else if(strstr($ua, 'firefox/3')) $b[] = $g. ' ff3';
-	else if(strstr($ua, 'gecko/')) $b[] = $g;
-	else if(preg_match('/opera(\s|\/)(\d+)/', $ua, $array)) $b[] = 'opera opera' .$array[2];
-	else if(strstr($ua, 'konqueror')) $b[] = 'konqueror';
-	else if(strstr($ua, 'chrome')) $b[] = $w. ' ' .$s. ' chrome';
-	else if(strstr($ua, 'iron')) $b[] = $w. ' ' .$s. ' iron';
-	else if(strstr($ua, 'applewebkit/')) $b[] = (preg_match('/version\/(\d+)/i', $ua, $array)) ? $w. ' ' .$s. ' ' .$s .$array[1] : $w. ' ' .$s;
-	else if(strstr($ua, 'mozilla/')) $b[] = $g;
+	if(!preg_match('/opera|webtv/i', $userAgent) && preg_match('/msie\s(\d)/', $userAgent, $array)) $return[] = 'ie ie' .$array[1];
+	else if(strstr($userAgent, 'firefox/2')) $return[] = $gecko. ' ff2';
+	else if(strstr($userAgent, 'firefox/3.5')) $return[] = $gecko. ' ff3 ff3_5';
+	else if(strstr($userAgent, 'firefox/3')) $return[] = $gecko. ' ff3';
+	else if(strstr($userAgent, 'gecko/')) $return[] = $gecko;
+	else if(preg_match('/opera(\s|\/)(\d+)/', $userAgent, $array)) $return[] = 'opera opera' .$array[2];
+	else if(strstr($userAgent, 'konqueror')) $return[] = 'konqueror';
+	else if(strstr($userAgent, 'chrome')) $return[] = $webkit. ' ' .$safari. ' chrome';
+	else if(strstr($userAgent, 'iron')) $return[] = $webkit. ' ' .$safari. ' iron';
+	else if(strstr($userAgent, 'applewebkit/')) $return[] = (preg_match('/version\/(\d+)/i', $userAgent, $array)) ? $webkit. ' ' .$safari. ' ' .$safari .$array[1] : $webkit. ' ' .$safari;
+	else if(strstr($userAgent, 'mozilla/')) $return[] = $gecko;
 	
 	// platform
-	if(strstr($ua, 'j2me')) $b[] = 'mobile';
-	else if(strstr($ua, 'iphone')) $b[] = 'iphone';
-	else if(strstr($ua, 'ipod')) $b[] = 'ipod';
-	else if(strstr($ua, 'mac')) $b[] = 'mac';
-	else if(strstr($ua, 'darwin')) $b[] = 'mac';
-	else if(strstr($ua, 'webtv')) $b[] = 'webtv';
-	else if(strstr($ua, 'win')) $b[] = 'win';
-	else if(strstr($ua, 'freebsd')) $b[] = 'freebsd';
-	else if(strstr($ua, 'x11') || strstr($ua, 'linux')) $b[] = 'linux';
+	if(strstr($userAgent, 'j2me')) $return[] = 'mobile';
+	else if(strstr($userAgent, 'iphone')) $return[] = 'iphone';
+	else if(strstr($userAgent, 'ipod')) $return[] = 'ipod';
+	else if(strstr($userAgent, 'mac')) $return[] = 'mac';
+	else if(strstr($userAgent, 'darwin')) $return[] = 'mac';
+	else if(strstr($userAgent, 'webtv')) $return[] = 'webtv';
+	else if(strstr($userAgent, 'win')) $return[] = 'win';
+	else if(strstr($userAgent, 'freebsd')) $return[] = 'freebsd';
+	else if(strstr($userAgent, 'x11') || strstr($userAgent, 'linux')) $return[] = 'linux';
 	
-	return join(' ', $b);
+	return join(' ', $return);
 }
 ?>
