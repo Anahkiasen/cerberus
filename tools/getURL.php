@@ -1,14 +1,28 @@
 <?php
-function getURL($truncate = false)
+/*
+	Fonction getURL
+	# Récupère l'URL de la page et/ou le nom de la page en cours
+	
+	$truncateDomain
+		TRUE	Récuperera le nom de la page sans le domaine
+		FALSE	Récupère l'entièreté de l'URL
+	$truncateGET
+		TRUE	Supprime les variables GET
+		FALSE	Laisse les variables GET
+*/
+function getURL($truncateDomain = false, $truncateGET = true)
 {
-	if($truncate == false)
+	if($truncateDomain == false)
 	{
-		$pageURL = 'http';
-		if(isset($_SESSION['HTTPS']) && $_SERVER['HTTPS'] == 'on') $pageURL .= "s";
-		$pageURL .= "://";
-		$pageURL .= ($_SERVER["SERVER_PORT"] != "80")
-			? $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"]
+		$pageURL = (isset($_SESSION['HTTPS']) and $_SERVER['HTTPS'] == 'on')
+			? 'https://'
+			: 'http://';
+		
+		// Si page en local ou non (localhost:80)
+		$pageURL .= ($_SERVER["SERVER_PORT"] != '80')
+			? $_SERVER["SERVER_NAME"]. ':' .$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"]
 			: $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+			
 		return $pageURL;
 	}
 	else
@@ -16,8 +30,11 @@ function getURL($truncate = false)
 		$pageName = explode('/', $_SERVER['REQUEST_URI']);
 		$pageName = $pageName[2];
 		
-		$pageName = explode('?', $pageName);
-		$pageName = $pageName[0];
+		if($truncateGET == true)
+		{
+			$pageName = explode('?', $pageName);
+			$pageName = $pageName[0];
+		}
 		
 		return $pageName;
 	}

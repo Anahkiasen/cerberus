@@ -83,7 +83,8 @@ class getNews
 			$queryNews = mysqlQuery('
 			SELECT id, titre, date, contenu
 			FROM ' .$this->table. '
-			WHERE id=' .$id, TRUE);
+			WHERE id=' .$id,
+			TRUE);
 	
 			$news[$id] = array('titre' => $queryNews['titre'], 'date' => $queryNews['date'], 'contenu' => $queryNews['contenu']);
 		}
@@ -98,7 +99,7 @@ class getNews
 			FROM ' .$this->table. '
 			ORDER BY ' .$this->newsOrder. ' DESC
 			LIMIT ' .$limit,
-			'id', TRUE);
+			TRUE);
 		}		
 		
 		// Récupération des news
@@ -142,7 +143,8 @@ class getNews
 		$news = mysqlQuery('
 		SELECT id, date, DATE_FORMAT(date, "%Y-%m") AS mois, YEAR(date) AS year, MONTH(date) AS month, titre
 		FROM ' .$this->table. '
-		ORDER BY date ASC', 'id', TRUE);
+		ORDER BY date ASC', 
+		TRUE);
 		
 		$actualDate = NULL;
 

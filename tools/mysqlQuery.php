@@ -1,49 +1,102 @@
 <?php
-function mysqlQuery($query, $cle = 'id', $forceArray = FALSE)
+/*
+	Fonction mysqlQuery
+	# Récupère et traite des données mySQL en array exploitables
+	
+	$query
+		Requête SQL à exécuter
+	$forceArray
+		TRUE	Force la division des résultats selon une cle
+		FALSE	Laisse les variables GET
+	$cle 
+		Clé selon laquelle indexer l'array de retour ; par défaut ID
+		
+	# Syntaxe des différents mode de la fonction
+		UNIQUE RESULT - UNIQUE FIELD - FORCE[TRUE]			array($key => $value)
+		UNIQUE RESULT - UNIQUE FIELD - FORCE[FALSE]			$value
+		UNIQUE RESULT - MULTIPLE FIELDS - FORCE[TRUE]		array($cle => array($key => $value, $key => $value))
+		UNIQUE RESULT - MULTIPLE FIELDS - FORCE[FALSE]		array($key => $value, $key => $value)
+		MULTIPLE RESULTS - UNIQUE FIELD - FORCE[TRUE]		array($cle => array($key => $value, $key => $value))
+		MULTIPLE RESULTS - UNIQUE FIELD - FORCE[FALSE]		array($cle => $value, $cle => $value)
+		MULTIPLE RESULTS - MULTIPLE FIELDS - FORCE[TRUE]	array($cle => array($key => $value, $key => $value))
+		MULTIPLE RESULTS - MULTIPLE FIELDS - FORCE[FALSE]	array($cle => array($key => $value, $key => $value))
+		
+*/
+function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 {
 	// Traitement de la requête
-	$thisQuery = mysql_query($query) or die(mysql_error());
+	$thisQuery = mysql_query($query) or exit(mysql_error());
+	
+	// Présence de résultats ou non
 	if(mysql_num_rows($thisQuery) != 0)
 	{
-		if(mysql_num_rows($thisQuery) == 1 and $forceArray == FALSE)
+		// UNIQUE RESULT
+		if(mysql_num_rows($thisQuery) == 1)
 		{
-			// Champ unique ou non
-			$return = mysql_fetch_assoc($thisQuery);
-			if(count($return) == 1) foreach($return as $key => $value) return $value;
-			else return $return;
+			$fetchAssoc = mysql_fetch_assoc($thisQuery);
+			if(count($fetchAssoc) == 1)
+			{
+				// UNIQUE RESULT - UNIQUE FIELD
+				if($forceArray == TRUE) return $fetchAssoc;
+				else foreach($fetchAssoc as $value) return $value;
+			}
+			else
+			{
+				// UNIQUE RESULT - MULTIPLE FIELDS
+				if($forceArray == TRUE) return mysqlQuery_remapArray($fetchAssoc, $cle);
+				else
+				{
+					foreach($fetchAssoc as $key => $value)
+						$returnArray[$key] = $value;
+					return $returnArray;
+				}
+			}
 		}
 		else
 		{
-			// Tableau multidimensionnel
-			while($thisRows = mysql_fetch_assoc($thisQuery))
+			// MULTIPLE RESULTS
+			$returnArray = array();
+			while($fetchAssoc = mysql_fetch_assoc($thisQuery))
 			{
-				if(count($thisRows) == 1) foreach($thisRows as $key => $value) $array[] = $value;
-				else
+				if(count($fetchAssoc) == 1)
 				{
-					// Si la clé demandé existe
-					if(isset($thisRows[$cle]))
+					// MULTIPLE RESULTS - UNIQUE FIELD
+					if($forceArray == TRUE) $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle);
+					else 
 					{
-						foreach($thisRows as $key => $value)
+						if(isset($fetchAssoc[$cle])) $thisKey = $fetchAssoc[$cle];
+						foreach($fetchAssoc as $key => $value)
 						{
-							if($key == $cle)
-							{
-								$id = $value;
-								$array[$id] = array();
-							}
-							else 
-							{
-								// Tableau direct ou multi
-								if(count($thisRows) == 2) $array[$id] = $value;
-								else $array[$id][$key] = $value;
-							}
+							if(!isset($thisKey)) $thisKey = $value;
+							if($key != $cle) $returnArray[$thisKey] = $value;
 						}
 					}
-					else foreach($thisRows as $key => $value) $array[] = $value;
 				}
+				else $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle); // MULTIPLE RESULTS - MULTIPLE FIELDS
+				unset($thisKey);
 			}
-			return $array;
+			return $returnArray;
 		}
 	}
 	else return FALSE;
+}
+/*
+	Fonction mysqlQuery_remapArray Extends mysqlQuery
+	# Transpose une suite de résultats en un tableau associatif unique
+	
+	$array
+		Tableau à transposer
+	$cle
+		Clé de la fonction principale
+*/
+function mysqlQuery_remapArray($array, $cle)
+{
+	if(isset($array[$cle])) $thisKey = $array[$cle];
+	foreach($array as $key => $value)
+	{
+		if(!isset($thisKey)) $thisKey = $value;
+		if($key != $cle) $returnArray[$thisKey][$key] = $value;
+	}
+	return $returnArray;
 }
 ?>

@@ -1,5 +1,6 @@
 <?php
-function bbcode (&$contenu, $html = 0) {
+function bbcode (&$contenu, $html = 0)
+{
 	if($html == 0)
 	{
 		$contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<span class="b">$1</span>', nl2br($contenu));

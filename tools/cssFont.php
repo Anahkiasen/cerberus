@@ -1,4 +1,15 @@
 <?php
+/*
+	Fonction cssFont
+	# Permet l'intégration aisée de polices via la propriété @font-face
+	
+	$queryFont
+		Liste des polices voulues ; peut être un array [ array('police1', 'police2') ] ou une simple requête [ 'police' ]
+	$googleFont
+		Précise l'utilisation ou non du répertoire Google Fonts.
+		TRUE	Aucune autre démarche n'est requise, mais les polices doivent être présentes dans le répertoire Google Fonts
+		FALSE	Les polices, aux formats eot, woff et ttf, doivent se trouver dans le sous-dossier font du dossier css
+*/
 function cssFont($queryFont, $googleFont = true)
 {
 	if(!is_array($queryFont)) $queryFont = array($queryFont);
