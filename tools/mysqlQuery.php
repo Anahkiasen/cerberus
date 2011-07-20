@@ -58,7 +58,7 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 			$returnArray = array();
 			while($fetchAssoc = mysql_fetch_assoc($thisQuery))
 			{
-				if(count($fetchAssoc) == 1)
+				if((isset($fetchAssoc[$cle]) and count($fetchAssoc) == 2) or (count($fetchAssoc) == 1))
 				{
 					// MULTIPLE RESULTS - UNIQUE FIELD
 					if($forceArray == TRUE) $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle);
@@ -68,7 +68,7 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 						foreach($fetchAssoc as $key => $value)
 						{
 							if(!isset($thisKey)) $thisKey = $value;
-							if($key != $cle) $returnArray[$thisKey] = $value;
+							if($key != $cle or count($fetchAssoc) == 1) $returnArray[$thisKey] = $value;
 						}
 					}
 				}
