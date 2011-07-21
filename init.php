@@ -60,7 +60,7 @@ class Cerberus
 			$packages = array(
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'bdd'),
 			'classAdmin' => array('Admin', 'findString', 'getLastID', 'getURL', 'is_blank', 'normalize'),
-			'classMail' => array('Mail', 'postVar', 'stripHTML'),
+			'classMail' => array('Mail', 'stripHTML'),
 			'classForm' => array('Form', 'normalize'));
 		
 			foreach($modules as $value)
