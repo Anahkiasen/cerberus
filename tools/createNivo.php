@@ -1,8 +1,10 @@
 <?php
-function createNivo($path, $largeur, $hauteur, $options = '')
+function createNivo($path, $largeur, $hauteur, $options = '', $shuffle = false)
 {
 	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">';
-	foreach(glob('file/' .$path. '/*.jpg') as $file)
+	$arrayImages = glob('file/' .$path. '/*.jpg');
+	if($shuffle == TRUE) shuffle($arrayImages);
+	foreach($arrayImages as $file)
 		echo '<img src="file/timthumb.php?src=' .$file. '&w=' .$largeur. '&h=' .$hauteur. '&zc=1" />';
 	echo '</div>';
 		
