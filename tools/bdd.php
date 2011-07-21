@@ -1,4 +1,14 @@
 <?php
+/*
+	Fonction bdd
+	# Encode une chaîne pour insértion dans une base de données
+	
+	Fonction html
+	# Décode une chaîne encodée pour affichage au sein d'une page
+	
+	$string
+		La chaîne à encoder/décoder
+*/
 function bdd($string)
 {
 	if(ctype_digit($string)) $string = intval($string);

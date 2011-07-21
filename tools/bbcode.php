@@ -21,7 +21,7 @@ function bbcode($contenu, $css = TRUE)
 	{
 		$contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', nl2br($contenu));
 		$contenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<em>$1</em>', $contenu);
-		$contenu = preg_replace('#\[u\](.+)\[/u\]#isU', '<span style="text-decoration:underline">$1</span>', $contenu);
+		$contenu = preg_replace('#\[u\](.+)\[/u\]#isU', '<ins>$1</ins>', $contenu);
 		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<h2 style="margin-bottom: 3px">$1</h2>', $contenu);
 	}
 	$contenu = preg_replace('#\[image\](.+)\[/image\]#isU', '<img src="$1" />', $contenu);
