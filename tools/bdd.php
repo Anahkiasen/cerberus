@@ -9,4 +9,9 @@ function bdd($string)
 	}
 	return $string;
 }
+function html($string)
+{
+	$string = htmlspecialchars($string);
+	return $string = stripslashes($string);
+}
 ?>

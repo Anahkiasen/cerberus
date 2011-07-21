@@ -58,7 +58,7 @@ class Cerberus
 			
 			// Packs
 			$packages = array(
-			'[sql]' => array('connectSQL', 'mysqlQuery', 'html', 'bdd'),
+			'[sql]' => array('connectSQL', 'mysqlQuery', 'bdd'),
 			'classAdmin' => array('Admin', 'findString', 'getLastID', 'getURL', 'is_blank', 'normalize'),
 			'classMail' => array('Mail', 'postVar', 'stripHTML'),
 			'classForm' => array('Form', 'normalize'));
