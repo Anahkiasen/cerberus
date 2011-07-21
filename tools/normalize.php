@@ -1,4 +1,11 @@
 <?php
+/*
+	Fonction normalize
+	# Supprime tout caractère spécial d'une chaîne, espaces, majuscules, accents, etc.
+	
+	$string
+		Chaîne à normaliser
+*/
 function normalize($string)
 {
 	$specialChar = array(
