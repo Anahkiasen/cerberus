@@ -30,7 +30,6 @@ class sendMail
 		// Formulaire ou texte
 		if(is_array($contenu))
 		{
-			postVar($contenu);
 			foreach($contenu as $key => $value)
 			{
 				if(is_array($value))

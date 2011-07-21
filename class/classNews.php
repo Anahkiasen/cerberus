@@ -83,8 +83,7 @@ class getNews
 			$queryNews = mysqlQuery('
 			SELECT id, titre, date, contenu
 			FROM ' .$this->table. '
-			WHERE id=' .$id,
-			TRUE);
+			WHERE id=' .$id);
 	
 			$news[$id] = array('titre' => $queryNews['titre'], 'date' => $queryNews['date'], 'contenu' => $queryNews['contenu']);
 		}
