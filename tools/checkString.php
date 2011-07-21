@@ -13,12 +13,12 @@ function checkString($string, $type = 'email')
 {
 	if($type == 'email')
 	{
-		if(!empty($email) and preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email)) return true;
+		if(!empty($string) and preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $string)) return true;
 		else return false;
 	}
 	elseif($type == 'phone')
 	{
-		if(!empty($phone) and preg_match("#^0[1-78]([-. ]?[0-9]{2}){4}$#", $phone)) return true;
+		if(!empty($string) and preg_match("#^0[1-78]([-. ]?[0-9]{2}){4}$#", $string)) return true;
 		else return false;
 	}
 }

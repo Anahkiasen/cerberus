@@ -202,7 +202,6 @@ class form
 				for($i = $params['debut']; $i <= $params['fin']; $i++)
 				{
 					$options .= ($i == $params['value']) ? '<option selected="selected"' : '<option ';
-					if(isset($params['value']) and !empty($params['value'])) $options .= ' value="' .$params['value']. '"';
 					$options .= '>' .$i. '</option>';
 				}
 				unset($params['debut'], $params['fin']);
