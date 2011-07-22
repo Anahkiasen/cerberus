@@ -33,7 +33,7 @@ $thisAgent = browserSelector();
 </head>
 
 <body>
-	<div id="wrapper">
+	<div id="global">
 		<div id="header"></div>
 		<div id="corps"></div>
 		<div id="footer">&copy;Copyright <?= date(\'Y\') ?> - [WEBSITE] - Design : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
@@ -48,15 +48,13 @@ body
 {
 	font-family: \'Open Sans\', Helvetica, Verdana, sans-serif;
 	font-size: small;
-	-webkit-font-smoothing: antialiased;
-	-moz-font-smoothing: antialiased;
 }
 /*
 ########################################
 ############# STRUCTURE ################
 ########################################
 */
-#wrapper
+#global
 {
 	margin:0 auto;
 	width:960px;
@@ -71,19 +69,22 @@ body
 }
 #footer
 {
+	font-size: x-small;
 	text-align: center;
 }';
 
 $cerberus = 
-'.admin #navbar,
+'body
+{
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+}
+.admin #navbar,
 form input[type=submit],
 fieldset legend,
 table thead td,
-table .additem,
-p.infoblock
-{
-	background-color: #333333;
-}
+table .additem { background-color: #0082b8; }
+p.infoblock { background-color:#006699; }
 /*
 ########################################
 ######### BALISES COMMUNES #############
@@ -110,6 +111,21 @@ p.infoblock
 	float:right;
 	margin-left: 10px;
 }
+#left,
+#right
+{
+	margin: 10px 0;
+	width: 50%;
+	float: left;
+	text-align: justify;
+	
+	-moz-box-sizing:border-box;
+	-ms-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+#left p:first-child { margin-top: 0; }
+#left { padding-right: 15px; }
 /*
 ########################################
 ############ ADMIN ###############
@@ -166,10 +182,17 @@ table td
 }
 table td:first-child { text-align:left }
 table tr:hover { background-image: url(overlay/noir-10.png); }
-table thead td
+table thead td,
+table td.entete
 {
 	background-image: url(overlay/noir-25.png);
 	color: white
+}
+table thead td a,
+table td.entete a
+{
+	color: white;
+	text-decoration:underline;
 }
 table td.additem
 {
@@ -185,78 +208,69 @@ table .additem a { color: white; }
 ############# FORMULAIRES ##############
 ########################################
 */
-form { width: 99% }
+form { width:99%; }
 fieldset
 {
-	border: none;
-	padding: 0;
+	border:none;
 	margin:auto;
+	padding:0;
 }
-input[type=text],
-input[type=password],
-select,
-textarea
+fieldset dd
 {
-	border: 0;
-	background-color: #CCC;
-	border: 4px solid #AAA;
-	padding: 2px;
-	position:relative;
-	bottom: 2px;
-	width: 250px;
-	font-size: 1em;
+	position:absolute;
+	right:5px;
+	top:5px;
+	z-index:50;
 }
-select { min-width: 262px; }
-.submit dd,
-.submit,
-.submit p
-{
-	position: static;
-	margin: 0;
-	padding: 0 5px;
-}
-.submit:hover { background: #EEE }
-form input[type=submit]
-{
-	width: 80%;
-	border: none;
-	font-size: 12px;
-	color: white;
-	padding: 5px;
-	text-align:center;
-	cursor:pointer;
-	margin: 10px;
-	border-bottom: 5px solid #005580;
-}
-form input[type=submit]:hover { background-image: url(overlay/blanc-25.png) }
-form input[type=submit]:active
-{
-	margin-top: 15px;
-	background-image: url(overlay/blanc-50.png);
-	border: none;
-}
-fieldset legend
-{
-	background-image: url(overlay/noir-25.png);
-	color: white;
-	letter-spacing: -1px;
-	font-size: medium;
-	padding: 5px;
-	width: 100%;
-}
-fieldset dt { margin-left: 5px; }
 fieldset dl
 {
-	background-color: #EEE;
-	color: #666;
-	margin: 0;
-	padding: 13px 5px;
-	position: relative;
-	width: 100%;
+	background-color:#EEE;
+	color:#666;
+	margin:0;
+	padding:13px 5px;
+	position:relative;
+	width:100%;
+}
+fieldset dl.actualThumb
+{
+	border:0 solid red;
+	height:180px;
+}
+fieldset dl.actualThumb a
+{
+	background:url(overlay/noir-25.png);
+	color:#FFF;
+	padding:5px 30px;
+}
+fieldset dl.actualThumb a:hover { background:url(overlay/noir-50.png); }
+fieldset dl.actualThumb a:active { background:url(overlay/noir-75.png); }
+fieldset dl.actualThumb img { margin-bottom:10px; }
+fieldset dl.actualThumb p
+{
+	background:url(overlay/noir-10.png);
+	margin:10px;
+	padding:10px 10px 15px;
+}
+fieldset dl.submit dd,
+fieldset dl.submit.submit,
+fieldset dl.submit.submit p
+{
+	margin:0;
+	padding:0 5px;
+	position:static;
+}
+fieldset dl.submit.submit:hover { background:#EEE; }
+fieldset dl.textarea { height:200px; }
+fieldset dl.textarea dd { width:60%; }
+fieldset dl.textarea textarea
+{
+	height:190px;
+	top:4px;
+	width:97%;
 }
 fieldset dl:hover
 {
-	background-image: url(overlay/noir-10.png);
+	background-image:url(overlay/noir-10.png);
 	background-repeat:repeat;
 }
 fieldset dl:hover input[type=text],
@@ -264,29 +278,60 @@ fieldset dl:hover input[type=password],
 fieldset dl:hover select,
 fieldset dl:hover textarea
 {
-	background-color: #555;
-	border: 4px solid #999;
-	color:white;
+	background-color:#555;
+	border:4px solid #999;
+	color:#FFF;
 }
-fieldset dd
+fieldset dt { margin-left:5px; }
+fieldset label span.mandatory { color:red; }
+input[type=submit]
 {
-	position: absolute;
-	right: 5px;
-	top: 5px;
-	z-index: 50;
+	border:none;
+	border-bottom:5px solid #67714f;
+	color:#FFF;
+	cursor:pointer;
+	font-size:12px;
+	margin:10px;
+	padding:5px;
+	text-align:center;
+	width:80%;
 }
-fieldset dl.textarea textarea
+input[type=submit]:hover { background-image:url(overlay/blanc-25.png); }
+input[type=submit]:active
 {
-	width: 97%;
-	height: 190px;
-	top: 4px;
+	background-image:url(overlay/blanc-50.png);
+	border:none;
+	margin-top:15px;
 }
-fieldset dl.textarea { height: 200px; }
-fieldset dl.textarea dd { width: 60%; }
+input[type=text],
+input[type=password],
+select,
+textarea
+{
+	background-color:#CCC;
+	border:4px solid #AAA;
+	bottom:2px;
+	font-family:Open sans;
+	font-size:1em;
+	font-weight:lighter;
+	padding:2px;
+	position:relative;
+	width:250px;
+}
+legend
+{
+	background-image:url(overlay/noir-25.png);
+	color:#FFF;
+	font-size:medium;
+	letter-spacing:-1px;
+	padding:5px;
+	width:100%;
+}
+select { min-width:262px; }
 select.dateForm
 {
-	min-width: 0px;
-	width: 75px;
+	min-width:0;
+	width:75px;
 }';
 
 	sfputs('../css/styles.css', $cssFile);

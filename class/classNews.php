@@ -216,10 +216,10 @@ class getNews
 				$form->addText('titre', 'Titre de la news');
 				$form->addTextarea('contenu', 'Texte de la news');
 				if($diffText == 'Modifier' and file_exists('file/news/' .$_GET['edit']. '.jpg')) $form->insertText('
-					<dl style="height: 150px">
+					<dl class="actualThumb">
 					<dt>Supprimer la miniature actuelle</dt>
-					<dd style="text-align:center"><img src="file/timthumb.php?src=file/news/' .$_GET['edit']. '.jpg&w=125&h=125&zc=1" /><br /><br />
-					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></dd></dl>');
+					<dd style="text-align:center"><p><img src="file/timthumb.php?src=file/news/' .$_GET['edit']. '.jpg&w=125&h=125&zc=1" /><br />
+					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></p></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();
 				if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d'));
