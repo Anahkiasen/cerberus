@@ -1,84 +1,12 @@
-<?php
-if(!file_exists('../index.php'))
-{
-	include('tools/sfputs.php');
-	
-	mkdir('../css/');
-	mkdir('../include/');
-	mkdir('cache/');
-	
-$indexFile = 
-'<?php
-include_once(\'cerberus/init.php\');
-$cerberus = new Cerberus(array(\'browserSelector\', \'cssFont\', \'connectSQL\', \'Desired\'));
-
-// Page en cours
-$navigation = array();
-$desiredPage = new desired($navigation);
-list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->desired;
-
-// Connexon à la base
-if(function_exists(\'connectSQL\')) 
-	connectSQL([WEBDB]);
-	
-$thisAgent = browserSelector();
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" class="<?= $thisAgent ?>">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>[WEBSITE]</title>
-<? cssFont(array(\'Open Sans\')) ?>
-<link href="css/styles.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body>
-	<div id="global">
-		<div id="header"></div>
-		<div id="corps"></div>
-		<div id="footer">&copy;Copyright <?= date(\'Y\') ?> - [WEBSITE] - Design : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
-	</div>
-</body>
-</html>';
-
-$cssFile = 
-'@import "cerberus.css";
-
 body
 {
-	font-family: \'Open Sans\', Helvetica, Verdana, sans-serif;
+	font-family: 'Open Sans', Helvetica, Verdana, sans-serif;
 	font-size: small;
-}
-/*
-########################################
-############# STRUCTURE ################
-########################################
-*/
-#global
-{
-	margin:0 auto;
-	width:960px;
-}
-#header
-{
 
-}
-#corps
-{
-
-}
-#footer
-{
-	font-size: x-small;
-	text-align: center;
-}';
-
-$cerberus = 
-'body
-{
 	-webkit-font-smoothing: antialiased;
 	-moz-font-smoothing: antialiased;
 }
+.ie img { -ms-interpolation-mode: bicubic; }
 .admin #navbar,
 form input[type=submit],
 fieldset legend,
@@ -90,6 +18,12 @@ p.infoblock { background-color:#006699; }
 ######### BALISES COMMUNES #############
 ########################################
 */
+
+/* Liens */
+a { text-decoration: none }
+a img { border: none; }
+
+/* Paragraphes */
 p.clear { clear:both }
 p.infoblock
 {
@@ -101,6 +35,8 @@ p.infoblock
 	text-align: center;
 	padding: 5px;
 }
+
+/* Flottants */
 .float-left
 {
 	float:left;
@@ -137,6 +73,8 @@ p.infoblock
 ############ ADMIN ###############
 ########################################
 */
+
+/* Navigation */
 .admin #navbar
 {
 	text-align:center;
@@ -155,6 +93,8 @@ p.infoblock
 }
 .admin #navbar a:hover { background-image: url(overlay/blanc-25.png); }
 .admin #navbar a.hover { background-image: url(overlay/blanc-50.png); }
+
+/* Tableaux */
 .admin table .additem td
 {
 	background-image: url(overlay/blanc-25.png);
@@ -338,11 +278,4 @@ select.dateForm
 {
 	min-width:0;
 	width:75px;
-}';
-
-	sfputs('../css/styles.css', $cssFile);
-	sfputs('../css/cerberus.css', $cerberus);
-	sfputs('../index.php', $indexFile);
 }
-else echo 'Cerberus déjà déployé';
-?>

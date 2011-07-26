@@ -1,0 +1,30 @@
+@import "cerberus.css";
+
+body
+{
+	/* Body */
+}
+
+/*
+########################################
+############# STRUCTURE ################
+########################################
+*/
+#global
+{
+	margin:0 auto;
+	width:960px;
+}
+#header
+{
+
+}
+#corps
+{
+
+}
+#footer
+{
+	font-size: x-small;
+	text-align: center;
+}
