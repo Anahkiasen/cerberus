@@ -124,8 +124,14 @@ p.infoblock
 	-webkit-box-sizing:border-box;
 	box-sizing:border-box;
 }
-#left p:first-child { margin-top: 0; }
-#left { padding-right: 15px; }
+#left { padding-right: 30px; }
+.ie7 #left { padding-right: 10px; }
+
+#left p:first-child,
+#right p:first-child,
+#left h1:first-child,
+#right h1:first-child { margin-top: 0; }
+
 /*
 ########################################
 ############ ADMIN ###############
