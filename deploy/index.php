@@ -1,19 +1,41 @@
 <?php
-if(!file_exists('../index.php'))
+if(!file_exists('../../index.php'))
 {
-	include('tools/sfputs.php');
+	// Fonctions moteur
+	function copydir($source, $destination)
+	{
+		$dir = opendir($source); 
+		@mkdir($destination); 
+		
+		while(false !== ($file = readdir($dir)))
+		{
+			if(($file != '.') && ($file != '..')) 
+			{
+				if(is_dir($source. '/' .$file)) copydir($source. '/' . $file, $destination. '/' .$file); 
+				else copy($source. '/' .$file, $destination. '/' .$file); 
+			} 
+		} 
+		
+		closedir($dir); 
+	} 
+	include('../tools/sfputs.php');
 	
-	mkdir('../css/');
-	mkdir('../pages/');
-	mkdir('cache/');
+	// Cr�ation des dossiers
+	mkdir('../../css/');
+	mkdir('../../pages/');
+	mkdir('../../file/');
+	mkdir('../../pages/');
+	mkdir('../cache/');
 
-	copy('styles.css', '../css/styles.css');
-	copy('cerberus.css', '../css/cerberus.css');
-	copy('main.php', '../index.php');
-	copy('overlay/', '../css/overlay/');
-
-	sfputs('../n.htaccess', 'FileETag none');
-	sfputs('../index.php', $indexFile);
+	// D�placement des fichiers CSS et PHP
+	copy('styles.css', '../../css/styles.css');
+	copy('cerberus.css', '../../css/cerberus.css');
+	copydir('overlay', '../../css/overlay');
+	copy('timthumb.php', '../../file/timthumb.php');
+	copy('main.php', '../../index.php');
+	sfputs('../../n.htaccess', 'FileETag none');
+	
+	echo 'Cerberus correctement d&eacute;ploy&eacute;';
 }
-else echo 'Cerberus déjà déployé';
+else echo 'Cerberus d&eacute;j&agrave; d&eacute;ploy&eacute;';
 ?>
