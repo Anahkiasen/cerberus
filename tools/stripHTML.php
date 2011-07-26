@@ -1,12 +1,12 @@
 <?php
-function stripHTML($chain)
+function stripHTML($string, $remove_breaks = false) 
 {
-	$contenu = str_replace('<br />', "\n", $chain);
-	$contenu = preg_replace('#<p>(.+)</p>#isU', '$1',$contenu);
-	$contenu = preg_replace('#<em>(.+)</em>#isU', '$1', $contenu);
-	$contenu = preg_replace('#<p class="navbar">(.+)</p>#isU', '$1', $contenu);
-	$contenu = preg_replace('#<img src="(.+)" />#isU', '', $contenu);
-	$contenu = preg_replace('#<span class="(.+)">(.+)</span>#isU', '$2', $contenu);
-	return $contenu;
+	$string = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $string);
+	$string = strip_tags($string);
+
+	if($remove_breaks)
+		$string = preg_replace('/[\r\n\t ]+/', ' ', $string);
+
+	return trim($string);
 }
 ?>
