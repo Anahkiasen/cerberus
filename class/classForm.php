@@ -210,17 +210,14 @@ class form
 		$diff = isset($_GET['edit']) ? $_GET['edit'] : 'add';
 		$this->addHidden('edit', $diff);
 	}
-	function addDate($name, $label = '', $value = '--', $additionalParams = '')
+	function addDate($date = '')
 	{
-		if($value = '--') $value = date('Y-m-d');
-		$valueDate = explode('-', $value);
-		$additionalParams['class'] = 'dateForm';
+		if(empty($date)) $date = date('Y-m-d');
 		
-		$this->manualField($name);
-		$this->addSelect($name. '_jour', 31, '', '', $valueDate[2], $additionalParams);
-		$this->addSelect($name. '_mois', 12, '', '', $valueDate[1], $additionalParams);
-		$this->addSelect($name. '_annee', 15, date('Y'), '', $valueDate[0], $additionalParams);
-		$this->closeManualField();
+		$select = new select();
+		$select->newSelect('Date');
+		$select->appendList($select->liste_date($date));
+		$this->render .= $select;
 	}
 	function addHour($name, $label = '', $value = '-', $additionalParams = '')
 	{
@@ -232,19 +229,6 @@ class form
 	}
 	
 	// Raccourcis généraux
-	function addSelect($name, $option, $startingValue = '', $label= '', $value = '', $additionalParams = '')
-	{
-		$additionalParams['fin'] = ($startingValue == '') ? $option : $startingValue + $option;
-		$additionalParams['debut'] = $startingValue;
-		if($startingValue === '') $additionalParams['debut'] = 1;
-		
-		$this->addElement($label, $name, "select", $value, $additionalParams);
-	}
-	function addList($name, $array, $label = '', $value = '', $additionalParams = '')
-	{
-		$additionalParams['select'] = $array;
-		$this->addElement($label, $name, "select", $value, $additionalParams);
-	}
 	function addRadio($name, $number, $label = '', $value = '', $additionalParams = '')
 	{
 		$additionalParams['number'] = $number;
@@ -314,20 +298,28 @@ class select extends form
 	}
 	
 	// Valeur du select
-	function appendList($liste)
+	function appendList($liste, $overwrite = true)
 	{
-		$this->liste += $liste;
+		if($overwrite == true)
+		{
+			foreach($liste as $key => $value) 
+				if(!is_array($value)) $thisListe[$value] = $value;
+				else
+				{
+					foreach($value as $skey => $svalue) $newArray[$svalue] = $svalue;
+					$thisListe[$key] = $newArray;
+				}
+		}
+		else $thisListe = $liste;
+		$this->liste += $thisListe;
 	}
 	function liste_number($end, $start = 0, $step = 1)
 	{
 		return range($start, $end, $step);
 	}
-	function liste_array($list, $overwrite = false)
+	function liste_array($list)
 	{
-		if($overwrite == false) $thisArray = $list;
-		else foreach($list as $key => $value) $thisArray[$value] = $value;
-		
-		return $thisArray;
+		return $list;
 	}
 	function liste_date($date = '')
 	{
@@ -340,13 +332,13 @@ class select extends form
 		$this->name. '_mois' => $valueDate[1],
 		$this->name. '_annee' => $valueDate[0]);
 		
-		$this->liste = array(
-		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1), true),
-		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1), true),
-		$this->name. '_annee' => $this->liste_array($this->liste_number(date('Y'), (date('Y')-10)), true));
+		return array(
+		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1)),
+		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
+		$this->name. '_annee' => $this->liste_array($this->liste_number(date('Y'), (date('Y')-10))));
 	}
 	
-	// Création de la liste
+	// Création d'un <select>
 	function createSelect($name, $liste)
 	{
 		$thisValue = (empty($this->value))
@@ -369,13 +361,12 @@ class select extends form
 			
 		$this->render .= '</select>';
 	}
+	// Création du champ
 	function createElement()
 	{
 		global $index;
 			
 		$label = $this->label;
-		
-		// State Fieldset		
 		$stateField = ($this->openedManual == false 
 		and $this->formType != 'plain');
 		
