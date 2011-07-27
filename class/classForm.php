@@ -4,12 +4,12 @@ class form
 	private $render;
 	
 	// Etats
-	private $openedManual = false;
-	private $mandatory = false;
+	protected static $openedManual = false;
+	protected static $mandatory = false;
 	
 	// Options
-	private $multilangue = false;
-	private $formType = 'ilec';
+	protected static $multilangue = true;
+	protected static $formType = 'ilec';
 	
 	/* ########################################
 	####### METHODES DE CONSTRUCTION ##########
@@ -18,7 +18,8 @@ class form
 	// Construction
 	function __construct($multilangue = false, $params = '')
 	{
-		$this->multilangue = $multilangue;
+		self::$multilangue = $multilangue;
+
 		$this->render = '<form method="post"';
 		if(is_array($params) and !empty($params)) foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 		$this->render .= '>';
@@ -28,55 +29,54 @@ class form
 		$this->render .= '</form>';
 		return $this->render;
 	}
-	function setFormType($type)
+	function setStatic($variable, $value)
 	{
-		$this->formType = $type;
+		self::${$variable} = $value;
 	}
-	function getParent()
+	function getStatic($variable)
 	{
-		if(!isset($this->valuesArray)) $this->valuesArray = array();
-		return array($this->multilangue, $this->formType, $this->mandatory, $this->openedManual, $this->valuesArray);
+		return self::${$variable};
 	}
 	
 	// Fieldsets
 	function openFieldset($name, $mandatory = false)
 	{
-		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
-		$this->mandatory = $mandatory;
+		$fieldName = (self::$multilangue == false) ? $name : index('form-' .$name);
+		self::$mandatory = $mandatory;
 		
 		$this->render .= PHP_EOL. "
 		<fieldset>" .PHP_EOL. "
 			\t<legend>" .$fieldName. '</legend>';
 		
-		if($this->openedManual == true) $this->openedManual = false;
+		if(self::$openedManual == true) self::$openedManual = false;
 	}
 	function closeFieldset()
 	{
-		if($this->openedManual == true) $this->closeManualField();
+		if(self::$openedManual == true) $this->closeManualField();
 		$this->render .= PHP_EOL. '</fieldset>';
 	}
 	
 	// Champs manuels
 	function manualField($name, $full = false)
 	{
-		$fieldName = ($this->multilangue == false) ? $name : index('form-' .$name);
-		$mandatoryStar = ($this->mandatory == true)
+		$fieldName = (self::$multilangue == false) ? $name : index('form-' .$name);
+		$mandatoryStar = (self::$mandatory == true)
 			? ' <span class="mandatory">*</span>'
 			: '';
 		
-		if($this->formType != 'plain')
+		if(self::$formType != 'plain')
 		{
 			$this->render .= '<dl>';
 			if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName.$mandatoryStar. '</label></dt>';
 			$this->render .= '<dd>';
 		}
 			
-		$this->openedManual = true;
+		$this->setStatic('openedManual', true);
 	}
 	function closeManualField()
 	{
-		if($this->formType != 'plain') $this->render .= '</dd></dl>';
-		$this->openedManual = false;
+		if(self::$formType != 'plain') $this->render .= '</dd></dl>';
+		self::$openedManual = false;
 	}
 	
 	// Texte manuel
@@ -109,7 +109,7 @@ class form
 		$thisLabel = (empty($label))
 			? ucfirst($name)
 			: $label;
-		if($this->multilangue == true) $thisLabel = strtolower($thisLabel);
+		if(self::$multilangue == true) $thisLabel = strtolower($thisLabel);
 		$thisName = normalize(str_replace('-', '', $name));
 		
 		return array($thisName, $thisLabel);
@@ -133,15 +133,15 @@ class form
 		if(empty($params['$value'])) $params['value'] = $this->defineValue($params['name']);
 		
 		// State Fieldset
-		$stateField = ($this->openedManual == false 
+		$stateField = (self::$openedManual == false 
 		and $type != 'hidden' 
-		and $this->formType != 'plain');
+		and self::$formType != 'plain');
 		
 		// Ouverture du champ
 		if($stateField)
 		{
-			$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label);
-			$mandatoryStar = ($this->mandatory == true)
+			$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label);
+			$mandatoryStar = (self::$mandatory == true)
 				? ' <span class="mandatory">*</span>'
 				: '';
 	
@@ -163,8 +163,8 @@ class form
 		}
 		if($type == 'submit')
 		{
-			$fieldName = ($this->multilangue == false) ? $label : index('form-submit-' .$label);
-			if($this->formType != 'plain') $this->render .= '<p style="text-align:center"><input type="submit" value="' .$fieldName. '" /></p>';
+			$fieldName = (self::$multilangue == false) ? $label : index('form-submit-' .$label);
+			if(self::$formType != 'plain') $this->render .= '<p style="text-align:center"><input type="submit" value="' .$fieldName. '" /></p>';
 			else $this->render .= '<input type="submit" value="' .$fieldName. '" />';
 		}
 		if($type == 'textarea')
@@ -186,7 +186,7 @@ class form
 			{	
 				$this->render .= '<input type="radio" ';
 				foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
-				$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label. '-'.$i);
+				$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label. '-'.$i);
 				if(isset($_POST[$label]) && $_POST[$label] == $i) $this->render .= 'checked="checked"';
 				$this->render .= ' value="' .$i. '"> ' .$fieldName;
 			}
@@ -271,7 +271,10 @@ class select extends form
 	// Construction
 	function __construct()
 	{
-		list($this->multilangue, $this->formType, $this->mandatory, $this->openedManual, $this->valuesArray) = $this->getParent();
+		
+		if(!isset($this->valuesArray)) $this->valuesArray = array();
+		echo boolprint(parent::$multilangue);
+		//list(self::$multilangue, self::$formType, self::$mandatory, self::$openedManual, $this->valuesArray) = array(self::$multilangue, self::$formType, self::$mandatory, self::$openedManual, $this->valuesArray);
 	}
 	function __toString()
 	{
@@ -380,14 +383,14 @@ class select extends form
 		global $index;
 			
 		$label = $this->label;
-		$stateField = ($this->openedManual == false 
-		and $this->formType != 'plain');
+		$stateField = (self::$openedManual == false 
+		and self::$formType != 'plain');
 		
 		// Ouverture du champ
 		if($stateField)
 		{
-			$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label);
-			$mandatoryStar = ($this->mandatory == true)
+			$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label);
+			$mandatoryStar = (self::$mandatory == true)
 				? ' <span class="mandatory">*</span>'
 				: '';
 	

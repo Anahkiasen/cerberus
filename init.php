@@ -3,6 +3,7 @@ session_start();
 include('tools/sfputs.php');
 include('tools/getURL.php');
 include('tools/display.php');
+include('tools/boolprint.php');
 
 class Cerberus
 {
