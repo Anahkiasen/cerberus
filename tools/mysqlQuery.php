@@ -36,11 +36,11 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 	if(is_array($query))
 	{
 		$thisQuery = mysql_query($query[0]);
-		if($thisQuery) echo display($query[1]);
+		if($thisQuery and isset($query[1])) echo display($query[1]);
 		else
 		{
 			if(isset($query[2])) display($query[2]);
-			else exit(display($query[0]).mysql_error());
+			else exit(display(htmlentities($query[0])).mysql_error());
 		}
 	}
 	else 

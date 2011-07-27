@@ -107,9 +107,9 @@ class form
 	function defineNameLabel($name, $label)
 	{
 		$thisLabel = (empty($label))
-			? ucfirst($name)
+			? $name
 			: $label;
-		if(self::$multilangue == true) $thisLabel = strtolower($thisLabel);
+		if(self::$multilangue == false) $thisLabel = ucfirst($thisLabel);
 		$thisName = normalize(str_replace('-', '', $name));
 		
 		return array($thisName, $thisLabel);
@@ -270,11 +270,8 @@ class select extends form
 
 	// Construction
 	function __construct()
-	{
-		
+	{	
 		if(!isset($this->valuesArray)) $this->valuesArray = array();
-		echo boolprint(parent::$multilangue);
-		//list(self::$multilangue, self::$formType, self::$mandatory, self::$openedManual, $this->valuesArray) = array(self::$multilangue, self::$formType, self::$mandatory, self::$openedManual, $this->valuesArray);
 	}
 	function __toString()
 	{
@@ -337,7 +334,7 @@ class select extends form
 		return array(
 		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1)),
 		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
-		$this->name. '_annee' => $this->liste_array($this->liste_number(date('Y'), (date('Y')-10))));
+		$this->name. '_annee' => $this->liste_array($this->liste_number((date('Y')+10), date('Y'))));
 	}
 	function liste_heure($hour = '')
 	{

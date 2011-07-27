@@ -248,14 +248,12 @@ class AdminClass
 				if($_POST['edit'] == 'add')
 				{
 					$this->uploadImage('thumb', getLastID($this->table));
-					mysql_query('INSERT INTO ' .$this->table. ' SET ' .implode(',', $fieldsUpdate)) or die(mysql_error());
-					echo display('Objet ajouté');
+					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .implode(',', $fieldsUpdate), 'Objet ajouté'));
 				}
 				else
 				{
 					$this->uploadImage('thumb', $_POST['edit']);
-					mysql_query('UPDATE ' .$this->table. ' SET ' .implode(',', $fieldsUpdate). ' WHERE id=' .$_POST['edit']) or die(mysql_error());
-					echo display('Objet modifié');
+					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .implode(',', $fieldsUpdate). ' WHERE id=' .$_POST['edit'], 'Objet modifié'));
 				}
 			}
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
@@ -271,8 +269,7 @@ class AdminClass
 				if(file_exists('file/' .$this->table. '/thumb/' .$thisFile)) unlink('file/' .$this->table. '/thumb/' .$thisFile);
 			}
 			
-			mysql_query('DELETE FROM ' .$this->table. ' WHERE id=' .$_GET['delete']);
-			echo display('Objet supprimé');
+			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE id=' .$_GET['delete'], 'Objet supprimé'));
 		}
 	
 	}
@@ -297,7 +294,7 @@ class AdminClass
 				{
 					$futureID = getLastID($this->table. '_thumb');
 					$file = $futureID. '_' .normalize($_FILES[$field]['name']);
-					mysql_query('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$name. '", "' .$file. '")');
+					mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$name. '", "' .$file. '")'));
 				}
 				else $file = $name. '.' .$extension_upload;
 
