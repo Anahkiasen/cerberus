@@ -109,6 +109,7 @@ class form
 		$thisLabel = (empty($label))
 			? ucfirst($name)
 			: $label;
+		if($this->multilangue == true) $thisLabel = strtolower($thisLabel);
 		$thisName = normalize(str_replace('-', '', $name));
 		
 		return array($thisName, $thisLabel);
@@ -210,22 +211,19 @@ class form
 		$diff = isset($_GET['edit']) ? $_GET['edit'] : 'add';
 		$this->addHidden('edit', $diff);
 	}
-	function addDate($date = '')
+	function addDate($name = 'Date', $date = '')
 	{
-		if(empty($date)) $date = date('Y-m-d');
-		
 		$select = new select();
-		$select->newSelect('Date');
+		$select->newSelect($name);
 		$select->appendList($select->liste_date($date));
 		$this->render .= $select;
 	}
-	function addHour($name, $label = '', $value = '-', $additionalParams = '')
+	function addHour($name = 'Heure', $hour = '')
 	{
-		$valueDate = explode('-', $value);
-		$this->manualField($name);
-		$this->addSelect($name. '_hour', 10, 9, $valueDate[0], $additionalParams);
-		$this->addSelect($name. '_min', 59, 0, $valueDate[1], $additionalParams);
-		$this->closeManualField();
+		$select = new select();
+		$select->newSelect($name);
+		$select->appendList($select->liste_heure($hour));
+		$this->render .= $select;
 	}
 	
 	// Raccourcis généraux
@@ -306,6 +304,7 @@ class select extends form
 				if(!is_array($value)) $thisListe[$value] = $value;
 				else
 				{
+					unset($newArray);
 					foreach($value as $skey => $svalue) $newArray[$svalue] = $svalue;
 					$thisListe[$key] = $newArray;
 				}
@@ -336,6 +335,20 @@ class select extends form
 		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1)),
 		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
 		$this->name. '_annee' => $this->liste_array($this->liste_number(date('Y'), (date('Y')-10))));
+	}
+	function liste_heure($hour = '')
+	{
+		if(empty($hour)) $hour = '-';
+		$valueHour = explode('-', $hour);
+		$this->params['class'] = 'dateForm';
+		
+		$this->valuesArray = array(
+		$this->name. '_hour' => $valueHour[0],
+		$this->name. '_min' => $valueHour[1]);
+		
+		return array(
+		$this->name. '_hour' => $this->liste_array($this->liste_number(0, 24)),
+		$this->name. '_min' => $this->liste_array($this->liste_number(59, 0)));
 	}
 	
 	// Création d'un <select>
