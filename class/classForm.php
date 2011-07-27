@@ -12,7 +12,7 @@ class form
 	private $formType = 'ilec';
 	
 	/* ########################################
-	############## FONCTIONS MOTEUR ##########
+	####### METHODES DE CONSTRUCTION ##########
 	######################################## */
 	
 	// Construction
@@ -31,6 +31,11 @@ class form
 	function setFormType($type)
 	{
 		$this->formType = $type;
+	}
+	function getParent()
+	{
+		if(!isset($this->valuesArray)) $this->valuesArray = array();
+		return array($this->multilangue, $this->formType, $this->mandatory, $this->openedManual, $this->valuesArray);
 	}
 	
 	// Fieldsets
@@ -61,9 +66,9 @@ class form
 		
 		if($this->formType != 'plain')
 		{
-				$this->render .= '<dl>';
-				if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName.$mandatoryStar. '</label></dt>';
-				$this->render .= '<dd>';
+			$this->render .= '<dl>';
+			if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName.$mandatoryStar. '</label></dt>';
+			$this->render .= '<dd>';
 		}
 			
 		$this->openedManual = true;
@@ -88,12 +93,9 @@ class form
 	######### CREATION DE L'ELEMENT ##########
 	######################################## */
 	
-	/* fieldset
-			dl
-				dt label
-				dd input */
+	// fieldset > dl > dt label > dd input
 	
-	// Fonctions moteur
+	// Fonction moteur
 	function addElement($label, $name, $type, $value = '', $additionalParams = '')
 	{
 		$params = array("label" => $label, 'value' => $value, "type" => $type, "name" => $name);
@@ -101,22 +103,33 @@ class form
 			
 		$this->attachElement($params);
 	}
+	// Définitions
+	function defineNameLabel($name, $label)
+	{
+		$thisLabel = (empty($label))
+			? ucfirst($name)
+			: $label;
+		$thisName = normalize(str_replace('-', '', $name));
+		
+		return array($thisName, $thisLabel);
+	}
+	function defineValue($thisName)
+	{
+		if(isset($_POST[$thisName])) return stripslashes($_POST[$thisName]);
+		if(isset($this->valuesArray[$thisName])) return $this->valuesArray[$thisName];
+	}
+	
+	// -------------
+	// MOTHER METHOD
+	// -------------
 	function attachElement($params)
 	{
 		global $index;
-				
+			
+		// Définitions	
 		$type = $params['type'];
-
-		// Nom du champ
-		if(empty($params['label'])) $label = $params['name'];
-		else $label = $params['label'];
-		
-		// Variable du champ
-		$params['name'] = normalize(str_replace('-', '', $params['name']));
-		
-		// Valeur du champ
-		if(isset($_POST[$params['name']]) && empty($params['value'])) $params['value'] = stripslashes($_POST[$params['name']]);
-		if(isset($this->valuesArray[$params['name']]) && empty($params['value'])) $params['value'] = $this->valuesArray[$params['name']];
+		list($name, $label) = $this->defineNameLabel($params['name'], $params['label']);
+		if(empty($params['$value'])) $params['value'] = $this->defineValue($params['name']);
 		
 		// State Fieldset
 		$stateField = ($this->openedManual == false 
@@ -135,8 +148,6 @@ class form
 				\t<dl class=\"$type\">" .PHP_EOL;
 			if($type != "submit") $this->render .= "\t\t<dt><label for=\"$label\">$fieldName$mandatoryStar</label></dt>" .PHP_EOL;
 			$this->render .= "\t\t<dd>";
-
-			// $this->render .= PHP_EOL. "\t<dd style=\"float: none; width: 100%\">";
 		}
 		
 		// Suppression des paramètres inutiles		
@@ -184,33 +195,6 @@ class form
 			$this->render .= '<input type="file" ';
 			foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 			$this->render .= ' />';
-		}
-		if($type == 'select')
-		{
-			$options = '';
-			if(isset($params['select']))
-			{
-				foreach($params['select'] as $key => $value)
-				{
-					$options .= ($key == $params['value']) ? '<option value="' .$key. '" selected="selected">' : '<option value="' .$key. '">';
-					$options .= $value. '</option>';
-					$options .= PHP_EOL;
-				}
-			}
-			else
-			{
-				for($i = $params['debut']; $i <= $params['fin']; $i++)
-				{
-					$options .= ($i == $params['value']) ? '<option selected="selected"' : '<option ';
-					$options .= '>' .$i. '</option>';
-				}
-				unset($params['debut'], $params['fin']);
-			}
-						
-			$this->render .= '<select ';
-			unset($params['select'], $params['value']);
-			foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
-			$this->render .= '>' .$options. '</select>';
 		}
 		
 		if($stateField) $this->render .= "</dd>" .PHP_EOL. "\t</dl>";
@@ -287,5 +271,137 @@ class form
 		$this->render = str_replace('<form method' ,'<form enctype="multipart/form-data" method', $this->render);
 		$this->addElement($label, $name, "file", $value, $additionalParams);
 	}
+}
+/* #######################################
+############## CREATION SELECT ###########
+######################################## */
+class select extends form
+{
+	// Select
+	private $params = array();
+	private $liste = array();
+	private $name;
+	private $label;
+	private $value;
+		
+	private $render;
+
+	// Construction
+	function __construct()
+	{
+		list($this->multilangue, $this->formType, $this->mandatory, $this->openedManual, $this->valuesArray) = $this->getParent();
+	}
+	function __toString()
+	{
+		if(empty($this->render)) $this->createElement();
+		return $this->render;
+	}
+	function newSelect($name, $label = '')
+	{
+		$this->render = '';
+		$this->liste = 
+		$this->params = array();
+		
+		list($this->name, $this->label) = $this->defineNameLabel($name, $label);
+	}
+	function addParams($params = '')
+	{
+		$this->params += $params;
+	}
+	function setValue($value)
+	{
+		$this->value = $value;
+	}
+	
+	// Valeur du select
+	function appendList($liste)
+	{
+		$this->liste += $liste;
+	}
+	function liste_number($end, $start = 0, $step = 1)
+	{
+		return range($start, $end, $step);
+	}
+	function liste_array($list, $overwrite = false)
+	{
+		if($overwrite == false) $thisArray = $list;
+		else foreach($list as $key => $value) $thisArray[$value] = $value;
+		
+		return $thisArray;
+	}
+	function liste_date($date = '')
+	{
+		if(empty($date)) $date = date('Y-m-d');
+		$valueDate = explode('-', $date);
+		$this->params['class'] = 'dateForm';
+		
+		$this->valuesArray = array(
+		$this->name. '_jour' => $valueDate[2],
+		$this->name. '_mois' => $valueDate[1],
+		$this->name. '_annee' => $valueDate[0]);
+		
+		$this->liste = array(
+		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1), true),
+		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1), true),
+		$this->name. '_annee' => $this->liste_array($this->liste_number(date('Y'), (date('Y')-10)), true));
+	}
+	
+	// Création de la liste
+	function createSelect($name, $liste)
+	{
+		$thisValue = (empty($this->value))
+			? $this->defineValue($name)
+			: $this->value;
+
+		$this->render .= '<select name="' .$name. '" ';
+		foreach($this->params as $key => $value) $this->render .= $key. '="' .$value. '"';
+		$this->render .= '>';
+		
+		foreach($liste as $key => $value)
+		{
+			if($key == $value and $thisValue == $value) $selected = 'selected="selected"';
+			elseif($key != $value and $thisValue == $key) $selected = 'selected="selected"';
+			else $selected = '';
+			
+			if($key == $value) $this->render .= '<option ' .$selected. '>' .$value. '</option>';
+			else $this->render .= '<option value="' .$key. '" ' .$selected. '>' .$value. '</option>';
+		}
+			
+		$this->render .= '</select>';
+	}
+	function createElement()
+	{
+		global $index;
+			
+		$label = $this->label;
+		
+		// State Fieldset		
+		$stateField = ($this->openedManual == false 
+		and $this->formType != 'plain');
+		
+		// Ouverture du champ
+		if($stateField)
+		{
+			$fieldName = ($this->multilangue == false) ? $label : index('form-' .$label);
+			$mandatoryStar = ($this->mandatory == true)
+				? ' <span class="mandatory">*</span>'
+				: '';
+	
+			$this->render .= '<dl class="select">
+			<dt><label for="' .$label. '">' .$fieldName.$mandatoryStar. '</label></dt>
+			<dd>';
+		}
+		
+		// Rendu
+		$lol = array_values($this->liste);
+		if(is_array($lol[0]))
+		{
+			foreach($this->liste as $key => $value)
+				$this->createSelect($key, $value);
+		}
+		else $this->createSelect($this->name, $this->liste);
+				
+		if($stateField) $this->render .= '</dd></dl>';	
+	}	
 }
 ?>

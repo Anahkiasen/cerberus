@@ -277,5 +277,5 @@ select { min-width:262px; }
 select.dateForm
 {
 	min-width:0;
-	width:75px;
+	width:auto;
 }
