@@ -49,60 +49,63 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 	}
 	else 
 	{
-		$thisQuery = mysql_query($query) or exit(mysql_error());
-		
-		// Présence de résultats ou non
-		if(mysql_num_rows($thisQuery) != 0)
+		$thisQuery = mysql_query($query);
+		if($thisQuery)
 		{
-			// UNIQUE RESULT
-			if(mysql_num_rows($thisQuery) == 1)
+			// Présence de résultats ou non
+			if(mysql_num_rows($thisQuery) != 0)
 			{
-				$fetchAssoc = mysql_fetch_assoc($thisQuery);
-				if(count($fetchAssoc) == 1)
+				// UNIQUE RESULT
+				if(mysql_num_rows($thisQuery) == 1)
 				{
-					// UNIQUE RESULT - UNIQUE FIELD
-					if($forceArray == TRUE) return $fetchAssoc;
-					else foreach($fetchAssoc as $value) return $value;
+					$fetchAssoc = mysql_fetch_assoc($thisQuery);
+					if(count($fetchAssoc) == 1)
+					{
+						// UNIQUE RESULT - UNIQUE FIELD
+						if($forceArray == TRUE) return $fetchAssoc;
+						else foreach($fetchAssoc as $value) return $value;
+					}
+					else
+					{
+						// UNIQUE RESULT - MULTIPLE FIELDS
+						if($forceArray == TRUE) return mysqlQuery_remapArray($fetchAssoc, $cle);
+						else
+						{
+							foreach($fetchAssoc as $key => $value)
+								$returnArray[$key] = $value;
+							return $returnArray;
+						}
+					}
 				}
 				else
 				{
-					// UNIQUE RESULT - MULTIPLE FIELDS
-					if($forceArray == TRUE) return mysqlQuery_remapArray($fetchAssoc, $cle);
-					else
+					// MULTIPLE RESULTS
+					$returnArray = array();
+					while($fetchAssoc = mysql_fetch_assoc($thisQuery))
 					{
-						foreach($fetchAssoc as $key => $value)
-							$returnArray[$key] = $value;
-						return $returnArray;
-					}
-				}
-			}
-			else
-			{
-				// MULTIPLE RESULTS
-				$returnArray = array();
-				while($fetchAssoc = mysql_fetch_assoc($thisQuery))
-				{
-					if((isset($fetchAssoc[$cle]) and count($fetchAssoc) == 2) or (count($fetchAssoc) == 1))
-					{
-						// MULTIPLE RESULTS - UNIQUE FIELD
-						if($forceArray == TRUE) $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle);
-						else 
+						if((isset($fetchAssoc[$cle]) and count($fetchAssoc) == 2) or (count($fetchAssoc) == 1))
 						{
-							if(isset($fetchAssoc[$cle])) $thisKey = $fetchAssoc[$cle];
-							foreach($fetchAssoc as $key => $value)
+							// MULTIPLE RESULTS - UNIQUE FIELD
+							if($forceArray == TRUE) $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle);
+							else 
 							{
-								if(!isset($thisKey)) $thisKey = $value;
-								if($key != $cle or count($fetchAssoc) == 1) $returnArray[$thisKey] = $value;
+								if(isset($fetchAssoc[$cle])) $thisKey = $fetchAssoc[$cle];
+								foreach($fetchAssoc as $key => $value)
+								{
+									if(!isset($thisKey)) $thisKey = $value;
+									if($key != $cle or count($fetchAssoc) == 1) $returnArray[$thisKey] = $value;
+								}
 							}
 						}
+						else $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle); // MULTIPLE RESULTS - MULTIPLE FIELDS
+						unset($thisKey);
 					}
-					else $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle); // MULTIPLE RESULTS - MULTIPLE FIELDS
-					unset($thisKey);
+					return $returnArray;
 				}
-				return $returnArray;
 			}
+			else return FALSE;
 		}
-		else return FALSE;
+		else exit(display(htmlentities($query)).mysql_error());
 	}
 }
 /*
