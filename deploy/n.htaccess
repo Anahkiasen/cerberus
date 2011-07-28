@@ -1,0 +1,22 @@
+FileETag None
+
+# Expire content
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "now"
+	ExpiresByType text/css "access plus 1 years"
+	ExpiresByType text/javascript "access plus 1 years"
+	ExpiresByType application/javascript "access plus 1 years"
+	ExpiresByType application/x-javascript "access plus 1 years"
+	ExpiresByType text/ecmascript "access plus 1 years"
+	ExpiresByType image/gif "access plus 1 years
+	ExpiresByType image/png "access plus 1 years"
+	ExpiresByType image/jpeg "access plus 1 years"
+	ExpiresByType image/ico "access plus 1 years"
+	ExpiresByType image/icon "access plus 1 years"
+	ExpiresByType image/x-icon "access plus 1 years"
+	ExpiresByType video/x-flv "access plus 1 years"
+	ExpiresByType video/quicktime "access plus 1 years"
+	ExpiresByType application/x-shockwave-flash "access plus 1 years"
+	ExpiresByType application/pdf "access plus 1 years"
+</IfModule>
