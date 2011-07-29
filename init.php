@@ -134,8 +134,8 @@ class Cerberus
 		$css = $js = "\n";
 		if(isset($array['*'])) 
 		{
-			if(!is_array($array['*'])) $array['*'] = array($array['*']);
-			$renderArray = array_merge($array['*'], $array[$page]);	
+			if(!is_array($array['*'])) $array['*'] = array($array['*']);	
+			$renderArray = array_merge($array['*'], $array[$page]);
 		}
 		else $renderArray = $array[$page];
 		
@@ -151,7 +151,7 @@ class Cerberus
 			$css .= "\n";
 		}
 		
-		return array($css, $js, $array[$page]);
+		return array($css, $js, $renderArray);
 	}
 		
 	/* ########################################
