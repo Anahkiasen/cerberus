@@ -1,4 +1,23 @@
 <?php
+/*
+	Fonction createNivo
+	# Créer une galerie nivoSlider à partir d'un fichier et
+	# prépare le code JS correspondant
+	
+	@ Dépendances
+	@ timthumb
+	
+	$path
+		Chemin vers le dossier contenant les images
+	$largeur
+		Largeur de la galerie
+	$hauteur
+		Hauteur de la galerie
+	$options
+		Options nivoSlider à appliquer à la galerie
+	$shuffle
+		Mélange ou non l'ordre des images trouvées dans le dossier
+*/
 function createNivo($path, $largeur, $hauteur, $options = '', $shuffle = true)
 {
 	global $nivoSlider;
@@ -26,7 +45,10 @@ function createNivo($path, $largeur, $hauteur, $options = '', $shuffle = true)
 	$arrayImages = glob('file/' .$path. '/*.jpg');
 	if($shuffle == TRUE) shuffle($arrayImages);
 	foreach($arrayImages as $file)
-		echo '<img src="file/timthumb.php?src=' .$file. '&w=' .$largeur. '&h=' .$hauteur. '&zc=1" />';
+	{
+		$file = str_replace('file/', '', $file);
+		echo '<img src="' .timthumb($file, $largeur, $hauteur). '" />';
+	}
 	echo '</div>';
 		
 	$nivoSlider[$path] = $options;

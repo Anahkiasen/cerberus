@@ -37,8 +37,8 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		$MYSQL_MDP = $mdp;
 		$MYSQL_DB = $db;
 	}
-		mysql_connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP) or die('La connexion au serveur SQL a échoué');
-		mysql_select_db($MYSQL_DB) or die('La connexion à la base de données a échoué');
+		mysql_connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP) or die('La connexion au serveur SQL a &eacute;chou&eacute;');
+		mysql_select_db($MYSQL_DB) or die('La connexion &agrave; la base de donn&eacute;es a &eacute;chou&eacute;');
 		mysql_query("SET NAMES 'utf8'");
 }
 ?>

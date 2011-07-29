@@ -1,9 +1,5 @@
 <?php
 session_start();
-include('tools/sfputs.php');
-include('tools/getURL.php');
-include('tools/display.php');
-include('tools/boolprint.php');
 
 class Cerberus
 {
@@ -28,6 +24,8 @@ class Cerberus
 			
 	function __construct($modules, $resetMode = TRUE, $mode = 'core')
 	{
+		// Modules coeur
+		$modules = array_merge(array('sfputs', 'getURL', 'display', 'boolprint', 'timthumb'), $modules);
 		$this->resetMode = $resetMode;
 	
 		// Mode de Cerberus (core/include)	
@@ -162,7 +160,12 @@ class Cerberus
 	{
 		// Affichage des erreurs et création du fichier
 		if(!empty($this->erreurs)) foreach($this->erreurs as $value) echo $value. '<br />';
-		else sfputs('cerberus/cache/' .$this->mode. '.php', '<?php' .$this->render. '?>');
+		else
+		{
+			$thisFile = fopen('cerberus/cache/' .$this->mode. '.php', 'w+');
+			fputs($thisFile, '<?php' .$this->render. '?>');
+			fclose($thisFile);
+		}
 	}
 	
 	function inclure()

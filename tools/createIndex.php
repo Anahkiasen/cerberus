@@ -2,7 +2,9 @@
 /*
 	Fonction createIndex
 	# Créer un index multilangue
-	# Dépendances : sfputs
+	
+	@ Dépendances
+	@ sfputs
 	
 	$arrayLang
 		Array content les langues dans lesquelles créer l'index
