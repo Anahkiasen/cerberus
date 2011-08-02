@@ -237,7 +237,7 @@ class AdminClass
 			{
 				if(in_array($key, $this->fields))
 				{
-					if(!is_blank($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
+					if(empty($value) and !is_numeric($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
 					else if(!in_array($key, $facultativeFields)) $emptyFields[] = $key;
 				}
 			}
@@ -248,8 +248,8 @@ class AdminClass
 			{
 				if($_POST['edit'] == 'add')
 				{
-					$this->uploadImage('thumb', getLastID($this->table));
 					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .implode(',', $fieldsUpdate), 'Objet ajouté'));
+					$this->uploadImage('thumb', mysql_insert_id());
 				}
 				else
 				{
@@ -293,7 +293,7 @@ class AdminClass
 			{	
 				if($this->tableThumb == TRUE)
 				{
-					$futureID = getLastID($this->table. '_thumb');
+					$futureID = $name. '_thumb';
 					$file = $futureID. '_' .normalize($_FILES[$field]['name']);
 					mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$name. '", "' .$file. '")'));
 				}
