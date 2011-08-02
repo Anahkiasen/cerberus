@@ -124,7 +124,7 @@ class form
 		// Définitions	
 		$type = $params['type'];
 		list($name, $label) = $this->defineNameLabel($params['name'], $params['label']);
-		if(empty($params['$value'])) $params['value'] = $this->defineValue($params['name']);
+		if(empty($params['value'])) $params['value'] = $this->defineValue($params['name']);
 		
 		// State Fieldset
 		$stateField = (self::$openedManual == false 
