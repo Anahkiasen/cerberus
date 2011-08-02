@@ -24,7 +24,6 @@ if(!file_exists('../../index.php'))
 	mkdir('../../css/');
 	mkdir('../../pages/');
 	mkdir('../../file/');
-	mkdir('../../pages/');
 	mkdir('../cache/');
 
 	// Déplacement des fichiers CSS et PHP
