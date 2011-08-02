@@ -12,7 +12,7 @@
 */
 function truncate($string, $count = 255, $trailing = '')
 {
-	$length -= mb_strlen($trailing);
+	$count -= mb_strlen($trailing);
 	if(mb_strlen($string) > $count)  return mb_substr($string, 0, $count).$trailing;
 	else return $string;
 }

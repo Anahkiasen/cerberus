@@ -1,6 +1,8 @@
 <?php	
 class form
 {
+	public $valuesArray;
+	
 	private $render;
 	
 	// Etats
@@ -28,14 +30,6 @@ class form
 	{
 		$this->render .= '</form>';
 		return $this->render;
-	}
-	function setStatic($variable, $value)
-	{
-		self::${$variable} = $value;
-	}
-	function getStatic($variable)
-	{
-		return self::${$variable};
 	}
 	
 	// Fieldsets
@@ -71,7 +65,7 @@ class form
 			$this->render .= '<dd>';
 		}
 			
-		$this->setStatic('openedManual', true);
+		self::$openedManual = true;
 	}
 	function closeManualField()
 	{
@@ -126,7 +120,7 @@ class form
 	function attachElement($params)
 	{
 		global $index;
-			
+
 		// Définitions	
 		$type = $params['type'];
 		list($name, $label) = $this->defineNameLabel($params['name'], $params['label']);

@@ -19,7 +19,8 @@ class AdminClass
 	function __construct($arrayLang = '')
 	{
 		global $cerberus;
-		$this->url = $cerberus->url();
+		
+		$this->url = 'index.php';
 		$this->modeSQL = function_exists('connectSQL');
 		
 		if(is_array($arrayLang) and !empty($arrayLang)) 
