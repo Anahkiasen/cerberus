@@ -2,6 +2,8 @@
 // Chargement du moteur Cerberus
 include_once('cerberus/init.php');
 $cerberus = new Cerberus(array('browserSelector', 'cssFont', '[sql]', 'createIndex', 'Desired'));
+$rewriteMode = ($_SERVER['HTTP_HOST'] == 'localhost:8888') ? false : false;
+$productionMode = true;
 $index = createIndex();
 
 // Connexon à la base
@@ -10,13 +12,17 @@ if(function_exists('connectSQL'))
 
 // Arbre de navigation et page en cours
 $navigation = array();
-$desiredPage = new desired($navigation);
+$desiredPage = new desired($navigation, $rewriteMode, true);
 list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->desired;
 
 // Dispatch des fonctions et API
-$cerberus->cerberusDispatch(), $pageVoulue.$sousPageVoulue);
+$cerberus->cerberusDispatch(
+	// PAGES
+	), $pageVoulue.$sousPageVoulue);
 
-list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(), $pageVoulue.$sousPageVoulue);
+list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
+	// PAGES
+	), $pageVoulue.$sousPageVoulue);
 	
 $thisAgent = browserSelector();
 ?>
@@ -26,14 +32,19 @@ $thisAgent = browserSelector();
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>[WEBSITE]</title>
 <? cssFont(array('Open Sans')) ?>
+<?= $css ?>
+<link href="css/cerberus.css" rel="stylesheet" type="text/css" />
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
-	<div id="global">
+<body class="<?= $pageVoulue ?>">
+	<div id="main">
 		<div id="header"></div>
-		<div id="corps"></div>
+		<div id="menu"><?= $renderNav ?></div>
+		<div id="corps"><? include_once('pages/' .$pageVoulueFile) ?></div>
 		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Design : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
 	</div>
+	
+	<?= $js ?>
 </body>
 </html>

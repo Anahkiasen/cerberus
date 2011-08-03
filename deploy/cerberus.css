@@ -11,145 +11,129 @@ body
 form input[type=submit],
 fieldset legend,
 table thead td,
-table .additem { background-color: #0082b8; }
-p.infoblock { background-color:#006699; }
-/*
+table .additem,
+.mosaique { background-color:#8a976a; }
+p.infoblock { background-color:#069; }/*
 ########################################
 ######### BALISES COMMUNES #############
 ########################################
 */
-
-/* Liens */
-a { text-decoration: none }
-a img { border: none; }
-
-/* Paragraphes */
-p.clear { clear:both }
+p.clear { clear:both; }
 p.infoblock
 {
-	background-image: url(overlay/noir-50.png);
-	margin: 0;
-	margin-bottom: 10px;
-	width: 100%;
-	color: white;
-	text-align: center;
-	padding: 5px;
+	background-image:url(overlay/noir-50.png);
+	margin:0;
+	margin-bottom:10px;
+	width:100%;
+	color:#FFF;
+	text-align:center;
+	padding:5px;
 }
-
-/* Flottants */
 .float-left
 {
 	float:left;
-	margin-right: 10px;
+	margin-right:10px;
 }
 .float-right
 {
 	float:right;
-	margin-left: 10px;
+	margin-left:10px;
 }
 #left,
 #right
 {
-	margin: 10px 0;
-	width: 50%;
-	float: left;
-	text-align: justify;
-	
+	margin:10px 0;
+	width:50%;
+	float:left;
+	text-align:justify;
 	-moz-box-sizing:border-box;
 	-ms-box-sizing:border-box;
 	-webkit-box-sizing:border-box;
 	box-sizing:border-box;
 }
-#left { padding-right: 30px; }
-.ie7 #left { padding-right: 10px; }
-
+#left { padding-right:30px; }
+.ie7 #left { padding-right:10px; }
 #left p:first-child,
 #right p:first-child,
 #left h1:first-child,
-#right h1:first-child { margin-top: 0; }
-
-/*
+#right h1:first-child { margin-top:0; }/*
 ########################################
 ############ ADMIN ###############
 ########################################
 */
-
-/* Navigation */
 .admin #navbar
 {
 	text-align:center;
-	padding: 5px 0;
-	background-image: url(overlay/noir-50.png);
-	width: 100%;
-	margin: 0 auto;
+	padding:5px 0;
+	background-image:url(overlay/noir-50.png);
+	width:100%;
+	margin:0 auto;
 }
 .admin #navbar a
 {
-	padding: 5px 10px;
-	color: white;
-	filter: none;
-	text-shadow: none;
-	text-transform: uppercase;
+	padding:5px 10px;
+	color:#FFF;
+	filter:none;
+	text-shadow:none;
+	text-transform:uppercase;
 }
-.admin #navbar a:hover { background-image: url(overlay/blanc-25.png); }
-.admin #navbar a.hover { background-image: url(overlay/blanc-50.png); }
-
-/* Tableaux */
+.admin #navbar a:hover { background-image:url(overlay/blanc-25.png); }
+.admin #navbar a.hover { background-image:url(overlay/blanc-50.png); }
 .admin table .additem td
 {
-	background-image: url(overlay/blanc-25.png);
-	text-align: center;
+	background-image:url(overlay/blanc-25.png);
+	text-align:center;
 }
-.admin table .additem:hover td { background-image: url(overlay/blanc-50.png); }
-.admin table .additem td a:hover { color: white; }
-.admin #contenu table .additem td a { color: white; }
+.admin table .additem:hover td { background-image:url(overlay/blanc-50.png); }
+.admin table .additem td a:hover { color:#FFF; }
+.admin #contenu table .additem td a { color:#FFF; }
 .admin dl.textarea textarea
 {
-	width: 97%;
-	height: 290px;
-	top: 4px;
+	width:97%;
+	height:290px;
+	top:4px;
 }
-.admin dl.textarea { height: 300px; }
-.admin dl.textarea dd { width: 70%; }
-/*
+.admin dl.textarea { height:300px; }
+.admin dl.textarea dd { width:70%; }/*
 ########################################
 ############# TABLEAUX #################
 ########################################
 */
 table
 {
-	width: 100%;
-	background: #EEE;
+	width:100%;
+	background:#EEE;
 }
 table td
 {
-	padding: 3px;
+	padding:3px;
 	text-align:center;
 }
-table td:first-child { text-align:left }
-table tr:hover { background-image: url(overlay/noir-10.png); }
+table td:first-child { text-align:left; }
+table tr:hover { background-image:url(overlay/noir-10.png); }
 table thead td,
-table td.entete
+table td.entete,
+table tr.entete td
 {
-	background-image: url(overlay/noir-25.png);
-	color: white
+	background-image:url(overlay/noir-25.png);
+	color:#FFF;
 }
 table thead td a,
+table tr.entete td a,
 table td.entete a
 {
-	color: white;
+	color:#FFF;
 	text-decoration:underline;
 }
 table td.additem
 {
-	background-image: url(overlay/blanc-25.png);
+	background-image:url(overlay/blanc-25.png);
 	text-transform:uppercase;
-	padding: 3px;
+	padding:3px;
 	text-align:center;
 }
-table .additem:hover { background-image: url(overlay/blanc-50.png); }
-table .additem a { color: white; }
-/*
+table .additem:hover { background-image:url(overlay/blanc-50.png); }
+table .additem a { color:#FFF; }/*
 ########################################
 ############# FORMULAIRES ##############
 ########################################
@@ -180,7 +164,7 @@ fieldset dl
 fieldset dl.actualThumb
 {
 	border:0 solid red;
-	height:180px;
+	height:210px;
 }
 fieldset dl.actualThumb a
 {
