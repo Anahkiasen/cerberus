@@ -314,7 +314,7 @@ class AdminClass
 				}
 				elseif($storageMode == 'path')
 				{
-					$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$_GET['delete']);
+					$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$lastID);
 					if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
 					
 					$file = $lastID. '-' .md5(randomString()). '.' .$extension;
