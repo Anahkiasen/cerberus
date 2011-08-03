@@ -255,9 +255,9 @@ class AdminClass
 				if($uploadImage != NULL) $fieldsUpdate['path'] = $uploadImage;
 				
 				if($_POST['edit'] == 'add')
-					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .bddArray($fieldsUpdate), 'Objet ajouté'));
+					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate), 'Objet ajouté'));
 				else
-					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .bddArray($fieldsUpdate). ' WHERE id=' .$_POST['edit'], 'Objet modifié'));
+					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate). ' WHERE id=' .$_POST['edit'], 'Objet modifié'));
 			}
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}

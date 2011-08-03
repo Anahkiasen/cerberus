@@ -113,9 +113,10 @@ class getNews
 				: NULL;
 			$thisThumb = ($this->displayThumb == TRUE and file_exists('file/news/' .$key. '.jpg'))
 				? '<a class="colorbox" href="file/news/' .$key. '.jpg">
-				<img src="file/timthumb.php?src=file/news/' .$key. '.jpg&w=' .$this->thumbWidth. '&h=' .$this->thumbHeight. '" class="float" />
+				<img src="' .timthumb('news/' .$key. '.jpg', $this->thumbWidth, $this->thumbHeight, 1, false). '" class="float" />
 				</a>'
 				: NULL;
+				
 			$thisLink = ($this->displayLink == TRUE)
 				? $this->url. '?page=' .$this->page. '&news=' .$key
 				: '#' .$key;
@@ -218,7 +219,7 @@ class getNews
 				if($diffText == 'Modifier' and file_exists('file/news/' .$_GET['edit']. '.jpg')) $form->insertText('
 					<dl class="actualThumb">
 					<dt>Supprimer la miniature actuelle</dt>
-					<dd style="text-align:center"><p><img src="' .timthumb('news/' .$_GET['edit']. '.jpg', 125, 125). '" /><br />
+					<dd style="text-align:center"><p><img src="' .timthumb('news/' .$_GET['edit']. '.jpg', 125, 125, 1, false). '" /><br />
 					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></p></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();

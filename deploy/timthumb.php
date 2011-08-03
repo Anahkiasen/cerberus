@@ -14,7 +14,7 @@ define ('CACHE_SIZE', 1000);				// number of files to store before clearing cach
 define ('CACHE_CLEAR', 20);					// maximum number of files to delete on each cache clear
 define ('CACHE_USE', TRUE);					// use the cache files? (mostly for testing)
 define ('CACHE_MAX_AGE', 864000);			// time to cache in the browser
-define ('VERSION', '1.30');					// version number (to force a cache refresh)
+define ('VERSION', '1.34');					// version number (to force a cache refresh)
 define ('DIRECTORY_CACHE', './cache');		// cache directory
 define ('MAX_WIDTH', 1500);					// maximum image width
 define ('MAX_HEIGHT', 1500);				// maximum image height
@@ -27,10 +27,7 @@ define ('CURL_TIMEOUT', 10);				// timeout duration. Tweak as you require (lower
 $allowedSites = array (
 	'flickr.com',
 	'picasa.com',
-	'blogger.com',
-	'wordpress.com',
 	'img.youtube.com',
-	'upload.wikimedia.org',
 );
 
 // STOP MODIFYING HERE!
@@ -41,7 +38,6 @@ $src = get_request ('src', '');
 if ($src == '' || strlen ($src) <= 3) {
     display_error ('no image specified');
 }
-
 
 // clean params before use
 $src = clean_source ($src);
@@ -88,7 +84,8 @@ $zoom_crop = (int) get_request ('zc', 1);
 $quality = (int) abs (get_request ('q', 90));
 $align = get_request ('a', 'c');
 $filters = get_request ('f', '');
-$sharpen = (bool) get_request ('s', 0);
+$sharpen = (bool) get_request ('s', 1);
+$canvas_color = get_request ('cc', 'ffffff');
 
 // set default width and height if neither are set already
 if ($new_width == 0 && $new_height == 0) {
@@ -141,8 +138,16 @@ if (file_exists ($src)) {
 	$canvas = imagecreatetruecolor ($new_width, $new_height);
 	imagealphablending ($canvas, false);
 
+	if (strlen ($canvas_color) < 6) {
+		$canvas_color = 'ffffff';
+	}
+
+	$canvas_color_R = hexdec (substr ($canvas_color, 0, 2));
+	$canvas_color_G = hexdec (substr ($canvas_color, 2, 2));
+	$canvas_color_B = hexdec (substr ($canvas_color, 2, 2));
+
 	// Create a new transparent color for image
-	$color = imagecolorallocatealpha ($canvas, 0, 0, 0, 127);
+	$color = imagecolorallocatealpha ($canvas, $canvas_color_R, $canvas_color_G, $canvas_color_B, 127);
 
 	// Completely fill the background of the new image with allocated color.
 	imagefill ($canvas, 0, 0, $color);
@@ -564,7 +569,8 @@ function get_file_type ($extension) {
 			return 'png';
 			
 		case 'jpg':
-			return 'jpg';
+		case 'jpeg':
+			return 'jpeg';
 			
 		default:
 			display_error ('file type not found : ' . $extension);
@@ -616,10 +622,9 @@ function check_external ($src) {
 	global $allowedSites;
 
 	// work out file details
-	$file_details = pathinfo ($src);
 	$filename = 'external_' . md5 ($src);
-	$local_filepath = DIRECTORY_CACHE . '/' . $filename . '.' . $file_details['extension'];
-
+	$local_filepath = DIRECTORY_CACHE . '/' . $filename;
+	
 	// only do this stuff the file doesn't already exist
 	if (!file_exists ($local_filepath)) {
 
@@ -635,17 +640,13 @@ function check_external ($src) {
 				display_error ('source filename invalid');
 			}			
 
-			// convert youtube video urls
-			// need to tidy up the code
-
-			if ($url_info['host'] == 'www.youtube.com' || $url_info['host'] == 'youtube.com') {
-				parse_str ($url_info['query']);
-
-				if (isset ($v)) {
-					$src = 'http://img.youtube.com/vi/' . $v . '/0.jpg';
-					$url_info['host'] = 'img.youtube.com';
-				}
+			if (($url_info['host'] == 'www.youtube.com' || $url_info['host'] == 'youtube.com') && preg_match ('/v=([^&]+)/i', $url_info['query'], $matches)) {
+				$v = $matches[1];
+				$src = 'http://img.youtube.com/vi/' . $v . '/0.jpg';
+				$url_info['host'] = 'img.youtube.com';
 			}
+			
+			$isAllowedSite = false;
 
 			// check allowed sites (if required)
 			if (ALLOW_EXTERNAL) {
@@ -654,9 +655,8 @@ function check_external ($src) {
 
 			} else {
 
-				$isAllowedSite = false;
 				foreach ($allowedSites as $site) {
-					if (strpos (strtolower ($url_info['host']), $site) !== false) {
+					if (preg_match ('/(?:^|\.)' . $site . '$/i', $url_info['host'])) {
 						$isAllowedSite = true;
 					}
 				}
@@ -691,6 +691,16 @@ function check_external ($src) {
 
 					curl_close ($ch);
 					fclose ($fh);
+					
+					// check it's actually an image
+					$file_infos = getimagesize ($local_filepath);
+
+					// no mime type or invalid mime type
+					if (empty ($file_infos['mime']) || !preg_match ("/jpg|jpeg|gif|png/i", $file_infos['mime'])) {
+						unlink ($local_filepath);
+						touch ($local_filepath);
+						display_error ('remote file not a valid image');
+					}					
 
                 } else {
 
@@ -847,7 +857,6 @@ function display_error ($errorString = '') {
     header ('HTTP/1.1 400 Bad Request');
 	echo '<pre>' . htmlentities ($errorString);
 	echo '<br />Query String : ' . htmlentities ($_SERVER['QUERY_STRING']);
-	echo '<br />TimThumb version : ' . VERSION . '</pre>';
     die ();
 
 }
