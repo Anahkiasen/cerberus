@@ -265,7 +265,7 @@ class AdminClass
 		if(isset($_GET['delete']))
 		{
 			$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$_GET['delete']);
-			if($path) unlink('file/' .$this->table. '/' .$path);
+			if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
 			else
 			{
 				$picExtension = array('jpg', 'jpeg', 'gif', 'png');
@@ -314,8 +314,9 @@ class AdminClass
 				}
 				elseif($storageMode == 'path')
 				{
-					$oldPicture = 'file/' .$this->table. '/' .mysqlQuery('SELECT path FROM ' .$this->table. ' WHERE id=' .$lastID);
-					if(file_exists($oldPicture)) unlink($oldPicture);
+					$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$_GET['delete']);
+					if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
+					
 					$file = $lastID. '-' .md5(randomString()). '.' .$extension;
 				}
 				else $file = $lastID. '.' .$extension;
