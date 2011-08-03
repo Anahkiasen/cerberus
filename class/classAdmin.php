@@ -212,6 +212,10 @@ class AdminClass
 			
 		return $post;
 	}
+	function is_blank($value) 
+	{
+		return empty($value) && !is_numeric($value);
+	}
 	
 	/* ########################################
 	########TRAITEMENT DES DONNEES ###########
@@ -219,10 +223,11 @@ class AdminClass
 	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
-		$this->thisPage = '' .$this->url. '?page=admin&admin=' .$_GET['admin'];
+		$this->thisPage = $this->url. '?page=admin&admin=' .$_GET['admin'];
 				
 		// Champs facultatifs
-		if(isset($facultativeFields) and !empty($facultativeFields)) if(!is_array($facultativeFields)) $facultativeFields = array($facultativeFields);
+		if(isset($facultativeFields) and !empty($facultativeFields) and !is_array($facultativeFields))
+			$facultativeFields = array($facultativeFields);
 		
 		// Récupération du nom des champs
 		$querySQL = mysql_query('SHOW COLUMNS FROM ' .$table);
@@ -232,76 +237,100 @@ class AdminClass
 		if(isset($_POST['edit'])) 
 		{
 			// Vérification des champs disponibles
-			$emptyFields = '';
+			$emptyFields = array();
+			if($this->multilangue == TRUE) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
 			foreach($_POST as $key => $value)
 			{
 				if(in_array($key, $this->fields))
 				{
-					if(empty($value) and !is_numeric($value)) $fieldsUpdate[] = $key. '="' .bdd($value). '"';
+					if(!$this->is_blank($value)) $fieldsUpdate[$key] = $value;
 					else if(!in_array($key, $facultativeFields)) $emptyFields[] = $key;
 				}
 			}
-			if($this->multilangue == TRUE) $fieldsUpdate[] = 'langue="' .$_SESSION['admin']['langue']. '"';
 		
 			// Execution de la requête
-			if($emptyFields == '')
-			{
+			if(empty($emptyFields))
+			{		
+				$uploadImage = $this->uploadImage();
+				if($uploadImage != NULL) $fieldsUpdate['path'] = $uploadImage;
+				
 				if($_POST['edit'] == 'add')
-				{
-					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .implode(',', $fieldsUpdate), 'Objet ajouté'));
-					$this->uploadImage('thumb', mysql_insert_id());
-				}
+					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .bddArray($fieldsUpdate), 'Objet ajouté'));
 				else
-				{
-					$this->uploadImage('thumb', $_POST['edit']);
-					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .implode(',', $fieldsUpdate). ' WHERE id=' .$_POST['edit'], 'Objet modifié'));
-				}
+					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .bddArray($fieldsUpdate). ' WHERE id=' .$_POST['edit'], 'Objet modifié'));
 			}
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
 		// SUPPRESSION
 		if(isset($_GET['delete']))
 		{
-			$picExtension = array('jpg', 'jpeg', 'gif', 'png');
-			foreach($picExtension as $value)
+			$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$_GET['delete']);
+			if($path) unlink('file/' .$this->table. '/' .$path);
+			else
 			{
-				$thisFile = $_GET['delete']. '.' .$value;
-				if(file_exists('file/' .$this->table. '/' .$thisFile)) unlink('file/' .$this->table. '/' .$thisFile);
-				if(file_exists('file/' .$this->table. '/thumb/' .$thisFile)) unlink('file/' .$this->table. '/thumb/' .$thisFile);
+				$picExtension = array('jpg', 'jpeg', 'gif', 'png');
+				foreach($picExtension as $value)
+				{
+					$thisFile = $_GET['delete']. '.' .$value;
+					if(file_exists('file/' .$this->table. '/' .$thisFile)) unlink('file/' .$this->table. '/' .$thisFile);
+				}
 			}
-			
+						
 			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE id=' .$_GET['delete'], 'Objet supprimé'));
-		}
-	
+		}	
 	}
 	
 	/* ########################################
 	############### ENVOI D'IMAGES ###########
 	######################################## */
-	function uploadImage($field, $name)
+	function uploadImage($field = 'thumb')
 	{
-		if(!isset($this->tableThumb)) $this->tableThumb = (in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES')));
-	
 		if(isset($_FILES[$field]['name']))
 		{
-			$fileErreur = '';
-			$extension_upload = strtolower(substr(strrchr($_FILES[$field]['name'], '.'), 1));
-			if($_FILES[$field]['error'] != 0) $fileErreur .= '<br />Une erreur est survenue lors du transfert.';
-			if(!in_array($extension_upload, array('jpeg', 'jpg', 'gif', 'png'))) $fileErreur .= 'L\'extension du fichier n\'est pas valide';
-					
-			if($fileErreur == '')
-			{	
-				if($this->tableThumb == TRUE)
-				{
-					$futureID = $name. '_thumb';
-					$file = $futureID. '_' .normalize($_FILES[$field]['name']);
-					mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$name. '", "' .$file. '")'));
-				}
-				else $file = $name. '.' .$extension_upload;
+			// Mode de sauvegarde de l'image
+			if(in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES'))) $storageMode = 'table';
+			elseif(array_key_exists('path', mysqlQuery('SHOW COLUMNS FROM ' .$this->table))) $storageMode = 'path';
+			else $storageMode = 'id';
 
+			// Erreurs basiques
+			$errorDisplay = '';
+			$extension = strtolower(substr(strrchr($_FILES[$field]['name'], '.'), 1));
+			if($_FILES[$field]['error'] != 0) $errorDisplay = 'Une erreur est survenue lors du transfert.';
+			if(!in_array($extension, array('jpeg', 'jpg', 'gif', 'png'))) $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
+					
+			// Si aucune erreur
+			if(empty($errorDisplay))
+			{	
+				$autoIncrement = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$this->table. '"'));
+				$lastID = ($_POST['edit'] == 'add')
+					? $autoIncrement['Auto_increment']
+					: $_POST['edit'];
+			
+				if($storageMode == 'table')
+				{
+					$file = explode('.', $_FILES[$field]['name']);
+					$file = normalize($file[0]). '-' .md5(randomString()). '.' .$extension;
+					mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$lastID. '", "' .$file. '")'));
+				}
+				elseif($storageMode == 'path')
+				{
+					$oldPicture = 'file/' .$this->table. '/' .mysqlQuery('SELECT path FROM ' .$this->table. ' WHERE id=' .$lastID);
+					if(file_exists($oldPicture)) unlink($oldPicture);
+					$file = $lastID. '-' .md5(randomString()). '.' .$extension;
+				}
+				else $file = $lastID. '.' .$extension;
+				
+				// Sauvegarde de l'image
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'file/' .$this->table. '/' .$file);
-				if($resultat) echo display('Image ajoutée au serveur');
+				if($resultat)
+				{
+					echo display('Image ajoutée au serveur');
+					if($storageMode == 'path') return $file;
+					else return NULL;
+				}
+				else echo display('Une erreur est survenue lors du transfert.');
 			}
+			else echo display($errorDisplay);
 		}
 	}
 }

@@ -19,6 +19,15 @@ function bdd($string)
 	}
 	return $string;
 }
+function bddArray($array)
+{
+	if(is_array($array))
+	{
+		$plainedArray = array();
+		foreach($array as $key => $value) $plainedArray[] = $key. '="' .bdd($value). '"';
+		return implode(',', $plainedArray);
+	}
+}
 function html($string)
 {
 	$string = htmlspecialchars($string);

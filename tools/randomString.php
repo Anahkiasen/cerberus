@@ -1,5 +1,5 @@
 <?php
-function randomString($length)
+function randomString($length = 15)
 {
 	$password = '';
 	$possible = '0123456789abcdfghjkmnpqrstvwxyzABCDFGHJKLMNPQRSTVWXYZ'; 
