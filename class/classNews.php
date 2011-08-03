@@ -70,6 +70,15 @@ class getNews
 			$this->newsStart = ($this->currentPage - 1) * $this->newsNumber;
 		}
 	}
+	function setTruncate($truncate, $mode)
+	{
+		if($truncate == true)
+		{
+			$this->displayLink = TRUE;
+			$this->truncateNews = $mode;
+		}
+		else $this->truncateNews = FALSE;
+	}
 	
 	/* 
 	###############################
@@ -122,8 +131,8 @@ class getNews
 				: '#' .$key;
 			
 			// News
-			$contenu = nl2br(html($value['contenu']));
-			if($this->displayLink == TRUE) $contenu = truncate($contenu, 1, 'sentence', '[...]');
+			if($this->truncateNews != FALSE) $contenu = truncate($value['contenu'], $this->truncateNews[0], $this->truncateNews[1], ' [...]');
+			$contenu = nl2br(html($contenu));
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
