@@ -122,10 +122,13 @@ class getNews
 				: '#' .$key;
 			
 			// News
+			$contenu = nl2br(html($value['contenu']));
+			if($this->displayLink == TRUE) $contenu = truncate($contenu, 1, 'sentence', '[...]');
+			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
 				<h2><a href="' .$thisLink. '">' .html($value['titre']). '</a>' .$thisDate. '</h2>
-				<p class="contenu">' .$thisThumb.nl2br(html($value['contenu'])). '</p>
+				<p class="contenu">' .$thisThumb.$contenu. '</p>
 				<p class="clear">&nbsp;</p>
 			</div>';
 		}

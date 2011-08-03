@@ -60,7 +60,8 @@ class Cerberus
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'bdd'),
 			'classAdmin' => array('Admin', 'findString', 'getURL', 'normalize', 'randomString'),
 			'classMail' => array('Mail', 'stripHTML'),
-			'classForm' => array('Form', 'normalize'));
+			'classForm' => array('Form', 'normalize'),
+			'News' => array('News', 'truncate'));
 		
 			foreach($modules as $value)
 			{

@@ -306,20 +306,25 @@ class AdminClass
 					? $autoIncrement['Auto_increment']
 					: $_POST['edit'];
 			
-				if($storageMode == 'table')
+				switch($storageMode)
 				{
-					$file = explode('.', $_FILES[$field]['name']);
-					$file = normalize($file[0]). '-' .md5(randomString()). '.' .$extension;
-					mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$lastID. '", "' .$file. '")'));
+					case 'table':
+						$file = explode('.', $_FILES[$field]['name']);
+						$file = normalize($file[0]). '-' .md5(randomString()). '.' .$extension;
+						mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$lastID. '", "' .$file. '")'));
+						break;
+						
+					case 'path':
+						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$lastID);
+						if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
+						
+						$file = $lastID. '-' .md5(randomString()). '.' .$extension;
+						break;
+						
+					default:
+						$file = $lastID. '.' .$extension;
+						break;
 				}
-				elseif($storageMode == 'path')
-				{
-					$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$lastID);
-					if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
-					
-					$file = $lastID. '-' .md5(randomString()). '.' .$extension;
-				}
-				else $file = $lastID. '.' .$extension;
 				
 				// Sauvegarde de l'image
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'file/' .$this->table. '/' .$file);
