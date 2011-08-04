@@ -223,7 +223,7 @@ class getNews
 			$urlAction = ($diffText == 'Modifier') ? 'edit=' .$_GET['edit'] : 'add';
 		
 			$form = new form(false, array('action' => $this->url. '?page=admin&admin=news&' .$urlAction));
-			$form->valuesArray = $newsAdmin->formValues();
+			$form->getValues($newsAdmin->getFieldsTable());
 			
 			$form->openFieldset($diffText. ' une news');
 				$form->addText('titre', 'Titre de la news');

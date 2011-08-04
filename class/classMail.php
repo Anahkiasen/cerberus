@@ -14,18 +14,15 @@ class sendMail
 	private $expediteurAlias;
 	private $expediteurMail;
 	
-	private $endReturn = TRUE;
-	
 	// Barrières
 	private $boundary;
 	private $boundary_alt;
 	
 	// Constructeur
-	function __construct($destinataire, $sujet, $contenu, $endReturn = TRUE)
+	function __construct($destinataire, $sujet, $contenu)
 	{
 		$this->destinataire = $destinataire;
 		$this->sujet = $sujet;
-		$this->endReturn = $endReturn;
 		
 		// Formulaire ou texte
 		if(is_array($contenu))
@@ -109,7 +106,7 @@ class sendMail
 		}
 		
 		// Pièce jointe
-		if($this->attachement and TRUE == FALSE)
+		/*if($this->attachement and TRUE == FALSE)
 		{
 			$message .= "\r\n--".$this->boundary. "\r\n";
 			$data = chunk_split(base64_encode(file_get_contents($attachement)));
@@ -122,15 +119,17 @@ class sendMail
 			Content-Disposition: attachment\r\n\r\n";
 			$message .= $data;
 			$message .= "\r\n--".$this->boundary. "\r\n";
-		}
+		}*/
 		$message .= "\n--".$this->boundary_alt."--";
 		
-		if(mail($this->destinataire, $this->sujet, $message, $header))
-		{
-			if($this->endReturn == false) echo display('Votre message a bien été envoyé');
-			return true;
-		}
+		if(mail($this->destinataire, $this->sujet, $message, $header)) return true;
 		else return false;
+	}
+	
+	function __toString()
+	{
+		if($this->send()) echo display('Votre message a bien été envoyé');
+		else echo display('Une erreur est survenue durant l\'envoi du message');
 	}
 }
 ?>

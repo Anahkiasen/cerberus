@@ -30,6 +30,10 @@ class AdminClass
 		}
 		else $this->multilangue = FALSE;
 	}
+	function getFieldsTable()
+	{
+		return array($this->fields, $this->table);
+	}
 	
 	/* ########################################
 	############### NAVIGATION ###############

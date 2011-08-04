@@ -90,6 +90,6 @@ function index($string, $langue = '')
 		: $langue;
 		
 	if(isset($index[$langueIndex][$string]) && !empty($index[$langueIndex][$string])) return $index[$langueIndex][$string];
-	else return '<span style="color:red">[TERME ' .$string. ' MANQUANT]</span>';
+	else return '<span style="color:red">[' .$string. '(' .$langueIndex. ')]</span>';
 }
 ?>

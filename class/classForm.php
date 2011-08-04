@@ -1,9 +1,8 @@
 <?php	
 class form
-{
-	public $valuesArray;
-	
+{	
 	private $render;
+	protected static $valuesArray;
 	
 	// Etats
 	protected static $openedManual = false;
@@ -30,6 +29,20 @@ class form
 	{
 		$this->render .= '</form>';
 		return $this->render;
+	}
+	function getValues($fieldsTable)
+	{
+		if(isset($_GET['edit']) and isset($fieldsTable[1]))
+		{
+			$modif = mysql_fetch_assoc(mysql_query('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE id=' .$_GET['edit']));
+			foreach($fieldsTable[0] as $value) $post[$value] = html($modif[$value]); 
+		}
+		else foreach($fieldsTable[0] as $value) $post[$value] = '';
+		
+		if(isset($_POST)) foreach($fieldsTable[0] as $value)
+			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = html($_POST[$value]);
+			
+		self::$valuesArray = $post;
 	}
 	
 	// Fieldsets
@@ -111,7 +124,7 @@ class form
 	function defineValue($thisName)
 	{
 		if(isset($_POST[$thisName])) return stripslashes($_POST[$thisName]);
-		if(isset($this->valuesArray[$thisName])) return $this->valuesArray[$thisName];
+		if(isset(self::$valuesArray[$thisName])) return self::$valuesArray[$thisName];
 	}
 	
 	// -------------
@@ -265,7 +278,7 @@ class select extends form
 	// Construction
 	function __construct()
 	{	
-		if(!isset($this->valuesArray)) $this->valuesArray = array();
+		if(!isset(self::$valuesArray)) self::$valuesArray = array();
 	}
 	function __toString()
 	{
@@ -320,7 +333,7 @@ class select extends form
 		$valueDate = explode('-', $date);
 		$this->params['class'] = 'dateForm';
 		
-		$this->valuesArray = array(
+		self::$valuesArray = array(
 		$this->name. '_jour' => $valueDate[2],
 		$this->name. '_mois' => $valueDate[1],
 		$this->name. '_annee' => $valueDate[0]);
@@ -336,7 +349,7 @@ class select extends form
 		$valueHour = explode('-', $hour);
 		$this->params['class'] = 'dateForm';
 		
-		$this->valuesArray = array(
+		self::$valuesArray = array(
 		$this->name. '_hour' => $valueHour[0],
 		$this->name. '_min' => $valueHour[1]);
 		
