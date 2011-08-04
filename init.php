@@ -60,7 +60,7 @@ class Cerberus
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'bdd'),
 			'classAdmin' => array('Admin', 'findString', 'getURL', 'normalize', 'randomString'),
 			'classMail' => array('Mail', 'findString', 'stripHTML'),
-			'classForm' => array('Form', 'normalize'),
+			'classForm' => array('Form', 'checkString', 'normalize'),
 			'News' => array('News', 'truncate'));
 		
 			foreach($modules as $value)
@@ -86,7 +86,7 @@ class Cerberus
 			if(!function_exists($module))
 				$thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
 		}
-		elseif(file_exists('cerberus/class/class' .$module. '.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/class' .$module. '.php');
+		elseif(file_exists('cerberus/class/' .$module. '.class.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/' .$module. '.class.php');
 		else $this->erreurs[] = 'Module ' .$module. ' non existant.';
 		
 		// Traitement de la fonction obtenue

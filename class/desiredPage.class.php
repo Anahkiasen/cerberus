@@ -53,7 +53,7 @@ class desiredPage
 			if($this->options == 'TRUEFALSE') $this->allowedPages = $navigation; // TRUEFALSE est le seul cas où $allowed n'est pas $key
 			if(in_array($_GET['page'], $this->allowedPages)) $this->page = $_GET['page'];
 		}
-		if($this->optionSubnav)
+		if($this->optionSubnav and !empty($navigation[$this->page]))
 		{
 			$this->pageSub = (isset($_GET['pageSub']) && in_array($_GET['pageSub'], $navigation[$this->page]))
 				? $_GET['pageSub']
@@ -68,8 +68,8 @@ class desiredPage
 		elseif(file_exists('pages/' .$filename. '.php')) $pageExtension = '.php';
 		else 
 		{
-			$filename = 'home';
-			if($this->optionSubnav) $pageSubString .= '-home';
+			$this->page = 'home';
+			if($this->optionSubnav) $pageSubString = '-home';
 			$pageExtension = '.php';
 		}
 		$this->filePath = $this->page.$pageSubString.$pageExtension;
@@ -106,19 +106,12 @@ class desiredPage
 	}
 	
 	// Altération des liens de la liste
-	function alterTree($key, $newLink, $tree = 'Navigation')
+	function alterTree($key, $newLink, $subTree = false)
 	{
 		$this->createTree();
-		switch($tree)
-		{
-			case 'Subnav':
-				$this->treeSubnav[$key] = $newLink;
-				break;
-				
-			default:
-				$this->treeNavigation[$key] = $newLink;
-				break;			
-		}
+		
+		$thisTree = ($subTree == true) ? 'treeSubnav' : 'treeNavigation';
+		if(isset($this->{$thisTree}[$key])) $this->{$thisTree}[$key] = $newLink;
 	}
 	
 	function render($glue = '')
@@ -148,7 +141,7 @@ class desiredPage
 				? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'
 				: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
 		}
-		$this->renderSubnav = ($this->optionListed)
+		$this->renderSubnav = ($this->optionListedSub)
 			? '<ul>' .implode($glue, $keys). '</ul>'
 			: implode($glue, $keys);
 
