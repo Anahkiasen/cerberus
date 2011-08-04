@@ -59,7 +59,7 @@ class Cerberus
 			$packages = array(
 			'[sql]' => array('connectSQL', 'mysqlQuery', 'bdd'),
 			'classAdmin' => array('Admin', 'findString', 'getURL', 'normalize', 'randomString'),
-			'classMail' => array('Mail', 'stripHTML'),
+			'classMail' => array('Mail', 'findString', 'stripHTML'),
 			'classForm' => array('Form', 'normalize'),
 			'News' => array('News', 'truncate'));
 		

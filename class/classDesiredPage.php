@@ -37,6 +37,9 @@ class desiredPage
 	{
 		global $index;
 		
+		if($_SERVER['HTTP_HOST'] != 'localhost:8888') unset($navigation['admin']);
+		else $this->optionRewrite = false;
+		
 		// Définition du mode
 		$this->cacheTree = $navigation;
 		$this->allowedPages = array_keys($navigation);
@@ -118,7 +121,7 @@ class desiredPage
 		}
 	}
 	
-	function render()
+	function render($glue = '')
 	{
 		$this->createTree();
 
@@ -132,8 +135,8 @@ class desiredPage
 				: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
 		}
 		$this->renderNavigation = ($this->optionListed)
-			? '<ul>' .implode('', $keys). '</ul>'
-			: implode('', $keys);
+			? '<ul>' .implode($glue, $keys). '</ul>'
+			: implode($glue, $keys);
 			unset($keys);
 		
 		// Sous-navigation
@@ -146,8 +149,8 @@ class desiredPage
 				: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
 		}
 		$this->renderSubnav = ($this->optionListed)
-			? '<ul>' .implode('', $keys). '</ul>'
-			: implode('', $keys);
+			? '<ul>' .implode($glue, $keys). '</ul>'
+			: implode($glue, $keys);
 
 		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav, $this->filePath);
 	}
