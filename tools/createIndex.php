@@ -79,7 +79,26 @@ function indexCSV($database = 'langue')
 	$renderCSV = implode("\t", $rows). "\t\n";
 	foreach($values as $key => $value) $renderCSV .= $key. "\t" .implode("\t", $value). "\t\n";
 	
+	foreach (glob('pages/text/*.html') as $filepath)
+	{
+		$filename = basename($filepath);
+		$filename = substr($filename, 0, (strlen ($filename)) - (strlen (strrchr($filename, '.'))));
+		
+		$langue = substr($filename, 0, 2);
+		$filename = str_replace($langue. '-', '', $filename);
+	
+		$htmlArray[$filename][$langue] = htmlentities(file_get_contents($filepath));
+	}
+	
+	//print_r(array_merge($values, $htmlArray));
+	//foreach($htmlArray as $key => $value) $renderCSV .= $key. "\t" .htmlentities(implode("\t", $value)). "\t\n";
+	
 	sfputs($database. '.csv', $renderCSV);
+}
+// Fonctions index
+function indexDisplay($string, $langue = '')
+{
+	echo index($string, $langue);
 }
 function index($string, $langue = '')
 {
@@ -89,7 +108,19 @@ function index($string, $langue = '')
 		? $_SESSION['langueSite']
 		: $langue;
 		
-	if(isset($index[$langueIndex][$string]) && !empty($index[$langueIndex][$string])) return $index[$langueIndex][$string];
+	if(isset($index[$langueIndex][$string]) and !empty($index[$langueIndex][$string])) return $index[$langueIndex][$string];
 	else return '<span style="color:red">[' .$string. '(' .$langueIndex. ')]</span>';
+}
+function indexHTML($path, $langue = '')
+{
+	global $index;
+	
+	$langueIndex = ($langue == '')
+		? $_SESSION['langueSite']
+		: $langue;
+		
+	$thisFile = 'pages/text/' .$langueIndex. '-' .$path. '.html';
+	if(file_exists($thisFile)) include($thisFile);
+	else echo '<span style="color:red">[' .$path. '(' .$langueIndex. ')]</span>';
 }
 ?>
