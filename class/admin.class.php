@@ -269,14 +269,14 @@ class AdminClass
 		if(isset($_GET['delete']))
 		{
 			$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$_GET['delete']);
-			if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
+			if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
 			else
 			{
 				$picExtension = array('jpg', 'jpeg', 'gif', 'png');
 				foreach($picExtension as $value)
 				{
 					$thisFile = $_GET['delete']. '.' .$value;
-					if(file_exists('file/' .$this->table. '/' .$thisFile)) unlink('file/' .$this->table. '/' .$thisFile);
+					sunlink('file/' .$this->table. '/' .$thisFile);
 				}
 			}
 						
@@ -284,7 +284,7 @@ class AdminClass
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
-			if(file_exists('file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg')) unlink('file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg');
+			sunlink('file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg');
 			echo display('Miniature supprimée');
 		}
 	}
@@ -325,8 +325,8 @@ class AdminClass
 						
 					case 'path':
 						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$lastID);
-						if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
-						if(file_exists('file/' .$this->table. '/' .$lastID. '.jpg')) unlink('file/' .$this->table. '/' .$lastID. '.jpg');
+						if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
+						sunlink('file/' .$this->table. '/' .$lastID. '.jpg');
 						$file = $lastID. '-' .md5(randomString()). '.' .$extension;
 						break;
 						
