@@ -99,38 +99,9 @@ class Cerberus
 	}
 	
 	// Répartition des fonctions entre les pages
-	function cerberusDispatch($array, $page = '')
+	function cerberusDispatch($array, $page = '', $mode = 'PHP')
 	{
-		global $pageVoulue;
-		global $sousPageVoulue;
-		
-		if(empty($page)) $page = $pageVoulue. '-' .$sousPageVoulue;
-		$explode = explode('-', $page); 
-		
-		if(isset($array[$page]))
-		{
-			if(is_array($array[$page])) $thisModules = array($array[$page]);
-			else $thisModules = $array[$page];
-			$thisSubmodules = array();
-		}
-		if(isset($array[$explode[0]]))
-		{
-			if(is_array($array[$explode[0]])) $thisSubmodules = array($array[$explode[0]]);
-			else $thisSubmodules = $array[$explode[0]];
-		}
-		
-		if(isset($thisModules))
-		{
-			$newModules = array_merge($thisModules, $thisSubmodules);
-			if(isset($this->cacheCore)) $newModules = array_values(array_diff($array[$page], $this->cacheCore));
-			
-			if(!empty($newModules)) $cerberus = new Cerberus($newModules, $this->resetMode, 'include');
-		}
-	}
-	
-	// Fonctions API
-	function cerberusAPI($array, $page)
-	{
+		// API
 		$availableAPI = array(
 		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
@@ -138,35 +109,59 @@ class Cerberus
 		'ColorBox' => 'js/jquery.colorbox-min.js',
 		'nivoSlider' => 'js/jquery.nivo.slider.pack.js');
 	
-		if(isset($array[$page])) 
-		{
-			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
-		}
-		else $array[$page] = array();
+		// Page en cours
+		global $pageVoulue;
+		global $sousPageVoulue;
 		
-		
-		// Rendu général
+		if(empty($page)) $page = $pageVoulue. '-' .$sousPageVoulue;
+		$explode = explode('-', $page); 
 		$css = $js = "\n";
+		$thisModules =
+		$thisSubmodules = array();
+		
+		if(isset($array[$page]))
+		{
+			if(!is_array($array[$page])) $thisModules = array($array[$page]);
+			else $thisModules = $array[$page];
+		}
+		if(isset($array[$explode[0]]))
+		{
+			if(!is_array($array[$explode[0]])) $thisSubmodules = array($array[$explode[0]]);
+			else $thisSubmodules = $array[$explode[0]];
+		}
 		if(isset($array['*'])) 
 		{
 			if(!is_array($array['*'])) $array['*'] = array($array['*']);	
-			$renderArray = array_merge($array['*'], $array[$page]);
+			$thisModules = array_merge($array['*'], $thisModules);
 		}
-		else $renderArray = $array[$page];
-		
-		// Rendus
-		foreach($renderArray as $value) 
+		$renderArray = array_merge($thisModules, $thisSubmodules);
+		if(isset($this->cacheCore) and $mode == 'PHP') $renderArray = array_values(array_diff($renderArray, $this->cacheCore));
+				
+		// Traitement des modules
+		if(!empty($renderArray))
 		{
-			$thisScript = strtolower($value);
-			if(isset($availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
-			else $js .= '<script type="text/javascript" src="js/' .$value. '.js"></script>';
-			
-			if(file_exists('css/' .$thisScript. '.css')) $css .= '<link href="css/' .$thisScript. '.css" rel="stylesheet" type="text/css" />';
-			$js .= "\n";
-			$css .= "\n";
-		}
+			if($mode == 'API')
+			{
+				foreach($renderArray as $value) 
+				{
+					$thisScript = strtolower($value);
+					if(isset($availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+					else $js .= '<script type="text/javascript" src="js/' .$value. '.js"></script>';
+					
+					if(file_exists('css/' .$thisScript. '.css')) $css .= '<link href="css/' .$thisScript. '.css" rel="stylesheet" type="text/css" />';
+					$js .= "\n";
+					$css .= "\n";
+				}
 		
-		return array($css, $js, $renderArray);
+				return array($css, $js, $renderArray);
+			}
+			else $cerberus = new Cerberus($renderArray, $this->resetMode, 'include');
+		}
+	}
+	
+	function cerberusAPI($array, $page = '')
+	{
+		return $this->cerberusDispatch($array, $page, 'API');
 	}
 		
 	/* ########################################

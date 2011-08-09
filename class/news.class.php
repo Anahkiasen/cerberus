@@ -90,7 +90,7 @@ class getNews
 		if(!empty($id))
 		{
 			$queryNews = mysqlQuery('
-			SELECT id, titre, date, contenu
+			SELECT id, titre, date, contenu, path
 			FROM ' .$this->table. '
 			WHERE id=' .$id);
 	
@@ -103,7 +103,7 @@ class getNews
 				: $this->newsStart. ',' .$this->newsNumber;
 		
 			$news = mysqlQuery('
-			SELECT id, titre, date, contenu
+			SELECT id, titre, date, contenu, path
 			FROM ' .$this->table. '
 			ORDER BY ' .$this->newsOrder. ' DESC
 			LIMIT ' .$limit,
@@ -120,9 +120,9 @@ class getNews
 			$thisDate = ($this->displayDate == TRUE)
 				? '<br /><p class="date">' .$value['date']. '</p>'
 				: NULL;
-			$thisThumb = ($this->displayThumb == TRUE and file_exists('file/news/' .$key. '.jpg'))
-				? '<a class="colorbox" href="file/news/' .$key. '.jpg">
-				<img src="' .timthumb('news/' .$key. '.jpg', $this->thumbWidth, $this->thumbHeight, 1, false). '" class="float" />
+			$thisThumb = ($this->displayThumb == TRUE and !empty($value['path']) and file_exists('file/news/' .$value['path']))
+				? '<a class="colorbox" href="file/news/' .$value['path']. '">
+				<img src="' .timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1, false). '" class="float" />
 				</a>'
 				: NULL;
 				
@@ -214,19 +214,29 @@ class getNews
 		if(isset($_GET['add']) || isset($_GET['edit']))
 		{	
 			// Paramètres ajout/modif
-			$diffText = (isset($_GET['edit'])) ? 'Modifier' : 'Ajouter';
-			$urlAction = ($diffText == 'Modifier') ? 'edit=' .$_GET['edit'] : 'add';
-		
+			if(isset($_GET['edit']))
+			{
+				$diffText = 'Modifier';
+				$urlAction = 'edit=' .$_GET['edit'];
+				$path = mysqlQuery('SELECT path FROM news WHERE id=' .$_GET['edit']);			
+			}
+			else
+			{
+				$diffText = 'Ajouter';
+				$urlAction = 'add';
+				$path = 'null';
+			}
+	
 			$form = new form(false, array('action' => $this->url. '?page=admin&admin=news&' .$urlAction));
 			$form->getValues($newsAdmin->getFieldsTable());
 			
 			$form->openFieldset($diffText. ' une news');
 				$form->addText('titre', 'Titre de la news');
 				$form->addTextarea('contenu', 'Texte de la news');
-				if($diffText == 'Modifier' and file_exists('file/news/' .$_GET['edit']. '.jpg')) $form->insertText('
+				if(file_exists('file/news/' .$path)) $form->insertText('
 					<dl class="actualThumb">
 					<dt>Supprimer la miniature actuelle</dt>
-					<dd style="text-align:center"><p><img src="' .timthumb('news/' .$_GET['edit']. '.jpg', 125, 125, 1, false). '" /><br />
+					<dd style="text-align:center"><p><img src="' .timthumb('news/' .$path, 125, 125, 1, false). '" /><br />
 					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></p></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();

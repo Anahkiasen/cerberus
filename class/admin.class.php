@@ -40,7 +40,7 @@ class AdminClass
 	######################################## */
 	function admin_navigation($navigation)
 	{
-		echo '<div id="navbar" style="position:relative">';
+		echo '<div class="navbar" style="position:relative">';
 		
 		if($this->multilangue)
 		{
@@ -326,7 +326,7 @@ class AdminClass
 					case 'path':
 						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$lastID);
 						if(isset($path) and !empty($path)) unlink('file/' .$this->table. '/' .$path);
-						
+						if(file_exists('file/' .$this->table. '/' .$lastID. '.jpg')) unlink('file/' .$this->table. '/' .$lastID. '.jpg');
 						$file = $lastID. '-' .md5(randomString()). '.' .$extension;
 						break;
 						

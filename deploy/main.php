@@ -20,7 +20,7 @@ $cerberus->cerberusDispatch(array(
 	));
 
 list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
-	), $pageVoulue.$sousPageVoulue);
+	));
 	
 $thisAgent = browserSelector();
 ?>
