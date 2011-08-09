@@ -282,6 +282,11 @@ class AdminClass
 						
 			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE id=' .$_GET['delete'], 'Objet supprimé'));
 		}	
+		if(isset($_GET['deleteThumb']))
+		{
+			if(file_exists('file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg')) unlink('file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg');
+			echo display('Miniature supprimée');
+		}
 	}
 	
 	/* ########################################
@@ -289,7 +294,7 @@ class AdminClass
 	######################################## */
 	function uploadImage($field = 'thumb')
 	{
-		if(isset($_FILES[$field]['name']))
+		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
 			// Mode de sauvegarde de l'image
 			if(in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES'))) $storageMode = 'table';

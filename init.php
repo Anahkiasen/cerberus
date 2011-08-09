@@ -61,7 +61,7 @@ class Cerberus
 			'classAdmin' => array('Admin', 'findString', 'getURL', 'normalize', 'randomString'),
 			'classMail' => array('Mail', 'findString', 'stripHTML'),
 			'classForm' => array('Form', 'checkString', 'normalize'),
-			'News' => array('News', 'truncate'));
+			'News' => array('News', 'bbcode', 'truncate'));
 		
 			foreach($modules as $value)
 			{
@@ -99,14 +99,30 @@ class Cerberus
 	}
 	
 	// Répartition des fonctions entre les pages
-	function cerberusDispatch($array, $page)
+	function cerberusDispatch($array, $page = '')
 	{
-		if(!empty($page) and isset($array[$page])) 
+		global $pageVoulue;
+		global $sousPageVoulue;
+		
+		if(empty($page)) $page = $pageVoulue. '-' .$sousPageVoulue;
+		$explode = explode('-', $page); 
+		
+		if(isset($array[$page]))
 		{
-			if(!is_array($array[$page])) $array[$page] = array($array[$page]);
-			
+			if(is_array($array[$page])) $thisModules = array($array[$page]);
+			else $thisModules = $array[$page];
+			$thisSubmodules = array();
+		}
+		if(isset($array[$explode[0]]))
+		{
+			if(is_array($array[$explode[0]])) $thisSubmodules = array($array[$explode[0]]);
+			else $thisSubmodules = $array[$explode[0]];
+		}
+		
+		if(isset($thisModules))
+		{
+			$newModules = array_merge($thisModules, $thisSubmodules);
 			if(isset($this->cacheCore)) $newModules = array_values(array_diff($array[$page], $this->cacheCore));
-			else $newModules = $array[$page];
 			
 			if(!empty($newModules)) $cerberus = new Cerberus($newModules, $this->resetMode, 'include');
 		}

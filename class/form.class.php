@@ -44,6 +44,10 @@ class form
 			
 		self::$valuesArray = $post;
 	}
+	function setType($type)
+	{
+		self::$formType = $type;
+	}
 	
 	// Fieldsets
 	function openFieldset($name, $mandatory = false)

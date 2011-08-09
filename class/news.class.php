@@ -131,8 +131,9 @@ class getNews
 				: '#' .$key;
 			
 			// News
-			if($this->truncateNews != FALSE) $contenu = truncate($value['contenu'], $this->truncateNews[0], $this->truncateNews[1], ' [...]');
-			$contenu = nl2br(html($contenu));
+			$contenu = $value['contenu'];
+			if($this->truncateNews != FALSE and empty($id)) $contenu = truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
+			$contenu = nl2br(bbcode(html($contenu)));
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
@@ -205,12 +206,6 @@ class getNews
 	
 	function adminNews()
 	{
-		if(isset($_GET['deleteThumb']))
-		{
-			if(file_exists('file/news/' .$_GET['deleteThumb']. '.jpg')) unlink('file/news/' .$_GET['deleteThumb']. '.jpg');
-			echo display('Miniature supprimée');
-		}
-	
 		$newsAdmin = new AdminClass();
 		$newsAdmin->setPage('news');
 		$newsAdmin->createList(array('titre', 'date'));
@@ -235,7 +230,7 @@ class getNews
 					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></p></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();
-				if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d'));
+				if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d')); 
 				$form->addSubmit($diffText);
 			$form->closeFieldset();
 			

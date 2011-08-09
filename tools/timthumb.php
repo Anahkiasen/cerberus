@@ -10,6 +10,7 @@ function timthumb($file, $width = '', $height = '', $crop = 1, $mode = '')
 		if(!empty($width)) $params['w'] = $width;
 		if(!empty($height)) $params['h'] = $height;
 		$params['zc'] = $crop;
+		$params['s'] = 1;
 		
 		return 'file/timthumb.php?src=file/' .$file. '&' .simplode('=', '&', $params);
 	}

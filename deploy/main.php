@@ -16,12 +16,10 @@ $desiredPage = new desired($navigation, $rewriteMode, true);
 list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->desired;
 
 // Dispatch des fonctions et API
-$cerberus->cerberusDispatch(
-	// PAGES
-	), $pageVoulue.$sousPageVoulue);
+$cerberus->cerberusDispatch(array(
+	));
 
 list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
-	// PAGES
 	), $pageVoulue.$sousPageVoulue);
 	
 $thisAgent = browserSelector();
