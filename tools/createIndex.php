@@ -98,7 +98,7 @@ function indexCSV($database = 'langue')
 // Fonctions index
 function indexDisplay($string, $langue = '')
 {
-	echo index($string, $langue);
+	echo display(index($string, $langue));
 }
 function index($string, $langue = '')
 {

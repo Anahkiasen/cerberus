@@ -89,12 +89,10 @@ class getNews
 	{
 		if(!empty($id))
 		{
-			$queryNews = mysqlQuery('
+			$news= mysqlQuery('
 			SELECT id, titre, date, contenu, path
 			FROM ' .$this->table. '
-			WHERE id=' .$id);
-	
-			$news[$id] = array('titre' => $queryNews['titre'], 'date' => $queryNews['date'], 'contenu' => $queryNews['contenu']);
+			WHERE id=' .$id, TRUE);
 		}
 		else
 		{
