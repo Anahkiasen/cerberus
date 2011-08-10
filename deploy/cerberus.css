@@ -5,21 +5,33 @@ body
 	-webkit-font-smoothing: antialiased;
 	-moz-font-smoothing: antialiased;
 }
+*
+{
+	-moz-box-sizing:border-box;
+	-ms-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
 .ie img { -ms-interpolation-mode: bicubic; }
 .admin #navbar,
+.navbar,
+.block,
 form input[type=submit],
 fieldset legend,
 table thead td,
 table tr.entete td,
 table .additem,
+.readmore,
 .mosaique { background-color:#8a976a; }
-p.infoblock { background-color:#069; }/*
+p.infoblock { background-color:#069; }
+/*
 ########################################
 ######### BALISES COMMUNES #############
 ########################################
 */
 p.clear { clear:both; }
-p.infoblock
+p.infoblock,
+p.readmore
 {
 	background-image:url(overlay/noir-50.png);
 	margin:0;
@@ -34,15 +46,67 @@ p.infoblock a
 	color: #FFF;
 	text-decoration: underline;
 }
+p.readmore
+{
+	clear: both;
+	width: 100%;
+	margin: 10px auto 0;
+}
+p.readmore a { color: white }
+p.readmore:hover { background-image:url(overlay/blanc-10.png); }
+p.readmore:active { background-image:url(overlay/blanc-25.png); }
+.block
+{
+	color: white;
+	padding: 10px;
+	margin-bottom: 10px;
+}
 .float-left
 {
 	float:left;
-	margin-right:10px;
+	margin-right:20px;
 }
 .float-right
 {
 	float:right;
-	margin-left:10px;
+	margin-left:20px;
+}
+/*
+########################################
+############## OPACITÉ #################
+########################################
+*/
+.opacity25
+{
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)";
+	filter: alpha(opacity=25);
+	-moz-opacity: 0.25;
+	-khtml-opacity: 0.25;
+	opacity: 0.25;
+}
+.opacity50
+{
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	-moz-opacity: 0.5;
+	-khtml-opacity: 0.5;
+	opacity: 0.5;
+}
+.opacity75
+{
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
+	filter: alpha(opacity=75);
+	-moz-opacity: 0.75;
+	-khtml-opacity: 0.75;
+	opacity: 0.75;
+}
+.opacity100
+{
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	-moz-opacity: 1;
+	-khtml-opacity: 1;
+	opacity: 1;
 }
 #left,
 #right
@@ -61,12 +125,13 @@ p.infoblock a
 #left p:first-child,
 #right p:first-child,
 #left h1:first-child,
-#right h1:first-child { margin-top:0; }/*
+#right h1:first-child { margin-top:0; }
+/*
 ########################################
 ############ ADMIN ###############
 ########################################
 */
-.admin #navbar
+.navbar
 {
 	text-align:center;
 	padding:5px 0;
@@ -74,7 +139,7 @@ p.infoblock a
 	width:100%;
 	margin:0 auto;
 }
-.admin #navbar a
+.navbar a
 {
 	padding:5px 10px;
 	color:#FFF;
@@ -82,8 +147,8 @@ p.infoblock a
 	text-shadow:none;
 	text-transform:uppercase;
 }
-.admin #navbar a:hover { background-image:url(overlay/blanc-25.png); }
-.admin #navbar a.hover { background-image:url(overlay/blanc-50.png); }
+.navbar a:hover { background-image:url(overlay/blanc-25.png); }
+.navbar a.hover { background-image:url(overlay/blanc-50.png); }
 .admin table .additem td
 {
 	background-image:url(overlay/blanc-25.png);
@@ -197,6 +262,8 @@ fieldset dl.submit.submit p
 fieldset dl.submit.submit:hover { background:#EEE; }
 fieldset dl.textarea { height:200px; }
 fieldset dl.textarea dd { width:60%; }
+#left fieldset dl.textarea dd,
+#right fieldset dl.textarea dd { width:55%; }
 fieldset dl.textarea textarea
 {
 	height:190px;
@@ -253,6 +320,12 @@ textarea
 	position:relative;
 	width:250px;
 }
+#left input[type=text],
+#left input[type=password],
+#left select,
+#right input[type=text],
+#right input[type=password],
+#right select { width: 230px; }
 legend
 {
 	background-image:url(overlay/noir-25.png);
@@ -263,7 +336,9 @@ legend
 	width:100%;
 }
 select { min-width:262px; }
-select.dateForm
+select.dateForm,
+#left select.dateForm,
+#right select.dateForm
 {
 	min-width:0;
 	width:auto;

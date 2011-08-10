@@ -132,11 +132,12 @@ class getNews
 			$contenu = $value['contenu'];
 			if($this->truncateNews != FALSE and empty($id)) $contenu = truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
 			$contenu = nl2br(bbcode(html($contenu)));
+			if($this->displayLink == TRUE and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">Lire la suite</p></a>';
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
 				<h2><a href="' .$thisLink. '">' .html($value['titre']). '</a>' .$thisDate. '</h2>
-				<p class="contenu">' .$thisThumb.$contenu. '</p>
+				<div class="contenu">' .$thisThumb.$contenu. '</div>
 				<p class="clear">&nbsp;</p>
 			</div>';
 		}
