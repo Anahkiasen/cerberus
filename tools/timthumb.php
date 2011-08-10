@@ -1,5 +1,5 @@
 <?php
-function timthumb($file, $width = '', $height = '', $crop = 1, $mode = '')
+function timthumb($file, $width = '', $height = '', $crop = 1, $mode = FALSE)
 {
 	global $productionMode;
 	if($mode === '') $mode = $productionMode;

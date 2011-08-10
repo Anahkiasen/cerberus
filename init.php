@@ -6,6 +6,8 @@ class Cerberus
 	/* ######################################
 	############### PREPARATION ############
 	######################################## */
+	
+	public $productionMode;
 
 	// Paramètres
 	private $render;
@@ -13,7 +15,6 @@ class Cerberus
 	
 	// Modes
 	private $mode;
-	private $resetMode;
 		
 	function file_get_contents_utf8($fn)
 	{
@@ -22,11 +23,11 @@ class Cerberus
 		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', TRUE));
 	}	
 			
-	function __construct($modules, $resetMode = TRUE, $mode = 'core')
+	function __construct($modules, $productionMode = FALSE, $mode = 'core')
 	{
 		// Modules coeur
 		$modules = array_merge(array('sfputs', 'simplode', 'sunlink', 'getURL', 'display', 'boolprint', 'timthumb'), $modules);
-		$this->resetMode = $resetMode;
+		$this->productionMode = $productionMode;
 	
 		// Mode de Cerberus (core/include)	
 		if($mode != 'core' and isset($_GET['page']) and !empty($_GET['page'])) $this->mode = $_GET['page'];
@@ -34,7 +35,7 @@ class Cerberus
 		else $this->mode = 'core';
 
 		// Création ou non du fichier
-		if($this->resetMode == TRUE or !file_exists('cerberus/cache/' .$this->mode. '.php'))
+		if($this->productionMode == FALSE or !file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
 			$this->loadCerberus($modules);
 			$this->generate();
@@ -155,7 +156,7 @@ class Cerberus
 		
 				return array(trim($css), trim($js), $renderArray);
 			}
-			else $cerberus = new Cerberus($renderArray, $this->resetMode, 'include');
+			else $cerberus = new Cerberus($renderArray, $this->productionMode, 'include');
 		}
 	}
 	
@@ -195,7 +196,8 @@ class Cerberus
 	}
 	function debugMode()
 	{
-		return $this->resetMode;	
+		if($_SERVER['HTTP_HOST'] == 'localhost:8888') return false;
+		else return $this->productionMode;	
 	}
 }
 ?>

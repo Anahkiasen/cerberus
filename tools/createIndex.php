@@ -29,13 +29,15 @@
 	$langue
 		Langue dans laquelle afficher le terme - par défaut celle choisie par le visiteur
 */
-function createIndex($arrayLang = array('en', 'fr'), $resetMode = TRUE, $database = 'langue')
+function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 {
+	global $productionMode;
+	
 	$index = array();
 	$filename = $database. '.php';
 	
-	if(file_exists($filename) and $resetMode == TRUE) unlink($filename); // Suppression de la version existante
-	if(file_exists($filename) and $resetMode == FALSE) include_once($filename);
+	if(file_exists($filename) and $productionMode == FALSE) unlink($filename); // Suppression de la version existante
+	if(file_exists($filename) and $productionMode == TRUE) include_once($filename);
 	else
 	{
 		// Récupération de la base de langues

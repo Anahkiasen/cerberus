@@ -2,26 +2,23 @@
 // Chargement du moteur Cerberus
 include_once('cerberus/init.php');
 $cerberus = new Cerberus(array('browserSelector', 'cssFont', '[sql]', 'createIndex', 'Desired'));
-$rewriteMode = ($_SERVER['HTTP_HOST'] == 'localhost:8888') ? false : false;
-$productionMode = true;
+$productionMode = $cerberus->debugMode();
 $index = createIndex();
-
-// Connexon à la base
-if(function_exists('connectSQL')) 
-	connectSQL([WEBDB]);
 
 // Arbre de navigation et page en cours
 $navigation = array();
-$desiredPage = new desired($navigation, $rewriteMode, true);
-list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->desired;
+$desiredPage = new desiredPage($navigation);
+list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->render();
 
 // Dispatch des fonctions et API
-$cerberus->cerberusDispatch(array(
-	));
+$cerberus->cerberusDispatch(array());
 
-list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
-	));
-	
+list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array());
+
+// Connexion SQL
+if(function_exists('connectSQL'))
+	connectSQL('localbdd');
+
 $thisAgent = browserSelector();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -40,7 +37,7 @@ $thisAgent = browserSelector();
 		<div id="header"></div>
 		<div id="menu"><?= $renderNav ?></div>
 		<div id="corps"><? include_once('pages/' .$pageVoulueFile) ?></div>
-		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Design : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
+		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Concept : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
 	</div>
 	
 	<?= $js ?>
