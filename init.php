@@ -26,7 +26,7 @@ class Cerberus
 	function __construct($modules, $productionMode = FALSE, $mode = 'core')
 	{
 		// Modules coeur
-		$modules = array_merge(array('sfputs', 'simplode', 'sunlink', 'getURL', 'display', 'boolprint', 'timthumb'), $modules);
+		$modules = array_merge(array('display', 'boolprint', 'timthumb', 'sfputs', 'simplode', 'sunlink'), $modules);
 		$this->productionMode = $productionMode;
 	
 		// Mode de Cerberus (core/include)	
@@ -58,11 +58,12 @@ class Cerberus
 			
 			// Packs
 			$packages = array(
-			'[sql]' => array('connectSQL', 'mysqlQuery', 'bdd'),
-			'classAdmin' => array('admin', 'findString', 'getURL', 'normalize', 'randomString'),
-			'classMail' => array('mail', 'findString', 'stripHTML'),
-			'classForm' => array('form', 'checkString', 'normalize'),
-			'News' => array('news', 'bbcode', 'truncate'));
+			'pack.sql' => array('connectSQL', 'mysqlQuery', 'bdd'),
+			'class.admin' => array('admin', 'findString', 'getURL', 'normalize', 'randomString'),
+			'class.desired' => array('desiredPage', 'getURL'),
+			'class.mail' => array('mail', 'findString', 'stripHTML'),
+			'class.form' => array('form', 'checkString', 'normalize'),
+			'class.news' => array('news', 'bbcode', 'getURL', 'truncate'));
 		
 			foreach($modules as $value)
 			{
@@ -192,7 +193,7 @@ class Cerberus
 
 	function url()
 	{
-		return getURL(TRUE);
+		//return getURL(TRUE);
 	}
 	function debugMode()
 	{

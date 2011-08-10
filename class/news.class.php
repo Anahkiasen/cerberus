@@ -35,7 +35,7 @@ class getNews
 	function __construct($page = 'news')
 	{
 		global $cerberus;
-		$this->url = $cerberus->url();
+		$this->url = getURL(true);
 
 		$this->page = $page;
 	}
