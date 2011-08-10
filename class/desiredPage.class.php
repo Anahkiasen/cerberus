@@ -37,8 +37,7 @@ class desiredPage
 	{
 		global $index;
 		
-		if($_SERVER['HTTP_HOST'] != 'localhost:8888') unset($navigation['admin']);
-		else $this->optionRewrite = false;
+		if($_SERVER['HTTP_HOST'] == 'localhost:8888') $this->optionRewrite = false;
 		
 		// Définition du mode
 		$this->cacheTree = $navigation;
@@ -117,6 +116,7 @@ class desiredPage
 	function render($glue = '')
 	{
 		$this->createTree();
+		if($_SERVER['HTTP_HOST'] != 'localhost:8888') unset($this->treeNavigation['admin']);
 
 		// Navigation principale
 		foreach($this->treeNavigation as $key => $value)

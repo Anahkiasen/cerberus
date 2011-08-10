@@ -28,11 +28,8 @@ function getURL($truncateDomain = false, $truncateGET = true)
 	else
 	{
 		$pageName = explode('/', $_SERVER['REQUEST_URI']);
-		$pageName = $pageName[2];
-		
-		// Si page d'index
-		if(empty($pageName))
-			$pageName = (file_exists('index.php'))
+		if(isset($pageName[2]) and !empty($pageName[2])) $pageName = $pageName[2];
+		else $pageName = (file_exists('index.php'))
 				? 'index.php'
 				: 'index.html';
 		

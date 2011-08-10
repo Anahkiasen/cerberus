@@ -153,7 +153,7 @@ class Cerberus
 					$css .= "\n";
 				}
 		
-				return array($css, $js, $renderArray);
+				return array(trim($css), trim($js), $renderArray);
 			}
 			else $cerberus = new Cerberus($renderArray, $this->resetMode, 'include');
 		}
