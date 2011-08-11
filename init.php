@@ -59,6 +59,7 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'pack.sql' => array('connectSQL', 'mysqlQuery', 'bdd'),
+			'pack.rewrite' => array('rewrite', 'normalize'),
 			'class.admin' => array('admin', 'findString', 'getURL', 'normalize', 'randomString'),
 			'class.desired' => array('desiredPage', 'getURL'),
 			'class.mail' => array('mail', 'findString', 'stripHTML'),
@@ -193,7 +194,7 @@ class Cerberus
 
 	function url()
 	{
-		//return getURL(TRUE);
+		//return geturl(TRUE);
 	}
 	function debugMode()
 	{

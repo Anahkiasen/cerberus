@@ -75,7 +75,7 @@ class desiredPage
 	}
 	function setRewrite($isRewrite)
 	{
-		$this->optionRewrite = ($_SERVER['HTTP_HOST'] == 'localhost:8888') ? false : $isRewrite;
+		$this->optionRewrite = $isRewrite;
 	}
 	function setListed($isListed, $isListedSub)
 	{
@@ -86,22 +86,13 @@ class desiredPage
 	// Création des arrays de liens
 	function createTree()
 	{
-		if(!isset($this->treeNavigation)) foreach($this->allowedPages as $key)
-		{
-			$linkHref = ($this->optionRewrite)
-				? $key .'.html'
-				: getURL(true,true). '?page=' .$key;
-			
-			$this->treeNavigation[$key] = $linkHref;			
-		}
-		if(!isset($this->treeSubnav) and $this->optionSubnav) foreach($this->cacheTree[$this->page] as $key)
-		{
-			$linkHref = ($this->optionRewrite)
-				? $this->page. '-' .$key .'.html'
-				: getURL(true,true). '?page=' .$this->page. '&pageSub=' .$key;
-			
-			$this->treeSubnav[$key] = $linkHref;			
-		}
+		if(!isset($this->treeNavigation))
+			foreach($this->allowedPages as $key)
+				$this->treeNavigation[$key] = rewrite($key);			
+		
+		if(!isset($this->treeSubnav) and $this->optionSubnav)
+			foreach($this->cacheTree[$this->page] as $key)
+			$this->treeSubnav[$key] = rewrite(array($this->page, $key));			
 	}
 	
 	// Altération des liens de la liste

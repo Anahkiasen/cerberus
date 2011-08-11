@@ -6,7 +6,7 @@
 	$string
 		Chaîne à normaliser
 */
-function normalize($string)
+function normalize($string, $rewrite = false)
 {
 	$specialChar = array(
 	' ' => '_',
@@ -63,6 +63,11 @@ function normalize($string)
 	'Ž' => 'Z',
 	'ž' => 'z',
 	'’' => '');
+	
+	if($rewrite == true)
+	{
+		$specialChar[' '] = '-';
+	}
 	
 	return strtolower(strtr($string, $specialChar));
 }

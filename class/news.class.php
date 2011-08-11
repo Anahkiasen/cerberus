@@ -37,7 +37,7 @@ class getNews
 		global $cerberus;
 		$this->url = getURL(true);
 
-		$this->page = $page;
+		$this->page = str_replace('&pageSub=', '-', $page);
 	}
 	function setTable($table)
 	{
@@ -125,7 +125,7 @@ class getNews
 				: NULL;
 				
 			$thisLink = ($this->displayLink == TRUE)
-				? $this->url. '?page=' .$this->page. '&news=' .$key
+				? rewrite($this->page, array('actualite' => $key, 'html' => $value['titre']))
 				: '#' .$key;
 			
 			// News
@@ -177,7 +177,8 @@ class getNews
 				$startingPage++;
 				$newsCounter = 0;
 			}
-			echo '<li><a href="' .$this->url. '?page=' .$this->page. '&news=' .$key. '">' .html($value['titre']). '</a></li>';
+			$titre = stripslashes($value['titre']);
+			echo '<li><a href="' .rewrite($this->page, array('actualite' => $key, 'html' => $titre)). '">' .$titre. '</a></li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
 	}
@@ -192,8 +193,8 @@ class getNews
 		echo '<div id="news-pagination">Pages - ';
 		for($i = 1; $i <= $nombrePages; $i++)
 		{
-			$classHover = (!isset($_GET['news']) and $i == $this->currentPage) ? 'class="hover"' : '';	
-			echo '<a href="' .$this->url. '?page=' .$this->page. '&pagenews=' .$i. '" ' .$classHover. '>' .$i. '</a>';
+			$classHover = (!isset($_GET['actualite']) and $i == $this->currentPage) ? 'class="hover"' : '';	
+			echo '<a href="' .rewrite($this->page, array('page' => $i)). '" ' .$classHover. '>' .$i. '</a>';
 		}
 		echo '</div>';
 	}
