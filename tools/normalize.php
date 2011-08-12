@@ -64,10 +64,7 @@ function normalize($string, $rewrite = false)
 	'ž' => 'z',
 	'’' => '');
 	
-	if($rewrite == true)
-	{
-		$specialChar[' '] = '-';
-	}
+	if($rewrite == true) $specialChar[' '] = '-';
 	
 	return strtolower(strtr($string, $specialChar));
 }

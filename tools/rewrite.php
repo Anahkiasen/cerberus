@@ -40,7 +40,7 @@ function rewrite($page, $params = '')
 		$lien = str_replace($page0. '-', '', $lien);
 				
 		if(isset($meta[$page0.$page1])) $thisHTML = $meta[$page0.$page1]['titre'];
-		if($thisHTML)
+		if(isset($thisHTML))
 		{
 			$lien .= normalize($thisHTML, true);
 			$lien .= '.html';
