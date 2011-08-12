@@ -3,17 +3,18 @@ function rewrite($page, $params = '')
 {
 	global $rewriteMode;
 	global $meta;
+	global $navigation;
 	
 	if(!is_array($page)) $page = explode('-', $page);
 	
 	$page0 = $page[0];
-	$page1 = (isset($page[1])) ? $page[1] : '';
+	$page1 = (isset($page[1])) ? $page[1] : $navigation[$page0][0];
 	
 	if(isset($params['html']))
 	{
 		$thisHTML = $params['html'];
 		unset($params['html']);
-	}
+	}	
 	
 	if($rewriteMode == false or $_SERVER['HTTP_HOST'] == 'localhost:8888')
 	{
@@ -39,7 +40,9 @@ function rewrite($page, $params = '')
 		}
 		$lien = str_replace($page0. '-', '', $lien);
 				
-		if(isset($meta[$page0.$page1])) $thisHTML = $meta[$page0.$page1]['titre'];
+				
+		$thisPage = $page0. '-' .$page1;
+		if(isset($meta[$thisPage]) and !isset($thisHTML)) $thisHTML = (!empty($meta[$thisPage]['url'])) ? $meta[$thisPage]['url'] : $meta[$thisPage]['titre'];
 		if(isset($thisHTML))
 		{
 			$lien .= normalize($thisHTML, true);

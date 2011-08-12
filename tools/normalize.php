@@ -66,6 +66,6 @@ function normalize($string, $rewrite = false)
 	
 	if($rewrite == true) $specialChar[' '] = '-';
 	
-	return strtolower(strtr($string, $specialChar));
+	return trim(strtolower(strtr($string, $specialChar)));
 }
 ?>
