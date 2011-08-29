@@ -1,12 +1,16 @@
 <?php
 /*
 	Fonction normalize
-	# Supprime tout caractère spécial d'une chaîne, espaces, majuscules, accents, etc.
+	# Supprime tout caractère spécial d'une chaîne : espaces, majuscules, accents, etc.
 	
 	$string
 		Chaîne à normaliser
+	$url
+		Si la chaîne retournée est destinée à être une URL, on remplace les 
+		espaces par des tirets -
+		
 */
-function normalize($string, $rewrite = false)
+function normalize($string, $url = false)
 {
 	$specialChar = array(
 	' ' => '_',
@@ -19,6 +23,7 @@ function normalize($string, $rewrite = false)
 	')' => '',
 	',' => '',
 	'?' => '',
+	'!' => '',
 	'\\' => '',
 	'À' => 'A',
 	'Á' => 'A',
@@ -64,8 +69,9 @@ function normalize($string, $rewrite = false)
 	'ž' => 'z',
 	'’' => '');
 	
-	if($rewrite == true) $specialChar[' '] = '-';
+	$return = trim(strtolower(strtr($string, $specialChar)));
+	if($url == true) $return = str_replace('_', '-', $return);
 	
-	return trim(strtolower(strtr($string, $specialChar)));
+	return $return;
 }
 ?>

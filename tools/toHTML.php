@@ -1,14 +1,21 @@
 <?php
-function toHTML($string, $reverse = false, $tags = false)
+/*
+	Fonction toHTML
+	# Parse les caractères spéciaux d'une chaine
+	
+	$string
+		Chaîne à parser
+	$encode
+		TRUE	Encode les caractères en HTML
+		FALSE	Décode les caractères en HTML	
+	$removeTags
+		Encode le texte en HTLML tout en conservant ou non les balises
+		intactes (caractères < et > etc)
+		
+*/
+function toHTML($string, $encode = true, $removeTags = false)
 {
-	if($tags == true)
-	{
-		if($reverse == false) return htmlentities($string);
-		else return html_entity_decode($string);
-	}
-	else
-	{
-		$table = array(
+	$table = array(
 	'ç' => '&ccedil;',
 	'Ç' => '&Ccedil;',
 	'é' => '&eacute;',
@@ -52,17 +59,24 @@ function toHTML($string, $reverse = false, $tags = false)
 	'Û' => '&Ucirc;',
 	'Ü' => '&Uuml;',
 	'œ' => '&oelig;',
+	'"' => '&quot;',
 	'«' => '&laquo;',
 	'»' => '&raquo;',
 	'€' => '&euro;',
+	'©' => '&copy;',
 	'’' => '\'');
-		
-		if($reverse == false) return strtr($string, $table);
-		else
-		{
-			foreach($table as $key => $value) $string = str_replace($value, $key, $string);
-			return $string;
-		}
+	
+	if($removeTags == true)
+	{
+		$table['<'] = '&lt;';
+		$table['>'] = '&gt;';
+	}
+	
+	if($encode == true) return strtr($string, $table);
+	else
+	{
+		foreach($table as $key => $value) $string = str_replace($value, $key, $string);
+		return $string;
 	}
 }
 ?>

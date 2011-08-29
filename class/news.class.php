@@ -194,7 +194,7 @@ class getNews
 		for($i = 1; $i <= $nombrePages; $i++)
 		{
 			$classHover = (!isset($_GET['actualite']) and $i == $this->currentPage) ? 'class="hover"' : '';	
-			echo '<a href="' .rewrite($this->page, array('page' => $i)). '" ' .$classHover. '>' .$i. '</a>';
+			echo '<a href="' .rewrite($this->page, array('pagenews' => $i)). '" ' .$classHover. '>' .$i. '</a>';
 		}
 		echo '</div>';
 	}
