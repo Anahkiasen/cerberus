@@ -22,7 +22,7 @@ $thisAgent = browserSelector();
 <html xmlns="http://www.w3.org/1999/xhtml" class="<?= $thisAgent ?>">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>[WEBSITE]</title>
+<title><?= index('menu-' .$pageVoulue) ?></title>
 <? cssFont(array('Open Sans')) ?>
 <?= $css ?>
 <link href="css/cerberus.css" rel="stylesheet" type="text/css" />
