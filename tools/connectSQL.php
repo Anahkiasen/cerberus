@@ -53,6 +53,9 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		// Sauvegarde et chargement de la base
 		$tables_base = mysqlQuery('SHOW TABLES');
 		$database_name = explode('_', $localhost);
+		$database = (isset($database_name[1]))
+			? $database_name[1]
+			: $database_name;
 
 		if(empty($tables_base))
 		{
@@ -74,7 +77,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		elseif(!empty($tables_base) and function_exists('backupSQL'))
 		{
 			// Si tout va bien, on effectue une sauvegarde
-			backupSQL($database_name[1]);	
+			backupSQL($database);	
 		}
 		else die('Une erreur est survenue lors du chargement de la base de données');
 }
