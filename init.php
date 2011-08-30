@@ -25,8 +25,14 @@ class Cerberus
 			
 	function __construct($modules, $productionMode = FALSE, $mode = 'core')
 	{
+		if(!is_array($modules)) $modules = array($modules);
+		
 		// Modules coeur
-		$modules = array_merge(array('display', 'boolprint', 'timthumb', 'sfputs', 'simplode', 'sunlink'), $modules);
+		$modules = array_merge(
+			array(
+				'display', 'boolprint', 'timthumb',
+				'sfputs', 'simplode', 'sunlink'),
+			$modules);
 		$this->productionMode = $productionMode;
 	
 		// Mode de Cerberus (core/include)	
@@ -107,7 +113,7 @@ class Cerberus
 		// API
 		$availableAPI = array(
 		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js',
+		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'ColorBox' => 'js/jquery.colorbox-min.js',
 		'nivoSlider' => 'js/jquery.nivo.slider.pack.js');

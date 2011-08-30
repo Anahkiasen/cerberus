@@ -1,4 +1,14 @@
 <?php
+/*
+	Fonction sunlink
+	# Supprime un fichier ou un dossier, et le vide facultativement
+	
+	$file
+		Fichier/dossier à supprimer
+	$empty
+		TRUE	Vide le dossier au lieu de le supprimer
+		FALSE	Supprime le dossier
+*/
 function sunlink($file, $empty = false)
 {
 	if(file_exists($file))
@@ -6,28 +16,28 @@ function sunlink($file, $empty = false)
 		if(!is_dir($file)) unlink($file);
 		else
 		{
-			if(substr($directory, -1) == "/") $directory = substr($directory, 0, -1);
+			if(substr($file, -1) == "/") $file = substr($file, 0, -1);
 		
-			if(!file_exists($directory) || !is_dir($directory)) return false;
-			elseif(!is_readable($directory)) return false;
+			if(!file_exists($file) || !is_dir($file)) return false;
+			elseif(!is_readable($file)) return false;
 			else
 			{
 				// Lecture du dossier
-				$directoryHandle = opendir($directory);
-				while ($contents = readdir($directoryHandle))
+				$fileHandle = opendir($file);
+				while ($contents = readdir($fileHandle))
 				{
 					if($contents != '.' && $contents != '..')
 					{
-						$path = $directory . "/" . $contents;
+						$path = $file . "/" . $contents;
 					   
 						// Suppression du fichier/dossier
-						if(is_dir($path)) deleteFolder($path);
+						if(is_dir($path)) sunlink($path);
 						else unlink($path);
 					}
 				}
-				closedir($directoryHandle);
+				closedir($fileHandle);
 		
-				if($empty == false and !rmdir($directory)) return false;	   
+				if($empty == false and !rmdir($file)) return false;	   
 				return true;
 			}
 		}
