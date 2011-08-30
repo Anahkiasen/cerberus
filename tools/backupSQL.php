@@ -2,34 +2,34 @@
 function backupSQL($filename)
 {	
 	$path = 'cerberus/cache/sql/';
-
-	// Suppression des sauvegardes inutiles
-	foreach(glob($path. '*') as $file)  
-	{  
-		if(is_dir($file))
-		{
-			$folderDate = explode('-', str_replace($path, '', $file));
-			
-			if($folderDate[0] != date('Y')) $unlink = true;
-			elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] > 1)) $unlink = true;
-			elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] == 1) and !in_array($folderDate[2], array(1, 15))) $unlink = true;
-			
-			if(isset($unlink))
-			{
-				sunlink($file);
-				//echo 'La sauvegarde du ' .implode('-', $folderDate). ' a bien été supprimée<br />';
-			}
-		}
-	}  
 		
 	// Création du dossier à la date si inexistant
 	$folderName = $path.date('Y-m-d');
 	if(!file_exists($folderName)) 
 	{
-		$file = '';
 		mkdir($folderName);
+		
+		// Suppression des sauvegardes inutiles
+		foreach(glob($path. '*') as $file)  
+		{  
+			if(is_dir($file))
+			{
+				$folderDate = explode('-', str_replace($path, '', $file));
+				
+				if($folderDate[0] != date('Y')) $unlink = true;
+				elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] > 1)) $unlink = true;
+				elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] == 1) and !in_array($folderDate[2], array(1, 15))) $unlink = true;
+				
+				if(isset($unlink))
+				{
+					sunlink($file);
+					//echo 'La sauvegarde du ' .implode('-', $folderDate). ' a bien été supprimée<br />';
+				}
+			}
+		}  
 	
 		// Récupération de la liste des tables
+		$file = '';
 		$listeTables = array_values(mysqlQuery("SHOW TABLES"));
 		foreach($listeTables as $table)
 		{   
@@ -68,13 +68,18 @@ function backupSQL($filename)
 	}
 	else return 'Une sauvegarde existe déjà pour cette date.';
 }
-function loadSQL($sql)
+function loadSQL($sql, $login = '')
 {
 	global $MYSQL_HOST;
 	global $MYSQL_USER;
 	global $MYSQL_MDP;
 	global $MYSQL_DB;
 	
+	// Identifiants manuels
+	if(!empty($login) and is_array($login))
+		list($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB) = $login; 
+	
+	// Connexion
 	$db = new mysqli($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
 	$db->set_charset("utf8");
 

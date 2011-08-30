@@ -49,7 +49,30 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		mysql_connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP) or die('La connexion au serveur ' .$MYSQL_HOST. ' via ' .$MYSQL_USER. '@' .$MYSQL_MDP. ' a &eacute;chou&eacute;');
 		mysql_select_db($MYSQL_DB) or die('La connexion &agrave; la base de donn&eacute;es ' .$MYSQL_DB. ' a &eacute;chou&eacute;');
 		mysql_query("SET NAMES 'utf8'");
-		
-		return array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
+	
+		// Sauvegarde et chargement de la base
+		$tables_base = mysqlQuery('SHOW TABLES');
+		$database_name = explode('_', $localhost);
+
+		if(empty($tables_base))
+		{
+			// Si la base de données est vide, chargement de dernière la sauvegarde
+			foreach(glob('cerberus/cache/sql/*') as $file)  
+				$fichier = $file;
+				
+			$fichier = explode('/', $fichier);
+			$fichier = $fichier[3];
+			
+			foreach(glob('cerberus/cache/sql/' .$fichier. '/*.sql') as $file)
+				$fichier = $file;
+				
+			loadSQL(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
+		}
+		elseif(!empty($tables_base) and function_exists('backupSQL'))
+		{
+			// Si tout va bien, on effectue une sauvegarde
+			backupSQL($database_name[1]);	
+		}
+		else die('Une erreur est survenue lors du chargement de la base de données');
 }
 ?>

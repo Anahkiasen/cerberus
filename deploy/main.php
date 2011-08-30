@@ -19,9 +19,6 @@ list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array());
 if(function_exists('connectSQL'))
 	connectSQL('localbdd');
 	
-// Sauvegarde de la base de données
-$backupSQL = backupSQL('AMANDIER');
-
 $thisAgent = browserSelector();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
