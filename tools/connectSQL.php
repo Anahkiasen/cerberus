@@ -18,13 +18,23 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 {
 	if($_SERVER['HTTP_HOST'] == 'localhost:8888')
 	{
+		// Local MAMP
 		$MYSQL_HOST = 'localhost';
 		$MYSQL_USER = 'root';
 		$MYSQL_MDP = 'root';
 		$MYSQL_DB = $localhost;
 	}
+	elseif($_SERVER['HTTP_HOST'] == '127.0.0.1')
+	{
+		// Local EasyPHP
+		$MYSQL_HOST = 'localhost';
+		$MYSQL_USER = 'root';
+		$MYSQL_MDP = '';
+		$MYSQL_DB = $localhost;
+	}
 	elseif($_SERVER['HTTP_HOST'] == 'the8day.info')
 	{
+		// Le Huitième Jour
 		$MYSQL_HOST = 'db124.1and1.fr';
 		$MYSQL_USER = 'dbo144396219';
 		$MYSQL_MDP = 'naxam35741';
@@ -32,6 +42,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 	}
 	elseif($_SERVER['HTTP_HOST'] == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
 	{
+		// Stappler
 		$database = explode('_', $localhost);
 		
 		$MYSQL_HOST = 'hostingmysql51';
@@ -41,6 +52,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 	}
 	else
 	{
+		// Manuel
 		$MYSQL_HOST = $host;
 		$MYSQL_USER = $user;
 		$MYSQL_MDP = $mdp;
