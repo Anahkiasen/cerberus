@@ -62,14 +62,42 @@ function backupSQL($filename)
 	
 		// Création du fichier
 		$filename = $filename. '-' .date('H-i-s'). '.sql';
-		$filepath = $folderName. '/' .$filename;
-		$monfichier = fopen($filepath, 'w+');
-		fwrite($monfichier, pack("CCC", 0xef,0xbb,0xbf));
-		fputs($monfichier, $file);
-		fclose($monfichier);
+		sfputs($folderName. '/' .$filename, $file);
 		
 		return 'Le fichier ' .$filename. ' a bien été crée<br />Tables : ' .implode(', ', $listeTables);
 	}
 	else return 'Une sauvegarde existe déjà pour cette date.';
+}
+function loadSQL($sql)
+{
+	global $MYSQL_HOST;
+	global $MYSQL_USER;
+	global $MYSQL_MDP;
+	global $MYSQL_DB;
+	
+	$db = new mysqli($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
+	$db->set_charset("utf8");
+
+	if ($db->multi_query($sql)) 
+	{
+		echo '<table>';
+		while ($db->next_result())
+		{
+			if ($resultset = $db->store_result())
+			{
+				while ($record = $resultset->fetch_array(MYSQLI_BOTH))
+				{
+					echo 
+					'<tr>
+						<td>' .$record['title']. '</td>
+						<td>' .$record[2]. '</td>
+					</tr>';
+				}
+				$resultset->free();
+			}
+		}
+		echo '</table>';
+	}
+	else echo $db->error. '<br />';
 }
 ?>

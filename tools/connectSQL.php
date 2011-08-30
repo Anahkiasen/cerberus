@@ -49,5 +49,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		mysql_connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP) or die('La connexion au serveur ' .$MYSQL_HOST. ' via ' .$MYSQL_USER. '@' .$MYSQL_MDP. ' a &eacute;chou&eacute;');
 		mysql_select_db($MYSQL_DB) or die('La connexion &agrave; la base de donn&eacute;es ' .$MYSQL_DB. ' a &eacute;chou&eacute;');
 		mysql_query("SET NAMES 'utf8'");
+		
+		return array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
 }
 ?>
