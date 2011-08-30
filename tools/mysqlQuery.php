@@ -127,4 +127,51 @@ function mysqlQuery_remapArray($array, $cle)
 	}
 	return $returnArray;
 }
+/*
+	Fonction multiQuery
+	# Execute un ensemble de requêtes via MySQLi
+	
+	$query
+		Requête à exécuter
+	$login
+		Array contenant les informations de login SQL si non
+		présentes dans l'environement en cours
+*/
+function multiQuery($query, $login = '')
+{
+	global $MYSQL_HOST;
+	global $MYSQL_USER;
+	global $MYSQL_MDP;
+	global $MYSQL_DB;
+	
+	// Identifiants manuels
+	if(!empty($login) and is_array($login))
+		list($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB) = $login; 
+	
+	// Connexion
+	$db = new mysqli($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
+	$db->set_charset("utf8");
+
+	if ($db->multi_query($query)) 
+	{
+		echo '<table>';
+		while ($db->next_result())
+		{
+			if ($resultset = $db->store_result())
+			{
+				while ($record = $resultset->fetch_array(MYSQLI_BOTH))
+				{
+					echo 
+					'<tr>
+						<td>' .$record['title']. '</td>
+						<td>' .$record[2]. '</td>
+					</tr>';
+				}
+				$resultset->free();
+			}
+		}
+		echo '</table>';
+	}
+	else echo $db->error. '<br />';
+}
 ?>
