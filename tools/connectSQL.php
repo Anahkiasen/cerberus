@@ -60,13 +60,16 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 			foreach(glob('cerberus/cache/sql/*') as $file)  
 				$fichier = $file;
 				
-			$fichier = explode('/', $fichier);
-			$fichier = $fichier[3];
-			
-			foreach(glob('cerberus/cache/sql/' .$fichier. '/*.sql') as $file)
-				$fichier = $file;
+			if(isset($fichier))
+			{	
+				$fichier = explode('/', $fichier);
+				$fichier = $fichier[3];
 				
-			loadSQL(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
+				foreach(glob('cerberus/cache/sql/' .$fichier. '/*.sql') as $file)
+					$fichier = $file;
+					
+				loadSQL(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
+			}
 		}
 		elseif(!empty($tables_base) and function_exists('backupSQL'))
 		{

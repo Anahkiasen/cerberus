@@ -36,42 +36,45 @@ function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 	$index = array();
 	$filename = $database. '.php';
 	
-	if(file_exists($filename) and $PRODUCTION == FALSE) unlink($filename); // Suppression de la version existante
-	if(file_exists($filename) and $PRODUCTION == TRUE) include_once($filename);
-	else
+	if(in_array('langue', mysqlQuery('SHOW TABLES')))
 	{
-		// Récupération de la base de langues
-		$thisIndex = mysql_query('SELECT tag, ' .implode(', ', $arrayLang). ' FROM ' .$database. ' ORDER BY tag ASC');
-		if(mysql_num_rows($thisIndex) != 0)
+		if(file_exists($filename) and $PRODUCTION == FALSE) unlink($filename); // Suppression de la version existante
+		if(file_exists($filename) and $PRODUCTION == TRUE) include_once($filename);
+		else
 		{
-			// Création de l'index
-			while($row = mysql_fetch_assoc($thisIndex))
+			// Récupération de la base de langues
+			$thisIndex = mysql_query('SELECT tag, ' .implode(', ', $arrayLang). ' FROM ' .$database. ' ORDER BY tag ASC');
+			if(mysql_num_rows($thisIndex) != 0)
 			{
-				foreach ($row as $fieldname => $fieldvalue) 
-					if($fieldname != 'tag') $index[$fieldname][$row['tag']] = $fieldvalue;
+				// Création de l'index
+				while($row = mysql_fetch_assoc($thisIndex))
+				{
+					foreach ($row as $fieldname => $fieldvalue) 
+						if($fieldname != 'tag') $index[$fieldname][$row['tag']] = $fieldvalue;
+				}
+	
+				// Ecriture du fichier PHP
+				$renderPHP = "<?php \n";
+				foreach($arrayLang as $cle)
+				{
+					foreach($index[$cle] as $key => $value)
+						$renderPHP .= '$index[\'' .$cle. "']['" .$key. "'] = '" .addslashes($value). "';\n";
+				}
+					
+				sfputs($filename, $renderPHP. '?>');
 			}
-
-			// Ecriture du fichier PHP
-			$renderPHP = "<?php \n";
-			foreach($arrayLang as $cle)
-			{
-				foreach($index[$cle] as $key => $value)
-					$renderPHP .= '$index[\'' .$cle. "']['" .$key. "'] = '" .addslashes($value). "';\n";
-			}
-				
-			sfputs($filename, $renderPHP. '?>');
 		}
+		
+		// Langue du site
+		if(!isset($_SESSION['langueSite'])) $_SESSION['langueSite'] = 'fr';
+		if(isset($_GET['langue']) && in_array($_GET['langue'], $arrayLang)) $_SESSION['langueSite'] = $_GET['langue'];
+		
+		// Langue de l'administration
+		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = 'fr';
+		if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], $arrayLang)) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
+		
+		return $index;
 	}
-	
-	// Langue du site
-	if(!isset($_SESSION['langueSite'])) $_SESSION['langueSite'] = 'fr';
-	if(isset($_GET['langue']) && in_array($_GET['langue'], $arrayLang)) $_SESSION['langueSite'] = $_GET['langue'];
-	
-	// Langue de l'administration
-	if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = 'fr';
-	if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], $arrayLang)) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
-	
-	return $index;
 }
 function indexCSV($database = 'langue')
 {

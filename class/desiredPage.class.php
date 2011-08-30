@@ -37,6 +37,7 @@ class desiredPage
 	{
 		global $index;
 		
+		if(empty($navigation)) $navigation = array('home' => array('home'));
 		if($_SERVER['HTTP_HOST'] == 'localhost:8888') $this->optionRewrite = false;
 		
 		// Définition du mode

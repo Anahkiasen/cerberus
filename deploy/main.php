@@ -1,7 +1,8 @@
 <?php
 // Chargement du moteur Cerberus
 include_once('cerberus/init.php');
-$cerberus = new Cerberus(array('browserSelector', 'cssFont', '[sql]', 'createIndex', 'Desired'));
+$cerberus = new Cerberus(array('browserSelector', 'cssFont', 'pack.sql', 'createIndex', 'class.desired'));
+connectSQL('localbdd');
 $PRODUCTION = $cerberus->debugMode();
 $index = createIndex();
 
@@ -15,10 +16,6 @@ $cerberus->cerberusDispatch(array());
 
 list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array());
 
-// Connexion SQL
-if(function_exists('connectSQL'))
-	connectSQL('localbdd');
-	
 $thisAgent = browserSelector();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -36,7 +33,7 @@ $thisAgent = browserSelector();
 	<div id="main">
 		<div id="header"></div>
 		<div id="menu"><?= $renderNav ?></div>
-		<div id="corps"><? include_once('pages/' .$pageVoulueFile) ?></div>
+		<div id="corps"><? if(file_exists('pages/' .$pageVoulueFile)) include_once('pages/' .$pageVoulueFile) ?></div>
 		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Concept : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
 	</div>
 	

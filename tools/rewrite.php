@@ -18,8 +18,11 @@ function rewrite($page, $params = '')
 	// Détermination de la page/sous-page
 	if(!is_array($page)) $page = explode('-', $page);
 	$page0 = $page[0];
-	$page1 = (isset($page[1])) ? $page[1] : $navigation[$page0][0];
 	
+	if(isset($page[1])) $page1 = $page[1];
+	elseif(!isset($page[1]) and isset($navigation[$page0])) $page1 = $navigation[$page0][0];
+	else $page1 = '';
+
 	// Si le nom HTML de la page est fourni
 	if(isset($params['html']))
 	{

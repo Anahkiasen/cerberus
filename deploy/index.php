@@ -33,7 +33,7 @@ if(!file_exists('../../index.php'))
 	copydir('overlay', '../../css/overlay');
 	copy('timthumb.php', '../../file/timthumb.php');
 	copy('main.php', '../../index.php');
-	copy('../../n.htaccess', 'n.htaccess');
+	copy('n.htaccess', '../../n.htaccess');
 	
 	echo 'Cerberus correctement d&eacute;ploy&eacute;';
 }

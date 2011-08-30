@@ -30,7 +30,7 @@ class Cerberus
 		// Modules coeur
 		$modules = array_merge(
 			array(
-				'display', 'boolprint', 'timthumb',
+				'display', 'boolprint', 'timthumb', 'rewrite',
 				'sfputs', 'simplode', 'sunlink'),
 			$modules);
 		$this->productionMode = $productionMode;
