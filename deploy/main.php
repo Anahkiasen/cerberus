@@ -2,7 +2,7 @@
 // Chargement du moteur Cerberus
 include_once('cerberus/init.php');
 $cerberus = new Cerberus(array('browserSelector', 'cssFont', '[sql]', 'createIndex', 'Desired'));
-$productionMode = $cerberus->debugMode();
+$PRODUCTION = $cerberus->debugMode();
 $index = createIndex();
 
 // Arbre de navigation et page en cours
@@ -18,6 +18,9 @@ list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array());
 // Connexion SQL
 if(function_exists('connectSQL'))
 	connectSQL('localbdd');
+	
+// Sauvegarde de la base de données
+$backupSQL = backupSQL('AMANDIER');
 
 $thisAgent = browserSelector();
 ?>
