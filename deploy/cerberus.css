@@ -320,6 +320,15 @@ textarea
 	position:relative;
 	width:250px;
 }
+fieldset input[type=checkbox],
+dd p.radio
+{
+	margin:0;
+	padding:0;
+	position: relative;
+	right: 5px;
+	top: 10px;	
+}
 #left input[type=text],
 #left input[type=password],
 #left select,
