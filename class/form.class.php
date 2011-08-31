@@ -120,9 +120,13 @@ class form
 		$thisLabel = (empty($label))
 			? $name
 			: $label;
-		if(self::$multilangue == false) $thisLabel = ucfirst($thisLabel);
-		$thisName = normalize(str_replace('-', '', $name));
-		
+		if(self::$multilangue == false)
+		{
+			$thisLabel = ucfirst($thisLabel);
+			$thisName = normalize(str_replace('-', '', $name));
+		}
+		else $thisName = $name;
+				
 		return array($thisName, $thisLabel);
 	}
 	function defineValue($thisName)
