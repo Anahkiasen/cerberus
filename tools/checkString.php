@@ -25,10 +25,12 @@ function checkString($string, $type = 'email')
 */
 function checkFields()
 {
+	global $index;
+	
 	$fields = func_get_args();
 	$filled = $fields;
 	$erreurs = array();
-	$multilangue = (isset($index['form-erreur-email']));
+	$multilangue = (isset($index['fr']['form-erreur-email']));
 
 	foreach($_POST as $key => $value)
 		if(!empty($value) and in_array($key, $fields)) $filled = array_diff($filled, array($key));
