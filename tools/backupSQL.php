@@ -2,11 +2,13 @@
 function backupSQL($filename)
 {	
 	$path = 'cerberus/cache/sql/';
+	$folderName = $path.date('Y-m-d');
+	$listeTables = mysqlQuery("SHOW TABLES");
 		
 	// Création du dossier à la date si inexistant
-	$folderName = $path.date('Y-m-d');
-	if(!file_exists($folderName)) 
+	if(!file_exists($folderName) and !empty($listeTables)) 
 	{
+		$listeTables = array_values($listeTables);
 		mkdir($folderName);
 		
 		// Suppression des sauvegardes inutiles
@@ -30,7 +32,6 @@ function backupSQL($filename)
 	
 		// Récupération de la liste des tables
 		$file = '';
-		$listeTables = array_values(mysqlQuery("SHOW TABLES"));
 		foreach($listeTables as $table)
 		{   
 			$file .= "DROP TABLE IF EXISTS $table;\n";

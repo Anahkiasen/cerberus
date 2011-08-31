@@ -140,7 +140,7 @@ class form
 
 		// Définitions	
 		$type = $params['type'];
-		list($name, $label) = $this->defineNameLabel($params['name'], $params['label']);
+		list($params['name'], $label) = $this->defineNameLabel($params['name'], $params['label']);
 		if(empty($params['value'])) $params['value'] = $this->defineValue($params['name']);
 		
 		// State Fieldset
@@ -155,9 +155,15 @@ class form
 			$mandatoryStar = (self::$mandatory == true)
 				? ' <span class="mandatory">*</span>'
 				: '';
+				
+			// Champ sous le label plutôt qu'à droite
+			$underfield = (isset($params['underfield'])) 
+				? 'underfield'
+				: '';
+			unset($params['underfield']);
 	
 			$this->render .= PHP_EOL. "
-				\t<dl class=\"$type\">" .PHP_EOL;
+				\t<dl class=\"$type $underfield\">" .PHP_EOL;
 			if($type != "submit") $this->render .= "\t\t<dt><label for=\"$label\">$fieldName$mandatoryStar</label></dt>" .PHP_EOL;
 			$this->render .= "\t\t<dd>";
 		}

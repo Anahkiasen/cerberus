@@ -93,7 +93,7 @@ function normalize($string, $url = false)
 	
 	$return = trim(strtolower(strtr($string, $specialChar)));
 	if($url == true) $return = str_replace('_', '-', $return);
-	$return = str_replace('---', '-', $string);
+	$return = str_replace('---', '-', $return);
 	
 	return $return;
 }

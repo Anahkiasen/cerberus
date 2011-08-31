@@ -22,8 +22,9 @@ table thead td,
 table tr.entete td,
 table .additem,
 .readmore,
-.mosaique { background-color:#8a976a; }
-p.infoblock { background-color:#069; }
+.mosaique { background-color: #8a976a; }
+p.infoblock,
+.readmore { background-color:#069; }
 /*
 ########################################
 ######### BALISES COMMUNES #############
@@ -71,6 +72,26 @@ p.readmore:active { background-image:url(overlay/blanc-25.png); }
 	float:right;
 	margin-left:20px;
 }
+#left,
+#right
+{
+	margin:10px 0;
+	width:50%;
+	float:left;
+	text-align:justify;
+	-moz-box-sizing:border-box;
+	-ms-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+#left { padding-right:30px; }
+.ie7 #left { padding-right:10px; }
+.ie7 #left,
+.ie7 #right { width: 48%; }
+#left p:first-child,
+#right p:first-child,
+#left h1:first-child,
+#right h1:first-child { margin-top:0; }
 /*
 ########################################
 ############## OPACITÉ #################
@@ -108,24 +129,6 @@ p.readmore:active { background-image:url(overlay/blanc-25.png); }
 	-khtml-opacity: 1;
 	opacity: 1;
 }
-#left,
-#right
-{
-	margin:10px 0;
-	width:50%;
-	float:left;
-	text-align:justify;
-	-moz-box-sizing:border-box;
-	-ms-box-sizing:border-box;
-	-webkit-box-sizing:border-box;
-	box-sizing:border-box;
-}
-#left { padding-right:30px; }
-.ie7 #left { padding-right:10px; }
-#left p:first-child,
-#right p:first-child,
-#left h1:first-child,
-#right h1:first-child { margin-top:0; }
 /*
 ########################################
 ############ ADMIN ###############
@@ -269,6 +272,7 @@ fieldset dl.textarea textarea
 	height:190px;
 	top:4px;
 	width:97%;
+	padding: 5px;
 }
 fieldset dl:hover
 {
@@ -320,14 +324,14 @@ textarea
 	position:relative;
 	width:250px;
 }
-fieldset input[type=checkbox],
-dd p.radio
+dl.textarea.underfield { height:240px; }
+fieldset dl.underfield dd,
+#left fieldset dl.underfield dd,
+#right fieldset dl.underfield dd
 {
-	margin:0;
-	padding:0;
-	position: relative;
-	right: 5px;
-	top: 10px;	
+	width: 100%;
+	position: static;
+	margin: 5px;
 }
 #left input[type=text],
 #left input[type=password],

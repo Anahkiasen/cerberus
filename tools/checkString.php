@@ -7,7 +7,6 @@
 		Chaîne à vérifier
 	$type
 		Type de chaîne, peut être [email, phone]
-
 */
 function checkString($string, $type = 'email')
 {
@@ -16,5 +15,50 @@ function checkString($string, $type = 'email')
 
 	elseif($type == 'phone')
 		return (!empty($string) and preg_match("#^0[1-78]([-. ]?[0-9]{2}){4}$#", $string));
+}
+/*
+	Fonction checkFields
+	# Vérifie si un formulaire a été correctement rempli
+	
+	$fields
+		Liste des champs obligatoires
+*/
+function checkFields($fields)
+{
+	$multilangue = false;
+	$erreurs = array();
+	
+	$filled = $fields;
+	foreach($_POST as $key => $value)
+		if(!empty($value) and in_array($key, $fields)) $filled = array_diff($filled, array($key));
+	
+	// Si formulaire incomplet
+	if(!empty($filled))
+	{
+		if($multilangue == true)
+		{
+			foreach($filled as $key => $value) $filled[$key] = index('form-' .$value);
+			$erreurs[] = index('form-erreur-incomplete'). ' : ' .implode(', ', $filled);
+		}
+		else
+		{
+			foreach($filled as $key => $value) $filled[$key] = ucfirst($value);
+			$erreurs[] = 'Un ou plusieurs champs sont incomplets : ' .implode(', ', $filled);
+		}
+	}
+
+	if($multilangue == true)
+	{
+		if(in_array('email', $fields)) if(!checkString($_POST['email'])) $erreurs[] = index('form-erreur-email');
+		if(in_array('phone', $fields)) if(!checkString($_POST['phone'], 'phone')) $erreurs[] = index('form-erreur-phone');
+	}
+	else
+	{
+		if(in_array('email', $fields)) if(!checkString($_POST['email'])) $erreurs[] = 'Adresse email non valide';
+		if(in_array('telephone', $fields)) if(!checkString($_POST['telephone'], 'phone')) $erreurs[] = 'Numéro de téléphone non valide';
+	}
+		
+	if(!empty($erreurs)) return display(implode('<br />', $erreurs));
+	else return true;
 }
 ?>
