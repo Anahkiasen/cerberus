@@ -30,7 +30,7 @@ class Cerberus
 		// Modules coeur
 		$modules = array_merge(
 			array(
-				'display', 'boolprint', 'timthumb', 'rewrite',
+				'display', 'boolprint', 'timthumb',
 				'sfputs', 'simplode', 'sunlink'),
 			$modules);
 		$this->productionMode = $productionMode;
@@ -65,6 +65,7 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
+			'pack.navigation' => array('rewrite', 'normalize', 'desiredPage', 'getURL'),
 			'pack.rewrite' => array('rewrite', 'normalize'),
 			'class.admin' => array('admin', 'findString', 'getURL', 'normalize', 'randomString'),
 			'class.desired' => array('desiredPage', 'getURL'),

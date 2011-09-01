@@ -3,6 +3,8 @@
 	Fonction rewrite
 	# Ecrit une URL avec ses paramètres en prenant compte de l'environnement
 	
+	@ Dépendance : normalize
+	
 	$page
 		La page vers laquelle aller
 	$params
