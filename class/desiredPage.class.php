@@ -89,7 +89,8 @@ class desiredPage
 	{
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
-				$this->treeNavigation[$key] = rewrite($key);			
+				if($key != 'admin' or ($key == 'admin' and $_SERVER['HTTP_HOST'] == 'localhost:8888'))
+					$this->treeNavigation[$key] = rewrite($key);			
 		
 		if(!isset($this->treeSubnav) and $this->optionSubnav)
 			foreach($this->cacheTree[$this->page] as $key)
