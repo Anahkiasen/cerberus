@@ -114,6 +114,9 @@ if(!file_exists('../../index.php'))
 	
 		// Déplacement des fichiers CSS et PHP
 		copy('styles.css', '../../css/styles.css');
+		copy('img/cross.png', '../../css/cross.png');
+		copy('img/pencil.png', '../../css/pencil.png');
+		
 		copy('cerberus.css', '../../css/cerberus.css');
 		copydir('overlay', '../../css/overlay');
 		if(isset($_POST['file-file'])) copy('timthumb.php', '../../file/timthumb.php');

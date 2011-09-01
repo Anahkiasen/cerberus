@@ -34,7 +34,7 @@ class form
 	{
 		if(isset($_GET['edit']) and isset($fieldsTable[1]))
 		{
-			$modif = mysql_fetch_assoc(mysql_query('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE id=' .$_GET['edit']));
+			$modif = mysqlQuery('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE ' .$fieldsTable[0][0]. '="' .$_GET['edit']. '"');
 			foreach($fieldsTable[0] as $value) $post[$value] = html($modif[$value]); 
 		}
 		else foreach($fieldsTable[0] as $value) $post[$value] = '';

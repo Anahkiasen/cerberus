@@ -154,7 +154,7 @@ class AdminClass
 	############### LISTE DES DONNEES ########
 	######################################## */
 	function createList($fieldsList, $groupBy = '')
-	{	
+	{		
 		if(findString('SELECT', key($fieldsList))) $manualQuery = TRUE;
 		else $manualQuery = FALSE;
 	
@@ -170,11 +170,18 @@ class AdminClass
 		
 		if($manualQuery == FALSE)
 		{
+			$availableFields = array_keys(mysqlQuery('DESCRIBE meta'));
+			
+			array_unshift($fieldsList, 'id');
+			foreach($fieldsList as $key => $value)
+				if(!in_array($value, $availableFields)) unset($fieldsList[$key]);
+				else if(!isset($index)) $index = $value;			
+			
 			// Multilingue ou non
 			$isLang = ($this->multilangue) 
 				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
 				: '';
-			$thisQuery = 'SELECT id,' .implode(',', $fieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY id DESC';
+			$thisQuery = 'SELECT ' .implode(',', $fieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$index. ' DESC';
 		}
 		
 		$thisGroup = '';
@@ -206,7 +213,7 @@ class AdminClass
 	{
 		if(isset($_GET['edit']))
 		{
-			$modif = mysql_fetch_assoc(mysql_query('SELECT ' .implode(',', $this->fields). ' FROM ' .$this->table. ' WHERE id=' .$_GET['edit']));
+			$modif = mysqlQuery('SELECT ' .implode(',', $this->fields). ' FROM ' .$this->table. ' WHERE ' .$this->fields[0]. '="' .$_GET['edit']. '"');
 			foreach($this->fields as $value) $post[$value] = html($modif[$value]); 
 		}
 		else foreach($this->fields as $value) $post[$value] = '';
@@ -228,14 +235,15 @@ class AdminClass
 	{
 		$this->table = $table;
 		$this->thisPage = $this->url. '?page=admin&admin=' .$_GET['admin'];
+		
 				
 		// Champs facultatifs
 		if(isset($facultativeFields) and !empty($facultativeFields) and !is_array($facultativeFields))
 			$facultativeFields = array($facultativeFields);
 		
 		// Récupération du nom des champs
-		$querySQL = mysql_query('SHOW COLUMNS FROM ' .$table);
-		while($fieldname = mysql_fetch_assoc($querySQL)) $this->fields[] = $fieldname['Field'];
+		$this->fields = array_keys(mysqlQuery('SHOW COLUMNS FROM ' .$table));
+		$this->index = $this->fields[0];
 		
 		// AJOUT ET MODIFICATION
 		if(isset($_POST['edit'])) 
@@ -261,26 +269,33 @@ class AdminClass
 				if($_POST['edit'] == 'add')
 					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate), 'Objet ajouté'));
 				else
-					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate). ' WHERE id=' .$_POST['edit'], 'Objet modifié'));
+					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate). ' WHERE ' .$this->index. '="' .$_POST['edit']. '"', 'Objet modifié'));
 			}
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
 		// SUPPRESSION
 		if(isset($_GET['delete']))
 		{
-			$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$_GET['delete']);
-			if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
+			// Images liées
+			if(in_array('path', $this->fields))
+			{
+				$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$_GET['delete']. '"');
+				if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
+			}
 			else
 			{
-				$picExtension = array('jpg', 'jpeg', 'gif', 'png');
-				foreach($picExtension as $value)
+				if(file_exists('file/' .$this->table))
 				{
-					$thisFile = $_GET['delete']. '.' .$value;
-					sunlink('file/' .$this->table. '/' .$thisFile);
+					$picExtension = array('jpg', 'jpeg', 'gif', 'png');
+					foreach($picExtension as $value)
+					{
+						$thisFile = $_GET['delete']. '.' .$value;
+						sunlink('file/' .$this->table. '/' .$thisFile);
+					}
 				}
 			}
 						
-			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE id=' .$_GET['delete'], 'Objet supprimé'));
+			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE ' .$this->index. '="' .$_GET['delete']. '"', 'Objet supprimé'));
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
@@ -324,7 +339,7 @@ class AdminClass
 						break;
 						
 					case 'path':
-						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE id=' .$lastID);
+						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$lastID. '"');
 						if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
 						sunlink('file/' .$this->table. '/' .$lastID. '.jpg');
 						$file = $lastID. '-' .md5(randomString()). '.' .$extension;
