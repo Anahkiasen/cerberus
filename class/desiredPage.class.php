@@ -90,11 +90,11 @@ class desiredPage
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
 				if($key != 'admin' or ($key == 'admin' and $_SERVER['HTTP_HOST'] == 'localhost:8888'))
-					$this->treeNavigation[$key] = rewrite($key, array('nosub' => true));			
+					$this->treeNavigation[$key] = rewrite($key, array('subnav' => $this->optionSubnav));			
 		
 		if(!isset($this->treeSubnav) and $this->optionSubnav)
 			foreach($this->cacheTree[$this->page] as $key)
-			$this->treeSubnav[$key] = rewrite(array($this->page, $key), array('nosub' => true));			
+			$this->treeSubnav[$key] = rewrite(array($this->page, $key), array('subnav' => $this->optionSubnav));			
 	}
 	
 	// Altération des liens de la liste

@@ -26,10 +26,10 @@ function rewrite($page, $params = '')
 	else $page1 = '';
 	
 	// Pas de sous-navigation
-	if(isset($params['nosub']))
+	if(isset($params['subnav']))
 	{
-		$page1 = '';
-		unset($params['nosub']);
+		if($params['subnav'] != true) $page1 = '';
+		unset($params['subnav']);
 	}
 
 	// Si le nom HTML de la page est fourni

@@ -50,8 +50,11 @@ class sendMail
 	// Message en HTML
 	function messageHTML($absoluteURL)
 	{
-		$this->absoluteURL = $absoluteURL;
-		
+		global $index;
+		$this->absoluteURL = (isset($index['http']))
+			? $index['http']
+			: $absoluteURL;
+			
 		$this->messageHTML = '
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 		<html xmlns="http://www.w3.org/1999/xhtml">
@@ -71,8 +74,8 @@ class sendMail
 		</body>
 		</html>';
 		
-		$this->messageHTML = preg_replace('#<img src="(.+)" />#isU', '<img src="' .$absoluteURL. '$1">', $this->messageHTML);
-		$this->messageHTML = str_replace($index['http']. 'http:', 'http:', $this->messageHTML);
+		$this->messageHTML = preg_replace('#<img src="(.+)" />#isU', '<img src="' .$this->absoluteURL. '$1">', $this->messageHTML);
+		$this->messageHTML = str_replace($this->absoluteURL. 'http:', 'http:', $this->messageHTML);
 	}
 	
 	// Précision de l'expéditeur
@@ -106,7 +109,7 @@ class sendMail
 		{
 			$message .= "\n\n--".$this->boundary_alt."\n";
 			$message .= "Content-Type: text/html; ";
-			$message .= "charset=\"iso-8859-1\"; ";
+			$message .= "charset=\"utf-8\"; ";
 			$message .= "Content-Transfer-Encoding: 8bit;\n\n";
 			$message .= $this->messageHTML;
 		}
