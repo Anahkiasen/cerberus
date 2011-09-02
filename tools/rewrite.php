@@ -61,7 +61,7 @@ function rewrite($page, $params = '')
 		{
 			if(is_array($params)) $lien .= simplode('-', '/', $params);
 			else $lien .= $params;
-			$lien .= '/';
+			if($lien[strlen($lien)-1] != '/') $lien .= '/';
 		}
 		$lien = str_replace($page0. '-', '', $lien);
 				

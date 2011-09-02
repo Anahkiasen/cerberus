@@ -170,20 +170,21 @@ class AdminClass
 		
 		if($manualQuery == FALSE)
 		{
-			$availableFields = array_keys(mysqlQuery('DESCRIBE meta'));
+			$availableFields = array_keys(mysqlQuery('DESCRIBE ' .$this->table));
+			$newFieldsList = $fieldsList;
 			
-			array_unshift($fieldsList, 'id');
-			foreach($fieldsList as $key => $value)
-				if(!in_array($value, $availableFields)) unset($fieldsList[$key]);
+			array_unshift($newFieldsList, 'id');
+			foreach($newFieldsList as $key => $value)
+				if(!in_array($value, $availableFields)) unset($newFieldsList[$key]);
 				else if(!isset($index)) $index = $value;			
 			
 			// Multilingue ou non
 			$isLang = ($this->multilangue) 
 				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
 				: '';
-			$thisQuery = 'SELECT ' .implode(',', $fieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$index. ' DESC';
+			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$index. ' DESC';
 		}
-		
+				
 		$thisGroup = '';
 		$items = mysqlQuery($thisQuery, TRUE);
 		if($items) foreach($items as $key => $value)

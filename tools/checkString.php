@@ -27,13 +27,18 @@ function checkFields()
 {
 	global $index;
 	
+	$mailbody = '';
 	$fields = func_get_args();
 	$filled = $fields;
 	$erreurs = array();
 	$multilangue = (isset($index['fr']['form-erreur-email']));
 
 	foreach($_POST as $key => $value)
-		if(!empty($value) and in_array($key, $fields)) $filled = array_diff($filled, array($key));
+		if(!empty($value) and in_array($key, $fields))
+		{
+			$filled = array_diff($filled, array($key));
+			if($multilangue == true) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
+		}
 	
 	// On vérifie que les champs sont remplis
 	if(!empty($filled))
@@ -68,6 +73,6 @@ function checkFields()
 		echo display(implode('<br />', $erreurs));
 		return false;
 	}
-	else return true;
+	else return ($multilangue == true) ? $mailbody : true;
 }
 ?>
