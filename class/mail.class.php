@@ -48,7 +48,7 @@ class sendMail
 	}
 	
 	// Message en HTML
-	function messageHTML($absoluteURL)
+	function messageHTML($absoluteURL = '')
 	{
 		global $index;
 		$this->absoluteURL = (isset($index['http']))
