@@ -24,6 +24,13 @@ function rewrite($page, $params = '')
 	if(isset($page[1])) $page1 = $page[1];
 	elseif(!isset($page[1]) and isset($navigation[$page0])) $page1 = $navigation[$page0][0];
 	else $page1 = '';
+	
+	// Pas de sous-navigation
+	if(isset($params['nosub']))
+	{
+		$page1 = '';
+		unset($params['nosub']);
+	}
 
 	// Si le nom HTML de la page est fourni
 	if(isset($params['html']))

@@ -90,11 +90,11 @@ class desiredPage
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
 				if($key != 'admin' or ($key == 'admin' and $_SERVER['HTTP_HOST'] == 'localhost:8888'))
-					$this->treeNavigation[$key] = rewrite($key);			
+					$this->treeNavigation[$key] = rewrite($key, array('nosub' => true));			
 		
 		if(!isset($this->treeSubnav) and $this->optionSubnav)
 			foreach($this->cacheTree[$this->page] as $key)
-			$this->treeSubnav[$key] = rewrite(array($this->page, $key));			
+			$this->treeSubnav[$key] = rewrite(array($this->page, $key), array('nosub' => true));			
 	}
 	
 	// Altération des liens de la liste
@@ -126,17 +126,21 @@ class desiredPage
 			unset($keys);
 		
 		// Sous-navigation
-		if(!empty($this->treeSubnav)) foreach($this->treeSubnav as $key => $value)
+		if(!empty($this->treeSubnav))
 		{
-			$linkText = ($this->optionMultilangue) ? index('menu-' .$this->page. '-' .$key) : $this->cacheTree[$key];						
-			$hover = ($key == $this->pageSub) ? ' class="hover"' : '';
-			$keys[] = ($this->optionListedSub)
-				? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'
-				: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
+			foreach($this->treeSubnav as $key => $value)
+			{
+				$linkText = ($this->optionMultilangue) ? index('menu-' .$this->page. '-' .$key) : $this->cacheTree[$key];						
+				$hover = ($key == $this->pageSub) ? ' class="hover"' : '';
+				$keys[] = ($this->optionListedSub)
+					? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'
+					: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
+			}
+			$this->renderSubnav = ($this->optionListedSub)
+				? '<ul>' .implode($glue, $keys). '</ul>'
+				: implode($glue, $keys);
 		}
-		$this->renderSubnav = ($this->optionListedSub)
-			? '<ul>' .implode($glue, $keys). '</ul>'
-			: implode($glue, $keys);
+		else $this->renderSubnav = '';
 
 		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav, $this->filePath);
 	}

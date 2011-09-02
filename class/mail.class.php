@@ -53,14 +53,20 @@ class sendMail
 		$this->absoluteURL = $absoluteURL;
 		
 		$this->messageHTML = '
-		<html>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+		<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
-			<link href="' .$this->absoluteURL. 'css/styles.css" rel="stylesheet" type="text/css" />
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<link href="' .$this->absoluteURL. 'css/mail.css" rel="stylesheet" type="text/css" />
 		</head>
 		
-		<body>
-			<div id="mail-body">
-				' .$this->contenu. '
+		<body id="mail">
+			<div id="header"></div>
+			<div id="corps">
+				<h1>' .$this->sujet. '</h1>
+				<div id="message">
+					' .$this->contenu. '
+				</div>
 			</div>
 		</body>
 		</html>';
