@@ -13,7 +13,6 @@
 function normalize($string, $url = false)
 {
 	$specialChar = array(
-	' ' => '_',
 	'.' => '',
 	'=' => '-',
 	'"' => '',
@@ -92,7 +91,8 @@ function normalize($string, $url = false)
 	'ž' => 'z');
 	
 	$return = trim(strtolower(strtr($string, $specialChar)));
-	if($url == true) $return = str_replace('_', '-', $return);
+	if($url == true) $return = str_replace(' ', '-', $return);
+	else $return = str_replace(' ', '_', $return);
 	$return = str_replace('---', '-', $return);
 	
 	return $return;
