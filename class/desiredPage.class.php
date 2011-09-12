@@ -47,6 +47,9 @@ class desiredPage
 		$this->optionMultilangue = (isset($index));
 		$this->options = boolprint($this->optionMultilangue).boolprint($this->optionSubnav);
 		
+		// Page par défaut
+		$this->page = $this->allowedPages[0];
+		
 		// Page actuelle
 		if(isset($_GET['page']))
 		{
@@ -68,9 +71,15 @@ class desiredPage
 		elseif(file_exists('pages/' .$filename. '.php')) $pageExtension = '.php';
 		else 
 		{
-			$this->page = 'home';
-			if($this->optionSubnav) $pageSubString = '-home';
-			$pageExtension = '.php';
+			$this->page = $this->allowedPages[0];
+			if($this->optionSubnav)
+			{
+				$this->pageSub = $navigation[$this->page][0];
+			 	$pageSubString = '-' .$this->pageSub;
+			}
+			$pageExtension = (file_exists('pages/' .$this->page.$pageSubString. '.php'))
+				? '.php'
+				: '.html';
 		}
 		$this->filePath = $this->page.$pageSubString.$pageExtension;
 	}
@@ -98,12 +107,24 @@ class desiredPage
 	}
 	
 	// Altération des liens de la liste
-	function alterTree($key, $newLink, $subTree = false)
+	function alterTree($key, $newLink = '', $subTree = false)
 	{
 		$this->createTree();
 		
+		if(findString('-', $key))
+		{
+			$key = explode('-', $key);
+			$sup = $key[0];
+			$key = $key[1];
+			$subTree = true;
+		}
+		
 		$thisTree = ($subTree == true) ? 'treeSubnav' : 'treeNavigation';
-		if(isset($this->{$thisTree}[$key])) $this->{$thisTree}[$key] = $newLink;
+		if(!empty($newLink))
+		{
+			if(isset($this->{$thisTree}[$key])) $this->{$thisTree}[$key] = $newLink;
+		}
+		else unset($this->{$thisTree}[$key]);
 	}
 	
 	function render($glue = '')

@@ -106,7 +106,11 @@ if(!file_exists('../../index.php'))
 		
 		// Création des dossiers
 		mkdir('../../css/');
-		if(isset($_POST['site-tree'])) mkdir('../../pages/');
+		if(isset($_POST['site-tree']))
+		{
+			mkdir('../../pages/');
+			sfputs('../../pages/home-home.html', '');
+		}
 		if(isset($_POST['file-js'])) mkdir('../../js/');
 		if(isset($_POST['file-file'])) mkdir('../../file/');
 		mkdir('../cache/');

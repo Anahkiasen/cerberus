@@ -150,6 +150,16 @@ class Cerberus
 		// Traitement des modules
 		if(!empty($renderArray))
 		{
+			// Suppressions des fonctions non voulues
+			foreach($renderArray as $key => $value)
+			{
+				if(findString('!', $value))
+				{
+					unset($renderArray[array_search(substr($value, 1), $renderArray)]);
+					unset($renderArray[$key]);
+				}
+			}
+
 			if($mode == 'API')
 			{
 				foreach($renderArray as $value) 
