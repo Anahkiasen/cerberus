@@ -8,6 +8,7 @@ class Cerberus
 	######################################## */
 	
 	public $productionMode;
+	public $meta;
 
 	// Paramètres
 	private $render;
@@ -25,13 +26,13 @@ class Cerberus
 			
 	function __construct($modules, $productionMode = FALSE, $mode = 'core')
 	{
-		if(!is_array($modules)) $modules = array($modules);
+		if(!is_array($modules)) $modules = array($modules);		
 		
 		// Modules coeur
 		$modules = array_merge(
 			array(
 				'display', 'boolprint', 'timthumb',
-				'sfputs', 'simplode', 'sunlink'),
+				'findString', 'sfputs', 'simplode', 'sunlink'),
 			$modules);
 		$this->productionMode = $productionMode;
 	
@@ -49,6 +50,12 @@ class Cerberus
 		
 		// Include du fichier
 		$this->inclure();
+		
+		if(file_exists('cerberus/cache/conf.php')) connectSQL();
+
+		// Définition des constantes
+		if(!defined('PRODUCTION'))
+			define('PRODUCTION', 'lolilol');
 	}
 	
 	/* ########################################
@@ -116,8 +123,8 @@ class Cerberus
 		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
 		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'ColorBox' => 'js/jquery.colorbox-min.js',
-		'nivoSlider' => 'js/jquery.nivo.slider.pack.js');
+		'ColorBox' => 'jquery.colorbox-min',
+		'nivoSlider' => 'jquery.nivo.slider.pack');
 	
 		// Page en cours
 		global $pageVoulue;
@@ -162,17 +169,25 @@ class Cerberus
 
 			if($mode == 'API')
 			{
+				$minCSS[] = 'css/cerberus.css';
+			
 				foreach($renderArray as $value) 
 				{
 					$thisScript = strtolower($value);
-					if(isset($availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
-					else $js .= '<script type="text/javascript" src="js/' .$value. '.js"></script>';
+					if(isset($availableAPI[$value]))
+					{
+						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+						else $minJS[] = 'js/' .$availableAPI[$value]. '.js';
+					}
+					elseif(findString('.js', $value)) $minJS[] = $value;
+					elseif(findString('.css', $value)) $minCSS[] = $value;
+					else $minJS[] = 'js/' .$value. '.js';
 					
-					if(file_exists('css/' .$thisScript. '.css')) $css .= '<link href="css/' .$thisScript. '.css" rel="stylesheet" type="text/css" />';
-					$js .= "\n";
-					$css .= "\n";
+					if(file_exists('css/' .$thisScript. '.css')) $minCSS[] = 'css/' .$thisScript. '.css';
 				}
-		
+				
+				$css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
+				$js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
 				return array(trim($css), trim($js), $renderArray);
 			}
 			else $cerberus = new Cerberus($renderArray, $this->productionMode, 'include');
@@ -209,9 +224,9 @@ class Cerberus
 	########### FONCTIONS EXPORT #############
 	######################################## */
 
-	function url()
+	function meta()
 	{
-		//return geturl(TRUE);
+		return mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
 	}
 	function debugMode()
 	{

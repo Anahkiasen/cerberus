@@ -127,6 +127,10 @@ class AdminClass
 	{	
 		global $_SESSION;
 		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
+		
+		// Ajout des pages par défaut
+		$systemPages = array('meta', 'backup');
+		$thisNavigation = array_merge($thisNavigation, $systemPages);
 		 
 		$this->adminLogin();
 		
@@ -137,7 +141,13 @@ class AdminClass
 			$title = 'Administration';
 			if(!empty($thisNavigation))
 			{
-				if(isset($_GET['admin']) && in_array($_GET['admin'], $thisNavigation) && file_exists('pages/admin-' .$_GET['admin']. '.php'))
+				if
+				(
+					isset($_GET['admin']) and
+					in_array($_GET['admin'], $thisNavigation) and
+					(file_exists('pages/admin-' .$_GET['admin']. '.php')
+						or in_array($_GET['admin'], $systemPages))
+				)
 					$title = ($this->multilangue) ? index('admin-' .$_GET['admin']) : ucfirst($_GET['admin']);
 			}
 			
@@ -145,9 +155,83 @@ class AdminClass
 			$this->admin_navigation($thisNavigation);
 			
 			echo '<div id="admin">';
-			if($title != 'Administration') include('pages/admin-' .$_GET['admin']. '.php');
+			if($title != 'Administration')
+			{
+				if($_GET['admin'] == 'meta') $this->meta();
+				elseif($_GET['admin'] == 'backup') $this->backup();
+				else include('pages/admin-' .$_GET['admin']. '.php');
+			}
 			echo '</div>';
 		}
+	}
+	// PAGE META
+	function meta()
+	{
+		$metaAdmin = new AdminClass();
+		$metaAdmin->setPage('meta');
+		$metaAdmin->createList(array('page'));
+		
+		// Formulaire
+		if(isset($_GET['add']) || isset($_GET['edit']))
+		{	
+			// Paramètres ajout/modif
+			if(isset($_GET['edit']))
+			{
+				$diffText = 'Modifier';
+				$urlAction = 'edit=' .$_GET['edit'];
+			}
+			else
+			{
+				$diffText = 'Ajouter';
+				$urlAction = 'add';
+			}
+			
+			global $navigation;
+			
+			foreach($navigation as $key => $value)
+				foreach($value as $page) $availablePages[] = $key. '-' .$page;
+		
+			$form = new form(false, array('action' => 'index.php?page=admin&admin=meta&' .$urlAction));
+			$select = new select();
+			$form->getValues($metaAdmin->getFieldsTable());
+			
+			$form->openFieldset($diffText. ' des données meta');
+				$select->newSelect('page', 'Identifiant de la page'); 
+					$select->appendList($availablePages);
+					$form->insertText($select);
+				$form->addText('titre', 'Titre de la page');
+				$form->addText('lien', 'URL de la page');
+				$form->addTextarea('description', 'Description de la page', '', array('underfield' => true));
+				$form->addEdit();
+				$form->addSubmit($diffText);
+			$form->closeFieldset();
+			
+			echo $form;
+		}
+	}
+	// BACKUP
+	function backup()
+	{
+		echo '
+		<table>
+			<thead>
+				<tr class="entete">
+					<td>Date</td>
+					<td>Charger</td>
+					<td>Supprimer</td>
+				</tr>
+			</thead>
+			<tbody>';
+			
+		foreach(glob('./cerberus/cache/sql/*') as $file)  
+		{  
+			if(is_dir($file))
+			{
+				$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
+				echo '<tr><td>' .$folderDate. '</td><td></td><td></td></tr>';
+			}
+		}  
+		echo '</tbody></table>';
 	}
 	
 	/* ########################################

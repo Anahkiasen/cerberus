@@ -115,6 +115,7 @@ if(!file_exists('../../index.php'))
 		if(isset($_POST['file-file'])) mkdir('../../file/');
 		mkdir('../cache/');
 		mkdir('../cache/sql/');
+		copydir('min', '../../min');
 	
 		// Déplacement des fichiers CSS et PHP
 		copy('styles.css', '../../css/styles.css');

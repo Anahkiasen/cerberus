@@ -31,16 +31,14 @@
 */
 function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 {
-	global $PRODUCTION;
-	
 	$index = array();
 	$filename = $database. '.php';
 	
 	$tables = mysqlQuery('SELECT tag FROM langue LIMIT 1');
 	if(!empty($tables))
 	{
-		if(file_exists($filename) and $PRODUCTION == FALSE) unlink($filename); // Suppression de la version existante
-		if(file_exists($filename) and $PRODUCTION == TRUE) include_once($filename);
+		if(file_exists($filename) and PRODUCTION == FALSE) unlink($filename); // Suppression de la version existante
+		if(file_exists($filename) and PRODUCTION == TRUE) include_once($filename);
 		else
 		{
 			// Récupération de la base de langues

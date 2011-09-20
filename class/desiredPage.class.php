@@ -13,9 +13,13 @@ class desiredPage
 	// Options de fonctionnement
 	private $optionMultilangue = TRUE;
 	private $optionSubnav = TRUE;
+	private $optionMono = FALSE;
+	
 	private $optionRewrite = TRUE;
+	
 	private $optionListed = FALSE;
 	private $optionListedSub = FALSE;
+	
 	private $options;
 
 	// Paramètres
@@ -67,9 +71,8 @@ class desiredPage
 		
 		// Include de la page
 		$filename = $this->page.$pageSubString;
-		if(file_exists('pages/' .$filename. '.html')) $pageExtension = '.html';
-		elseif(file_exists('pages/' .$filename. '.php')) $pageExtension = '.php';
-		else 
+		$fileExists = $this->fileExists($filename);
+		if($fileExists == FALSE)
 		{
 			$this->page = $this->allowedPages[0];
 			if($this->optionSubnav)
@@ -77,15 +80,14 @@ class desiredPage
 				$this->pageSub = $navigation[$this->page][0];
 			 	$pageSubString = '-' .$this->pageSub;
 			}
-			$pageExtension = (file_exists('pages/' .$this->page.$pageSubString. '.php'))
-				? '.php'
-				: '.html';
+			$fileExists = $this->fileExists($this->page.$pageSubString);
 		}
-		$this->filePath = $this->page.$pageSubString.$pageExtension;
+		
+		$this->filePath = $this->page.$pageSubString.$fileExists;
 	}
-	function setRewrite($isRewrite)
+	function set($variable, $value)
 	{
-		$this->optionRewrite = $isRewrite;
+		$this->{$variable} = $value;
 	}
 	function setListed($isListed, $isListedSub)
 	{
@@ -136,10 +138,13 @@ class desiredPage
 		foreach($this->treeNavigation as $key => $value)
 		{
 			$linkText = ($this->optionMultilangue) ? index('menu-' .$key) : $this->cacheTree[$key];			
-			$hover = ($key == $this->page) ? ' class="hover"' : '';
+			$hover = ($key == $this->page) ? ' hover' : '';
+			$mono = (($this->optionMono or $value == 'mono') and $key != 'admin')
+				? 'id="mono-' .$key. '" rel="mono"'
+				: 'href="' .$value. '"';
 			$keys[] = ($this->optionListed)
-				? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'
-				: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
+				? '<li class="menu-' .$key. ' ' .$hover.'"><a ' .$mono. '>' .$linkText. '</a></li>'
+				: '<a ' .$mono. ' class="menu-' .$key. ' ' .$hover.'">' .$linkText. '</a>';
 		}
 		$this->renderNavigation = ($this->optionListed)
 			? '<ul>' .implode($glue, $keys). '</ul>'
@@ -164,6 +169,49 @@ class desiredPage
 		else $this->renderSubnav = '';
 
 		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav, $this->filePath);
+	}
+	
+	// Génération du contenu
+	function content()
+	{
+		/*
+		if($this->optionMono and $this->page != 'admin')
+		{
+			foreach($this->cacheTree as $key => $value)
+			{
+				foreach($value as $subkey => $subval)
+				{
+					$page = $key. '-' .$subval;
+					$extension = $this->fileExists($page);
+					if($extension)
+					{
+						echo '<div class="mono" id="content-' .$page. '">';
+						include('pages/' .$page.$extension);
+						echo '</div>';
+					}
+				}
+			}
+		}
+		else
+		{
+			if(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
+			else echo display('Une erreur est survenue lors du chargement de la page');
+		}
+		*/
+		
+		if(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
+		else echo display('Une erreur est survenue lors du chargement de la page');
+	}
+	
+	function fileExists($page)
+	{
+		if(file_exists('pages/' .$page. '.html')) return '.html';
+		elseif(file_exists('pages/' .$page. '.php')) return '.php';
+		else 
+		{
+			return FALSE;
+			echo display('Une erreur est survenue lors du chargement de la page');
+		}
 	}
 }
 ?>

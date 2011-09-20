@@ -30,6 +30,7 @@ p.infoblock,
 ######### BALISES COMMUNES #############
 ########################################
 */
+a img { border: none }
 p.clear { clear:both; }
 p.infoblock,
 p.readmore

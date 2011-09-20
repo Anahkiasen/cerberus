@@ -7,8 +7,21 @@ function timthumb($file, $width = '', $height = '', $crop = 1, $mode = FALSE)
 	if($mode == true) return 'file/' .$file;
 	else
 	{
+		// Tailles en pourcentages
+		if(findString('%', $width))
+		{
+			$width = str_replace('%', '', $width);
+			$width = $height * ($width / 100);
+		}
+		elseif(findString('%', $height))
+		{
+			$height = str_replace('%', '', $height);
+			$height = $width * ($height / 100);
+		}
+	
 		if(!empty($width)) $params['w'] = $width;
 		if(!empty($height)) $params['h'] = $height;
+		
 		$params['zc'] = $crop;
 		$params['s'] = 1;
 		
