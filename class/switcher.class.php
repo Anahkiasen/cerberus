@@ -46,6 +46,11 @@ class switcher
 		elseif(file_exists('pages/switch-'.$content.'.php')) return 'pages/switch-'.$content.'.php';
 		else echo display('Bloc [' .$content. '] non trouvé');
 	}
+	
+	function returnList()
+	{
+		return $this->possible;
+	}
 }
 
 // Raccourci

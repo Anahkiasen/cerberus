@@ -122,6 +122,7 @@ if(!file_exists('../../index.php'))
 		copy('mail.css', '../../css/mail.css');
 		copy('img/cross.png', '../../css/cross.png');
 		copy('img/pencil.png', '../../css/pencil.png');
+		copy('img/load.png', '../../css/load.png');
 		
 		copy('cerberus.css', '../../css/cerberus.css');
 		copydir('overlay', '../../css/overlay');

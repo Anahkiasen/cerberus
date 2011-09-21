@@ -212,7 +212,27 @@ class AdminClass
 	// BACKUP
 	function backup()
 	{
-		echo '
+		if(isset($_GET['delete']))
+		{
+			$path = 'cerberus/cache/sql/' .$_GET['delete']. '/';
+			if(file_exists($path))
+			{
+				sunlink($path);
+				echo display('La sauvegarde du ' .$_GET['load']. ' a bien été supprimée');
+			}
+			else echo display('Sauvegarde introuvable');
+		}
+		if(isset($_GET['load']))
+		{
+			include('cerberus/cache/conf.php');
+			foreach(glob('cerberus/cache/sql/' .$_GET['load']. '/*.sql') as $file)
+				$fichier = $file;
+				
+			multiQuery(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
+			echo display('La sauvegarde du ' .$_GET['load']. ' a bien été chargée');
+		}
+	
+		echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
 		<table>
 			<thead>
 				<tr class="entete">
@@ -228,7 +248,12 @@ class AdminClass
 			if(is_dir($file))
 			{
 				$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
-				echo '<tr><td>' .$folderDate. '</td><td></td><td></td></tr>';
+				echo 
+				'<tr>
+				<td>' .$folderDate. '</td>
+				<td><a href="index.php?page=admin&admin=backup&load=' .$folderDate. '"><img src="css/load.png" /></a></td>
+				<td><a href="index.php?page=admin&admin=backup&delete=' .$folderDate. '"><img src="css/cross.png" /></a></td>
+				</tr>';
 			}
 		}  
 		echo '</tbody></table>';
