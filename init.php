@@ -55,7 +55,7 @@ class Cerberus
 
 		// Définition des constantes
 		if(!defined('PRODUCTION'))
-			define('PRODUCTION', 'lolilol');
+			define('PRODUCTION', FALSE);
 	}
 	
 	/* ########################################
@@ -118,6 +118,17 @@ class Cerberus
 	// Répartition des fonctions entre les pages
 	function cerberusDispatch($array, $page = '', $mode = 'PHP')
 	{
+		// Dédoublage des groupes
+		foreach($array as $key => $value)
+		{
+			if(strpos($key, ',') != FALSE)
+			{
+				$keys = explode(',', $key);
+				foreach($keys as $pages) $array[$pages] = $value;
+				unset($array[$key]);
+			}
+		}
+		
 		// API
 		$availableAPI = array(
 		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',

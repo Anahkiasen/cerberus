@@ -199,7 +199,10 @@ class desiredPage
 		}
 		*/
 		
-		if(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
+		global $switcher;
+		
+		if(isset($switcher) and file_exists($switcher->path('php').$this->filePath)) include_once $switcher->path('php').$this->filePath;
+		elseif(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
 		else echo display('Une erreur est survenue lors du chargement de la page');
 	}
 	
