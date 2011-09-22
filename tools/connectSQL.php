@@ -100,6 +100,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		$database = (isset($database_name[1]))
 			? $database_name[1]
 			: $database_name;
+		if(is_array($database)) $database = $database[0];
 	
 		if(empty($tables_base))
 		{
