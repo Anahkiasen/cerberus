@@ -245,10 +245,14 @@ class Cerberus
 			global $pageVoulue;
 			global $sousPageVoulue;
 		
-			$pageTitle = index('menu-' .$pageVoulue); 
+			$defaultTitle = index('menu-' .$pageVoulue);
 			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
-				$pageTitle .= ' - ' .$meta[$pageVoulue. '-' .$sousPageVoulue]['titre'];
-			return $pageTitle;
+			{
+				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];
+				$thisMeta['titre'] = $defaultTitle. ' - ' .$thisMeta['titre'];
+				return $thisMeta[$mode];
+			}
+			else if($mode == 'titre') return $defaultTitle;
 		}
 	}
 	// Mode production ou non
