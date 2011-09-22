@@ -122,7 +122,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		elseif(!empty($tables_base) and function_exists('backupSQL'))
 		{
 			// Si tout va bien, on effectue une sauvegarde
-			backupSQL($database);	
+			 if($localhost != 'Maxime') backupSQL($database);	
 		}
 		else die('Une erreur est survenue lors du chargement de la base de données');
 	}
