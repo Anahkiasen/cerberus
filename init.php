@@ -235,10 +235,23 @@ class Cerberus
 	########### FONCTIONS EXPORT #############
 	######################################## */
 
-	function meta()
+	// Fonction META 
+	function meta($mode = 'meta')
 	{
-		return mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
+		if($mode == 'meta') return mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
+		else
+		{
+			global $meta;
+			global $pageVoulue;
+			global $sousPageVoulue;
+		
+			$pageTitle = index('menu-' .$pageVoulue); 
+			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
+				$pageTitle .= ' - ' .$meta[$pageVoulue. '-' .$sousPageVoulue]['titre'];
+			return $pageTitle;
+		}
 	}
+	// Mode production ou non
 	function debugMode()
 	{
 		if($_SERVER['HTTP_HOST'] == 'localhost:8888') return false;
