@@ -5,10 +5,9 @@ class switcher
 	private $possible;
 	private $actual;
 	
-	function __construct($possible)
+	function __construct()
 	{
-		if(!is_array($possible)) $possible = array($possible);
-		$this->possible = $possible;
+		$this->possible = func_get_args();
 		
 		// Définition de la variante actuelle
 		if(isset($_SESSION['switch'])) $this->actual = $_SESSION['switch'];

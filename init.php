@@ -117,18 +117,7 @@ class Cerberus
 	
 	// Répartition des fonctions entre les pages
 	function cerberusDispatch($array, $page = '', $mode = 'PHP')
-	{
-		// Dédoublage des groupes
-		foreach($array as $key => $value)
-		{
-			if(strpos($key, ',') != FALSE)
-			{
-				$keys = explode(',', $key);
-				foreach($keys as $pages) $array[$pages] = $value;
-				unset($array[$key]);
-			}
-		}
-		
+	{		
 		// API
 		$availableAPI = array(
 		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
@@ -141,12 +130,30 @@ class Cerberus
 		global $pageVoulue;
 		global $sousPageVoulue;
 		
+		// Dédoublage des groupes
+		foreach($array as $key => $value)
+		{
+			if(strpos($key, ',') != FALSE)
+			{
+				$keys = explode(',', $key);
+				foreach($keys as $pages)
+				{
+					$array[$pages] = (isset($array[$pages]))
+					? array_merge($value, $array[$pages])
+					: $value;
+				}
+				unset($array[$key]);
+			}
+		}		
+		
+		// Variables par défaut
 		if(empty($page)) $page = $pageVoulue. '-' .$sousPageVoulue;
 		$explode = explode('-', $page); 
 		$css = $js = "\n";
 		$thisModules =
 		$thisSubmodules = array();
 		
+		// Véritifcation de la présence de modules concernés (page/pagesouspage/*)
 		if(isset($array[$page]))
 		{
 			if(!is_array($array[$page])) $thisModules = array($array[$page]);
@@ -165,7 +172,6 @@ class Cerberus
 		$renderArray = array_merge($thisModules, $thisSubmodules);
 		if(isset($this->cacheCore) and $mode == 'PHP') $renderArray = array_values(array_diff($renderArray, $this->cacheCore));
 				
-		// Traitement des modules
 		if(!empty($renderArray))
 		{
 			// Suppressions des fonctions non voulues
@@ -178,10 +184,9 @@ class Cerberus
 				}
 			}
 
+			// Traitement des modules
 			if($mode == 'API')
 			{
-				$minCSS[] = 'css/cerberus.css';
-			
 				foreach($renderArray as $value) 
 				{
 					$thisScript = strtolower($value);
@@ -190,11 +195,13 @@ class Cerberus
 						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
 						else $minJS[] = 'js/' .$availableAPI[$value]. '.js';
 					}
-					elseif(findString('.js', $value)) $minJS[] = $value;
-					elseif(findString('.css', $value)) $minCSS[] = $value;
-					else $minJS[] = 'js/' .$value. '.js';
-					
-					if(file_exists('css/' .$thisScript. '.css')) $minCSS[] = 'css/' .$thisScript. '.css';
+					elseif(findString('.js', $thisScript)) $minJS[] = $thisScript;
+					elseif(findString('.css', $thisScript)) $minCSS[] = $thisScript;
+					else
+					{
+						if(file_exists('js/' .$thisScript. '.js')) $minJS[] = 'js/' .$thisScript. '.js';
+						if(file_exists('css/' .$thisScript. '.css')) $minCSS[] = 'css/' .$thisScript. '.css';
+					}
 				}
 				
 				$css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
@@ -205,8 +212,42 @@ class Cerberus
 		}
 	}
 	
+	// Répartition des scripts et styles
 	function cerberusAPI($array, $page = '')
 	{
+		global $pageVoulue;
+		global $sousPageVoulue;
+		global $switcher;
+		
+		if(isset($switcher)) $path = $switcher->path();
+		
+		// Fichiers par défaut
+		$defaultCSS = 'css/styles.css';
+		$defaultJS = 'js/scripts.js';
+		$array['*'][] = 'css/cerberus.css';
+		if(file_exists($defaultCSS)) $array['*'][] = $defaultCSS;
+		if(file_exists($defaultJS)) $array['*'][] = $defaultJS;
+		if(isset($path))
+		{
+			if(file_exists($path.$defaultCSS)) $array['*'][] = $path.$defaultCSS;
+			if(file_exists($path.$defaultJS)) $array['*'][] = $path.$defaultJS;
+		}
+				
+		// Fichiers spécifiques aux pages
+		$precore = array($pageVoulue, $pageVoulue. '-' .$sousPageVoulue);
+		foreach($precore as $thispage)
+		{
+			$css = 'css/page-' .$thispage. '.css';
+			$js = 'js/page-' .$thispage. '.js';
+			
+			if(file_exists($css)) $array[$thispage][] = $css;
+			if(file_exists($js)) $array[$thispage][] = $js;
+			if(isset($path))
+			{
+				if(file_exists($path.$css)) $array[$thispage][] = $path.$css;
+				if(file_exists($path.$js)) $array[$thispage][] = $path.$js;
+			}
+		}
 		return $this->cerberusDispatch($array, $page, 'API');
 	}
 		
