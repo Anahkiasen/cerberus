@@ -1,32 +1,39 @@
 <?php
 // Chargement du moteur Cerberus
 include_once('cerberus/init.php');
-$cerberus = new Cerberus(array('browserSelector', 'cssFont', 'pack.sql', 'createIndex', 'class.desired'));
-connectSQL('localbdd');
-$PRODUCTION = $cerberus->debugMode();
-$index = createIndex();
+$cerberus = new Cerberus(array('browserSelector', 'cssFont', 'createIndex', 'pack.sql', 'pack.navigation'));
+connectSQL([BDD]);
+
+// Langues
+$index = createIndex(array('fr'));
+
+// Globales
+$meta = $cerberus->meta();
+$thisAgent = browserSelector();
+$rewriteMode = false;
 
 // Arbre de navigation et page en cours
-$navigation = array();
+$navigation = array(
+	);
 $desiredPage = new desiredPage($navigation);
 list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->render();
 
-// Dispatch des fonctions et API
-$cerberus->cerberusDispatch(array());
+// Dispatch des fonctions PHP
+$cerberus->cerberusDispatch(array(
+	));
 
-list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array());
-
-$thisAgent = browserSelector();
+// Dispatch des fonctions JS
+list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
+		));
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="<?= $thisAgent ?>">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title><?= index('menu-' .$pageVoulue) ?></title>
+<title><?= $cerberus->meta('titre') ?></title>
+<meta name="description" content="<?= $cerberus->meta('description'); ?>" />
 <? cssFont(array('Open Sans')) ?>
 <?= $css ?>
-<link href="css/cerberus.css" rel="stylesheet" type="text/css" />
-<link href="css/styles.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="<?= $pageVoulue ?>">

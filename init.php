@@ -72,7 +72,7 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
-			'pack.navigation' => array('normalize', 'desiredPage', 'getURL'),
+			'pack.navigation' => array('normalize', 'desiredPage', 'getURL', 'rewrite'),
 			'pack.rewrite' => array('baseref', 'rewrite', 'normalize'),
 			'class.admin' => array('admin', 'findString', 'getURL', 'normalize', 'randomString'),
 			'class.desired' => array('desiredPage', 'getURL'),
@@ -204,8 +204,8 @@ class Cerberus
 					}
 				}
 				
-				$css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
-				$js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
+				if(!empty($minCSS)) $css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
+				if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
 				return array(trim($css), trim($js), $renderArray);
 			}
 			else $cerberus = new Cerberus($renderArray, $this->productionMode, 'include');

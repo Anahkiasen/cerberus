@@ -72,8 +72,24 @@ h1
 	<fieldset>
 		<legend>Informations SQL</legend>
 		<dl>
-			<dt>Base de donnée locale</dt>
+			<dt>Serveur SQL</dt>
+			<dd><input type="text" name="sql-server" /></dd>
+		</dl>
+		<dl>
+			<dt>Identifiant SQL</dt>
+			<dd><input type="text" name="sql-login" /></dd>
+		</dl>
+		<dl>
+			<dt>Mot de passe SQL</dt>
+			<dd><input type="text" name="sql-mdp" /></dd>
+		</dl>
+		<dl>
+			<dt>Base de donnée</dt>
 			<dd><input type="text" name="sql-bdd" /></dd>
+		</dl>
+		<dl>
+			<dt>Base de donnée locale</dt>
+			<dd><input type="text" name="sql-local" /></dd>
 		</dl>
 	</fieldset>
 	<dl class="submit"> 
@@ -103,6 +119,65 @@ if(!file_exists('../../index.php'))
 			closedir($dir); 
 		} 
 		include('../tools/sfputs.php');
+		include('../tools/display.php');
+		include('../tools/connectSQL.php');
+		include('../tools/mysqlQuery.php');
+		
+		// Données SQL
+		if(isset($_POST['sql-local']))
+		{
+			$localhost = $_POST['sql-local'];
+	
+			if(isset($_POST['sql-server'], $_POST['sql-login'], $_POST['sql-mdp']))
+			{
+				$MYSQL_HOST = $_POST['sql-server'];
+				$MYSQL_USER = $_POST['sql-login'];
+				$MYSQL_MDP = $_POST['sql-mdp'];
+				$MYSQL_DB = $_POST['sql-bdd'];
+			}
+			else
+			{
+				$MYSQL_HOST = "";
+				$MYSQL_USER = "";
+				$MYSQL_MDP = "";
+				$MYSQL_DB = "";
+			}
+			
+			mkdir('../cache/');
+			mkdir('../cache/sql/');
+			
+			sfputs('../cache/conf.php',
+			"<?php
+			\$localhost = '$localhost';
+			\$MYSQL_HOST = '$MYSQL_HOST';
+			\$MYSQL_USER = '$MYSQL_USER';
+			\$MYSQL_MDP = '$MYSQL_MDP';
+			\$MYSQL_DB = '$MYSQL_DB';
+			?>");
+			
+			connectSQL($localhost, $MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
+		}
+		
+		// Table langue
+		if($_POST['site-multi'])
+		{
+			mysql_query('DROP TABLE IF EXISTS `langue`;');
+			mysqlQuery(array('CREATE TABLE IF NOT EXISTS `langue` (
+			  `tag` varchar(255) NOT NULL,
+			  `fr` varchar(255) NOT NULL,
+			  PRIMARY KEY (`tag`)
+			) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));	
+			mysqlQuery(array('INSERT INTO langue VALUES ("menu-home", "Accueil")'));
+		}
+		
+		// Table META
+		mysql_query('DROP TABLE IF EXISTS `meta	`;');
+		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `meta` (
+		  `page` varchar(255) NOT NULL,
+		  `titre` varchar(255) NOT NULL,
+		  `description` varchar(255) NOT NULL,
+		  `lien` varchar(255) NOT NULL
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));
 		
 		// Création des dossiers
 		mkdir('../../css/');
@@ -112,11 +187,13 @@ if(!file_exists('../../index.php'))
 			sfputs('../../pages/home-home.html', '');
 		}
 		if(isset($_POST['file-js'])) mkdir('../../js/');
-		if(isset($_POST['file-file'])) mkdir('../../file/');
-		mkdir('../cache/');
-		mkdir('../cache/sql/');
+		if(isset($_POST['file-file']))
+		{
+			mkdir('../../file/');
+			copy('timthumb.php', '../../file/timthumb.php');
+		}
 		copydir('min', '../../min');
-	
+			
 		// Déplacement des fichiers CSS et PHP
 		copy('styles.css', '../../css/styles.css');
 		copy('mail.css', '../../css/mail.css');
@@ -126,8 +203,11 @@ if(!file_exists('../../index.php'))
 		
 		copy('cerberus.css', '../../css/cerberus.css');
 		copydir('overlay', '../../css/overlay');
-		if(isset($_POST['file-file'])) copy('timthumb.php', '../../file/timthumb.php');
-		copy('main.php', '../../index.php');
+		
+		$index = file_get_contents('main.php');
+		$index = str_replace('[BDD]', "'" .$MYSQL_DB. "'", $index);
+		sfputs('../../index.php', $index);
+		
 		if(isset($_POST['module-cache'])) copy('n.htaccess', '../../n.htaccess');
 		
 		echo 'Cerberus correctement d&eacute;ploy&eacute;';
