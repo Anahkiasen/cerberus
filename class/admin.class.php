@@ -126,11 +126,13 @@ class AdminClass
 	function build($thisNavigation = '')
 	{	
 		global $_SESSION;
+		global $navigation;
 		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
 		
 		// Ajout des pages par défaut
 		$systemPages = array('meta', 'backup');
-		$thisNavigation = array_merge($thisNavigation, $systemPages);
+		$adminNavigation = array_diff($navigation['admin'], array('admin'));
+		$thisNavigation = array_merge($thisNavigation, $adminNavigation, $systemPages);
 		 
 		$this->adminLogin();
 		
@@ -218,7 +220,7 @@ class AdminClass
 			if(file_exists($path))
 			{
 				sunlink($path);
-				echo display('La sauvegarde du ' .$_GET['load']. ' a bien été supprimée');
+				echo display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
 			}
 			else echo display('Sauvegarde introuvable');
 		}

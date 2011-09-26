@@ -97,13 +97,19 @@ class Cerberus
 	
 	function loadModule($module)
 	{
+		// Modules customs
+		$path = (strpos($module, 'php/') === FALSE)
+		? 'cerberus'
+		: 'php';
+		if($path == 'php') $module = substr($module, 4);
+		
 		// Récupération des données
-		if(file_exists('cerberus/tools/' .$module. '.php'))
+		if(file_exists($path. '/tools/' .$module. '.php'))
 		{
 			if(!function_exists($module))
-				$thisModule = $this->file_get_contents_utf8('cerberus/tools/' .$module. '.php');
+				$thisModule = $this->file_get_contents_utf8($path. '/tools/' .$module. '.php');
 		}
-		elseif(file_exists('cerberus/class/' .$module. '.class.php')) $thisModule = $this->file_get_contents_utf8('cerberus/class/' .$module. '.class.php');
+		elseif(file_exists($path. '/class/' .$module. '.class.php')) $thisModule = $this->file_get_contents_utf8($path. '/class/' .$module. '.class.php');
 		else $this->erreurs[] = 'Module ' .$module. ' non existant.';
 		
 		// Traitement de la fonction obtenue
@@ -301,6 +307,12 @@ class Cerberus
 	{
 		if($_SERVER['HTTP_HOST'] == 'localhost:8888') return false;
 		else return $this->productionMode;	
+	}
+	
+	// En local ou non
+	function isLocal()
+	{
+		return in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
 	}
 }
 ?>

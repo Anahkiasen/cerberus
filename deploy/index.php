@@ -170,6 +170,14 @@ if(!file_exists('../../index.php'))
 			mysqlQuery(array('INSERT INTO langue VALUES ("menu-home", "Accueil")'));
 		}
 		
+		// Table ADMIN
+		mysql_query('DROP TABLE IF EXISTS `admin`;');
+		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `admin` (
+		  `user` varchar(32) NOT NULL,
+		  `password` varchar(32) NOT NULL,
+		  PRIMARY KEY (`user`)
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1'));
+		
 		// Table META
 		mysql_query('DROP TABLE IF EXISTS `meta	`;');
 		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `meta` (
