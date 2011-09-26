@@ -120,9 +120,11 @@ class AdminClass
 		return $this->granted;
 	}
 		
-	/* ########################################
-	############### CONSTRUCT #################
-	######################################## */
+	/*
+	########################################
+	############## CONSTRUCT ###############
+	######################################## 
+	*/
 	function build($thisNavigation = '')
 	{	
 		global $_SESSION;
@@ -262,87 +264,9 @@ class AdminClass
 	}
 	
 	/* ########################################
-	############### LISTE DES DONNEES ########
-	######################################## */
-	function createList($fieldsList, $groupBy = '')
-	{		
-		if(findString('SELECT', key($fieldsList))) $manualQuery = TRUE;
-		else $manualQuery = FALSE;
-	
-		// LISTE DES ENTREES
-		echo '<table><thead><tr class="entete">';
-		if($manualQuery == TRUE)
-		{
-			$thisQuery = key($fieldsList);
-			$fieldsList = explode(',', $fieldsList[$thisQuery]);
-		}
-		foreach($fieldsList as $value) echo '<td>' .ucfirst($value). '</td>';
-		echo '<td>Modifier</td><td>Supprimer</td></tr></thead><tbody>';
-		
-		if($manualQuery == FALSE)
-		{
-			$availableFields = array_keys(mysqlQuery('DESCRIBE ' .$this->table));
-			$newFieldsList = $fieldsList;
-			
-			array_unshift($newFieldsList, 'id');
-			foreach($newFieldsList as $key => $value)
-				if(!in_array($value, $availableFields)) unset($newFieldsList[$key]);
-				else if(!isset($index)) $index = $value;			
-			
-			// Multilingue ou non
-			$isLang = ($this->multilangue) 
-				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
-				: '';
-			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$index. ' DESC';
-		}
-				
-		$thisGroup = '';
-		$items = mysqlQuery($thisQuery, TRUE);
-		if($items) foreach($items as $key => $value)
-		{
-			if(!empty($groupBy))
-			{
-				if($thisGroup != $value[$groupBy])
-				{
-					echo '<tr class="entete"><td colspan="50">' .$value[$groupBy]. '</td></tr>';
-					$thisGroup = $value[$groupBy];
-				}
-			}
-			
-			echo '<tr>';
-			if(is_array($value)) foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
-			else echo '<td>' .html(str_replace('<br />', ' ', $value)). '</td>';
-			echo '<td><a href="' .$this->thisPage. '&edit=' .$key. '"><img src="css/pencil.png" /></a></td>
-			<td><a href="' .$this->thisPage. '&delete=' .$key. '"><img src="css/cross.png" /></a></td></tr>';
-		}
-		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
-	}
-	
-	/* ########################################
-	############### FORMATTAGE POST ###########
-	######################################## */
-	function formValues()
-	{
-		if(isset($_GET['edit']))
-		{
-			$modif = mysqlQuery('SELECT ' .implode(',', $this->fields). ' FROM ' .$this->table. ' WHERE ' .$this->fields[0]. '="' .$_GET['edit']. '"');
-			foreach($this->fields as $value) $post[$value] = html($modif[$value]); 
-		}
-		else foreach($this->fields as $value) $post[$value] = '';
-		
-		if(isset($_POST)) foreach($this->fields as $value)
-			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = html($_POST[$value]);
-			
-		return $post;
-	}
-	function is_blank($value) 
-	{
-		return empty($value) && !is_numeric($value);
-	}
-	
-	/* ########################################
 	########TRAITEMENT DES DONNEES ###########
 	######################################## */
+	
 	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
@@ -365,6 +289,12 @@ class AdminClass
 			if($this->multilangue == TRUE) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
 			foreach($_POST as $key => $value)
 			{
+				if(findString('_annee', $key))
+				{
+					// Recomposition des champs date
+					$originalField = substr($key, 0, -6); 
+					$fieldsUpdate[$originalField] = $_POST[$originalField. '_annee']. '-' .$_POST[$originalField. '_mois']. '-' .$_POST[$originalField. '_jour'];
+				}
 				if(in_array($key, $this->fields))
 				{
 					if(!$this->is_blank($value)) $fieldsUpdate[$key] = $value;
@@ -416,6 +346,113 @@ class AdminClass
 		}
 	}
 	
+	/* 
+	########################################
+	############### LISTE DES DONNEES ######
+	######################################## 
+	
+	Possibilité de donner une requête manuelle au script 
+	via la formulation array(REQUETE => ARRAY(CHAMPS,CHAMPS))
+	*/
+	function createList($fieldsList, $groupBy = '')
+	{		
+		$manualQuery = (findString('SELECT', key($fieldsList)));
+	
+		// LISTE DES ENTREES
+		echo '<table><thead><tr class="entete">';
+		if($manualQuery)
+		{
+				echo 'lol';
+			$thisQuery = key($fieldsList);
+			$fieldsList = $fieldsList[$thisQuery];
+			if(!is_array($fieldsList)) $fieldsList = explode(',', $fieldsList);
+		}
+		
+		foreach($fieldsList as $key => $value)
+		{
+			$nomColonne = (is_numeric($key))
+			? $value
+			: $key;
+			echo '<td>' .ucfirst($nomColonne). '</td>';
+		}
+		echo '<td>Modifier</td><td>Supprimer</td></tr></thead><tbody>';
+		
+		if(!$manualQuery)
+		{
+			$availableFields = array_keys(mysqlQuery('DESCRIBE ' .$this->table));
+			$newFieldsList = $fieldsList;
+			
+			array_unshift($newFieldsList, 'id');
+			foreach($newFieldsList as $key => $value)
+				if(!in_array($value, $availableFields)) unset($newFieldsList[$key]);
+				else if(!isset($index)) $index = $value;			
+			
+			// Multilingue ou non
+			$isLang = ($this->multilangue) 
+				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
+				: '';
+			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$index. ' DESC';
+		}
+				
+		$thisGroup = '';
+		$items = mysqlQuery($thisQuery, TRUE);
+		if($items) foreach($items as $key => $value)
+		{
+			if(!empty($groupBy))
+			{
+				if($thisGroup != $value[$groupBy])
+				{
+					echo '<tr class="entete"><td colspan="50">' .$value[$groupBy]. '</td></tr>';
+					$thisGroup = $value[$groupBy];
+				}
+			}
+			
+			echo '<tr>';
+			if(is_array($value)) foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
+			else echo '<td>' .html(str_replace('<br />', ' ', $value)). '</td>';
+			echo '<td><a href="' .$this->thisPage. '&edit=' .$key. '"><img src="css/pencil.png" /></a></td>
+			<td><a href="' .$this->thisPage. '&delete=' .$key. '"><img src="css/cross.png" /></a></td></tr>';
+		}
+		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
+	}
+		
+	/* ########################################
+	############### FORMATTAGE POST ###########
+	######################################## */
+	
+	function formValues()
+	{
+		if(isset($_GET['edit']))
+		{
+			$modif = mysqlQuery('SELECT ' .implode(',', $this->fields). ' FROM ' .$this->table. ' WHERE ' .$this->fields[0]. '="' .$_GET['edit']. '"');
+			foreach($this->fields as $value) $post[$value] = html($modif[$value]); 
+		}
+		else foreach($this->fields as $value) $post[$value] = '';
+		
+		if(isset($_POST)) foreach($this->fields as $value)
+			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = html($_POST[$value]);
+			
+		return $post;
+	}
+	function addOrEdit()
+	{
+		if(isset($_GET['edit']))
+		{
+			$diffText = 'Modifier';
+			$urlAction = 'edit=' .$_GET['edit'];
+		}
+		else
+		{
+			$diffText = 'Ajouter';
+			$urlAction = 'add';
+		}	
+		return array($diffText, $urlAction);
+	}
+	function is_blank($value) 
+	{
+		return empty($value) && !is_numeric($value);
+	}
+		
 	/* ########################################
 	############### ENVOI D'IMAGES ###########
 	######################################## */

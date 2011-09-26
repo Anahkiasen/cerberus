@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('tools/beArray.php');
 
 class Cerberus
 {
@@ -26,12 +27,12 @@ class Cerberus
 			
 	function __construct($modules, $productionMode = FALSE, $mode = 'core')
 	{
-		if(!is_array($modules)) $modules = array($modules);		
+		$modules = beArray($modules);		
 		
 		// Modules coeur
 		$modules = array_merge(
 			array(
-				'display', 'boolprint', 'timthumb',
+				'beArray', 'display', 'boolprint', 'timthumb',
 				'findString', 'sfputs', 'simplode', 'sunlink'),
 			$modules);
 		$this->productionMode = $productionMode;
@@ -67,7 +68,7 @@ class Cerberus
 		// Chargement des modules
 		if(!empty($modules))
 		{
-			if(!is_array($modules)) $modules = array($modules);
+			$modules = beArray($modules);
 			
 			// Packs
 			$packages = array(
@@ -126,7 +127,7 @@ class Cerberus
 	{		
 		// API
 		$availableAPI = array(
-		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
 		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'ColorBox' => 'jquery.colorbox-min',
@@ -160,19 +161,11 @@ class Cerberus
 		$thisSubmodules = array();
 		
 		// Véritifcation de la présence de modules concernés (page/pagesouspage/*)
-		if(isset($array[$page]))
-		{
-			if(!is_array($array[$page])) $thisModules = array($array[$page]);
-			else $thisModules = $array[$page];
-		}
-		if(isset($array[$explode[0]]))
-		{
-			if(!is_array($array[$explode[0]])) $thisSubmodules = array($array[$explode[0]]);
-			else $thisSubmodules = $array[$explode[0]];
-		}
+		if(isset($array[$page])) $thisModules = beArray($array[$page]);
+		if(isset($array[$explode[0]])) $thisSubmodules = beArray($array[$explode[0]]);
 		if(isset($array['*'])) 
 		{
-			if(!is_array($array['*'])) $array['*'] = array($array['*']);	
+			$array['*'] = beArray($array['*']);	
 			$thisModules = array_merge($array['*'], $thisModules);
 		}
 		$renderArray = array_merge($thisModules, $thisSubmodules);
@@ -228,6 +221,7 @@ class Cerberus
 		if(isset($switcher)) $path = $switcher->path();
 		
 		// Fichiers par défaut
+		$array['*'] = beArray($array['*']);
 		$defaultCSS = 'css/styles.css';
 		$defaultJS = 'js/scripts.js';
 		$array['*'][] = 'css/cerberus.css';

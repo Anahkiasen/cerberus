@@ -275,9 +275,17 @@ class form
 		$this->addElement($label, $name, "file", $value, $additionalParams);
 	}
 }
-/* #######################################
-############## CREATION SELECT ###########
-######################################## */
+/* 
+########################################
+############# CREATION SELECT ##########
+########################################
+ 
+Syntaxe 
+$select = new select;
+	$select->newSelect(LABEL);
+	$select->appendList(LISTE[array/liste_date/liste_number);
+	$form->insertText($select);
+*/
 class select extends form
 {
 	// Select
@@ -343,15 +351,19 @@ class select extends form
 	}
 	function liste_date($date = '')
 	{
+		// Date dans les valeurs données ou manuelle, sinon date actuelle
+		if(isset(self::$valuesArray[strtolower($this->label)])) $date = self::$valuesArray[strtolower($this->label)];
 		if(empty($date)) $date = date('Y-m-d');
 		$valueDate = explode('-', $date);
 		$this->params['class'] = 'dateForm';
 		
+		// On inscrit la date décomposée dans les valeurs
 		self::$valuesArray = array(
 		$this->name. '_jour' => $valueDate[2],
 		$this->name. '_mois' => $valueDate[1],
 		$this->name. '_annee' => $valueDate[0]);
 		
+		// Création des trois listes correspondantes
 		return array(
 		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1)),
 		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
