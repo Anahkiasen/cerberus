@@ -424,15 +424,17 @@ class AdminClass
 	{
 		if(isset($_GET['edit']))
 		{
+			$diff = $_GET['edit'];
 			$diffText = 'Modifier';
 			$urlAction = 'edit=' .$_GET['edit'];
 		}
 		else
 		{
+			$diff = 'add';
 			$diffText = 'Ajouter';
 			$urlAction = 'add';
 		}	
-		return array($diffText, $urlAction);
+		return array($diffText, $urlAction, $diff);
 	}
 	
 	// Vérifie si un champ est véritablement nul

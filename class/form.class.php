@@ -12,9 +12,11 @@ class form
 	protected static $multilangue = true;
 	protected static $formType = 'ilec';
 	
-	/* ########################################
-	####### METHODES DE CONSTRUCTION ##########
-	######################################## */
+	/*
+	########################################
+	###### METHODES DE CONSTRUCTION ########
+	######################################## 
+	*/
 	
 	// Construction
 	function __construct($multilangue = false, $params = '')
@@ -25,11 +27,15 @@ class form
 		if(is_array($params) and !empty($params)) foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 		$this->render .= '>';
 	}
+	
+	// Rendu du formulaire
 	function __toString()
 	{
 		$this->render .= '</form>';
 		return $this->render;
 	}
+	
+	// Récupérer les valeurs à partir de la liste des champs
 	function getValues($fieldsTable)
 	{
 		if(isset($_GET['edit']) and isset($fieldsTable[1]))
@@ -44,12 +50,26 @@ class form
 			
 		self::$valuesArray = $post;
 	}
+	
+	// Passer les valeurs à autrui
+	function passValues()
+	{
+		return self::$valuesArray;
+	}
+	
+	// Assigner une valeur à une variable
 	function setType($type)
 	{
 		self::$formType = $type;
 	}
 	
-	// Fieldsets
+	/*
+	########################################
+	######## FIELDSETS ET CHAMPS ###########
+	######################################## 
+	*/
+	
+	// Ouvrir et fermer un fieldset
 	function openFieldset($name, $mandatory = false)
 	{
 		$fieldName = (self::$multilangue == false) ? $name : index('form-' .$name);
@@ -300,15 +320,13 @@ class select extends form
 	private $render;
 
 	// Construction
-	function __construct()
+	function __construct($name = '')
 	{	
 		if(!isset(self::$valuesArray)) self::$valuesArray = array();
+		if(!empty($name)) $this->newSelect($name);
 	}
-	function __toString()
-	{
-		if(empty($this->render)) $this->createElement();
-		return $this->render;
-	}
+		
+	// Initialisation
 	function newSelect($name, $label = '')
 	{
 		$this->render = '';
@@ -317,16 +335,8 @@ class select extends form
 		
 		list($this->name, $this->label) = $this->defineNameLabel($name, $label);
 	}
-	function addParams($params = '')
-	{
-		$this->params += $params;
-	}
-	function setValue($value)
-	{
-		$this->value = $value;
-	}
 	
-	// Valeur du select
+	// Accrochage de la liste au <select>
 	function appendList($liste, $overwrite = true)
 	{
 		if($overwrite == true)
@@ -343,14 +353,49 @@ class select extends form
 		else $thisListe = $liste;
 		$this->liste += $thisListe;
 	}
+	
+	// Rendu
+	function __toString()
+	{
+		if(empty($this->render)) $this->createElement();
+		return $this->render;
+	}
+	
+	/*
+	Options 
+	*/
+	
+	// Ajout de paramètres
+	function addParams($params = '')
+	{
+		$this->params += $params;
+	}
+	
+	// Régler la valeur du select sur
+	function setValue($value)
+	{
+		$this->value = $value;
+	}
+		
+	/* 
+	########################################
+	############## RACCOURCIS ##############
+	########################################
+	*/
+
+	// Liste à chiffres
 	function liste_number($end, $start = 0, $step = 1)
 	{
 		return range($start, $end, $step);
 	}
+	
+	// Array manuel
 	function liste_array($list)
 	{
 		return $list;
 	}
+	
+	// Champ date
 	function liste_date($date = '')
 	{
 		// Date dans les valeurs données ou manuelle, sinon date actuelle
@@ -371,6 +416,8 @@ class select extends form
 		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
 		$this->name. '_annee' => $this->liste_array($this->liste_number((date('Y')+10), date('Y'))));
 	}
+	
+	// Champ heure
 	function liste_heure($hour = '')
 	{
 		if(empty($hour)) $hour = '-';
@@ -386,29 +433,12 @@ class select extends form
 		$this->name. '_min' => $this->liste_array($this->liste_number(59, 0)));
 	}
 	
-	// Création d'un <select>
-	function createSelect($name, $liste)
-	{
-		$thisValue = (empty($this->value))
-			? $this->defineValue($name)
-			: $this->value;
-
-		$this->render .= '<select name="' .$name. '" ';
-		foreach($this->params as $key => $value) $this->render .= $key. '="' .$value. '"';
-		$this->render .= '>';
-		
-		foreach($liste as $key => $value)
-		{
-			if($key == $value and $thisValue == $value) $selected = 'selected="selected"';
-			elseif($key != $value and $thisValue == $key) $selected = 'selected="selected"';
-			else $selected = '';
-			
-			if($key == $value) $this->render .= '<option ' .$selected. '>' .$value. '</option>';
-			else $this->render .= '<option value="' .$key. '" ' .$selected. '>' .$value. '</option>';
-		}
-			
-		$this->render .= '</select>';
-	}
+	/* 
+	########################################
+	############## RENDU ###################
+	########################################
+	*/
+	
 	// Création du champ
 	function createElement()
 	{
@@ -442,5 +472,28 @@ class select extends form
 				
 		if($stateField) $this->render .= '</dd></dl>';	
 	}	
+		// Création d'un <select> (sous-fonction de createElement)
+		function createSelect($name, $liste)
+		{
+			$thisValue = (empty($this->value))
+				? $this->defineValue($name)
+				: $this->value;
+	
+			$this->render .= '<select name="' .$name. '" ';
+			foreach($this->params as $key => $value) $this->render .= $key. '="' .$value. '"';
+			$this->render .= '>';
+			
+			foreach($liste as $key => $value)
+			{
+				if($key == $value and $thisValue == $value) $selected = 'selected="selected"';
+				elseif($key != $value and $thisValue == $key) $selected = 'selected="selected"';
+				else $selected = '';
+				
+				if($key == $value) $this->render .= '<option ' .$selected. '>' .$value. '</option>';
+				else $this->render .= '<option value="' .$key. '" ' .$selected. '>' .$value. '</option>';
+			}
+				
+			$this->render .= '</select>';
+		}
 }
 ?>
