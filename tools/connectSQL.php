@@ -3,7 +3,7 @@
 	Fonction connectSQL
 	# Etablit un lien avec la base de données
 	
-	$localhost
+	$LOCALHOST
 		Nom de la base de données si travail en local
 	$host
 		Serveur SQL
@@ -14,7 +14,7 @@
 	$db
 		Base de donnée SQL
 */
-function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $db = '')
+function connectSQL($LOCALHOST = 'Maxime', $host = '', $user = '', $mdp = '', $db = '')
 {
 	// Nom du fichier config
 	$conf = 'cerberus/cache/conf.php';
@@ -24,6 +24,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 	else
 	{
 		// Manuel
+		$LOCALHOST = $LOCALHOST;
 		$MYSQL_HOST = $host;
 		$MYSQL_USER = $user;
 		$MYSQL_MDP = $mdp;
@@ -36,7 +37,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		$MYSQL_HOST = 'localhost';
 		$MYSQL_USER = 'root';
 		$MYSQL_MDP = 'root';
-		$MYSQL_DB = $localhost;
+		$MYSQL_DB = $LOCALHOST;
 	}
 	elseif($_SERVER['HTTP_HOST'] == '127.0.0.1')
 	{
@@ -44,7 +45,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		$MYSQL_HOST = 'localhost';
 		$MYSQL_USER = 'root';
 		$MYSQL_MDP = '';
-		$MYSQL_DB = $localhost;
+		$MYSQL_DB = $LOCALHOST;
 	}
 	elseif($_SERVER['HTTP_HOST'] == 'the8day.info')
 	{
@@ -57,7 +58,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 	elseif($_SERVER['HTTP_HOST'] == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
 	{
 		// Stappler
-		$database = explode('_', $localhost);
+		$database = explode('_', $LOCALHOST);
 		
 		$MYSQL_HOST = 'hostingmysql51';
 		$MYSQL_USER = '859841_maxime';
@@ -84,6 +85,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		{
 			if(file_exists('cerberus/cache/')) sfputs($conf, 
 			"<?php
+			\$LOCALHOST = '$LOCALHOST';
 			\$MYSQL_HOST = '$MYSQL_HOST';
 			\$MYSQL_USER = '$MYSQL_USER';
 			\$MYSQL_MDP = '$MYSQL_MDP';
@@ -93,7 +95,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 	
 		// Sauvegarde et chargement de la base
 		$tables_base = mysqlQuery('SHOW TABLES');
-		$database_name = explode('_', $localhost);
+		$database_name = explode('_', $LOCALHOST);
 		$database = (isset($database_name[1]))
 			? $database_name[1]
 			: $database_name;
@@ -119,7 +121,7 @@ function connectSQL($localhost = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		elseif(!empty($tables_base) and function_exists('backupSQL'))
 		{
 			// Si tout va bien, on effectue une sauvegarde
-			 if($localhost != 'Maxime') backupSQL($database);	
+			 if($LOCALHOST != 'Maxime') backupSQL($database);	
 		}
 		else if(file_exists('cerberus/cache/sql')) die('Une erreur est survenue durant la sauvegarde de la base de données');
 	}
