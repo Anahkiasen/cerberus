@@ -33,8 +33,8 @@ class getNews
 	############################ */
 		
 	function __construct($page = 'news')
-	{
-		global $cerberus;
+	{	
+		$GLOBALS['cerberus']->injectModule('getURL');
 		$this->url = getURL(true);
 
 		$this->page = str_replace('&pageSub=', '-', $page);

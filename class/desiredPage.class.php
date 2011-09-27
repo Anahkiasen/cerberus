@@ -40,10 +40,9 @@ class desiredPage
 	function __construct($navigation)
 	{
 		global $index;
-		global $cerberus;
 		
 		if(empty($navigation)) $navigation = array('home' => array('home'));
-		if($cerberus->isLocal()) $this->optionRewrite = false;
+		if($GLOBALS['cerberus']->isLocal()) $this->optionRewrite = false;
 		
 		// Définition du mode
 		$this->cacheTree = $navigation;
@@ -98,12 +97,10 @@ class desiredPage
 	
 	// Création des arrays de liens
 	function createTree()
-	{
-		global $cerberus; 
-		
+	{		
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
-				if($key != 'admin' or ($key == 'admin' and $cerberus->isLocal()))
+				if($key != 'admin' or ($key == 'admin' and $GLOBALS['cerberus']->isLocal()))
 					$this->treeNavigation[$key] = rewrite($key, array('subnav' => $this->optionSubnav));			
 		
 		if(!isset($this->treeSubnav) and $this->optionSubnav)
@@ -133,11 +130,9 @@ class desiredPage
 	}
 	
 	function render($glue = '')
-	{
-		global $cerberus;
-		
+	{		
 		$this->createTree();
-		if(!$cerberus->isLocal()) unset($this->treeNavigation['admin']);
+		if(!$GLOBALS['cerberus']->isLocal()) unset($this->treeNavigation['admin']);
 
 		// Navigation principale
 		foreach($this->treeNavigation as $key => $value)

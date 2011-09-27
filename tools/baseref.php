@@ -1,14 +1,23 @@
 <?php
+/*
+	Fonction baseref
+	# Détermine la racine de tous les fichiers selon le domaine
+	
+	$array [array]
+		Array facultatif précisant si le site est dans un sous-dossier
+		et pour quel domaine, au format (DOMAINE => CHEMIN)
+*/
 function baseref($array = '')
 {
+	// Récupération des variables
 	global $index;
 	global $rewriteMode;
-	$url = $_SERVER['HTTP_HOST'];
 	
+	// Si présence d'exceptions
 	if(!empty($array))
 	{
 		foreach($array as $key => $value)
-			if(findString($key,$url)) $return = '/' .$value. '/';
+			if(findString($key, $_SERVER['HTTP_HOST'])) $return = '/' .$value. '/';
 	}
 	if(empty($return) and isset($index['http'])) $return = $index['http'];
 	

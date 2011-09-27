@@ -13,6 +13,7 @@
 function rewrite($page, $params = '')
 {
 	// Importation des variables
+	$GLOBALS['cerberus']->injectModule('normalize');
 	global $rewriteMode;
 	global $meta;
 	global $navigation;
@@ -39,7 +40,7 @@ function rewrite($page, $params = '')
 		unset($params['html']);
 	}	
 	
-	if($rewriteMode == false or $_SERVER['HTTP_HOST'] == 'localhost:8888')
+	if($rewriteMode == false or $GLOBALS['cerberus']->isLocal())
 	{
 		// Mode local
 		$lien = 'index.php?page=' .$page0;

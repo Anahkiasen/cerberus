@@ -4,9 +4,11 @@ include('tools/beArray.php');
 
 class Cerberus
 {
-	/* ######################################
+	/*
+	########################################
 	############### PREPARATION ############
-	######################################## */
+	########################################
+	*/
 	
 	public $productionMode;
 	public $meta;
@@ -24,17 +26,14 @@ class Cerberus
 		return mb_convert_encoding($content, 'UTF-8',
 		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', TRUE));
 	}	
-			
+	
 	function __construct($modules, $productionMode = FALSE, $mode = 'core')
 	{
-		$modules = beArray($modules);		
-		
 		// Modules coeur
-		$modules = array_merge(
-			array(
-				'beArray', 'display', 'boolprint', 'timthumb',
-				'findString', 'sfputs', 'simplode', 'sunlink'),
-			$modules);
+		$modules = array_merge(array(
+			'beArray', 'display', 'boolprint', 'timthumb',
+			'findString', 'sfputs', 'simplode', 'sunlink'),
+			beArray($modules));
 		$this->productionMode = $productionMode;
 	
 		// Mode de Cerberus (core/include)	
@@ -45,13 +44,14 @@ class Cerberus
 		// Création ou non du fichier
 		if($this->productionMode == FALSE or !file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
-			$this->loadCerberus($modules);
+			$this->unpackModules($modules);
 			$this->generate();
 		}
 		
 		// Include du fichier
 		$this->inclure();
 		
+		// Connexion à la base de données
 		if(file_exists('cerberus/cache/conf.php')) connectSQL();
 
 		// Définition des constantes
@@ -59,13 +59,16 @@ class Cerberus
 			define('PRODUCTION', FALSE);
 	}
 	
-	/* ########################################
-	###### RECUPERATION DES FONCTIONS #########
-	######################################## */
+	/* 
+	########################################
+	#### RECUPERATION DES FONCTIONS ########
+	########################################
+	*/
 	
-	function loadCerberus($modules)
+	// Chargement du moteur Cerberus
+	function unpackModules($modules)
 	{				
-		// Chargement des modules
+		// Tri des modules et préparation des packs
 		if(!empty($modules))
 		{
 			$modules = beArray($modules);
@@ -73,13 +76,11 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
-			'pack.navigation' => array('normalize', 'desiredPage', 'getURL', 'rewrite'),
-			'pack.rewrite' => array('baseref', 'rewrite', 'normalize'),
-			'class.admin' => array('admin', 'findString', 'getURL', 'normalize', 'randomString'),
-			'class.desired' => array('desiredPage', 'getURL'),
-			'class.mail' => array('mail', 'findString', 'stripHTML'),
-			'class.form' => array('form', 'checkString', 'normalize'),
-			'class.news' => array('news', 'bbcode', 'getURL', 'truncate'));
+			'pack.navigation' => array('baseref', 'desiredPage', 'rewrite'),
+			'class.admin' => array('admin', 'getURL', 'randomString'),
+			'class.mail' => array('mail', 'stripHTML'),
+			'class.form' => array('form', 'checkString'),
+			'class.news' => array('news', 'bbcode', 'truncate'));
 		
 			foreach($modules as $value)
 			{
@@ -96,29 +97,41 @@ class Cerberus
 		}
 	}
 	
+	// Obtention du chemin d'un module
+	function getFile($module)
+	{
+		$cheminsValides = array(
+			'cerberus/tools/',
+			'cerberus/class/',
+			'php/');
+		
+		foreach($cheminsValides as $chemin)
+		{
+			$extension = (strpos($chemin, 'class') === FALSE)
+				? '.php'
+				: '.class.php';
+			if(file_exists($chemin.$module.$extension))
+			{
+				$found = true;
+				return $chemin.$module.$extension;
+			}
+		}
+		if(!isset($found)) return false;
+	}		
+
+	// Chargement d'un module
 	function loadModule($module)
 	{
-		// Modules customs
-		$path = (strpos($module, 'php/') === FALSE)
-		? 'cerberus'
-		: 'php';
-		if($path == 'php') $module = substr($module, 4);
-		
-		// Récupération des données
-		if(file_exists($path. '/tools/' .$module. '.php'))
+		if(!function_exists($module))
 		{
-			if(!function_exists($module))
-				$thisModule = $this->file_get_contents_utf8($path. '/tools/' .$module. '.php');
-		}
-		elseif(file_exists($path. '/class/' .$module. '.class.php')) $thisModule = $this->file_get_contents_utf8($path. '/class/' .$module. '.class.php');
-		else $this->erreurs[] = 'Module ' .$module. ' non existant.';
-		
-		// Traitement de la fonction obtenue
-		if(isset($thisModule))
-		{
-			$thisModule = trim($thisModule);
-			$thisModule = substr($thisModule, 5, -2);
-			$this->render .= $thisModule;
+			$fichierModule = $this->getFile($module);
+			if($fichierModule)
+			{
+				$thisModule = trim($this->file_get_contents_utf8($fichierModule));
+				$thisModule = substr($thisModule, 5, -2);
+				$this->render .= $thisModule;
+			}
+			else $this->erreurs[] = 'Module ' .$module. ' non existant.';
 		}
 	}
 	
@@ -251,9 +264,11 @@ class Cerberus
 		return $this->cerberusDispatch($array, $page, 'API');
 	}
 		
-	/* ########################################
-	########### RENDU DU FICHIER #############
-	######################################## */
+	/* 
+	########################################
+	########### RENDU DU FICHIER ###########
+	########################################
+	*/
 	
 	function generate()
 	{
@@ -272,9 +287,21 @@ class Cerberus
 		include_once('cerberus/cache/' .$this->mode. '.php');
 	}
 	
-	/* ########################################
-	########### FONCTIONS EXPORT #############
-	######################################## */
+	/* 
+	########################################
+	########## FONCTIONS EXPORT ############
+	########################################
+	*/
+	
+	// Fonction Inject
+	function injectModule()
+	{
+		$module = func_get_args();
+		foreach($module as $thismodule)
+		{
+			if(!function_exists($thismodule)) include($this->getFile($thismodule));
+		}
+	}
 
 	// Fonction META 
 	function meta($mode = 'meta')

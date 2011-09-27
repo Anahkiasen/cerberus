@@ -117,6 +117,8 @@ class form
 	// Définitions
 	function defineNameLabel($name, $label)
 	{
+		$GLOBALS['cerberus']->injectModule('normalize');
+			
 		$thisLabel = (empty($label))
 			? $name
 			: $label;

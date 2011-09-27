@@ -1,6 +1,17 @@
 <?php
+/*
+	Fonction backupSQL
+	# Effectue une sauvegarde de la base de donnée
+	# Créer un dossier par date dans le dossier cerberus/cache/sql par défaut
+	# Ne garde que les sauvegardes du mois en cours et celles du mois précédent
+	# aux dates du 1er et du 15
+	
+	$filename
+		Identifiant du fichier de sauvegarde - usuellement le nom de la base de données
+*/
 function backupSQL($filename)
 {	
+	// Définition du nom du dossier
 	$path = 'cerberus/cache/sql/';
 	$folderName = $path.date('Y-m-d');
 	$listeTables = mysqlQuery("SHOW TABLES");

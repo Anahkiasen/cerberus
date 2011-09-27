@@ -17,9 +17,7 @@ class AdminClass
 	private $multilangue;
 		
 	function __construct($arrayLang = '')
-	{
-		global $cerberus;
-		
+	{		
 		$this->url = 'index.php';
 		$this->modeSQL = function_exists('connectSQL');
 		
@@ -134,7 +132,7 @@ class AdminClass
 		// Ajout des pages par défaut
 		$systemPages = array('meta', 'backup');
 		$adminNavigation = array_diff($navigation['admin'], array('admin'));
-		$thisNavigation = array_merge($thisNavigation, $adminNavigation, $systemPages);
+		$thisNavigation = array_merge(beArray($thisNavigation), $adminNavigation, $systemPages);
 		 
 		$this->adminLogin();
 		
@@ -362,7 +360,6 @@ class AdminClass
 		echo '<table><thead><tr class="entete">';
 		if($manualQuery)
 		{
-				echo 'lol';
 			$thisQuery = key($fieldsList);
 			$fieldsList = $fieldsList[$thisQuery];
 			if(!is_array($fieldsList)) $fieldsList = explode(',', $fieldsList);
@@ -416,24 +413,13 @@ class AdminClass
 		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
 	}
 		
-	/* ########################################
-	############### FORMATTAGE POST ###########
-	######################################## */
-	
-	function formValues()
-	{
-		if(isset($_GET['edit']))
-		{
-			$modif = mysqlQuery('SELECT ' .implode(',', $this->fields). ' FROM ' .$this->table. ' WHERE ' .$this->fields[0]. '="' .$_GET['edit']. '"');
-			foreach($this->fields as $value) $post[$value] = html($modif[$value]); 
-		}
-		else foreach($this->fields as $value) $post[$value] = '';
+	/*
+	########################################
+	######## FONCTIONS FORMULAIRES #########
+	########################################
+	*/
 		
-		if(isset($_POST)) foreach($this->fields as $value)
-			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = html($_POST[$value]);
-			
-		return $post;
-	}
+	// Détermine si le formulaire est en mode ajout ou modif
 	function addOrEdit()
 	{
 		if(isset($_GET['edit']))
@@ -448,19 +434,33 @@ class AdminClass
 		}	
 		return array($diffText, $urlAction);
 	}
+	
+	// Vérifie si un champ est véritablement nul
 	function is_blank($value) 
 	{
 		return empty($value) && !is_numeric($value);
 	}
 		
-	/* ########################################
-	############### ENVOI D'IMAGES ###########
-	######################################## */
+	/* 
+	########################################
+	############## ENVOI D'IMAGES ##########
+	########################################
+	*/
 	function uploadImage($field = 'thumb')
 	{
+		$GLOBALS['cerberus']->injectModule('normalize', 'filecat');
+		
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
-			// Mode de sauvegarde de l'image
+			/*
+			Mode de sauvegarde de l'image
+			# TABLE - présence d'une tableur sœur TABLE_thumbs contenant les images.
+				Plusieurs image
+			# PATH - Champ path dans la table même stockant l'url de l'image
+				Une image
+			# ID - L'image prend l'id de l'entrée pour reconnaissance
+				Une image
+			*/
 			if(in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES'))) $storageMode = 'table';
 			elseif(array_key_exists('path', mysqlQuery('SHOW COLUMNS FROM ' .$this->table))) $storageMode = 'path';
 			else $storageMode = 'id';
@@ -469,7 +469,7 @@ class AdminClass
 			$errorDisplay = '';
 			$extension = strtolower(substr(strrchr($_FILES[$field]['name'], '.'), 1));
 			if($_FILES[$field]['error'] != 0) $errorDisplay = 'Une erreur est survenue lors du transfert.';
-			if(!in_array($extension, array('jpeg', 'jpg', 'gif', 'png'))) $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
+			if(filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
 					
 			// Si aucune erreur
 			if(empty($errorDisplay))
@@ -484,7 +484,8 @@ class AdminClass
 					case 'table':
 						$file = explode('.', $_FILES[$field]['name']);
 						$file = normalize($file[0]). '-' .md5(randomString()). '.' .$extension;
-						mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb VALUES("", "' .$lastID. '", "' .$file. '")'));
+						$test = mysqlQuery('SHOW COLUMNS FROM ' .$this->table. '_thumb');
+						mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb SET path="' .$file. '", id_' .$this->table. '="' .$lastID. '"'));
 						break;
 						
 					case 'path':
