@@ -227,7 +227,7 @@ class getNews
 				$path = 'null';
 			}
 	
-			$form = new form(false, array('action' => $this->url. '?page=admin&admin=news&' .$urlAction));
+			$form = new form(false, array('action' => rewrite('admin-news', array($urlAction))));
 			$form->getValues($newsAdmin->getFieldsTable());
 			
 			$form->openFieldset($diffText. ' une news');
@@ -237,7 +237,7 @@ class getNews
 					<dl class="actualThumb">
 					<dt>Supprimer la miniature actuelle</dt>
 					<dd style="text-align:center"><p><img src="' .timthumb('news/' .$path, 125, 125, 1, false). '" /><br />
-					<a href="' .$this->url. '?page=admin&admin=' .$this->page. '&edit=' .$_GET['edit']. '&deleteThumb=' .$_GET['edit']. '">Supprimer</a></p></dd></dl>');
+					<a href="' .rewrite('admin-' .$this->page, array('edit' => $_GET['edit'], 'deleteThumb' => $_GET['edit'])). '">Supprimer</a></p></dd></dl>');
 				$form->addFile('thumb', 'Envoi d\'une miniature');
 				$form->addEdit();
 				if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d')); 

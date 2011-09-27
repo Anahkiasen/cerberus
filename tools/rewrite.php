@@ -44,7 +44,11 @@ function rewrite($page, $params = '')
 	{
 		// Mode local
 		$lien = 'index.php?page=' .$page0;
-		if($page1) $lien .= '&pageSub=' .$page1;
+		if($page1)
+		{
+			if($page0 == 'admin') $lien .= '&admin=' .$page1;
+			else $lien .= '&pageSub=' .$page1;
+		}
 		if(!empty($params))
 		{
 			// Si les paramètres sont un array on les implode, sinon on les ajoute en brut

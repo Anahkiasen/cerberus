@@ -48,7 +48,7 @@ class AdminClass
 			{
 				$getAdmin = (isset($_GET['admin'])) ? '&admin=' .$_GET['admin'] : '';
 				$urlFlag = ($_SESSION['admin']['langue'] == $lg) ? 'flag_' .$lg : 'flag_' .$lg. '_off';
-				echo '<a href="' .$this->url. '?page=admin&adminLangue=' .$lg.$getAdmin. '"><img src="css/' .$urlFlag. '.png" alt="' .$lg. '" /></a> ';
+				echo '<a href="' .rewrite('admin', array('adminLangue' => $lg.$getAdmin)). '"><img src="css/' .$urlFlag. '.png" alt="' .$lg. '" /></a> ';
 			}
 			echo '</p>';
 		}
@@ -58,9 +58,9 @@ class AdminClass
 		{
 			$textLien = ($this->multilangue) ? index('admin-' .$value) : ucfirst($value);
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
-			echo '<a href="' .$this->url. '?page=admin&admin=' .$value. '" ' .$thisActive. '>' .$textLien. '</a>';	
+			echo '<a href="' .rewrite('admin-' .$value). '" ' .$thisActive. '>' .$textLien. '</a>';	
 		}
-		echo '<a href="' .$this->url. '?page=admin&logoff">Déconnexion</a></div><br />';
+		echo '<a href="' .rewrite('admin', array('logoff')). '">Déconnexion</a></div><br />';
 	}
 	
 	/* ########################################
@@ -193,7 +193,7 @@ class AdminClass
 			foreach($navigation as $key => $value)
 				foreach($value as $page) $availablePages[] = $key. '-' .$page;
 		
-			$form = new form(false, array('action' => 'index.php?page=admin&admin=meta&' .$urlAction));
+			$form = new form(false, array('action' => rewrite('admin-meta', array($urlAction))));
 			$select = new select();
 			$form->getValues($metaAdmin->getFieldsTable());
 			
@@ -253,8 +253,8 @@ class AdminClass
 				echo 
 				'<tr>
 				<td>' .$folderDate. '</td>
-				<td><a href="index.php?page=admin&admin=backup&load=' .$folderDate. '"><img src="css/load.png" /></a></td>
-				<td><a href="index.php?page=admin&admin=backup&delete=' .$folderDate. '"><img src="css/cross.png" /></a></td>
+				<td><a href="' .rewrite('admin-backup', array('load' => $folderDate)). '"><img src="css/load.png" /></a></td>
+				<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="css/cross.png" /></a></td>
 				</tr>';
 			}
 		}  
@@ -268,7 +268,7 @@ class AdminClass
 	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
-		$this->thisPage = $this->url. '?page=admin&admin=' .$_GET['admin'];
+		$this->thisPage = rewrite('admin-' .$_GET['admin']);
 		
 				
 		// Champs facultatifs
@@ -352,7 +352,7 @@ class AdminClass
 	Possibilité de donner une requête manuelle au script 
 	via la formulation array(REQUETE => ARRAY(CHAMPS,CHAMPS))
 	*/
-	function createList($fieldsList, $groupBy = '')
+	function createList($fieldsList, $groupBy = '', $orderBy = '')
 	{		
 		$manualQuery = (findString('SELECT', key($fieldsList)));
 	
@@ -388,7 +388,13 @@ class AdminClass
 			$isLang = ($this->multilangue) 
 				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
 				: '';
-			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$index. ' DESC';
+			
+			// Ordre de tri
+			$orderBy = !empty($orderBy)
+				? $orderBy
+				: $index. ' DESC';
+				
+			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$orderBy;
 		}
 				
 		$thisGroup = '';
@@ -399,7 +405,7 @@ class AdminClass
 			{
 				if($thisGroup != $value[$groupBy])
 				{
-					echo '<tr class="entete"><td colspan="50">' .$value[$groupBy]. '</td></tr>';
+					echo '<tr class="entete"><td colspan="50" class="groupby">' .ucfirst($value[$groupBy]). '</td></tr>';
 					$thisGroup = $value[$groupBy];
 				}
 			}

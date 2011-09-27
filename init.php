@@ -110,6 +110,7 @@ class Cerberus
 			$extension = (strpos($chemin, 'class') === FALSE)
 				? '.php'
 				: '.class.php';
+				
 			if(file_exists($chemin.$module.$extension))
 			{
 				$found = true;
@@ -326,7 +327,7 @@ class Cerberus
 	// Mode production ou non
 	function debugMode()
 	{
-		if($_SERVER['HTTP_HOST'] == 'localhost:8888') return false;
+		if($this->isLocal()) return false;
 		else return $this->productionMode;	
 	}
 	
