@@ -352,7 +352,7 @@ class AdminClass
 	Possibilité de donner une requête manuelle au script 
 	via la formulation array(REQUETE => ARRAY(CHAMPS,CHAMPS))
 	*/
-	function createList($fieldsList, $groupBy = '', $orderBy = '')
+	function createList($fieldsList, $groupBy = '', $params = '')
 	{		
 		$manualQuery = (findString('SELECT', key($fieldsList)));
 	
@@ -385,16 +385,24 @@ class AdminClass
 				else if(!isset($index)) $index = $value;			
 			
 			// Multilingue ou non
-			$isLang = ($this->multilangue) 
+			$where = ($this->multilangue) 
 				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
 				: '';
 			
-			// Ordre de tri
-			$orderBy = !empty($orderBy)
-				? $orderBy
+			// WHERE
+			if(isset($params['WHERE']))
+			{
+				$where .= (empty($where))
+				? ' WHERE ' .$params['WHERE']
+				: ' AND ' .$params['WHERE'];
+			}
+			
+			// ORDER BY
+			$orderBy = isset($params['ORDER BY'])
+				? $params['ORDER BY']
 				: $index. ' DESC';
 				
-			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$isLang. ' ORDER BY ' .$orderBy;
+			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$where. ' ORDER BY ' .$orderBy;
 		}
 				
 		$thisGroup = '';
@@ -413,8 +421,8 @@ class AdminClass
 			echo '<tr>';
 			if(is_array($value)) foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
 			else echo '<td>' .html(str_replace('<br />', ' ', $value)). '</td>';
-			echo '<td><a href="' .$this->thisPage. '&edit=' .$key. '"><img src="css/pencil.png" /></a></td>
-			<td><a href="' .$this->thisPage. '&delete=' .$key. '"><img src="css/cross.png" /></a></td></tr>';
+			echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array('edit' => $key)). '"><img src="css/pencil.png" /></a></td>
+			<td><a href="' .rewrite('admin-' .$_GET['page'], array('delete' => $key)). '"><img src="css/cross.png" /></a></td></tr>';
 		}
 		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
 	}
