@@ -40,11 +40,13 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 		{
 			if(isset($query[1]))
 				echo display($query[1]);
+			return true;
 		}
 		else
 		{
-			if(isset($query[2])) display($query[2]);
+			if(isset($query[2])) echo display($query[2]);
 			else exit(display(htmlentities($query[0])).mysql_error());
+			return false;
 		}
 	}
 	else 

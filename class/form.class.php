@@ -397,10 +397,10 @@ class select extends form
 	}
 	
 	// Champ date
-	function liste_date($date = '')
+	function liste_date($date = '', $startingYear = 2010)
 	{
 		// Date dans les valeurs données ou manuelle, sinon date actuelle
-		if(isset(self::$valuesArray[strtolower($this->label)])) $date = self::$valuesArray[strtolower($this->label)];
+		if(isset(self::$valuesArray[strtolower($this->name)])) $date = self::$valuesArray[strtolower($this->name)];
 		if(empty($date)) $date = date('Y-m-d');
 		$valueDate = explode('-', $date);
 		$this->params['class'] = 'dateForm';
@@ -415,7 +415,7 @@ class select extends form
 		return array(
 		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1)),
 		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
-		$this->name. '_annee' => $this->liste_array($this->liste_number((date('Y')+10), date('Y'))));
+		$this->name. '_annee' => $this->liste_array($this->liste_number((date('Y')+10), $startingYear)));
 	}
 	
 	// Champ heure

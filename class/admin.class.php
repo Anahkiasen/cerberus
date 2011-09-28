@@ -126,6 +126,8 @@ class AdminPage extends AdminSetup
 			: $key;
 			echo '<td>' .ucfirst($nomColonne). '</td>';
 		}
+		if(isset($this->moreRows)) foreach($this->moreRows as $function => $name)
+			echo '<td>' .$name. '</td>';
 		echo '<td>Modifier</td><td>Supprimer</td></tr></thead><tbody>';
 		
 		if(!$manualQuery)
@@ -175,10 +177,17 @@ class AdminPage extends AdminSetup
 			echo '<tr>';
 			if(is_array($value)) foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
 			else echo '<td>' .html(str_replace('<br />', ' ', $value)). '</td>';
+			if(isset($this->moreRows)) foreach($this->moreRows as $function => $name)
+				echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array($function => $key)). '"><img src="css/' .$function. '.png" /></a></td>';
 			echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array('edit_' .$this->table => $key)). '"><img src="css/pencil.png" /></a></td>
 			<td><a href="' .rewrite('admin-' .$_GET['page'], array('delete_' .$this->table => $key)). '"><img src="css/cross.png" /></a></td></tr>';
 		}
 		echo '<tr class="additem"><td colspan="50"><a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
+	}
+	
+	function addRow($function, $name, $type = 'link')
+	{
+		if($type == 'link') $this->moreRows[$function] = $name;
 	}
 				
 	/*
@@ -200,7 +209,7 @@ class AdminPage extends AdminSetup
 			{
 				$diff = $this->getEdit;
 				$diffText = 'Modifier';
-				$urlAction = 'edit=' .$this->getEdit;
+				$urlAction = 'edit_' .$this->table. '=' .$this->getEdit;
 			}
 			else
 			{
