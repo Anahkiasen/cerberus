@@ -17,7 +17,7 @@ function rewrite($page, $params = '')
 	global $rewriteMode;
 	global $meta;
 	global $navigation;
-	
+		
 	// Détermination de la page/sous-page
 	if(!is_array($page)) $page = explode('-', $page);
 	$page0 = $page[0];
@@ -27,18 +27,21 @@ function rewrite($page, $params = '')
 	else $page1 = '';
 	
 	// Pas de sous-navigation
-	if(isset($params['subnav']))
+	if(is_array($params))
 	{
-		if($params['subnav'] != true) $page1 = '';
-		unset($params['subnav']);
+		if(isset($params['subnav']))
+		{
+			if($params['subnav'] != true) $page1 = '';
+			unset($params['subnav']);
+		}
+	
+		// Si le nom HTML de la page est fourni
+		if(isset($params['html']))
+		{
+			$thisHTML = $params['html'];
+			unset($params['html']);
+		}	
 	}
-
-	// Si le nom HTML de la page est fourni
-	if(isset($params['html']))
-	{
-		$thisHTML = $params['html'];
-		unset($params['html']);
-	}	
 	
 	if($rewriteMode == false or $GLOBALS['cerberus']->isLocal())
 	{

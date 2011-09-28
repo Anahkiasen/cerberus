@@ -1,4 +1,11 @@
 <?php
+/*
+	Fonction randomString
+	# Génère une chaîne aléatoire
+	
+	$length
+		La longueur de la chaîne voulue
+*/
 function randomString($length = 15)
 {
 	$password = '';

@@ -15,7 +15,6 @@
 		TRUE	Passe les valeurs à la fonction bdd()
 		FALSE	Laisse les valeurs intactes
 */
-
 function simplode($glue1, $glue2, $array, $convert = true)
 {
 	if(is_array($array))

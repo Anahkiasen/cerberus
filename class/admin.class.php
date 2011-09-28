@@ -18,7 +18,6 @@ class AdminClass
 		
 	function __construct($arrayLang = '')
 	{		
-		$this->url = 'index.php';
 		$this->modeSQL = function_exists('connectSQL');
 		
 		if(is_array($arrayLang) and !empty($arrayLang)) 
@@ -60,7 +59,7 @@ class AdminClass
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
 			echo '<a href="' .rewrite('admin-' .$value). '" ' .$thisActive. '>' .$textLien. '</a>';	
 		}
-		echo '<a href="' .rewrite('admin', array('logoff')). '">Déconnexion</a></div><br />';
+		echo '<a href="' .rewrite('admin', 'logoff'). '">Déconnexion</a></div><br />';
 	}
 	
 	/* ########################################
@@ -125,7 +124,6 @@ class AdminClass
 	*/
 	function build($thisNavigation = '')
 	{	
-		global $_SESSION;
 		global $navigation;
 		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
 		
@@ -193,7 +191,7 @@ class AdminClass
 			foreach($navigation as $key => $value)
 				foreach($value as $page) $availablePages[] = $key. '-' .$page;
 		
-			$form = new form(false, array('action' => rewrite('admin-meta', array($urlAction))));
+			$form = new form(false, array('action' => rewrite('admin-meta', $urlAction)));
 			$select = new select();
 			$form->getValues($metaAdmin->getFieldsTable());
 			

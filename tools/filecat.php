@@ -1,4 +1,11 @@
 <?php
+/*
+	Fonction filecat
+	# Retourne un type de fichier à partir d'une extension
+	
+	$extension
+		L'extension à analyser
+*/
 function filecat($extension) 
 {
 	$typeArray = array(
