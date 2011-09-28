@@ -12,7 +12,7 @@
 */
 function getURL($truncateDomain = false, $truncateGET = true)
 {
-	if($truncateDomain == false)
+	if(!$truncateDomain)
 	{
 		$pageURL = (isset($_SESSION['HTTPS']) and $_SERVER['HTTPS'] == 'on')
 			? 'https://'
@@ -33,7 +33,7 @@ function getURL($truncateDomain = false, $truncateGET = true)
 				? 'index.php'
 				: 'index.html';
 		
-		if($truncateGET == true)
+		if($truncateGET)
 		{
 			$pageName = explode('?', $pageName);
 			$pageName = $pageName[0];

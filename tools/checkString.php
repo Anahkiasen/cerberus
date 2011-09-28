@@ -37,13 +37,13 @@ function checkFields()
 		if(!empty($value) and in_array($key, $fields))
 		{
 			$filled = array_diff($filled, array($key));
-			if($multilangue == true) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
+			if($multilangue) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
 		}
 	
 	// On vérifie que les champs sont remplis
 	if(!empty($filled))
 	{
-		if($multilangue == true)
+		if($multilangue)
 		{
 			foreach($filled as $key => $value) $filled[$key] = index('form-' .$value);
 			$erreurs[] = index('form-erreur-incomplete'). ' : ' .implode(', ', $filled);
@@ -56,7 +56,7 @@ function checkFields()
 	}
 
 	// Vérification de la validité des informations
-	if($multilangue == true)
+	if($multilangue)
 	{
 		if(in_array('email', $fields)) if(!empty($_POST['email']) and !checkString($_POST['email'])) $erreurs[] = index('form-erreur-email');
 		if(in_array('phone', $fields)) if(!empty($_POST['phone']) and !checkString($_POST['phone'], 'phone')) $erreurs[] = index('form-erreur-phone');
@@ -73,6 +73,6 @@ function checkFields()
 		echo display(implode('<br />', $erreurs));
 		return false;
 	}
-	else return ($multilangue == true) ? $mailbody : true;
+	else return ($multilangue) ? $mailbody : true;
 }
 ?>

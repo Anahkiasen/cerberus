@@ -17,7 +17,7 @@ function stringToArray($string, $sort = TRUE)
 	}
 	
 	// Tri des valeurs
-	if($sort == TRUE) ksort($array);
+	if($sort) ksort($array);
 	
 	return $array;
 }

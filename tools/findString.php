@@ -39,8 +39,8 @@ function findString($needle, $haystack, $exclusive = true)
 		}
 		
 		// Résultat selon le mode exclusif
-		if($exclusive == true and $result == $numberEntry) return true;
-		elseif($exclusive == false and $result != 0) return true;
+		if($exclusive and $result == $numberEntry) return true;
+		elseif(!$exclusive and $result != 0) return true;
 		else return false;
 	}
 	else

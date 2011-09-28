@@ -14,7 +14,7 @@ function cssFont($fonts, $googleFont = true)
 {
 	if(!is_array($fonts)) $fonts = array($fonts);
 	
-	if($googleFont == true)
+	if($googleFont)
 	{
 		// Polices Google
 		$fontString = '';

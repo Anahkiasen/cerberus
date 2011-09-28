@@ -62,13 +62,13 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 					if(count($fetchAssoc) == 1)
 					{
 						// UNIQUE RESULT - UNIQUE FIELD
-						if($forceArray == TRUE) return $fetchAssoc;
+						if($forceArray) return $fetchAssoc;
 						else foreach($fetchAssoc as $value) return $value;
 					}
 					else
 					{
 						// UNIQUE RESULT - MULTIPLE FIELDS
-						if($forceArray == TRUE) return mysqlQuery_remapArray($fetchAssoc, $cle);
+						if($forceArray) return mysqlQuery_remapArray($fetchAssoc, $cle);
 						else
 						{
 							foreach($fetchAssoc as $key => $value)
@@ -86,7 +86,7 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 						if((isset($fetchAssoc[$cle]) and count($fetchAssoc) == 2) or (count($fetchAssoc) == 1))
 						{
 							// MULTIPLE RESULTS - UNIQUE FIELD
-							if($forceArray == TRUE) $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle);
+							if($forceArray) $returnArray = $returnArray + mysqlQuery_remapArray($fetchAssoc, $cle);
 							else 
 							{
 								if(isset($fetchAssoc[$cle])) $thisKey = $fetchAssoc[$cle];

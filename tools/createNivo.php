@@ -43,7 +43,7 @@ function createNivo($path, $largeur, $hauteur, $options = '', $shuffle = true)
 
 	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">';
 	$arrayImages = glob('file/' .$path. '/*.jpg');
-	if($shuffle == TRUE) shuffle($arrayImages);
+	if($shuffle) shuffle($arrayImages);
 	foreach($arrayImages as $file)
 	{
 		$file = str_replace('file/', '', $file);

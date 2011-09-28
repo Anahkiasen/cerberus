@@ -42,7 +42,7 @@ class Cerberus
 		else $this->mode = 'core';
 
 		// Création ou non du fichier
-		if($this->productionMode == FALSE or !file_exists('cerberus/cache/' .$this->mode. '.php'))
+		if(!$this->productionMode or !file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
 			$this->unpackModules($modules);
 			$this->generate();
@@ -77,7 +77,7 @@ class Cerberus
 			$packages = array(
 			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
 			'pack.navigation' => array('baseref', 'desiredPage', 'rewrite'),
-			'class.admin' => array('admin', 'getURL', 'randomString'),
+			'class.admin' => array('admin', 'admin.setup', 'getURL', 'randomString'),
 			'class.mail' => array('mail', 'stripHTML'),
 			'class.form' => array('form', 'checkString'),
 			'class.news' => array('news', 'bbcode', 'truncate'));

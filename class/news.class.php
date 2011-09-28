@@ -64,7 +64,7 @@ class getNews
 		$this->newsPaginate = $newsPaginate;
 		$this->newsOrder = $newsOrder;
 		
-		if($this->newsPaginate == TRUE)
+		if($this->newsPaginate)
 		{
 			if(isset($_GET['pagenews'])) $this->currentPage = $_GET['pagenews'];
 			$this->newsStart = ($this->currentPage - 1) * $this->newsNumber;
@@ -72,7 +72,7 @@ class getNews
 	}
 	function setTruncate($truncate, $mode)
 	{
-		if($truncate == true)
+		if($truncate)
 		{
 			$this->displayLink = TRUE;
 			$this->truncateNews = $mode;
@@ -96,7 +96,7 @@ class getNews
 		}
 		else
 		{
-			$limit = ($this->newsPaginate == FALSE)
+			$limit = (!$this->newsPaginate)
 				? $this->newsNumber
 				: $this->newsStart. ',' .$this->newsNumber;
 		
@@ -115,16 +115,16 @@ class getNews
 			else $alt = (isset($alt) and $alt == 'alt') ? '' : 'alt';
 		
 			// Display
-			$thisDate = ($this->displayDate == TRUE)
+			$thisDate = ($this->displayDate)
 				? '<br /><p class="date">' .$value['date']. '</p>'
 				: NULL;
-			$thisThumb = ($this->displayThumb == TRUE and !empty($value['path']) and file_exists('file/news/' .$value['path']))
+			$thisThumb = ($this->displayThumb and !empty($value['path']) and file_exists('file/news/' .$value['path']))
 				? '<a class="colorbox" href="file/news/' .$value['path']. '">
 				<img src="' .timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1, false). '" class="float" />
 				</a>'
 				: NULL;
 				
-			$thisLink = ($this->displayLink == TRUE)
+			$thisLink = ($this->displayLink)
 				? rewrite($this->page, array('actualite' => $key, 'html' => $value['titre']))
 				: '#' .$key;
 			
@@ -132,7 +132,7 @@ class getNews
 			$contenu = $value['contenu'];
 			if($this->truncateNews != FALSE and empty($id)) $contenu = truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
 			$contenu = nl2br(bbcode(html($contenu)));
-			if($this->displayLink == TRUE and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">Lire la suite</p></a>';
+			if($this->displayLink and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">Lire la suite</p></a>';
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">

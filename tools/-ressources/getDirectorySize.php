@@ -29,7 +29,7 @@ function getDirectorySize($path, $sizeFormat = true)
 	}
 	closedir ($handle);
 	
-	if($sizeFormat == true)
+	if($sizeFormat)
 	{
 		if($totalsize < 1024) return $totalsize. ' bytes';
 		elseif($totalsize < (1024 * 1024))

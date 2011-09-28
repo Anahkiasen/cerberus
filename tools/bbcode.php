@@ -10,7 +10,7 @@
 */
 function bbcode($contenu, $css = TRUE)
 {
-	if($css == FALSE)
+	if(!$css)
 	{
 		$contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<span class="b">$1</span>', $contenu);
 		$contenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<span class="i">$1</span>', $contenu);

@@ -43,7 +43,7 @@ function rewrite($page, $params = '')
 		}	
 	}
 	
-	if($rewriteMode == false or $GLOBALS['cerberus']->isLocal())
+	if(!$rewriteMode or $GLOBALS['cerberus']->isLocal())
 	{
 		// Mode local
 		$lien = 'index.php?page=' .$page0;

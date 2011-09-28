@@ -66,13 +66,13 @@ function toHTML($string, $encode = true, $removeTags = false)
 	'©' => '&copy;',
 	'’' => '\'');
 	
-	if($removeTags == true)
+	if($removeTags)
 	{
 		$table['<'] = '&lt;';
 		$table['>'] = '&gt;';
 	}
 	
-	if($encode == true) return strtr($string, $table);
+	if($encode) return strtr($string, $table);
 	else
 	{
 		foreach($table as $key => $value) $string = str_replace($value, $key, $string);

@@ -38,9 +38,10 @@ class form
 	// Récupérer les valeurs à partir de la liste des champs
 	function getValues($fieldsTable)
 	{
-		if(isset($_GET['edit']) and isset($fieldsTable[1]))
+		if(isset($fieldsTable[1])) $this->table = $fieldsTable[1];
+		if(isset($_GET['edit_' .$fieldsTable[1]]))
 		{
-			$modif = mysqlQuery('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE ' .$fieldsTable[0][0]. '="' .$_GET['edit']. '"');
+			$modif = mysqlQuery('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE ' .$fieldsTable[0][0]. '="' .$_GET['edit_' .$fieldsTable[1]]. '"');
 			foreach($fieldsTable[0] as $value) $post[$value] = html($modif[$value]); 
 		}
 		else foreach($fieldsTable[0] as $value) $post[$value] = '';
@@ -72,33 +73,33 @@ class form
 	// Ouvrir et fermer un fieldset
 	function openFieldset($name, $mandatory = false)
 	{
-		$fieldName = (self::$multilangue == false) ? $name : index('form-' .$name);
+		$fieldName = (!self::$multilangue) ? $name : index('form-' .$name);
 		self::$mandatory = $mandatory;
 		
 		$this->render .= PHP_EOL. "
 		<fieldset>" .PHP_EOL. "
 			\t<legend>" .$fieldName. '</legend>';
 		
-		if(self::$openedManual == true) self::$openedManual = false;
+		if(self::$openedManual) self::$openedManual = false;
 	}
 	function closeFieldset()
 	{
-		if(self::$openedManual == true) $this->closeManualField();
+		if(self::$openedManual) $this->closeManualField();
 		$this->render .= PHP_EOL. '</fieldset>';
 	}
 	
 	// Champs manuels
 	function manualField($name, $full = false)
 	{
-		$fieldName = (self::$multilangue == false) ? $name : index('form-' .$name);
-		$mandatoryStar = (self::$mandatory == true)
+		$fieldName = (!self::$multilangue) ? $name : index('form-' .$name);
+		$mandatoryStar = (self::$mandatory)
 			? ' <span class="mandatory">*</span>'
 			: '';
 		
 		if(self::$formType != 'plain')
 		{
 			$this->render .= '<dl>';
-			if($full == false)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName.$mandatoryStar. '</label></dt>';
+			if(!$full)	$this->render .= '<dt><label for="' .$name. '">' .$fieldName.$mandatoryStar. '</label></dt>';
 			$this->render .= '<dd>';
 		}
 			
@@ -178,7 +179,7 @@ class form
 		if($stateField)
 		{
 			$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label);
-			$mandatoryStar = (self::$mandatory == true)
+			$mandatoryStar = (self::$mandatory)
 				? ' <span class="mandatory">*</span>'
 				: '';
 				
@@ -229,7 +230,7 @@ class form
 			{	
 				$this->render .= '<input type="radio" ';
 				foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
-				$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label. '-'.$i);
+				$fieldName = (!self::$multilangue) ? $label : index('form-' .$label. '-'.$i);
 				if(isset($_POST[$label]) && $_POST[$label] == $i) $this->render .= 'checked="checked"';
 				$this->render .= ' value="' .$i. '"> ' .$fieldName;
 			}
@@ -251,7 +252,7 @@ class form
 	// Raccourcis personnels
 	function addEdit()
 	{
-		$diff = isset($_GET['edit']) ? $_GET['edit'] : 'add';
+		$diff = isset($_GET['edit_' .$this->table]) ? $_GET['edit_' .$this->table] : 'add';
 		$this->addHidden('edit', $diff);
 	}
 	function addDate($name = 'Date', $date = '')
@@ -339,7 +340,7 @@ class select extends form
 	// Accrochage de la liste au <select>
 	function appendList($liste, $overwrite = true)
 	{
-		if($overwrite == true)
+		if($overwrite)
 		{
 			foreach($liste as $key => $value) 
 				if(!is_array($value)) $thisListe[$value] = $value;
@@ -445,14 +446,14 @@ class select extends form
 		global $index;
 			
 		$label = $this->label;
-		$stateField = (self::$openedManual == false 
+		$stateField = (!self::$openedManual 
 		and self::$formType != 'plain');
 		
 		// Ouverture du champ
 		if($stateField)
 		{
-			$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label);
-			$mandatoryStar = (self::$mandatory == true)
+			$fieldName = (!self::$multilangue) ? $label : index('form-' .$label);
+			$mandatoryStar = (self::$mandatory)
 				? ' <span class="mandatory">*</span>'
 				: '';
 	

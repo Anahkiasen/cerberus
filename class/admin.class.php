@@ -1,277 +1,33 @@
 <?php
-class AdminClass
-{
-	public $navigAdmin;
-	
-	private $fields; // Liste des champs
-	private $table; // Table actuelle
-	private $tableThumb; // Existence d'une table des images
-	
-	// Login
-	private $loginAdmin;
-	private $loginPass;
-	private $granted = FALSE;
-	
-	// Options
-	private $arrayLang;
+class AdminPage extends AdminSetup
+{		
+	private $arrayLangues;
 	private $multilangue;
-		
-	function __construct($arrayLang = '')
+	
+	function __construct()
 	{		
 		$this->modeSQL = function_exists('connectSQL');
-		
-		if(is_array($arrayLang) and !empty($arrayLang)) 
-		{
-			$this->arrayLang = $arrayLang;
-			$this->multilangue = TRUE;
-		}
-		else $this->multilangue = FALSE;
+		$this->defineMultilangue();
 	}
 	function getFieldsTable()
 	{
 		return array($this->fields, $this->table);
 	}
 	
-	/* ########################################
-	############### NAVIGATION ###############
-	######################################## */
-	function admin_navigation($navigation)
-	{
-		echo '<div class="navbar" style="position:relative">';
-		
-		if($this->multilangue)
-		{
-			echo '<p style="position: absolute; right: 0; top: -12px">';
-			// Langue de l'admin
-			foreach($this->arrayLang as $lg)
-			{
-				$getAdmin = (isset($_GET['admin'])) ? '&admin=' .$_GET['admin'] : '';
-				$urlFlag = ($_SESSION['admin']['langue'] == $lg) ? 'flag_' .$lg : 'flag_' .$lg. '_off';
-				echo '<a href="' .rewrite('admin', array('adminLangue' => $lg.$getAdmin)). '"><img src="css/' .$urlFlag. '.png" alt="' .$lg. '" /></a> ';
-			}
-			echo '</p>';
-		}
-	
-		// Navigation de l'admin
-		if(!empty($navigation)) foreach($navigation as $key => $value)
-		{
-			$textLien = ($this->multilangue) ? index('admin-' .$value) : ucfirst($value);
-			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
-			echo '<a href="' .rewrite('admin-' .$value). '" ' .$thisActive. '>' .$textLien. '</a>';	
-		}
-		echo '<a href="' .rewrite('admin', 'logoff'). '">Déconnexion</a></div><br />';
-	}
-	
-	/* ########################################
-	############### IDENTIFICATION ###########
-	######################################## */
-	
-	// Formulaire d'identification et vérification
-	function adminLogin()
-	{
-		$admin_form = '<form method="post">
-		<fieldset class="login"><legend>Identification</legend>
-		<dl><dt>Identifiant</dt><dd><input type="text" name="user" /></dd></dl>
-		<dl><dt>Mot de passe</dt><dd><input type="password" name="password" /></dd></dl>
-		<dl class="submit"><dd><p style="text-align:center"><input type="submit" value="Connexion" /></p></dd> 
-	</dl>
-		</fieldset></form>';
-		
-		// Vérification du formulaire		
-		if(isset($_POST['user'], $_POST['password']))
-		{
-			if($this->checkLogin($_POST['user'], $_POST['password']))
-			{
-				$_SESSION['admin']['user'] = $_POST['user'];
-				$_SESSION['admin']['password'] = $_POST['password'];
-				$this->granted = TRUE;
-			}
-			else echo display('Les identifiants entrés sont incorrects.').$admin_form;
-		}
-		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = TRUE;
-		else echo display('Veuillez entrer votre identifiant et mot de passe.').$admin_form;
-	}
-	
-	// Vérification des identifiants
-	function checkLogin($user, $password)
-	{
-		if($this->modeSQL == TRUE)
-		{
-			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
-			return (isset($queryQ) && md5($password) == $queryQ);
-		}
-		elseif($this->modeSQL == FALSE and isset($this->loginAdmin)) return (md5($user) == $this->loginAdmin and md5($password) == $this->loginPass);
-		else return FALSE;
-	}
-	
-	// Paramétrage d'identifiants manuels
-	function setLogin($user, $password = '')
-	{
-		$this->loginAdmin = $user;
-		$this->loginPass = (!empty($password)) ? $password : $user;
-	}
-	
-	// Recupération de l'identification
-	function accessGranted()
-	{
-		return $this->granted;
-	}
-		
 	/*
 	########################################
-	############## CONSTRUCT ###############
+	############## MISE EN PLACE ###########
 	######################################## 
 	*/
-	function build($thisNavigation = '')
-	{	
-		global $navigation;
-		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
-		
-		// Ajout des pages par défaut
-		$systemPages = array('meta', 'backup');
-		$adminNavigation = array_diff($navigation['admin'], array('admin'));
-		$thisNavigation = array_merge(beArray($thisNavigation), $adminNavigation, $systemPages);
-		 
-		$this->adminLogin();
-		
-		// Variables d'identification
-		if($this->granted == TRUE)
-		{
-			// INTERFACE D'ADMINISTRATION
-			$title = 'Administration';
-			if(!empty($thisNavigation))
-			{
-				if
-				(
-					isset($_GET['admin']) and
-					in_array($_GET['admin'], $thisNavigation) and
-					(file_exists('pages/admin-' .$_GET['admin']. '.php')
-						or in_array($_GET['admin'], $systemPages))
-				)
-					$title = ($this->multilangue) ? index('admin-' .$_GET['admin']) : ucfirst($_GET['admin']);
-			}
-			
-			echo '<h1>' .$title. '</h1>';
-			$this->admin_navigation($thisNavigation);
-			
-			echo '<div id="admin">';
-			if($title != 'Administration')
-			{
-				if($_GET['admin'] == 'meta') $this->meta();
-				elseif($_GET['admin'] == 'backup') $this->backup();
-				else include('pages/admin-' .$_GET['admin']. '.php');
-			}
-			echo '</div>';
-		}
-	}
-	// PAGE META
-	function meta()
-	{
-		$metaAdmin = new AdminClass();
-		$metaAdmin->setPage('meta');
-		$metaAdmin->createList(array('page'));
-		
-		// Formulaire
-		if(isset($_GET['add']) || isset($_GET['edit']))
-		{	
-			// Paramètres ajout/modif
-			if(isset($_GET['edit']))
-			{
-				$diffText = 'Modifier';
-				$urlAction = 'edit=' .$_GET['edit'];
-			}
-			else
-			{
-				$diffText = 'Ajouter';
-				$urlAction = 'add';
-			}
-			
-			global $navigation;
-			
-			foreach($navigation as $key => $value)
-				foreach($value as $page) $availablePages[] = $key. '-' .$page;
-		
-			$form = new form(false, array('action' => rewrite('admin-meta', $urlAction)));
-			$select = new select();
-			$form->getValues($metaAdmin->getFieldsTable());
-			
-			$form->openFieldset($diffText. ' des données meta');
-				$select->newSelect('page', 'Identifiant de la page'); 
-					$select->appendList($availablePages);
-					$form->insertText($select);
-				$form->addText('titre', 'Titre de la page');
-				$form->addText('lien', 'URL de la page');
-				$form->addTextarea('description', 'Description de la page', '', array('underfield' => true));
-				$form->addEdit();
-				$form->addSubmit($diffText);
-			$form->closeFieldset();
-			
-			echo $form;
-		}
-	}
-	// BACKUP
-	function backup()
-	{
-		if(isset($_GET['delete']))
-		{
-			$path = 'cerberus/cache/sql/' .$_GET['delete']. '/';
-			if(file_exists($path))
-			{
-				sunlink($path);
-				echo display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
-			}
-			else echo display('Sauvegarde introuvable');
-		}
-		if(isset($_GET['load']))
-		{
-			include('cerberus/cache/conf.php');
-			foreach(glob('cerberus/cache/sql/' .$_GET['load']. '/*.sql') as $file)
-				$fichier = $file;
-				
-			multiQuery(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
-			echo display('La sauvegarde du ' .$_GET['load']. ' a bien été chargée');
-		}
-	
-		echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
-		<table>
-			<thead>
-				<tr class="entete">
-					<td>Date</td>
-					<td>Charger</td>
-					<td>Supprimer</td>
-				</tr>
-			</thead>
-			<tbody>';
-			
-		foreach(glob('./cerberus/cache/sql/*') as $file)  
-		{  
-			if(is_dir($file))
-			{
-				$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
-				echo 
-				'<tr>
-				<td>' .$folderDate. '</td>
-				<td><a href="' .rewrite('admin-backup', array('load' => $folderDate)). '"><img src="css/load.png" /></a></td>
-				<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="css/cross.png" /></a></td>
-				</tr>';
-			}
-		}  
-		echo '</tbody></table>';
-	}
-	
-	/* ########################################
-	########TRAITEMENT DES DONNEES ###########
-	######################################## */
 	
 	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
-		$this->thisPage = rewrite('admin-' .$_GET['admin']);
-		
-				
+		$this->getEdit = @$_GET['edit_' .$this->table];
+		$this->getAdd = @$_GET['add_' .$this->table];
+
 		// Champs facultatifs
-		if(isset($facultativeFields) and !empty($facultativeFields) and !is_array($facultativeFields))
-			$facultativeFields = array($facultativeFields);
+		$facultativeFields = beArray($facultativeFields);
 		
 		// Récupération du nom des champs
 		$this->fields = array_keys(mysqlQuery('SHOW COLUMNS FROM ' .$table));
@@ -282,7 +38,7 @@ class AdminClass
 		{
 			// Vérification des champs disponibles
 			$emptyFields = array();
-			if($this->multilangue == TRUE) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
+			if($this->multilangue) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
 			foreach($_POST as $key => $value)
 			{
 				if(findString('_annee', $key))
@@ -312,12 +68,12 @@ class AdminClass
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
 		// SUPPRESSION
-		if(isset($_GET['delete']))
+		if(isset($_GET['delete_' .$this->table]))
 		{
 			// Images liées
 			if(in_array('path', $this->fields))
 			{
-				$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$_GET['delete']. '"');
+				$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$_GET['delete_' .$this->table]. '"');
 				if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
 			}
 			else
@@ -327,13 +83,13 @@ class AdminClass
 					$picExtension = array('jpg', 'jpeg', 'gif', 'png');
 					foreach($picExtension as $value)
 					{
-						$thisFile = $_GET['delete']. '.' .$value;
+						$thisFile = $_GET['delete_' .$this->table]. '.' .$value;
 						sunlink('file/' .$this->table. '/' .$thisFile);
 					}
 				}
 			}
 						
-			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE ' .$this->index. '="' .$_GET['delete']. '"', 'Objet supprimé'));
+			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE ' .$this->index. '="' .$_GET['delete_' .$this->table]. '"', 'Objet supprimé'));
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
@@ -342,9 +98,9 @@ class AdminClass
 		}
 	}
 	
-	/* 
+	/*
 	########################################
-	############### LISTE DES DONNEES ######
+	########## TABLEAU DES DONNES ##########
 	######################################## 
 	
 	Possibilité de donner une requête manuelle au script 
@@ -419,12 +175,12 @@ class AdminClass
 			echo '<tr>';
 			if(is_array($value)) foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
 			else echo '<td>' .html(str_replace('<br />', ' ', $value)). '</td>';
-			echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array('edit' => $key)). '"><img src="css/pencil.png" /></a></td>
-			<td><a href="' .rewrite('admin-' .$_GET['page'], array('delete' => $key)). '"><img src="css/cross.png" /></a></td></tr>';
+			echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array('edit_' .$this->table => $key)). '"><img src="css/pencil.png" /></a></td>
+			<td><a href="' .rewrite('admin-' .$_GET['page'], array('delete_' .$this->table => $key)). '"><img src="css/cross.png" /></a></td></tr>';
 		}
-		echo '<tr class="additem"><td colspan="50"><a href="' .$this->thisPage. '&add">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
+		echo '<tr class="additem"><td colspan="50"><a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
 	}
-		
+				
 	/*
 	########################################
 	######## FONCTIONS FORMULAIRES #########
@@ -432,21 +188,28 @@ class AdminClass
 	*/
 		
 	// Détermine si le formulaire est en mode ajout ou modif
-	function addOrEdit()
+	function addOrEdit($formulaire = '')
 	{
-		if(isset($_GET['edit']))
+		if(!empty($formulaire))
 		{
-			$diff = $_GET['edit'];
-			$diffText = 'Modifier';
-			$urlAction = 'edit=' .$_GET['edit'];
+			if(isset($this->getEdit) or isset($this->getAdd)) return $formulaire;
 		}
 		else
 		{
-			$diff = 'add';
-			$diffText = 'Ajouter';
-			$urlAction = 'add';
-		}	
-		return array($diffText, $urlAction, $diff);
+			if(isset($this->getEdit))
+			{
+				$diff = $this->getEdit;
+				$diffText = 'Modifier';
+				$urlAction = 'edit=' .$this->getEdit;
+			}
+			else
+			{
+				$diff = 'add';
+				$diffText = 'Ajouter';
+				$urlAction = 'add';
+			}	
+			return array($diffText, $urlAction, $diff);
+		}
 	}
 	
 	// Vérifie si un champ est véritablement nul

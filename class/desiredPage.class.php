@@ -72,7 +72,7 @@ class desiredPage
 		// Include de la page
 		$filename = $this->page.$pageSubString;
 		$fileExists = $this->fileExists($filename);
-		if($fileExists == FALSE)
+		if(!$fileExists)
 		{
 			$this->page = $this->allowedPages[0];
 			if($this->optionSubnav)
@@ -121,7 +121,7 @@ class desiredPage
 			$subTree = true;
 		}
 		
-		$thisTree = ($subTree == true) ? 'treeSubnav' : 'treeNavigation';
+		$thisTree = ($subTree) ? 'treeSubnav' : 'treeNavigation';
 		if(!empty($newLink))
 		{
 			if(isset($this->{$thisTree}[$key])) $this->{$thisTree}[$key] = $newLink;
