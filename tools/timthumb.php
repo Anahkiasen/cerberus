@@ -17,7 +17,7 @@
 	# de l'autre paramètre. Exemple, 100px de large et 50% de haut
 	# donnera 50px de haut (50% de 100px)
 */
-function timthumb($file, $width = '', $height = '', $crop = 1)
+function timthumb($file, $width = NULL, $height = NULL, $crop = 1)
 {
 	// Tailles en pourcentages
 	if(findString('%', $width))

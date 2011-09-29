@@ -8,7 +8,7 @@
 */
 function randomString($length = 15)
 {
-	$password = '';
+	$password = NULL;
 	$possible = '0123456789abcdfghjkmnpqrstvwxyzABCDFGHJKLMNPQRSTVWXYZ'; 
 	
 	for($i = 0; $i < $length; $i++)		

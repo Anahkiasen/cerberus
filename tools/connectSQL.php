@@ -14,7 +14,7 @@
 	$db
 		Base de donnée SQL
 */
-function connectSQL($LOCALHOST = 'Maxime', $host = '', $user = '', $mdp = '', $db = '')
+function connectSQL($LOCALHOST = 'Maxime', $host = NULL, $user = NULL, $mdp = NULL, $db = NULL)
 {
 	// Nom du fichier config
 	$conf = 'cerberus/cache/conf.php';
@@ -44,7 +44,7 @@ function connectSQL($LOCALHOST = 'Maxime', $host = '', $user = '', $mdp = '', $d
 		// Local EasyPHP
 		$MYSQL_HOST = 'localhost';
 		$MYSQL_USER = 'root';
-		$MYSQL_MDP = '';
+		$MYSQL_MDP = NULL;
 		$MYSQL_DB = $LOCALHOST;
 	}
 	elseif($_SERVER['HTTP_HOST'] == 'the8day.info')

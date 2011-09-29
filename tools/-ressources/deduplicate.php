@@ -1,9 +1,9 @@
 <?php
-function deduplicate($table, $index, $indexbis = '')
+function deduplicate($table, $index, $indexbis = NULL)
 {
 	// Récupération du tableau
 	$t = 0;
-	$indexbis = ($indexbis != '') ? ', ' .$indexbis. ' DESC' : '';
+	$indexbis = (isset($indexbis)) ? ', ' .$indexbis. ' DESC' : '';
 	$query = mysql_query('SELECT * FROM ' .$table. ' ORDER BY ' .$index. ' ASC' .$indexbis) or die(mysql_error());
 	while($original = mysql_fetch_assoc($query))
 	{
@@ -13,7 +13,7 @@ function deduplicate($table, $index, $indexbis = '')
 	}
 	
 	// Ecriture du CSV
-	$csvFile = '';
+	$csvFile = NULL;
 	$i = 0;
 	foreach($endtable as $value)
 	{

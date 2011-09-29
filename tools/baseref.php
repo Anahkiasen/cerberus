@@ -7,7 +7,7 @@
 		Array facultatif précisant si le site est dans un sous-dossier
 		et pour quel domaine, au format (DOMAINE => CHEMIN)
 */
-function baseref($array = '')
+function baseref($array = NULL)
 {
 	// Récupération des variables
 	global $index;

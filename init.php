@@ -27,14 +27,16 @@ class Cerberus
 		mb_detect_encoding($content, 'UTF-8, ISO-8859-1', TRUE));
 	}	
 	
-	function __construct($modules, $productionMode = FALSE, $mode = 'core')
+	function __construct($modules, $mode = 'core')
 	{
 		// Modules coeur
 		$modules = array_merge(array(
 			'beArray', 'display', 'boolprint', 'timthumb',
 			'findString', 'sfputs', 'simplode', 'sunlink'),
 			beArray($modules));
-		$this->productionMode = $productionMode;
+	
+		// Mode production
+		$this->defineProduction();
 	
 		// Mode de Cerberus (core/include)	
 		if($mode != 'core' and isset($_GET['page']) and !empty($_GET['page'])) $this->mode = $_GET['page'];
@@ -42,7 +44,7 @@ class Cerberus
 		else $this->mode = 'core';
 
 		// Création ou non du fichier
-		if(!$this->productionMode or !file_exists('cerberus/cache/' .$this->mode. '.php'))
+		if(!PRODUCTION or !file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
 			$this->unpackModules($modules);
 			$this->generate();
@@ -53,10 +55,6 @@ class Cerberus
 		
 		// Connexion à la base de données
 		if(file_exists('cerberus/cache/conf.php')) connectSQL();
-
-		// Définition des constantes
-		if(!defined('PRODUCTION'))
-			define('PRODUCTION', FALSE);
 	}
 	
 	/* 
@@ -137,7 +135,7 @@ class Cerberus
 	}
 	
 	// Répartition des fonctions entre les pages
-	function cerberusDispatch($array, $page = '', $mode = 'PHP')
+	function cerberusDispatch($array, $page = NULL, $mode = 'PHP')
 	{		
 		// API
 		$availableAPI = array(
@@ -221,12 +219,12 @@ class Cerberus
 				if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
 				return array(trim($css), trim($js), $renderArray);
 			}
-			else $cerberus = new Cerberus($renderArray, $this->productionMode, 'include');
+			else $cerberus = new Cerberus($renderArray, 'include');
 		}
 	}
 	
 	// Répartition des scripts et styles
-	function cerberusAPI($array, $page = '')
+	function cerberusAPI($array, $page = NULL)
 	{
 		global $pageVoulue;
 		global $sousPageVoulue;
@@ -325,10 +323,24 @@ class Cerberus
 		}
 	}
 	// Mode production ou non
-	function debugMode()
+	function defineProduction()
 	{
-		if($this->isLocal()) return false;
-		else return $this->productionMode;	
+		global $PRODUCTION;
+		global $REWRITING;
+		
+		if(!isset($PRODUCTION)) $PRODUCTION = TRUE;
+		if(!isset($REWRITING)) $REWRITING = TRUE; 
+		
+		if($this->isLocal())
+		{
+			define('PRODUCTION', FALSE);
+			define('REWRITING', FALSE);
+		}
+		else
+		{
+			define('PRODUCTION', $PRODUCTION);
+			define('REWRITING', $REWRITING);
+		}
 	}
 	
 	// En local ou non

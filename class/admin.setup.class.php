@@ -22,7 +22,7 @@ class AdminSetup
 	######################################## 
 	*/
 	
-	function __construct($customNavigation = '')
+	function __construct($customNavigation = NULL)
 	{	
 		global $navigation;
 		
@@ -136,7 +136,7 @@ class AdminSetup
 	}
 	
 	// Paramétrage d'identifiants manuels
-	function setLogin($user, $password = '')
+	function setLogin($user, $password = NULL)
 	{
 		$this->loginAdmin = $user;
 		$this->loginPass = (!empty($password)) ? $password : $user;

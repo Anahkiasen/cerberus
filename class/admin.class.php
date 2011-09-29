@@ -58,7 +58,7 @@ class AdminPage extends AdminSetup
 			if(empty($emptyFields))
 			{		
 				$uploadImage = $this->uploadImage();
-				if($uploadImage != NULL) $fieldsUpdate['path'] = $uploadImage;
+				if(!empty($uploadImage)) $fieldsUpdate['path'] = $uploadImage;
 				
 				if($_POST['edit'] == 'add')
 					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate), 'Objet ajouté'));
@@ -106,7 +106,7 @@ class AdminPage extends AdminSetup
 	Possibilité de donner une requête manuelle au script 
 	via la formulation array(REQUETE => ARRAY(CHAMPS,CHAMPS))
 	*/
-	function createList($fieldsList, $groupBy = '', $params = '')
+	function createList($fieldsList, $groupBy = NULL, $params = NULL)
 	{		
 		$manualQuery = (findString('SELECT', key($fieldsList)));
 	
@@ -161,7 +161,7 @@ class AdminPage extends AdminSetup
 			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$where. ' ORDER BY ' .$orderBy;
 		}
 				
-		$thisGroup = '';
+		$thisGroup = NULL;
 		$items = mysqlQuery($thisQuery, TRUE);
 		if($items) foreach($items as $key => $value)
 		{
@@ -197,7 +197,7 @@ class AdminPage extends AdminSetup
 	*/
 		
 	// Détermine si le formulaire est en mode ajout ou modif
-	function addOrEdit($formulaire = '')
+	function addOrEdit($formulaire = NULL)
 	{
 		if(!empty($formulaire))
 		{
@@ -252,7 +252,7 @@ class AdminPage extends AdminSetup
 			else $storageMode = 'id';
 
 			// Erreurs basiques
-			$errorDisplay = '';
+			$errorDisplay = NULL;
 			$extension = strtolower(substr(strrchr($_FILES[$field]['name'], '.'), 1));
 			if($_FILES[$field]['error'] != 0) $errorDisplay = 'Une erreur est survenue lors du transfert.';
 			if(filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';

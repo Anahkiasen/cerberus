@@ -1,5 +1,5 @@
 <?php
-function postVar($post = '')
+function postVar($post = NULL)
 {
 	if(empty($post)) $post = $_POST; 
 	foreach($_POST as $key => $value)

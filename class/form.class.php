@@ -19,7 +19,7 @@ class form
 	*/
 	
 	// Construction
-	function __construct($multilangue = false, $params = '')
+	function __construct($multilangue = false, $params = NULL)
 	{
 		self::$multilangue = $multilangue;
 
@@ -44,7 +44,7 @@ class form
 			$modif = mysqlQuery('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE ' .$fieldsTable[0][0]. '="' .$_GET['edit_' .$fieldsTable[1]]. '"');
 			foreach($fieldsTable[0] as $value) $post[$value] = html($modif[$value]); 
 		}
-		else foreach($fieldsTable[0] as $value) $post[$value] = '';
+		else foreach($fieldsTable[0] as $value) $post[$value] = NULL;
 		
 		if(isset($_POST)) foreach($fieldsTable[0] as $value)
 			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = html($_POST[$value]);
@@ -128,7 +128,7 @@ class form
 	// fieldset > dl > dt label > dd input
 	
 	// Fonction moteur
-	function addElement($label, $name, $type, $value = '', $additionalParams = '')
+	function addElement($label, $name, $type, $value = NULL, $additionalParams = NULL)
 	{
 		$params = array("label" => $label, 'value' => $value, "type" => $type, "name" => $name);
 		if(!empty($additionalParams) && is_array($additionalParams)) foreach($additionalParams as $key => $value) $params[$key] = $value;
@@ -255,14 +255,14 @@ class form
 		$diff = isset($_GET['edit_' .$this->table]) ? $_GET['edit_' .$this->table] : 'add';
 		$this->addHidden('edit', $diff);
 	}
-	function addDate($name = 'Date', $date = '')
+	function addDate($name = 'Date', $date = NULL)
 	{
 		$select = new select();
 		$select->newSelect($name);
 		$select->appendList($select->liste_date($date));
 		$this->render .= $select;
 	}
-	function addHour($name = 'Heure', $hour = '')
+	function addHour($name = 'Heure', $hour = NULL)
 	{
 		$select = new select();
 		$select->newSelect($name);
@@ -271,28 +271,28 @@ class form
 	}
 	
 	// Raccourcis généraux
-	function addRadio($name, $number, $label = '', $value = '', $additionalParams = '')
+	function addRadio($name, $number, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['number'] = $number;
 		$this->addElement($label, $name, "radio",  $value, $additionalParams);
 	}
-	function addText($name, $label = '', $value = '', $additionalParams = '')
+	function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addElement($label, $name, "text",  $value, $additionalParams);
 	}
-	function addHidden($name, $value = '', $additionalParams = '')
+	function addHidden($name, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addElement('', $name, "hidden",  $value, $additionalParams);
 	}
-	function addTextarea($name, $label = '', $value = '', $additionalParams = '')
+	function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addElement($label, $name, "textarea", $value, $additionalParams);
 	}
-	function addSubmit($name = 'Valider', $label = '', $value = '', $additionalParams = '')
+	function addSubmit($name = 'Valider', $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addElement($label, $name, "submit", $value, $additionalParams);
 	}
-	function addFile($name, $label = '', $value = '', $additionalParams = '')
+	function addFile($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->render = str_replace('<form method' ,'<form enctype="multipart/form-data" method', $this->render);
 		$this->addElement($label, $name, "file", $value, $additionalParams);
@@ -321,16 +321,16 @@ class select extends form
 	private $render;
 
 	// Construction
-	function __construct($name = '')
+	function __construct($name = NULL)
 	{	
 		if(!isset(self::$valuesArray)) self::$valuesArray = array();
 		if(!empty($name)) $this->newSelect($name);
 	}
 		
 	// Initialisation
-	function newSelect($name, $label = '')
+	function newSelect($name, $label = NULL)
 	{
-		$this->render = '';
+		$this->render = NULL;
 		$this->liste = 
 		$this->params = array();
 		
@@ -367,7 +367,7 @@ class select extends form
 	*/
 	
 	// Ajout de paramètres
-	function addParams($params = '')
+	function addParams($params = NULL)
 	{
 		$this->params += $params;
 	}
@@ -397,7 +397,7 @@ class select extends form
 	}
 	
 	// Champ date
-	function liste_date($date = '', $startingYear = 2010)
+	function liste_date($date = NULL, $startingYear = 2010)
 	{
 		// Date dans les valeurs données ou manuelle, sinon date actuelle
 		if(isset(self::$valuesArray[strtolower($this->name)])) $date = self::$valuesArray[strtolower($this->name)];
@@ -419,7 +419,7 @@ class select extends form
 	}
 	
 	// Champ heure
-	function liste_heure($hour = '')
+	function liste_heure($hour = NULL)
 	{
 		if(empty($hour)) $hour = '-';
 		$valueHour = explode('-', $hour);
@@ -488,7 +488,7 @@ class select extends form
 			{
 				if($key == $value and $thisValue == $value) $selected = 'selected="selected"';
 				elseif($key != $value and $thisValue == $key) $selected = 'selected="selected"';
-				else $selected = '';
+				else $selected = NULL;
 				
 				if($key == $value) $this->render .= '<option ' .$selected. '>' .$value. '</option>';
 				else $this->render .= '<option value="' .$key. '" ' .$selected. '>' .$value. '</option>';

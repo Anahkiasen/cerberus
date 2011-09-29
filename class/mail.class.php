@@ -48,7 +48,7 @@ class sendMail
 	}
 	
 	// Message en HTML
-	function messageHTML($absoluteURL = '')
+	function messageHTML($absoluteURL = NULL)
 	{
 		global $index;
 		$this->absoluteURL = (isset($index['http']))
@@ -86,14 +86,14 @@ class sendMail
 	}
 		
 	// Envoi du mail
-	function send($header = '')
+	function send($header = NULL)
 	{
 		if(!empty($this->expediteurMail)) $header .= "From: \"" .$this->expediteurAlias. "\"<" .$this->expediteurMail. ">\r\n";
 		if(is_array($this->destinataire))
 		{
 			foreach($this->destinataire as $key => $value) $destinataires[$key] = '<' .$value. '>'; 
 			$header .= "Bcc: " .implode(',', $destinataires). "\r\n";
-			$this->destinataire = '';
+			$this->destinataire = NULL;
 		}
 		$header .= "MIME-Version: 1.0\n";
 		$header .= "Content-Type: multipart/alternative; boundary=\"".$this->boundary_alt."\"";

@@ -42,7 +42,7 @@ function backupSQL($filename)
 		}  
 	
 		// Récupération de la liste des tables
-		$file = '';
+		$file = NULL;
 		foreach($listeTables as $table)
 		{   
 			$file .= "DROP TABLE IF EXISTS $table;\n";

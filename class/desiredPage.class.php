@@ -15,8 +15,6 @@ class desiredPage
 	private $optionSubnav = TRUE;
 	private $optionMono = FALSE;
 	
-	private $optionRewrite = TRUE;
-	
 	private $optionListed = FALSE;
 	private $optionListedSub = FALSE;
 	
@@ -42,7 +40,6 @@ class desiredPage
 		global $index;
 		
 		if(empty($navigation)) $navigation = array('home' => array('home'));
-		if($GLOBALS['cerberus']->isLocal()) $this->optionRewrite = false;
 		
 		// Définition du mode
 		$this->cacheTree = $navigation;
@@ -67,7 +64,7 @@ class desiredPage
 				: $navigation[$this->page][0];
 			$pageSubString = '-' .$this->pageSub;
 		}
-		else $pageSubString = '';
+		else $pageSubString = NULL;
 		
 		// Include de la page
 		$filename = $this->page.$pageSubString;
@@ -109,7 +106,7 @@ class desiredPage
 	}
 	
 	// Altération des liens de la liste
-	function alterTree($key, $newLink = '', $subTree = false)
+	function alterTree($key, $newLink = NULL, $subTree = false)
 	{
 		$this->createTree();
 		
@@ -129,7 +126,7 @@ class desiredPage
 		else unset($this->{$thisTree}[$key]);
 	}
 	
-	function render($glue = '')
+	function render($glue = NULL)
 	{		
 		$this->createTree();
 		if(!$GLOBALS['cerberus']->isLocal()) unset($this->treeNavigation['admin']);
@@ -166,7 +163,7 @@ class desiredPage
 				? '<ul>' .implode($glue, $keys). '</ul>'
 				: implode($glue, $keys);
 		}
-		else $this->renderSubnav = '';
+		else $this->renderSubnav = NULL;
 
 		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav, $this->filePath);
 	}

@@ -139,7 +139,7 @@ function mysqlQuery_remapArray($array, $cle)
 		Array contenant les informations de login SQL si non
 		présentes dans l'environement en cours
 */
-function multiQuery($query, $login = '')
+function multiQuery($query, $login = NULL)
 {
 	global $MYSQL_HOST;
 	global $MYSQL_USER;

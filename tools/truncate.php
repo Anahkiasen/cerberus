@@ -14,7 +14,7 @@
 	$trailing
 		Chaîne à utiliser pour marquer la césure
 */
-function truncate($string, $count = 255, $mode = '', $trailing = '')
+function truncate($string, $count = 255, $mode = NULL, $trailing = NULL)
 {
 	switch($mode)
 	{			

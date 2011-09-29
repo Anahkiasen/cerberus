@@ -27,7 +27,7 @@ function checkFields()
 {
 	global $index;
 	
-	$mailbody = '';
+	$mailbody = NULL;
 	$fields = func_get_args();
 	$filled = $fields;
 	$erreurs = array();

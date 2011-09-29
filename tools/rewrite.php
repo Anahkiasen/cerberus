@@ -10,11 +10,10 @@
 	$params
 		Paramètres à faire passer
 */
-function rewrite($page, $params = '')
+function rewrite($page, $params = NULL)
 {
 	// Importation des variables
 	$GLOBALS['cerberus']->injectModule('normalize');
-	global $rewriteMode;
 	global $meta;
 	global $navigation;
 		
@@ -24,14 +23,14 @@ function rewrite($page, $params = '')
 	
 	if(isset($page[1])) $page1 = $page[1];
 	elseif(!isset($page[1]) and isset($navigation[$page0])) $page1 = $navigation[$page0][0];
-	else $page1 = '';
+	else $page1 = NULL;
 	
 	// Pas de sous-navigation
 	if(is_array($params))
 	{
 		if(isset($params['subnav']))
 		{
-			if($params['subnav'] != true) $page1 = '';
+			if($params['subnav'] != true) $page1 = NULL;
 			unset($params['subnav']);
 		}
 	
@@ -43,7 +42,7 @@ function rewrite($page, $params = '')
 		}	
 	}
 	
-	if(!$rewriteMode or $GLOBALS['cerberus']->isLocal())
+	if(!REWRITING)
 	{
 		// Mode local
 		$lien = 'index.php?page=' .$page0;

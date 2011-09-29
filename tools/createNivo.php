@@ -18,7 +18,7 @@
 	$shuffle
 		Mélange ou non l'ordre des images trouvées dans le dossier
 */
-function createNivo($path, $largeur, $hauteur, $options = '', $shuffle = true)
+function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 {
 	global $nivoSlider;
 	

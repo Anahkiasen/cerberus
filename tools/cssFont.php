@@ -17,7 +17,7 @@ function cssFont($fonts, $googleFont = true)
 	if($googleFont)
 	{
 		// Polices Google
-		$fontString = '';
+		$fontString = NULL;
 		foreach($fonts as $key => $value)
 		{
 			if(!empty($fontString)) $fontString .= '|';

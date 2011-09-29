@@ -85,7 +85,7 @@ class getNews
 	AFFICHAGE DES NEWS
 	############################ */
 
-	function selectNews($id = '')
+	function selectNews($id = NULL)
 	{
 		if(!empty($id))
 		{
@@ -166,7 +166,7 @@ class getNews
 			// Date actuelle
 			if($value['mois'] != $actualDate)
 			{
-				if($actualDate != '') echo '</ul></div>';
+				if(!empty($actualDate)) echo '</ul></div>';
 				echo '<div class="news-archives-month"><h2>' .$nomsMois[$value['month']-1]. ' ' .$value['year']. '</h2><ul>';
 				$actualDate = $value['mois'];
 			}

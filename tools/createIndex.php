@@ -37,8 +37,8 @@ function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 	$tables = mysqlQuery('SELECT tag FROM langue LIMIT 1');
 	if(!empty($tables))
 	{
-		if(file_exists($filename) and PRODUCTION == FALSE) unlink($filename); // Suppression de la version existante
-		if(file_exists($filename) and PRODUCTION == TRUE) include_once($filename);
+		if(file_exists($filename) and !PRODUCTION) unlink($filename); // Suppression de la version existante
+		if(file_exists($filename) and PRODUCTION) include_once($filename);
 		else
 		{
 			// Récupération de la base de langues
@@ -100,26 +100,26 @@ function indexCSV($database = 'langue')
 	sfputs($database. '.csv', $renderCSV);
 }
 // Fonctions index
-function indexDisplay($string, $langue = '')
+function indexDisplay($string, $langue = NULL)
 {
 	echo display(index($string, $langue));
 }
-function index($string, $langue = '')
+function index($string, $langue = NULL)
 {
 	global $index;
 	
-	$langueIndex = ($langue == '')
+	$langueIndex = (empty($langue))
 		? $_SESSION['langueSite']
 		: $langue;
 		
 	if(isset($index[$langueIndex][$string]) and !empty($index[$langueIndex][$string])) return $index[$langueIndex][$string];
 	else return '<span style="color:red">[' .$string. '(' .$langueIndex. ')]</span>';
 }
-function indexHTML($path, $langue = '')
+function indexHTML($path, $langue = NULL)
 {
 	global $index;
 	
-	$langueIndex = ($langue == '')
+	$langueIndex = (empty($langue))
 		? $_SESSION['langueSite']
 		: $langue;
 		
