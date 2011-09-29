@@ -1,21 +1,16 @@
 <?php
 class AdminSetup
 {
-	public $navigAdmin;
-	
-	private $fields; // Liste des champs
-	private $table; // Table actuelle
-	private $tableThumb; // Existence d'une table des images
+	// Options
+	private $modeSQL; // Utilise une BDD ou pas
+	private $multilangue; // Site multilangue ou pas
+	private $arrayLangues; // Admin multilangue ou pas
 	
 	// Login
-	private $loginAdmin;
-	private $loginPass;
-	private $granted = FALSE;
+	private $granted; // État de l'accès
+	private $loginUser; // Utilisateur
+	private $loginPass; // Mot de passe
 	
-	// Langues
-	private $arrayLangues;
-	private $multilangue;
-			
 	/*
 	########################################
 	############## CONSTRUCTION ############
@@ -131,14 +126,14 @@ class AdminSetup
 			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
 			return (isset($queryQ) && md5($password) == $queryQ);
 		}
-		elseif(!$this->modeSQL and isset($this->loginAdmin)) return (md5($user) == $this->loginAdmin and md5($password) == $this->loginPass);
+		elseif(!$this->modeSQL and isset($this->loginUser)) return (md5($user) == $this->loginUser and md5($password) == $this->loginPass);
 		else return FALSE;
 	}
 	
 	// Paramétrage d'identifiants manuels
 	function setLogin($user, $password = NULL)
 	{
-		$this->loginAdmin = $user;
+		$this->loginUser = $user;
 		$this->loginPass = (!empty($password)) ? $password : $user;
 	}
 	

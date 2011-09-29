@@ -205,8 +205,8 @@ if(!file_exists('../../index.php'))
 		// Déplacement des fichiers CSS et PHP
 		copy('styles.css', '../../css/styles.css');
 		copy('mail.css', '../../css/mail.css');
-		copy('img/cross.png', '../../css/cross.png');
-		copy('img/pencil.png', '../../css/pencil.png');
+		copy('img/delete.png', '../../css/delete.png');
+		copy('img/edit.png', '../../css/edit.png');
 		copy('img/load.png', '../../css/load.png');
 		
 		copy('cerberus.css', '../../css/cerberus.css');

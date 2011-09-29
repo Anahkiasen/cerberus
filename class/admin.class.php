@@ -1,8 +1,22 @@
 <?php
 class AdminPage extends AdminSetup
-{		
-	private $arrayLangues;
-	private $multilangue;
+{	
+	// Options
+	private $multilangue; // Site multilingue
+	private $modeSQL; // Site avec BDD
+	
+	// Table concernée
+	private $table;
+	private $getEdit;
+	private $getAdd; 
+	private $index; // Index de la table
+	private $fields; // Liste des champs
+	
+	// Champs supplémentaires
+	private $tableRows =
+		array(
+		'edit' => 'Modifier', 
+		'delete' => 'Supprimer');
 	
 	function __construct()
 	{		
@@ -67,6 +81,7 @@ class AdminPage extends AdminSetup
 			}
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
+		
 		// SUPPRESSION
 		if(isset($_GET['delete_' .$this->table]))
 		{
@@ -100,94 +115,119 @@ class AdminPage extends AdminSetup
 	
 	/*
 	########################################
-	########## TABLEAU DES DONNES ##########
+	########## TABLEAU DES DONNEES #########
 	######################################## 
 	
 	Possibilité de donner une requête manuelle au script 
 	via la formulation array(REQUETE => ARRAY(CHAMPS,CHAMPS))
-	*/
-	function createList($fieldsList, $groupBy = NULL, $params = NULL)
-	{		
-		$manualQuery = (findString('SELECT', key($fieldsList)));
 	
-		// LISTE DES ENTREES
-		echo '<table><thead><tr class="entete">';
-		if($manualQuery)
-		{
-			$thisQuery = key($fieldsList);
-			$fieldsList = $fieldsList[$thisQuery];
-			if(!is_array($fieldsList)) $fieldsList = explode(',', $fieldsList);
-		}
-		
-		foreach($fieldsList as $key => $value)
-		{
-			$nomColonne = (is_numeric($key))
-			? $value
-			: $key;
-			echo '<td>' .ucfirst($nomColonne). '</td>';
-		}
-		if(isset($this->moreRows)) foreach($this->moreRows as $function => $name)
-			echo '<td>' .$name. '</td>';
-		echo '<td>Modifier</td><td>Supprimer</td></tr></thead><tbody>';
-		
-		if(!$manualQuery)
-		{
-			$availableFields = array_keys(mysqlQuery('DESCRIBE ' .$this->table));
-			$newFieldsList = $fieldsList;
-			
-			array_unshift($newFieldsList, 'id');
-			foreach($newFieldsList as $key => $value)
-				if(!in_array($value, $availableFields)) unset($newFieldsList[$key]);
-				else if(!isset($index)) $index = $value;			
-			
-			// Multilingue ou non
-			$where = ($this->multilangue) 
-				? ' WHERE langue="' .$_SESSION['admin']['langue']. '"' 
-				: '';
-			
-			// WHERE
-			if(isset($params['WHERE']))
-			{
-				$where .= (empty($where))
-				? ' WHERE ' .$params['WHERE']
-				: ' AND ' .$params['WHERE'];
-			}
-			
-			// ORDER BY
-			$orderBy = isset($params['ORDER BY'])
-				? $params['ORDER BY']
-				: $index. ' DESC';
-				
-			$thisQuery = 'SELECT ' .implode(',', $newFieldsList). ' FROM ' .$this->table.$where. ' ORDER BY ' .$orderBy;
-		}
-				
-		$thisGroup = NULL;
-		$items = mysqlQuery($thisQuery, TRUE);
-		if($items) foreach($items as $key => $value)
-		{
-			if(!empty($groupBy))
-			{
-				if($thisGroup != $value[$groupBy])
-				{
-					echo '<tr class="entete"><td colspan="50" class="groupby">' .ucfirst($value[$groupBy]). '</td></tr>';
-					$thisGroup = $value[$groupBy];
-				}
-			}
-			
-			echo '<tr>';
-			if(is_array($value)) foreach($fieldsList as $fname) echo '<td>' .html(str_replace('<br />', ' ', $value[$fname])). '</td>';
-			else echo '<td>' .html(str_replace('<br />', ' ', $value)). '</td>';
-			if(isset($this->moreRows)) foreach($this->moreRows as $function => $name)
-				echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array($function => $key)). '"><img src="css/' .$function. '.png" /></a></td>';
-			echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array('edit_' .$this->table => $key)). '"><img src="css/pencil.png" /></a></td>
-			<td><a href="' .rewrite('admin-' .$_GET['page'], array('delete_' .$this->table => $key)). '"><img src="css/cross.png" /></a></td></tr>';
-		}
-		echo '<tr class="additem"><td colspan="50"><a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">Ajouter un élément</a></td></tr></tbody></table><br /><br />';
-	}
+	$manualQuery permet de 
+	
+	DIVIDE
+	
+	*/
 	
 	function addRow($function, $name, $type = 'link')
 	{
-		if($type == 'link') $this->moreRows[$function] = $name;
+		if($type == 'link') $this->tableRows = array($function => $name) + $this->tableRows;
+	}
+	function createList($fieldsDisplay, $manualQuery = NULL)
+	{		
+		echo '<table><thead><tr>';
+		
+		/* ######## EN-TÊTE ########## */
+		
+		// Colonnes principales
+		foreach($fieldsDisplay as $key => $value)
+		{
+			$nomColonne = (is_numeric($key))
+				? $value
+				: $key;
+			echo '<td>' .ucfirst($nomColonne). '</td>';
+		}
+		
+		// Colonnes gestion
+		if(isset($this->tableRows))
+			foreach($this->tableRows as $function => $name)
+				echo '<td>' .$name. '</td>';
+				
+		echo '</tr></thead><tbody>';
+		
+		/* ######## CONSTRUCTION DE LA REQUÊTE ########## */
+		
+		// Liste des champs
+		$availableFields = array_keys(mysqlQuery('DESCRIBE ' .$this->table));
+		$fieldsQuery = $fieldsDisplay;
+		
+		// Définition de l'index et des champs erronés
+		array_unshift($fieldsQuery, 'id');
+		foreach($fieldsQuery as $key => $value)
+			if(!in_array($value, $availableFields)) unset($fieldsQuery[$key]);
+			else if(!isset($index)) $index = $value;			
+		
+		// DIVIDE BY
+		if(isset($manualQuery['DIVIDE']))
+		{
+			$divideBy = $manualQuery['DIVIDE'];
+			unset($manualQuery['DIVIDE']);
+		}		
+		
+		// Valeurs par défaut
+		if(!isset($manualQuery['SELECT'])) $manualQuery['SELECT'] = implode(',', $fieldsQuery);
+		if(!isset($manualQuery['FROM'])) $manualQuery['FROM'] = $this->table;
+		if(!isset($manualQuery['ORDER BY'])) $manualQuery['ORDER BY'] = $index. ' DESC';
+		
+		// WHERE
+		if($this->multilangue) $whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
+		if($this->multilangue and !isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti;
+		elseif($this->multilangue and isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti. ' AND ' .$manualQuery['WHERE'];
+											
+		// Tri des arguments
+		$ordreSyntaxe = array('SELECT', 'FROM', 'LEFT JOIN', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT');
+		foreach($ordreSyntaxe as $argument)
+		{
+			if(array_key_exists($argument, $manualQuery))
+			{
+				$orderedQuery[$argument] = $manualQuery[$argument];
+				unset($manualQuery[$argument]);
+			}
+		}
+				
+		$items = mysqlQuery(simplode(' ', ' ', $orderedQuery), TRUE);
+		if($items) foreach($items as $key => $value)
+		{
+			// Divisions
+			if(!empty($divideBy))
+			{
+				if(!isset($thisGroup) or $thisGroup != $value[$divideBy])
+				{
+					echo '<tr class="entete"><td colspan="50" class="groupby">' .ucfirst($value[$divideBy]). '</td></tr>';
+					$thisGroup = $value[$divideBy];
+				}
+			}
+						
+			echo '<tr>';
+			
+				// Valeurs
+				$value = beArray($value);
+				foreach($fieldsDisplay as $fieldName)
+					echo '<td>' .html(str_replace('<br />', ' ', $value[$fieldName])). '</td>'; 
+				
+				// Gestion
+				if(isset($this->tableRows))
+					foreach($this->tableRows as $function => $name)
+						echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array($function. '_' .$this->table => $key)). '"><img src="css/' .$function. '.png" /></a></td>';
+
+			echo '</tr>';
+		}
+		else echo '<tr><td colspan="50">Aucun élément à afficher</td></tr>';
+		
+		// Ajouter un élément
+		echo '
+		<tr class="additem"><td colspan="50">
+			<a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">Ajouter un élément</a>
+		</td></tr>
+		</tbody></table><br /><br />';
 	}
 				
 	/*
