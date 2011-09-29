@@ -215,6 +215,7 @@ table .additem a { color:#FFF; }/*
 form { width:99%; }
 fieldset
 {
+	background:#F7F7F7 url(background-45.png);
 	border:none;
 	margin:auto;
 	padding:0;
@@ -228,13 +229,109 @@ fieldset dd
 }
 fieldset dl
 {
-	background-color:#EEE;
 	color:#666;
 	margin:0;
 	padding:13px 5px;
 	position:relative;
 	width:100%;
 }
+legend
+{
+	background:#C30 url(overlay/noir-25.png);
+	color:#FFF;
+	font-weight:100;
+	letter-spacing:-1px;
+	padding:10px;
+	width:100%;
+}
+fieldset dl:hover
+{
+	background-image:url(overlay/noir-10.png);
+	background-repeat:repeat;
+}
+fieldset dt { margin-left:5px; }
+fieldset label span.mandatory { color:red; }
+/* Champs */
+input[type=text],
+input[type=password],
+input[type=file],
+select,
+textarea
+{
+	border: none;
+	background:#666 url(background-45.png);
+	color:#FFF;
+	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
+	font-size:1em;
+	font-weight:600;
+	padding:20px;
+	position:relative;
+	bottom:2px;
+	width:250px;
+	/* Shadow */
+	-webkit-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
+}
+fieldset dl:hover input[type=text],
+fieldset dl:hover input[type=password],
+fieldset dl:hover input[type=file],
+fieldset dl:hover select,
+fieldset dl:hover textarea
+{
+	background-color:#444;
+	border:none;
+}
+fieldset dl:hover input:focus,
+fieldset dl:hover select:focus,
+fieldset dl:hover textarea:focus { background-color: #222; }
+fieldset input[type=text],
+fieldset input[type=file],
+fieldset input[type=password]
+{
+	padding:5px 10px;
+	right:3px;
+	top:3px;
+}
+fieldset select,
+fieldset dl:hover select
+{
+	border:5px solid #666;
+	padding:10px;
+	right:3px;
+	top:1px;
+}
+dl.textarea textarea { right:-2px; }
+/* Bouton valider */
+input[type=submit]
+{
+	border:none;
+	border-bottom:5px solid #6B0609;
+	color:#FFF;
+	cursor:pointer;
+	font-size:12px;
+	margin:10px;
+	padding:5px;
+	text-align:center;
+	width:80%;
+}
+input[type=submit]:hover { background-image:url(overlay/blanc-25.png); }
+input[type=submit]:active
+{
+	background-image:url(overlay/blanc-50.png);
+	border:none;
+	margin-top:15px;
+}
+fieldset dl.submit dd,
+fieldset dl.submit.submit,
+fieldset dl.submit.submit p
+{
+	margin:0;
+	padding:0 5px;
+	position:static;
+}
+fieldset dl.submit.submit:hover { background:#EEE; }
+/* Miniature de l'item en cours */
 fieldset dl.actualThumb
 {
 	border:0 solid red;
@@ -255,80 +352,24 @@ fieldset dl.actualThumb p
 	margin:10px;
 	padding:10px 10px 15px;
 }
-fieldset dl.submit dd,
-fieldset dl.submit.submit,
-fieldset dl.submit.submit p
-{
-	margin:0;
-	padding:0 5px;
-	position:static;
-}
-fieldset dl.submit.submit:hover { background:#EEE; }
-fieldset dl.textarea { height:200px; }
-fieldset dl.textarea dd { width:60%; }
-#left fieldset dl.textarea dd,
-#right fieldset dl.textarea dd { width:55%; }
+/* Textareas */
 fieldset dl.textarea textarea
 {
 	height:190px;
 	top:4px;
 	width:97%;
-	padding: 5px;
+	padding: 20px;
 }
-fieldset dl:hover
-{
-	background-image:url(overlay/noir-10.png);
-	background-repeat:repeat;
-}
-fieldset dl:hover input[type=text],
-fieldset dl:hover input[type=password],
-fieldset dl:hover select,
-fieldset dl:hover textarea
-{
-	background-color:#555;
-	border:4px solid #999;
-	color:#FFF;
-}
-fieldset dt { margin-left:5px; }
-fieldset label span.mandatory { color:red; }
-input[type=submit]
-{
-	border:none;
-	border-bottom:5px solid #67714f;
-	color:#FFF;
-	cursor:pointer;
-	font-size:12px;
-	margin:10px;
-	padding:5px;
-	text-align:center;
-	width:80%;
-}
-input[type=submit]:hover { background-image:url(overlay/blanc-25.png); }
-input[type=submit]:active
-{
-	background-image:url(overlay/blanc-50.png);
-	border:none;
-	margin-top:15px;
-}
-input[type=text],
-input[type=password],
-select,
-textarea
-{
-	background-color:#CCC;
-	border:4px solid #AAA;
-	bottom:2px;
-	font-family:Open sans;
-	font-size:1em;
-	font-weight:lighter;
-	padding:2px;
-	position:relative;
-	width:250px;
-}
+fieldset dl.textarea { height:200px; }
+fieldset dl.textarea dd { width:60%; }
+#left fieldset dl.textarea dd,
+#right fieldset dl.textarea dd { width:55%; }
+/* Underfield et Twocols */
 dl.textarea.underfield { height:240px; }
 fieldset dl.underfield dd,
 #left fieldset dl.underfield dd,
-#right fieldset dl.underfield dd
+#right fieldset dl.underfield dd,
+.admin fieldset dl.underfield dd
 {
 	width: 100%;
 	position: static;
@@ -340,16 +381,6 @@ fieldset dl.underfield dd,
 #right input[type=text],
 #right input[type=password],
 #right select { width: 230px; }
-legend
-{
-	background-image:url(overlay/noir-25.png);
-	color:#FFF;
-	font-size:medium;
-	letter-spacing:-1px;
-	padding:5px;
-	width:100%;
-}
-select { min-width:262px; }
 select.dateForm,
 #left select.dateForm,
 #right select.dateForm
