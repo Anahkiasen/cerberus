@@ -237,28 +237,25 @@ class AdminPage extends AdminSetup
 	*/
 		
 	// Détermine si le formulaire est en mode ajout ou modif
-	function addOrEdit($formulaire = NULL)
+	function addOrEdit(&$typeEdit, &$editText, &$urlAction)
 	{
-		if(!empty($formulaire))
+		if(isset($this->getEdit))
 		{
-			if(isset($this->getEdit) or isset($this->getAdd)) return $formulaire;
+			$typeEdit = $this->getEdit;
+			$editText = 'Modifier';
+			$urlAction = 'edit_' .$this->table. '=' .$this->getEdit;
 		}
 		else
 		{
-			if(isset($this->getEdit))
-			{
-				$diff = $this->getEdit;
-				$diffText = 'Modifier';
-				$urlAction = 'edit_' .$this->table. '=' .$this->getEdit;
-			}
-			else
-			{
-				$diff = 'add';
-				$diffText = 'Ajouter';
-				$urlAction = 'add';
-			}	
-			return array($diffText, $urlAction, $diff);
-		}
+			$typeEdit = 'add';
+			$editText = 'Ajouter';
+			$urlAction = 'add';
+		}	
+	}
+	function formAddOrEdit($formulaire = NULL)
+	{
+		if(!empty($formulaire))
+			if(isset($this->getEdit) or isset($this->getAdd)) return $formulaire;
 	}
 	
 	// Vérifie si un champ est véritablement nul

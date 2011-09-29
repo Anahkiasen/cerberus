@@ -142,7 +142,7 @@ class desiredPage
 	}
 	
 	// Rendu HTML des arbres de navigation
-	function render($glue = NULL)
+	function render(&$renderPage, &$renderSousPage, &$renderNavigation, &$renderSubnav, $glue = NULL)
 	{		
 		$this->createTree();
 		if(!$GLOBALS['cerberus']->isLocal()) unset($this->treeNavigation['admin']);
@@ -159,7 +159,7 @@ class desiredPage
 				? '<li class="menu-' .$key. ' ' .$hover.'"><a ' .$mono. '>' .$linkText. '</a></li>'
 				: '<a ' .$mono. ' class="menu-' .$key. ' ' .$hover.'">' .$linkText. '</a>';
 		}
-		$this->renderNavigation = ($this->optionListed)
+		$renderNavigation = ($this->optionListed)
 			? '<ul>' .implode($glue, $keys). '</ul>'
 			: implode($glue, $keys);
 			unset($keys);
@@ -175,13 +175,15 @@ class desiredPage
 					? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'
 					: '<a href="' .$value. '"' .$hover. '>' .$linkText. '</a>';
 			}
-			$this->renderSubnav = ($this->optionListedSub)
+			$renderSubnav = ($this->optionListedSub)
 				? '<ul>' .implode($glue, $keys). '</ul>'
 				: implode($glue, $keys);
 		}
-		else $this->renderSubnav = NULL;
+		else $renderSubnav = NULL;
 
-		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav);
+		// Assignation des valeurs
+		$renderPage = $this->page;
+		$renderSousPage = $this->pageSub;
 	}
 	
 	/*
