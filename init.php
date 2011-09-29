@@ -36,7 +36,7 @@ class Cerberus
 			beArray($modules));
 	
 		// Mode production
-		$this->defineProduction();
+		if(!defined('PRODUCTION')) $this->defineProduction();
 	
 		// Mode de Cerberus (core/include)	
 		if($mode != 'core' and isset($_GET['page']) and !empty($_GET['page'])) $this->mode = $_GET['page'];

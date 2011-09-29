@@ -34,12 +34,19 @@ class desiredPage
 	private $renderNavigation;
 	private $renderSubnav;
 	
+	/*
+	########################################
+	############## MISE EN PLACE ###########
+	######################################## 
+	*/
+	
 	// Fonctions moteur
 	function __construct($navigation)
 	{
 		global $index;
 		
-		if(empty($navigation)) $navigation = array('home' => array('home'));
+		// Arbre par défaut
+		if(empty($navigation)) $navigation = array('home' => array('home'), 'admin' => array('admin'));
 		
 		// Définition du mode
 		$this->cacheTree = $navigation;
@@ -67,20 +74,22 @@ class desiredPage
 		else $pageSubString = NULL;
 		
 		// Include de la page
-		$filename = $this->page.$pageSubString;
-		$fileExists = $this->fileExists($filename);
-		if(!$fileExists)
+		if($this->page != 'admin')
 		{
-			$this->page = $this->allowedPages[0];
-			if($this->optionSubnav)
+			$filename = $this->page.$pageSubString;
+			$fileExists = $this->fileExists($filename);
+			if(!$fileExists)
 			{
-				$this->pageSub = $navigation[$this->page][0];
-			 	$pageSubString = '-' .$this->pageSub;
-			}
-			$fileExists = $this->fileExists($this->page.$pageSubString);
+				$this->page = $this->allowedPages[0];
+				if($this->optionSubnav)
+				{
+					$this->pageSub = $navigation[$this->page][0];
+					$pageSubString = '-' .$this->pageSub;
+				}
+				$fileExists = $this->fileExists($this->page.$pageSubString);
+			}		
+			$this->filePath = $this->page.$pageSubString.$fileExists;
 		}
-		
-		$this->filePath = $this->page.$pageSubString.$fileExists;
 	}
 	function set($variable, $value)
 	{
@@ -91,6 +100,12 @@ class desiredPage
 		$this->optionListed = $isListed;
 		$this->optionListedSub = $isListedSub;
 	}
+	
+	/*
+	########################################
+	######### ARBRES DE NAVIGATION #########
+	######################################## 
+	*/
 	
 	// Création des arrays de liens
 	function createTree()
@@ -126,6 +141,7 @@ class desiredPage
 		else unset($this->{$thisTree}[$key]);
 	}
 	
+	// Rendu HTML des arbres de navigation
 	function render($glue = NULL)
 	{		
 		$this->createTree();
@@ -165,44 +181,31 @@ class desiredPage
 		}
 		else $this->renderSubnav = NULL;
 
-		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav, $this->filePath);
+		return array($this->page, $this->pageSub, $this->renderNavigation, $this->renderSubnav);
 	}
+	
+	/*
+	########################################
+	############## PAGE EN COURS ###########
+	######################################## 
+	*/
 	
 	// Génération du contenu
 	function content()
-	{
-		/*
-		if($this->optionMono and $this->page != 'admin')
-		{
-			foreach($this->cacheTree as $key => $value)
-			{
-				foreach($value as $subkey => $subval)
-				{
-					$page = $key. '-' .$subval;
-					$extension = $this->fileExists($page);
-					if($extension)
-					{
-						echo '<div class="mono" id="content-' .$page. '">';
-						include('pages/' .$page.$extension);
-						echo '</div>';
-					}
-				}
-			}
-		}
-		else
-		{
-			if(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
-			else echo display('Une erreur est survenue lors du chargement de la page');
-		}
-		*/
-		
+	{		
 		global $switcher;
 		
-		if(isset($switcher) and file_exists($switcher->path('php').$this->filePath)) include_once $switcher->path('php').$this->filePath;
-		elseif(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
-		else echo display('Une erreur est survenue lors du chargement de la page');
+		// Chargement de l'admin ou d'une page
+		if($this->page == 'admin') new AdminSetup();
+		else
+		{
+			if(isset($switcher) and file_exists($switcher->path('php').$this->filePath)) include_once $switcher->path('php').$this->filePath;
+			elseif(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
+			else echo display('Une erreur est survenue lors du chargement de la page');
+		}
 	}
 	
+	// Vérification de l'existence d'une page
 	function fileExists($page)
 	{
 		if(file_exists('pages/' .$page. '.html')) return '.html';
