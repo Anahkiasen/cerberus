@@ -206,7 +206,8 @@ class AdminPage extends AdminSetup
 				}
 			}
 						
-			echo '<tr>';
+			if(isset($thisGroup)) echo '<tr class="divide" group="' .ucfirst($thisGroup). '">';
+			else echo '<tr>';
 			
 				// Valeurs
 				$value = beArray($value);

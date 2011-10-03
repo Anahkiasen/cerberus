@@ -20,7 +20,6 @@ function backupSQL($filename)
 	if(!file_exists($folderName) and !empty($listeTables)) 
 	{
 		$listeTables = array_values($listeTables);
-		mkdir($folderName);
 		
 		// Suppression des sauvegardes inutiles
 		foreach(glob($path. '*') as $file)  

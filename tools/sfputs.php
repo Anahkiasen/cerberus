@@ -10,8 +10,18 @@
 */
 function sfputs($file, $content)
 {
-	$thisFile = fopen($file, 'w+');
-	fputs($thisFile, $content);
-	fclose($thisFile);
+	$dossier = dirname($file);
+	if(!file_exists($dossier))
+	{
+		if(!mkdir($dossier, 0700, true))
+			echo 'Impossible de créer le dossier';
+		else sfputs($file, $content);
+	}
+	else
+	{
+		$thisFile = fopen($file, 'w+');
+		fputs($thisFile, $content);
+		fclose($thisFile);
+	}
 }
 ?>
