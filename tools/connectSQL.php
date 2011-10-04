@@ -74,7 +74,9 @@ function connectSQL($LOCALHOST = 'Maxime', $host = NULL, $user = NULL, $mdp = NU
 	// Si toujours pas de connexion, affichage des erreurs
 	if(!$isOnline)
 	{
+		copy($conf, 'cerberus/cache/conf.error.php');
 		unlink($conf);
+		
 		if(!$isConnect) die('La connexion au serveur ' .$MYSQL_HOST. ' via ' .$MYSQL_USER. '@' .$MYSQL_MDP. ' a &eacute;chou&eacute;');
 		if(!$isDatabase) die('La connexion à la base de données ' .$MYSQL_DB. ' a échoué');
 	}
