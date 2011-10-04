@@ -6,15 +6,36 @@
 	$string
 		Chaîne à vérifier
 	$type
-		Type de chaîne, peut être [email, phone]
+		Type de chaîne, peut être une adresse email, un numéro
+		de téléphone, un nom ou un chiffre.
+		Dans tous les cas vérifie si la chaîne n'est pas vide.
 */
-function checkString($string, $type = 'email')
+function checkString($string, $type = NULL)
 {
-	if($type == 'email')
-		return (!empty($string) and preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $string));
-
-	elseif($type == 'phone')
+	switch($type)
+	{
+		case 'email':
+		return (!empty($string) and preg_match("#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix", $string));
+		break;
+		
+		case 'phone':
+		case 'telephone':
 		return (!empty($string) and preg_match("#^0[1-78]([-. ]?[0-9]{2}){4}$#", $string));
+		break;
+		
+		case 'name':
+		case 'nom':
+		case 'prenom':
+		return (!empty($string) and preg_match("#^[-' a-zA-Z]+$#", $string));
+		break;
+		
+		case 'number':
+		return (!empty($string) and preg_match("#^\d+$#", $string));
+		break;
+		
+		default:
+		return (!empty($string));
+	}
 }
 /*
 	Fonction checkFields
@@ -28,45 +49,54 @@ function checkFields()
 	global $index;
 	
 	$mailbody = NULL;
-	$fields = func_get_args();
-	$filled = $fields;
+	
+	// Liste des champs voulus et incomplets
+	$funcGet = func_get_args();
+	foreach($funcGet as $id => $champ)
+	{
+		if(is_array($champ)) $fields[key($champ)] = $champ[key($champ)];
+		else $fields[$champ] = $champ;
+	}
+	$unfilled = array_keys($fields);
+	$misfilled = array();
+	
 	$erreurs = array();
 	$multilangue = (isset($index['fr']['form-erreur-email']));
 
+	// Lecture des données
 	foreach($_POST as $key => $value)
-		if(!empty($value) and in_array($key, $fields))
+	{
+		if(!empty($value) and isset($fields[$key]))
 		{
-			$filled = array_diff($filled, array($key));
-			if($multilangue) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
+			$unfilled = array_diff($unfilled, array($key));
+			if(checkString($value, $fields[$key]))
+			{	
+				if($multilangue) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
+			}
+			else $misfilled[] = $key;
 		}
+	}
 	
 	// On vérifie que les champs sont remplis
-	if(!empty($filled))
+	$isUnfilled = ($multilangue)
+		? index('form-erreur-incomplete')
+		: 'Un ou plusieurs champs sont incomplets';
+	$isMisfilled = ($multilangue)
+		? index('form-erreur-incorrect')
+		: 'Un ou plusieurs champs sont incorrects';
+		
+	$typesErreur = array('un', 'mis');
+	foreach($typesErreur as $erreur)
 	{
-		if($multilangue)
+		$variable = ${$erreur. 'filled'};
+		if(isset($variable) and !empty($variable))
 		{
-			foreach($filled as $key => $value) $filled[$key] = index('form-' .$value);
-			$erreurs[] = index('form-erreur-incomplete'). ' : ' .implode(', ', $filled);
-		}
-		else
-		{
-			foreach($filled as $key => $value) $filled[$key] = ucfirst($value);
-			$erreurs[] = 'Un ou plusieurs champs sont incomplets : ' .implode(', ', $filled);
+			if($multilangue) foreach($variable as $key => $value) $variable[$key] = index('form-' .$value);
+			else foreach($variable as $key => $value) $variable[$key] = ucfirst($value);
+			$erreurs[] = ${'is' .ucfirst($erreur). 'filled'}. ' : ' .implode(', ', $variable);
 		}
 	}
 
-	// Vérification de la validité des informations
-	if($multilangue)
-	{
-		if(in_array('email', $fields)) if(!empty($_POST['email']) and !checkString($_POST['email'])) $erreurs[] = index('form-erreur-email');
-		if(in_array('phone', $fields)) if(!empty($_POST['phone']) and !checkString($_POST['phone'], 'phone')) $erreurs[] = index('form-erreur-phone');
-	}
-	else
-	{
-		if(in_array('email', $fields)) if(!empty($_POST['email']) and !checkString($_POST['email'])) $erreurs[] = 'Adresse email non valide';
-		if(in_array('telephone', $fields)) if(!empty($_POST['telephone']) and !checkString($_POST['telephone'], 'phone')) $erreurs[] = 'Numéro de téléphone non valide';
-	}
-	
 	// Affiche des possibles erreurs, sinon validation	
 	if(!empty($erreurs))
 	{
