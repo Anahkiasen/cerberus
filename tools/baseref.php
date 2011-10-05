@@ -11,7 +11,6 @@ function baseref($array = NULL)
 {
 	// Récupération des variables
 	global $index;
-	global $rewriteMode;
 	
 	// Si présence d'exceptions
 	if(!empty($array))
@@ -21,6 +20,6 @@ function baseref($array = NULL)
 	}
 	if(empty($return) and isset($index['http'])) $return = $index['http'];
 	
-	if($rewriteMode) return '<base href="' .$return. '" />';
+	if(REWRITING) return '<base href="' .$return. '" />';
 }
 ?>

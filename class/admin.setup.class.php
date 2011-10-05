@@ -25,7 +25,7 @@ class AdminSetup
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
-		$systemPages = array('meta', 'backup', 'news');
+		$systemPages = array('news', 'meta', 'backup');
 		$adminNavigation = array_diff($navigation['admin'], array('admin'));
 		$thisNavigation = array_merge(beArray($customNavigation), $adminNavigation, $systemPages);
 	
