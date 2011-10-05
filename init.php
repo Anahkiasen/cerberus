@@ -76,7 +76,7 @@ class Cerberus
 			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
 			'pack.navigation' => array('baseref', 'desiredPage', 'rewrite'),
 			'class.admin' => array('admin', 'admin.setup', 'getURL', 'randomString'),
-			'class.mail' => array('mail', 'stripHTML'),
+			'class.mail' => array('smail', 'stripHTML'),
 			'class.form' => array('form', 'checkString'),
 			'class.news' => array('news', 'bbcode', 'truncate'));
 		
@@ -203,6 +203,7 @@ class Cerberus
 					$thisScript = strtolower($value);
 					if(isset($availableAPI[$value]))
 					{
+						if(file_exists('css/' .$thisScript. '.css')) $minCSS[] = 'css/' .$thisScript. '.css';
 						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
 						else $minJS[] = 'js/' .$availableAPI[$value]. '.js';
 					}

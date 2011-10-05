@@ -2,7 +2,6 @@
 class AdminPage extends AdminSetup
 {	
 	// Options
-	private $multilangue; // Site multilingue
 	private $modeSQL; // Site avec BDD
 	
 	// Table concernée
@@ -192,8 +191,8 @@ class AdminPage extends AdminSetup
 				unset($manualQuery[$argument]);
 			}
 		}
-				
-		$items = mysqlQuery(simplode(' ', ' ', $orderedQuery), TRUE);
+
+		$items = mysqlQuery(simplode(' ', ' ', $orderedQuery, FALSE), TRUE);
 		if($items) foreach($items as $key => $value)
 		{
 			// Divisions

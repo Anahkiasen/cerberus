@@ -3,7 +3,7 @@ class AdminSetup
 {
 	// Options
 	private $modeSQL; // Utilise une BDD ou pas
-	private $multilangue; // Site multilangue ou pas
+	protected $multilangue; // Site multilangue ou pas
 	private $arrayLangues; // Admin multilangue ou pas
 	
 	// Login
@@ -25,7 +25,7 @@ class AdminSetup
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
-		$systemPages = array('meta', 'backup');
+		$systemPages = array('meta', 'backup', 'news');
 		$adminNavigation = array_diff($navigation['admin'], array('admin'));
 		$thisNavigation = array_merge(beArray($customNavigation), $adminNavigation, $systemPages);
 	
@@ -56,6 +56,7 @@ class AdminSetup
 			{
 				// Chargement de la page
 				if($_GET['admin'] == 'meta') $this->meta();
+				elseif($_GET['admin'] == 'news') $this->news();
 				elseif($_GET['admin'] == 'backup') $this->backup();
 				else include('pages/admin-' .$_GET['admin']. '.php');
 			}
@@ -75,6 +76,7 @@ class AdminSetup
 			if(count($this->multilangue) == 1) $this->multilangue = FALSE;
 		}
 		else $this->multilangue == FALSE;
+		return $this->multilangue;
 	}
 	
 	/*
@@ -189,22 +191,10 @@ class AdminSetup
 		$metaAdmin = new AdminPage();
 		$metaAdmin->setPage('meta', 'lien');
 		$metaAdmin->createList(array('page'));
-		
+		$metaAdmin->addOrEdit($diff, $diffText, $urlAction);
 		// Formulaire
 		if(isset($_GET['add_meta']) || isset($_GET['edit_meta']))
-		{	
-			// Paramètres ajout/modif
-			if(isset($_GET['edit_meta']))
-			{
-				$diffText = 'Modifier';
-				$urlAction = 'edit_meta=' .$_GET['edit_meta'];
-			}
-			else
-			{
-				$diffText = 'Ajouter';
-				$urlAction = 'add_meta';
-			}
-			
+		{				
 			global $navigation;
 			
 			// Liste des pages
@@ -229,6 +219,14 @@ class AdminSetup
 			
 			echo $form;
 		}
+	}
+	
+	// NEWS
+	function news()
+	{
+		$GLOBALS['cerberus']->injectModule('news');
+		$news = new getNews();
+		$news->adminNews();
 	}
 	
 	// BACKUP
@@ -276,7 +274,7 @@ class AdminSetup
 				'<tr>
 				<td>' .$folderDate. '</td>
 				<td><a href="' .rewrite('admin-backup', array('load' => $folderDate)). '"><img src="css/load.png" /></a></td>
-				<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="css/cross.png" /></a></td>
+				<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="css/delete.png" /></a></td>
 				</tr>';
 			}
 		}  

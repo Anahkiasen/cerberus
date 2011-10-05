@@ -180,11 +180,13 @@ if(!file_exists('../../index.php'))
 		
 		// Table META
 		mysql_query('DROP TABLE IF EXISTS `meta	`;');
-		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `meta` (
-		  `page` varchar(255) NOT NULL,
-		  `titre` varchar(255) NOT NULL,
-		  `description` varchar(255) NOT NULL,
-		  `lien` varchar(255) NOT NULL
+		mysqlQuery(array('CREATE TABLE `meta` (
+		  `page` varchar(30) NOT NULL,
+		  `titre` varchar(200) NOT NULL,
+		  `description` text NOT NULL,
+		  `url` varchar(150) NOT NULL,
+		  `langue` enum(\'fr\',\'en\') NOT NULL,
+		  PRIMARY KEY (`page`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));
 		
 		// Création des dossiers
