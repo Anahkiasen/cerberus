@@ -61,9 +61,6 @@ class Cerberus
 		{
 			connectSQL();
 			$this->meta();
-			
-			if(function_exists('createIndex')) 
-				$index = createIndex();
 		}
 		if(in_array('browserSelector', $modules))
 			if(function_exists('browserSelector')) browserSelector($userAgent);
@@ -311,6 +308,8 @@ class dispatch extends Cerberus
 	// Modules JS/CSS
 	function getAPI($scripts)
 	{
+		global $switcher;
+		
 		// API
 		$availableAPI = array(
 		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
@@ -320,15 +319,15 @@ class dispatch extends Cerberus
 		'nivoSlider' => 'jquery.nivo.slider.pack');
 		
 		if(isset($switcher)) $path = $switcher->path();
-		$defaultCSS = 'assets/css/styles.css';
-		$defaultJS = 'assets/js/core.js';
+		$defaultCSS = 'css/styles.css';
+		$defaultJS = 'js/core.js';
 		$js = NULL;
 		
 		// Fichiers par défaut
 		$scripts['*'] = beArray($scripts['*']);
 		$scripts['*'][] = 'assets/css/cerberus.css';
-		$scripts['*'][] = $defaultCSS;
-		$scripts['*'][] = $defaultJS;
+		$scripts['*'][] = 'assets/'.$defaultCSS;
+		$scripts['*'][] = 'assets/'.$defaultJS;
 		
 		// Fichiers spécifiques aux pages
 		$scripts[$this->current][] = $this->current;
@@ -367,8 +366,8 @@ class dispatch extends Cerberus
 					if(file_exists('assets/css/' .$thisScript. '.css')) $minCSS[] = 'assets/css/' .$thisScript. '.css';
 					if(isset($path))
 					{
-						if(file_exists($path.'assets/js/' .$thisScript. '.js')) $minJS[] = $path.'assets/js/' .$thisScript. '.js';
-						if(file_exists($path.'assets/css/' .$thisScript. '.css')) $minCSS[] = $path.'assets/css/' .$thisScript. '.css';
+						if(file_exists($path.'js/' .$thisScript. '.js')) $minJS[] = $path.'js/' .$thisScript. '.js';
+						if(file_exists($path.'css/' .$thisScript. '.css')) $minCSS[] = $path.'css/' .$thisScript. '.css';
 					}
 				}
 			}
