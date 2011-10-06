@@ -32,7 +32,7 @@
 function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 {
 	$index = array();
-	$filename = $database. '.php';
+	$filename = 'cerberus/cache/index-' .$database. '.php';
 	
 	$tables = mysqlQuery('SELECT tag FROM langue LIMIT 1');
 	if(!empty($tables))

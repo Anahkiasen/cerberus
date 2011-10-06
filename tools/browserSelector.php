@@ -3,7 +3,7 @@
 	Fonction browserSelector
 	# Crée une chaine contenant la définition exacte de l'user-agent de l'internaute
 */
-function browserSelector()
+function browserSelector(&$renderAgent)
 {
 	$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
 	
@@ -36,6 +36,6 @@ function browserSelector()
 	else if(strstr($userAgent, 'freebsd')) $return[] = 'freebsd';
 	else if(strstr($userAgent, 'x11') || strstr($userAgent, 'linux')) $return[] = 'linux';
 	
-	return join(' ', $return);
+	$renderAgent = join(' ', $return);
 }
 ?>

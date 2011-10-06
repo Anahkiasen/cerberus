@@ -118,8 +118,8 @@ class getNews
 			$thisDate = ($this->displayDate)
 				? '<br /><p class="date">' .$value['date']. '</p>'
 				: NULL;
-			$thisThumb = ($this->displayThumb and !empty($value['path']) and file_exists('file/news/' .$value['path']))
-				? '<a class="colorbox" href="file/news/' .$value['path']. '">
+			$thisThumb = ($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))
+				? '<a class="colorbox" href="assets/file/news/' .$value['path']. '">
 				<img src="' .timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1, false). '" class="float" />
 				</a>'
 				: NULL;

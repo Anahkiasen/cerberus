@@ -4,7 +4,7 @@
 	# Recadre et redimensionne une image
 	
 	$file
-		Image de base, placée dans le dossier file/
+		Image de base, placée dans le dossier assets/file/
 	$width
 		Largeur voulue
 	$height
@@ -37,6 +37,6 @@ function timthumb($file, $width = NULL, $height = NULL, $crop = 1)
 	$params['zc'] = $crop;
 	$params['s'] = 1;
 	
-	return 'file/timthumb.php?src=file/' .$file. '&' .simplode('=', '&', $params);
+	return 'assets/file/timthumb.php?src=assets/file/' .$file. '&' .simplode('=', '&', $params);
 }
 ?>

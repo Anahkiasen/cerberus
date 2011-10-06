@@ -162,7 +162,7 @@ class AdminSetup
 			{
 				$getAdmin = (isset($_GET['admin'])) ? '&admin=' .$_GET['admin'] : '';
 				$urlFlag = ($_SESSION['admin']['langue'] == $langue) ? 'flag_' .$langue : 'flag_' .$langue. '_off';
-				echo '<a href="' .rewrite('admin', array('adminLangue' => $langue.$getAdmin)). '"><img src="css/' .$urlFlag. '.png" alt="' .$langue. '" /></a> ';
+				echo '<a href="' .rewrite('admin', array('adminLangue' => $langue.$getAdmin)). '"><img src="assets/css/' .$urlFlag. '.png" alt="' .$langue. '" /></a> ';
 			}
 			echo '</p>';
 		}
@@ -273,8 +273,8 @@ class AdminSetup
 				echo 
 				'<tr>
 				<td>' .$folderDate. '</td>
-				<td><a href="' .rewrite('admin-backup', array('load' => $folderDate)). '"><img src="css/load.png" /></a></td>
-				<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="css/delete.png" /></a></td>
+				<td><a href="' .rewrite('admin-backup', array('load' => $folderDate)). '"><img src="assets/css/load.png" /></a></td>
+				<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="assets/css/delete.png" /></a></td>
 				</tr>';
 			}
 		}  

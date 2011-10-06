@@ -88,17 +88,17 @@ class AdminPage extends AdminSetup
 			if(in_array('path', $this->fields))
 			{
 				$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$_GET['delete_' .$this->table]. '"');
-				if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
+				if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
 			}
 			else
 			{
-				if(file_exists('file/' .$this->table))
+				if(file_exists('assets/file/' .$this->table))
 				{
 					$picExtension = array('jpg', 'jpeg', 'gif', 'png');
 					foreach($picExtension as $value)
 					{
 						$thisFile = $_GET['delete_' .$this->table]. '.' .$value;
-						sunlink('file/' .$this->table. '/' .$thisFile);
+						sunlink('assets/file/' .$this->table. '/' .$thisFile);
 					}
 				}
 			}
@@ -107,7 +107,7 @@ class AdminPage extends AdminSetup
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
-			sunlink('file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg');
+			sunlink('assets/file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg');
 			echo display('Miniature supprimée');
 		}
 	}
@@ -216,7 +216,7 @@ class AdminPage extends AdminSetup
 				// Gestion
 				if(isset($this->tableRows))
 					foreach($this->tableRows as $function => $name)
-						echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array($function. '_' .$this->table => $key)). '"><img src="css/' .$function. '.png" /></a></td>';
+						echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array($function. '_' .$this->table => $key)). '"><img src="assets/css/' .$function. '.png" /></a></td>';
 
 			echo '</tr>';
 		}
@@ -313,8 +313,8 @@ class AdminPage extends AdminSetup
 						
 					case 'path':
 						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$lastID. '"');
-						if(isset($path) and !empty($path)) sunlink('file/' .$this->table. '/' .$path);
-						sunlink('file/' .$this->table. '/' .$lastID. '.jpg');
+						if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
+						sunlink('assets/file/' .$this->table. '/' .$lastID. '.jpg');
 						$file = $lastID. '-' .md5(randomString()). '.' .$extension;
 						break;
 						
@@ -324,7 +324,7 @@ class AdminPage extends AdminSetup
 				}
 				
 				// Sauvegarde de l'image
-				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'file/' .$this->table. '/' .$file);
+				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->table. '/' .$file);
 				if($resultat)
 				{
 					echo display('Image ajoutée au serveur');

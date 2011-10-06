@@ -10,8 +10,8 @@ class Cerberus
 	########################################
 	*/
 	
-	public $productionMode;
-	public $meta;
+	// Cache des modules coeur
+	protected $cacheCore;
 
 	// Paramètres
 	private $render;
@@ -29,6 +29,9 @@ class Cerberus
 	
 	function __construct($modules, $mode = 'core')
 	{
+		global $index;
+		global $userAgent;
+
 		// Modules coeur
 		$modules = array_merge(array(
 			'beArray', 'display', 'boolprint', 'timthumb',
@@ -53,8 +56,17 @@ class Cerberus
 		// Include du fichier
 		$this->inclure();
 		
-		// Connexion à la base de données
-		if(file_exists('cerberus/cache/conf.php')) connectSQL();
+		// Lancement des modules annexes
+		if(file_exists('cerberus/cache/conf.php') and $this->mode == 'core')
+		{
+			connectSQL();
+			$this->meta();
+			
+			if(function_exists('createIndex')) 
+				$index = createIndex();
+		}
+		if(in_array('browserSelector', $modules))
+			if(function_exists('browserSelector')) browserSelector($userAgent);
 	}
 	
 	/* 
@@ -70,7 +82,7 @@ class Cerberus
 		if(!empty($modules))
 		{
 			$modules = beArray($modules);
-			
+		
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
@@ -133,143 +145,14 @@ class Cerberus
 			else $this->erreurs[] = 'Module ' .$module. ' non existant.';
 		}
 	}
-	
-	// Répartition des fonctions entre les pages
-	function cerberusDispatch($array, $page = NULL, $mode = 'PHP')
-	{		
-		// API
-		$availableAPI = array(
-		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
-		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
-		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'ColorBox' => 'jquery.colorbox-min',
-		'nivoSlider' => 'jquery.nivo.slider.pack');
-	
-		// Page en cours
-		global $pageVoulue;
-		global $sousPageVoulue;
-		
-		// Dédoublage des groupes
-		foreach($array as $key => $value)
-		{
-			if(strpos($key, ',') != FALSE)
-			{
-				$keys = explode(',', $key);
-				foreach($keys as $pages)
-				{
-					$array[$pages] = (isset($array[$pages]))
-					? array_merge($value, $array[$pages])
-					: $value;
-				}
-				unset($array[$key]);
-			}
-		}		
-		
-		// Variables par défaut
-		if(empty($page)) $page = $pageVoulue. '-' .$sousPageVoulue;
-		$explode = explode('-', $page); 
-		$css = $js = "\n";
-		$thisModules =
-		$thisSubmodules = array();
-		
-		// Véritifcation de la présence de modules concernés (page/pagesouspage/*)
-		if(isset($array[$page])) $thisModules = beArray($array[$page]);
-		if(isset($array[$explode[0]])) $thisSubmodules = beArray($array[$explode[0]]);
-		if(isset($array['*'])) 
-		{
-			$array['*'] = beArray($array['*']);	
-			$thisModules = array_merge($array['*'], $thisModules);
-		}
-		$renderArray = array_merge($thisModules, $thisSubmodules);
-		if(isset($this->cacheCore) and $mode == 'PHP') $renderArray = array_values(array_diff($renderArray, $this->cacheCore));
-				
-		if(!empty($renderArray))
-		{
-			// Suppressions des fonctions non voulues
-			foreach($renderArray as $key => $value)
-			{
-				if(findString('!', $value))
-				{
-					unset($renderArray[array_search(substr($value, 1), $renderArray)]);
-					unset($renderArray[$key]);
-				}
-			}
-
-			// Traitement des modules
-			if($mode == 'API')
-			{
-				foreach($renderArray as $value) 
-				{
-					$thisScript = strtolower($value);
-					if(isset($availableAPI[$value]))
-					{
-						if(file_exists('css/' .$thisScript. '.css')) $minCSS[] = 'css/' .$thisScript. '.css';
-						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
-						else $minJS[] = 'js/' .$availableAPI[$value]. '.js';
-					}
-					elseif(findString('.js', $thisScript)) $minJS[] = $thisScript;
-					elseif(findString('.css', $thisScript)) $minCSS[] = $thisScript;
-					else
-					{
-						if(file_exists('js/' .$thisScript. '.js')) $minJS[] = 'js/' .$thisScript. '.js';
-						if(file_exists('css/' .$thisScript. '.css')) $minCSS[] = 'css/' .$thisScript. '.css';
-					}
-				}
-				
-				if(!empty($minCSS)) $css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
-				if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
-				return array(trim($css), trim($js), $renderArray);
-			}
-			else $cerberus = new Cerberus($renderArray, 'include');
-		}
-	}
-	
-	// Répartition des scripts et styles
-	function cerberusAPI($array, $page = NULL)
-	{
-		global $pageVoulue;
-		global $sousPageVoulue;
-		global $switcher;
-		
-		if(isset($switcher)) $path = $switcher->path();
-		
-		// Fichiers par défaut
-		$array['*'] = beArray($array['*']);
-		$defaultCSS = 'css/styles.css';
-		$defaultJS = 'js/scripts.js';
-		$array['*'][] = 'css/cerberus.css';
-		if(file_exists($defaultCSS)) $array['*'][] = $defaultCSS;
-		if(file_exists($defaultJS)) $array['*'][] = $defaultJS;
-		if(isset($path))
-		{
-			if(file_exists($path.$defaultCSS)) $array['*'][] = $path.$defaultCSS;
-			if(file_exists($path.$defaultJS)) $array['*'][] = $path.$defaultJS;
-		}
-				
-		// Fichiers spécifiques aux pages
-		$precore = array($pageVoulue, $pageVoulue. '-' .$sousPageVoulue);
-		foreach($precore as $thispage)
-		{
-			$css = 'css/page-' .$thispage. '.css';
-			$js = 'js/page-' .$thispage. '.js';
 			
-			if(file_exists($css)) $array[$thispage][] = $css;
-			if(file_exists($js)) $array[$thispage][] = $js;
-			if(isset($path))
-			{
-				if(file_exists($path.$css)) $array[$thispage][] = $path.$css;
-				if(file_exists($path.$js)) $array[$thispage][] = $path.$js;
-			}
-		}
-		return $this->cerberusDispatch($array, $page, 'API');
-	}
-		
 	/* 
 	########################################
 	########### RENDU DU FICHIER ###########
 	########################################
 	*/
 	
+	// Mise en cache des fonctions requises
 	function generate()
 	{
 		// Affichage des erreurs et création du fichier
@@ -282,6 +165,7 @@ class Cerberus
 		}
 	}
 	
+	// Include du fichier voulu
 	function inclure()
 	{
 		include_once('cerberus/cache/' .$this->mode. '.php');
@@ -306,7 +190,7 @@ class Cerberus
 	// Fonction META 
 	function meta($mode = 'meta')
 	{
-		if($mode == 'meta') return mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
+		if($mode == 'meta') $this->metaData = mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
 		else
 		{
 			global $meta;
@@ -314,15 +198,16 @@ class Cerberus
 			global $sousPageVoulue;
 		
 			$defaultTitle = index('menu-' .$pageVoulue);
-			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
+			if(isset($this->metaData[$pageVoulue. '-' .$sousPageVoulue]))
 			{
-				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];
+				$thisMeta = $this->metaData[$pageVoulue. '-' .$sousPageVoulue];
 				$thisMeta['titre'] = $defaultTitle. ' - ' .$thisMeta['titre'];
 				return $thisMeta[$mode];
 			}
 			else if($mode == 'titre') return $defaultTitle;
 		}
 	}
+	
 	// Mode production ou non
 	function defineProduction()
 	{
@@ -348,6 +233,151 @@ class Cerberus
 	function isLocal()
 	{
 		return in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
+	}
+}
+
+class dispatch extends Cerberus
+{
+	private $current;
+	
+	// Initilisation de Dispatch
+	function __construct($current = NULL)
+	{	
+		global $pageVoulue;
+		global $sousPageVoulue;
+		
+		// Page en cours
+		if(!empty($current)) $this->current = $current;
+		else $this->current = $pageVoulue. '-' .$sousPageVoulue;
+		
+		$explode = explode('-', $this->current);
+		$this->global = $explode[0];
+	}
+	
+	// Tri et répartition des modules demandés
+	function dispatchArray($modules)
+	{
+		$arrayGlobal =
+		$arrayModules =
+		$arraySubmodules = array();
+			
+		// Séparation des groupes
+		foreach($modules as $key => $value)
+		{
+			$value = beArray($value);
+			if(strpos($key, ',') != FALSE)
+			{
+				$keys = explode(',', $key);
+				foreach($keys as $pages)
+				{
+					$modules[$pages] = (isset($modules[$pages]))
+					? array_merge($value, $modules[$pages])
+					: $value;
+				}
+				unset($modules[$key]);
+			}
+		}
+
+		// Véritifcation de la présence de modules concernés (pagesouspage/page/*)
+		if(isset($modules[$this->current])) $arrayModules = beArray($modules[$this->current]);
+		if(isset($modules[$this->global])) $arraySubmodules = beArray($modules[$this->global]);
+		if(isset($modules['*'])) $arrayGlobal = beArray($modules['*']);
+		$arrayModules = array_merge($arrayGlobal, $arrayModules, $arraySubmodules);
+		
+		// Suppressions des fonctions non voulues
+		foreach($arrayModules as $key => $value)
+		{
+			if(findString('!', $value))
+			{
+				unset($arrayModules[array_search(substr($value, 1), $arrayModules)]);
+				unset($arrayModules[$key]);
+			}
+		}
+		
+		// Distinction avec les modules coeur
+		if(isset($this->cacheCore)) $arrayModules = array_values(array_diff($arrayModules, $this->cacheCore));
+		
+		if(!empty($arrayModules)) return $arrayModules;
+		else return FALSE;
+	}
+
+	// Modules PHP
+	function getPHP($modules)
+	{
+		$modules = $this->dispatchArray($modules);
+		if($modules) new Cerberus($modules, 'include');
+	}
+	
+	// Modules JS/CSS
+	function getAPI($scripts)
+	{
+		// API
+		$availableAPI = array(
+		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
+		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
+		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+		'ColorBox' => 'jquery.colorbox-min',
+		'nivoSlider' => 'jquery.nivo.slider.pack');
+		
+		if(isset($switcher)) $path = $switcher->path();
+		$defaultCSS = 'assets/css/styles.css';
+		$defaultJS = 'assets/js/core.js';
+		$js = NULL;
+		
+		// Fichiers par défaut
+		$scripts['*'] = beArray($scripts['*']);
+		$scripts['*'][] = 'assets/css/cerberus.css';
+		$scripts['*'][] = $defaultCSS;
+		$scripts['*'][] = $defaultJS;
+		
+		// Fichiers spécifiques aux pages
+		$scripts[$this->current][] = $this->current;
+		$scripts[$this->global][] = $this->global;
+		
+		// Fichiers switch
+		if(isset($path))
+		{
+			$scripts['*'][] = $path.$defaultCSS;
+			$scripts['*'][] = $path.$defaultJS;
+		}
+		
+		$scripts = $this->dispatchArray($scripts);
+		if($scripts)
+		{					
+			foreach($scripts as $value) 
+			{
+				$thisScript = strtolower($value);
+				
+				// Si le script est présent dans les prédéfinis
+				if(isset($availableAPI[$value]))
+				{
+					if(file_exists('assets/css/' .$thisScript. '.css')) $minCSS[] = 'assets/css/' .$thisScript. '.css'; // CSS annexe
+					if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+					else $minJS[] = 'assets/js/' .$availableAPI[$value]. '.js';
+				}
+				
+				// Si le chemin est spécifié manuellement
+				elseif(findString('.js', $thisScript)) $minJS[] = $thisScript;
+				elseif(findString('.css', $thisScript)) $minCSS[] = $thisScript;
+				
+				// Sinon on vérifie la présence du script dans les fichiers
+				else
+				{
+					if(file_exists('assets/js/' .$thisScript. '.js')) $minJS[] = 'assets/js/' .$thisScript. '.js';
+					if(file_exists('assets/css/' .$thisScript. '.css')) $minCSS[] = 'assets/css/' .$thisScript. '.css';
+					if(isset($path))
+					{
+						if(file_exists($path.'assets/js/' .$thisScript. '.js')) $minJS[] = $path.'assets/js/' .$thisScript. '.js';
+						if(file_exists($path.'assets/css/' .$thisScript. '.css')) $minCSS[] = $path.'assets/css/' .$thisScript. '.css';
+					}
+				}
+			}
+			
+			// Création des fichiers Minify
+			if(!empty($minCSS)) $css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
+			if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
+			return array(trim($css), trim($js), $scripts);
+		}
 	}
 }
 ?>

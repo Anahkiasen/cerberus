@@ -42,11 +42,11 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 	}
 
 	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">';
-	$arrayImages = glob('file/' .$path. '/*.jpg');
+	$arrayImages = glob('assets/file/' .$path. '/*.jpg');
 	if($shuffle) shuffle($arrayImages);
 	foreach($arrayImages as $file)
 	{
-		$file = str_replace('file/', '', $file);
+		$file = str_replace('assets/file/', '', $file);
 		echo '<img src="' .timthumb($file, $largeur, $hauteur). '" />';
 	}
 	echo '</div>';
