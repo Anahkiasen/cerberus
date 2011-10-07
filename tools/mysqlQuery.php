@@ -95,7 +95,7 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 								foreach($fetchAssoc as $key => $value)
 								{
 									if(!isset($thisKey)) $thisKey = $value;
-									if($key != $cle or count($fetchAssoc) == 1) $returnArray[$thisKey] = $value;
+									if($key != $cle or count($fetchAssoc) == 1) $returnArray[$thisKey] = stripslashes($value);
 								}
 							}
 						}
@@ -125,7 +125,7 @@ function mysqlQuery_remapArray($array, $cle)
 	foreach($array as $key => $value)
 	{
 		if(!isset($thisKey)) $thisKey = $value;
-		if($key != $cle) $returnArray[$thisKey][$key] = $value;
+		if($key != $cle) $returnArray[$thisKey][$key] = stripslashes($value);
 	}
 	return $returnArray;
 }

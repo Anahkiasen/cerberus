@@ -72,6 +72,9 @@ function normalize($string, $url = false)
 	'Ö' => 'O',
 	'Ø' => 'O',
 	
+	'Œ' => 'OE',
+	'œ' => 'oe',
+	
 	'Ù' => 'U',
 	'Ú' => 'U',
 	'Û' => 'U',

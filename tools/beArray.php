@@ -8,6 +8,10 @@
 */
 function beArray($variable)
 {
-	return (!is_array($variable)) ? array($variable) : $variable;	
+	if(!isset($variable)) $return = array();
+	else $return = (!is_array($variable)) ? array($variable) : $variable;	
+	
+	$variable = $return;
+	return $return;
 }
 ?>

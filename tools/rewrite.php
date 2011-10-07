@@ -42,7 +42,7 @@ function rewrite($page, $params = NULL)
 		}	
 	}
 	
-	if(!REWRITING)
+	if(!REWRITING or $page0 == 'admin')
 	{
 		// Mode local
 		$lien = 'index.php?page=' .$page0;

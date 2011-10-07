@@ -19,6 +19,7 @@ class Cerberus
 	
 	// Modes
 	private $mode;
+	private $serverLocal = TRUE;
 		
 	function file_get_contents_utf8($fn)
 	{
@@ -31,6 +32,8 @@ class Cerberus
 	{
 		global $index;
 		global $userAgent;
+
+		$this->isLocal();
 
 		// Modules coeur
 		$modules = array_merge(array(
@@ -229,6 +232,7 @@ class Cerberus
 	// En local ou non
 	function isLocal()
 	{
+		if(!isset($this->serverLocal)) $this->serverLocal = in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
 		return in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
 	}
 }
@@ -312,11 +316,11 @@ class dispatch extends Cerberus
 		
 		// API
 		$availableAPI = array(
-		'jQuery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
-		'jQueryUI' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
+		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
+		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'ColorBox' => 'jquery.colorbox-min',
-		'nivoSlider' => 'jquery.nivo.slider.pack');
+		'colorbox' => 'jquery.colorbox-min',
+		'nivoslider' => 'jquery.nivo.slider.pack');
 		
 		if(isset($switcher)) $path = $switcher->path();
 		$defaultCSS = 'css/styles.css';
@@ -330,6 +334,9 @@ class dispatch extends Cerberus
 		$scripts['*'][] = 'assets/'.$defaultJS;
 		
 		// Fichiers spécifiques aux pages
+		beArray(&$scripts[$this->current]);
+		beArray(&$scripts[$this->global]);
+		
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
 		
@@ -345,8 +352,9 @@ class dispatch extends Cerberus
 		{					
 			foreach($scripts as $value) 
 			{
-				$thisScript = strtolower($value);
-				
+				//$thisScript = strtolower($value);
+				$thisScript = $value;
+
 				// Si le script est présent dans les prédéfinis
 				if(isset($availableAPI[$value]))
 				{

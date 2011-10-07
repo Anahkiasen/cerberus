@@ -199,6 +199,8 @@ table td.entete a
 	color:#FFF;
 	text-decoration:underline;
 }
+table td.opener { cursor:pointer; }
+table td.opener:hover { background-image: url(overlay/blanc-10.png) !important; }
 table td.additem
 {
 	background-image:url(overlay/blanc-25.png);

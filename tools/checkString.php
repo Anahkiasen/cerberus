@@ -26,7 +26,7 @@ function checkString($string, $type = NULL)
 		case 'name':
 		case 'nom':
 		case 'prenom':
-		return (!empty($string) and preg_match("#^[-' a-zA-Z]+$#", $string));
+		return (!empty($string) and preg_match("#^\D+$#", $string));
 		break;
 		
 		case 'number':
