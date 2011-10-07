@@ -5,6 +5,12 @@
 	
 	$message
 		Message à afficher
+		
+	Fonction debug
+	# Affiche une variable uniquement dans le code
+	
+	$message
+		La variable/array à afficher dans le code
 */
 function display($message)
 {

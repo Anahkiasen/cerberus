@@ -39,7 +39,7 @@ class Cerberus
 		beArray(&$modules);
 		if($mode == 'core') $modules = array_merge(array(
 			'beArray', 'display', 'boolprint', 'timthumb',
-			'findString', 'sfputs', 'simplode', 'sunlink'),
+			'findString', 'sexist', 'sfputs', 'simplode', 'sunlink'),
 			$modules);
 	
 		// Mode production
@@ -362,29 +362,31 @@ class dispatch extends Cerberus
 				// Si le script est présent dans les prédéfinis
 				if(isset($availableAPI[$value]))
 				{
-					if(file_exists('assets/css/' .$thisScript. '.css')) $minCSS[] = 'assets/css/' .$thisScript. '.css'; // CSS annexe
+					$minCSS[] = sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
 					if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
-					else $minJS[] = 'assets/js/' .$availableAPI[$value]. '.js';
+					else $minJS[] = sexist('assets/js/' .$availableAPI[$value]. '.js');
 				}
 				
 				// Si le chemin est spécifié manuellement
-				elseif(findString('.js', $thisScript)) $minJS[] = $thisScript;
-				elseif(findString('.css', $thisScript)) $minCSS[] = $thisScript;
+				elseif(findString('.js', $thisScript)) $minJS[] = sexist($thisScript);
+				elseif(findString('.css', $thisScript)) $minCSS[] = sexist($thisScript);
 				
 				// Sinon on vérifie la présence du script dans les fichiers
 				else
 				{
-					if(file_exists('assets/js/' .$thisScript. '.js')) $minJS[] = 'assets/js/' .$thisScript. '.js';
-					if(file_exists('assets/css/' .$thisScript. '.css')) $minCSS[] = 'assets/css/' .$thisScript. '.css';
+					$minJS[] = sexist('assets/js/' .$thisScript. '.js');
+					$minCSS[] = sexist('assets/css/' .$thisScript. '.css');
 					if(isset($path))
 					{
-						if(file_exists($path.'js/' .$thisScript. '.js')) $minJS[] = $path.'js/' .$thisScript. '.js';
-						if(file_exists($path.'css/' .$thisScript. '.css')) $minCSS[] = $path.'css/' .$thisScript. '.css';
+						$minJS[] = sexist($path.'js/' .$thisScript. '.js');
+						$minCSS[] = sexist($path.'css/' .$thisScript. '.css');
 					}
 				}
 			}
 			
 			// Création des fichiers Minify
+			$minCSS = array_filter($minCSS);
+			$minJS = array_filter($minJS);
 			if(!empty($minCSS)) $css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
 			if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
 			return array(trim($css), trim($js), $scripts);
