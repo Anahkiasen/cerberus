@@ -37,8 +37,8 @@ function cssFont($fonts, $googleFont = true)
 			@font-face
 			{
 				font-family: \'' .$value. '\';
-				src: url(\'css/font/' .strtolower($value). '.eot\');
-				src: local(\'?\'), url(\'css/font/' .strtolower($value). '.woff\') format(\'woff\'), url(\'css/font/' .strtolower($value). '.ttf\') format(\'truetype\');
+				src: url(\'assets/css/font/' .strtolower($value). '.eot\');
+				src: local(\'?\'), url(\'assets/css/font/' .strtolower($value). '.woff\') format(\'woff\'), url(\'assets/css/font/' .strtolower($value). '.ttf\') format(\'truetype\');
 			}';
 		echo '</style>';	
 	}

@@ -194,17 +194,18 @@ class Cerberus
 	// Fonction META 
 	function meta($mode = 'meta')
 	{
-		if($mode == 'meta') $this->metaData = mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
+		global $meta;
+		
+		if($mode == 'meta') $meta = mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
 		else
 		{
-			global $meta;
 			global $pageVoulue;
 			global $sousPageVoulue;
 		
 			$defaultTitle = index('menu-' .$pageVoulue);
-			if(isset($this->metaData[$pageVoulue. '-' .$sousPageVoulue]))
+			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
 			{
-				$thisMeta = $this->metaData[$pageVoulue. '-' .$sousPageVoulue];
+				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];
 				$thisMeta['titre'] = $defaultTitle. ' - ' .$thisMeta['titre'];
 				return $thisMeta[$mode];
 			}
