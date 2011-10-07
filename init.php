@@ -36,10 +36,11 @@ class Cerberus
 		$this->isLocal();
 
 		// Modules coeur
-		$modules = array_merge(array(
+		beArray(&$modules);
+		if($mode == 'core') $modules = array_merge(array(
 			'beArray', 'display', 'boolprint', 'timthumb',
 			'findString', 'sfputs', 'simplode', 'sunlink'),
-			beArray($modules));
+			$modules);
 	
 		// Mode production
 		if(!defined('PRODUCTION')) $this->defineProduction();
@@ -159,16 +160,19 @@ class Cerberus
 		if(!empty($this->erreurs)) foreach($this->erreurs as $value) echo $value. '<br />';
 		else
 		{
-			$thisFile = fopen('cerberus/cache/' .$this->mode. '.php', 'w+');
-			fputs($thisFile, '<?php' .$this->render. '?>');
-			fclose($thisFile);
+			if(!empty($this->render))
+			{
+				$thisFile = fopen('cerberus/cache/' .$this->mode. '.php', 'w+');
+				fputs($thisFile, '<?php' .$this->render. '?>');
+				fclose($thisFile);
+			}
 		}
 	}
 	
 	// Include du fichier voulu
 	function inclure()
 	{
-		include_once('cerberus/cache/' .$this->mode. '.php');
+		if(file_exists('cerberus/cache/' .$this->mode. '.php')) include_once('cerberus/cache/' .$this->mode. '.php');
 	}
 	
 	/* 
