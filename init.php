@@ -33,18 +33,20 @@ class Cerberus
 		global $index;
 		global $userAgent;
 
-		$this->isLocal();
+		// Erreurs et environnement
+		// Si nous sommes en local on affiche toutes les erreurs, sinon on les masque
+		if(!defined('PRODUCTION')) $this->defineProduction();
+		//$errorReport = (!LOCAL) ? 0 : E_ALL | E_STRICT;
+		error_reporting(E_ALL|E_STRICT);
 
 		// Modules coeur
 		beArray(&$modules);
 		if($mode == 'core') $modules = array_merge(array(
+			'errorHandle',
 			'beArray', 'display', 'boolprint', 'timthumb',
 			'findString', 'sexist', 'sfputs', 'simplode', 'sunlink'),
 			$modules);
-	
-		// Mode production
-		if(!defined('PRODUCTION')) $this->defineProduction();
-	
+		
 		// Mode de Cerberus (core/include)	
 		if($mode != 'core' and isset($_GET['page']) and !empty($_GET['page'])) $this->mode = $_GET['page'];
 		elseif($mode != 'core' and !isset($_GET['page'])) $this->mode = 'home';
@@ -56,10 +58,11 @@ class Cerberus
 			$this->unpackModules($modules);
 			$this->generate();
 		}
-		
+				
 		// Include du fichier
 		$this->inclure();
-		
+		set_error_handler('errorHandle');
+	
 		// Lancement des modules annexes
 		if(file_exists('cerberus/cache/conf.php') and $this->mode == 'core')
 		{
@@ -226,18 +229,19 @@ class Cerberus
 		{
 			define('PRODUCTION', FALSE);
 			define('REWRITING', FALSE);
+			define('LOCAL', TRUE);
 		}
 		else
 		{
 			define('PRODUCTION', $PRODUCTION);
 			define('REWRITING', $REWRITING);
+			define('LOCAL', FALSE);
 		}
 	}
 	
 	// En local ou non
 	function isLocal()
 	{
-		if(!isset($this->serverLocal)) $this->serverLocal = in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
 		return in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
 	}
 }

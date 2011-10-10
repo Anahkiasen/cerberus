@@ -45,7 +45,11 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 		else
 		{
 			if(isset($query[2])) echo display($query[2]);
-			else exit(display(htmlentities($query[0])).mysql_error());
+			else
+			{
+				echo display(htmlentities($query)).mysql_error();
+				exit(errorHandle('SQL', mysql_error(), __FILE__, __LINE__));
+			}
 			return false;
 		}
 	}
@@ -107,7 +111,11 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 			}
 			else return FALSE;
 		}
-		else exit(display(htmlentities($query)).mysql_error());
+		else
+		{
+			echo display(htmlentities($query)).mysql_error();
+			exit(errorHandle('SQL', mysql_error(), __FILE__, __LINE__));
+		}
 	}
 }
 /*

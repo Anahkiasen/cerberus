@@ -14,30 +14,48 @@
 	$db
 		Base de donnée SQL
 */
-function connectSQL($LOCALHOST = 'Maxime', $host = NULL, $user = NULL, $mdp = NULL, $db = NULL)
+function connectSQL()
 {
-	// Nom du fichier config
+	/* 
+	########################################
+	### DEFINITION DES IDENTIFIANTS SQL ####
+	########################################
+	*/
+	
+	// Chemin du fichier config
 	$conf = 'cerberus/cache/conf.php';
 	
-	// Connexion à partir du fichier config
-	if(file_exists($conf)) include($conf);	
-	else
+	// Récupération des identifiants du fichier config
+	if(file_exists($conf))
 	{
-		// Manuel
-		$LOCALHOST = $LOCALHOST;
-		$MYSQL_HOST = $host;
-		$MYSQL_USER = $user;
-		$MYSQL_MDP = $mdp;
-		$MYSQL_DB = $db;
+		include($conf);
+		if(in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1')))
+		{
+			// Si nous sommes en local
+			$MYSQL_HOST = $LOCAL_HOST;
+			$MYSQL_USER = $LOCAL_USER;
+			$MYSQL_MDP = $LOCAL_MDP;
+			$MYSQL_DB = $LOCAL_DB;
+			$isLocal = TRUE;
+		}
+		else
+		{
+			// Si nous sommes en ligne
+			$MYSQL_HOST = $PROD_HOST;
+			$MYSQL_USER = $PROD_USER;
+			$MYSQL_MDP = $PROD_MDP;
+			$MYSQL_DB = $PROD_DB;
+			$isLocal = FALSE;
+		}
 	}
 	
+	// Trousseau d'accès
 	if($_SERVER['HTTP_HOST'] == 'localhost:8888')
 	{
 		// Local MAMP
 		$MYSQL_HOST = 'localhost';
 		$MYSQL_USER = 'root';
 		$MYSQL_MDP = 'root';
-		$MYSQL_DB = $LOCALHOST;
 	}
 	elseif($_SERVER['HTTP_HOST'] == '127.0.0.1')
 	{
@@ -45,7 +63,6 @@ function connectSQL($LOCALHOST = 'Maxime', $host = NULL, $user = NULL, $mdp = NU
 		$MYSQL_HOST = 'localhost';
 		$MYSQL_USER = 'root';
 		$MYSQL_MDP = NULL;
-		$MYSQL_DB = $LOCALHOST;
 	}
 	elseif($_SERVER['HTTP_HOST'] == 'the8day.info')
 	{
@@ -58,45 +75,61 @@ function connectSQL($LOCALHOST = 'Maxime', $host = NULL, $user = NULL, $mdp = NU
 	elseif($_SERVER['HTTP_HOST'] == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
 	{
 		// Stappler
-		$database = explode('_', $LOCALHOST);
-		
 		$MYSQL_HOST = 'hostingmysql51';
 		$MYSQL_USER = '859841_maxime';
 		$MYSQL_MDP = 'MAXSTA001';
-		$MYSQL_DB = 'stappler_fr_' .$database[1];
 	}
 	
+	/* 
+	########################################
+	########## CONNEXION SQL ###############
+	########################################
+	*/
+	
+	// Tentative de connexion à la base de données
 	$isConnect = @mysql_connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP);
 	$isDatabase = @mysql_select_db($MYSQL_DB);
 	$isOnline = ($isConnect and $isDatabase);
 	mysql_query("SET NAMES 'utf8'");
 		
-	// Si toujours pas de connexion, affichage des erreurs
-	if(!$isOnline)
+	// Si la connexion réussit, on sauvegarde le fichier config valide
+	if($isOnline)
 	{
-		rename($conf, 'cerberus/cache/conf.error.php');
-		
-		if(!$isConnect) die('La connexion au serveur ' .$MYSQL_HOST. ' via ' .$MYSQL_USER. '@' .$MYSQL_MDP. ' a &eacute;chou&eacute;');
-		if(!$isDatabase) die('La connexion &agrave; la base de donn&eacute;es ' .$MYSQL_DB. ' a &eacute;chou&eacute;.');
-	}
-	else
-	{
-		// Enregistrement du fichier CONF
 		if(!file_exists($conf))
 		{
-			if(file_exists('cerberus/cache/')) sfputs($conf, 
-			"<?php
-			\$LOCALHOST = '$LOCALHOST';
-			\$MYSQL_HOST = '$MYSQL_HOST';
-			\$MYSQL_USER = '$MYSQL_USER';
-			\$MYSQL_MDP = '$MYSQL_MDP';
-			\$MYSQL_DB = '$MYSQL_DB';
-			?>");
+			if(file_exists('cerberus/cache/')) mkdir('cerberus/cache/');
+			if($isLocal)
+			{
+				sfputs($conf, 
+				"<?php
+				\$LOCAL_HOST = '$MYSQL_HOST';
+				\$LOCAL_USER = '$MYSQL_USER';
+				\$LOCAL_MDP = '$MYSQL_MDP';
+				\$LOCAL_DB = '$MYSQL_DB';
+				?>");
+			}
+			else
+			{
+				sfputs($conf, 
+				"<?php
+				\$PROD_HOST = '$MYSQL_HOST';
+				\$PROD_USER = '$MYSQL_USER';
+				\$PROD_MDP = '$MYSQL_MDP';
+				\$PROD_DB = '$MYSQL_DB';
+				?>");
+			}
 		}
+		
+	/* 
+	########################################
+	########## BACKUP DE LA BASE ###########
+	########################################
+	*/
 	
 		// Sauvegarde et chargement de la base
 		$tables_base = mysqlQuery('SHOW TABLES');
-		$database_name = explode('_', $LOCALHOST);
+		$database_name = explode('_', $LOCAL_DB);
+		
 		$database = (isset($database_name[1]))
 			? $database_name[1]
 			: $database_name;
@@ -122,7 +155,7 @@ function connectSQL($LOCALHOST = 'Maxime', $host = NULL, $user = NULL, $mdp = NU
 		elseif(!empty($tables_base) and function_exists('backupSQL'))
 		{
 			// Si tout va bien, on effectue une sauvegarde
-			 if($LOCALHOST != 'Maxime') backupSQL($database);	
+			 backupSQL($database);	
 		}
 		else if(file_exists('cerberus/cache/sql')) die('Une erreur est survenue durant la sauvegarde de la base de données');
 	}

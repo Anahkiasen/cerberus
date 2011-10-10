@@ -42,24 +42,24 @@ function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 		else
 		{
 			// Récupération de la base de langues
-			$thisIndex = mysql_query('SELECT tag, ' .implode(', ', $arrayLang). ' FROM ' .$database. ' ORDER BY tag ASC');
-			if(mysql_num_rows($thisIndex) != 0)
+			$thisIndex = mysqlQuery('SELECT tag, ' .implode(', ', $arrayLang). ' FROM ' .$database. ' ORDER BY tag ASC', true, 'tag');
+			if($thisIndex)
 			{
 				// Création de l'index
-				while($row = mysql_fetch_assoc($thisIndex))
+				foreach($thisIndex as $tag => $traduction)
 				{
-					foreach ($row as $fieldname => $fieldvalue) 
-						if($fieldname != 'tag') $index[$fieldname][$row['tag']] = $fieldvalue;
+					foreach($arrayLang as $langue)
+						$index[$langue][$tag] = $traduction[$langue];
 				}
-	
+				
 				// Ecriture du fichier PHP
 				$renderPHP = "<?php \n";
 				foreach($arrayLang as $cle)
 				{
-					foreach($index[$cle] as $key => $value)
-						$renderPHP .= '$index[\'' .$cle. "']['" .$key. "'] = '" .addslashes($value). "';\n";
+					if(isset($index[$cle]))
+						foreach($index[$cle] as $key => $value)
+							$renderPHP .= '$index[\'' .$cle. "']['" .$key. "'] = '" .addslashes($value). "';\n";
 				}
-					
 				sfputs($filename, $renderPHP. '?>');
 			}
 		}
