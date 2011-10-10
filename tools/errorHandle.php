@@ -11,27 +11,31 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	// Type d'erreur
 	switch ($errorType)
 	{
+		case E_DEPRECATED:
+		case E_STRICT:
+		$DEBUG['error'] = 'Advice';
+		break;
+		
 		case E_NOTICE:
 		case E_USER_NOTICE:
-		$DEBUG['error'] = "Notice";
+		$DEBUG['error'] = 'Notice';
 		break;
 		
 		case E_WARNING:
 		case E_USER_WARNING:
-		$DEBUG['error'] = "Warning";
+		$DEBUG['error'] = 'Warning';
 		break;
 		
 		case E_ERROR:
 		case E_USER_ERROR:
-		$DEBUG['error'] = "Fatal Error";
+		$DEBUG['error'] = 'Fatal Error';
 		break;
 		
 		default:
-		$DEBUG['error'] = "Unknown";
+		$DEBUG['error'] = 'Unknown';
 		break;
 	}
-	$DEBUG['error'] .= ' : ' .$error;
-	$DEBUG['error'] = '<h2>' .$DEBUG['error']. '</h2>';
+	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>';
 	
 	foreach($path as $id_file => $info)
 	{

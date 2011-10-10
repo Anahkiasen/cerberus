@@ -6,11 +6,12 @@
 	$variable
 		La variable à transformer en array
 */
-function beArray($variable)
+function beArray(&$variable)
 {
 	if(!isset($variable)) $return = array();
-	else $return = (!is_array($variable)) ? array($variable) : $variable;	
+	else $return = (!is_array($variable)) ? array($variable) : $variable;
 	
+	// Retour de la valeur et modification	
 	$variable = $return;
 	return $return;
 }

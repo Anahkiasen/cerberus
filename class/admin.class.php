@@ -36,8 +36,8 @@ class AdminPage extends AdminSetup
 	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
-		$this->getEdit = @$_GET['edit_' .$this->table];
-		$this->getAdd = @$_GET['add_' .$this->table];
+		$this->getEdit = (isset($_GET['edit_' .$this->table])) ? $_GET['edit_' .$this->table] : NULL;
+		$this->getAdd = (isset($_GET['add_' .$this->table])) ? $_GET['add_' .$this->table] : NULL;
 
 		// Champs facultatifs
 		$facultativeFields = beArray($facultativeFields);
@@ -237,7 +237,7 @@ class AdminPage extends AdminSetup
 	*/
 		
 	// Détermine si le formulaire est en mode ajout ou modif
-	function addOrEdit(&$typeEdit, &$editText, &$urlAction)
+	function addOrEdit(&$typeEdit = NULL, &$editText = NULL, &$urlAction = NULL)
 	{
 		if(isset($this->getEdit))
 		{

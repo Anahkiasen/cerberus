@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('tools/beArray.php');
+include('tools/errorHandle.php');
 
 class Cerberus
 {
@@ -38,9 +39,10 @@ class Cerberus
 		if(!defined('PRODUCTION')) $this->defineProduction();
 		//$errorReport = (!LOCAL) ? 0 : E_ALL | E_STRICT;
 		error_reporting(E_ALL|E_STRICT);
+		set_error_handler('errorHandle');
 
 		// Modules coeur
-		beArray(&$modules);
+		$modules = beArray($modules);
 		if($mode == 'core') $modules = array_merge(array(
 			'errorHandle',
 			'beArray', 'display', 'boolprint', 'timthumb',
@@ -61,7 +63,6 @@ class Cerberus
 				
 		// Include du fichier
 		$this->inclure();
-		set_error_handler('errorHandle');
 	
 		// Lancement des modules annexes
 		if(file_exists('cerberus/cache/conf.php') and $this->mode == 'core')
@@ -117,7 +118,7 @@ class Cerberus
 		$cheminsValides = array(
 			'cerberus/tools/',
 			'cerberus/class/',
-			'php/');
+			'assets/php/');
 		
 		foreach($cheminsValides as $chemin)
 		{
@@ -334,7 +335,7 @@ class dispatch extends Cerberus
 		if(isset($switcher)) $path = $switcher->path();
 		$defaultCSS = 'css/styles.css';
 		$defaultJS = 'js/core.js';
-		$js = NULL;
+		$js = $css = NULL;
 		
 		// Fichiers par défaut
 		$scripts['*'] = beArray($scripts['*']);
@@ -343,8 +344,8 @@ class dispatch extends Cerberus
 		$scripts['*'][] = 'assets/'.$defaultJS;
 		
 		// Fichiers spécifiques aux pages
-		beArray(&$scripts[$this->current]);
-		beArray(&$scripts[$this->global]);
+		beArray($scripts[$this->current]);
+		beArray($scripts[$this->global]);
 		
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
@@ -392,7 +393,7 @@ class dispatch extends Cerberus
 			// Création des fichiers Minify
 			$minCSS = array_filter($minCSS);
 			$minJS = array_filter($minJS);
-			if(!empty($minCSS)) $css = '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
+			if(!empty($minCSS)) $css .= '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
 			if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
 			return array(trim($css), trim($js), $scripts);
 		}
