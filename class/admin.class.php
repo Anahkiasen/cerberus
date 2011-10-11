@@ -51,7 +51,7 @@ class AdminPage extends AdminSetup
 		{
 			// Vérification des champs disponibles
 			$emptyFields = array();
-			if($this->multilangue) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
+			if(MULTILANGUE) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
 			foreach($_POST as $key => $value)
 			{
 				if(findString('_annee', $key))
@@ -177,9 +177,9 @@ class AdminPage extends AdminSetup
 		if(!isset($manualQuery['ORDER BY'])) $manualQuery['ORDER BY'] = $index. ' DESC';
 		
 		// WHERE
-		if($this->multilangue) $whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
-		if($this->multilangue and !isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti;
-		elseif($this->multilangue and isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti. ' AND ' .$manualQuery['WHERE'];
+		if(MULTILANGUE) $whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
+		if(MULTILANGUE and !isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti;
+		elseif(MULTILANGUE and isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti. ' AND ' .$manualQuery['WHERE'];
 											
 		// Tri des arguments
 		$ordreSyntaxe = array('SELECT', 'FROM', 'LEFT JOIN', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT');

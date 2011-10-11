@@ -32,9 +32,9 @@ function connectSQL()
 		if(LOCAL)
 		{
 			// Si nous sommes en local
-			$MYSQL_HOST = $LOCAL_HOST;
-			$MYSQL_USER = $LOCAL_USER;
-			$MYSQL_MDP = $LOCAL_MDP;
+			//$MYSQL_HOST = $LOCAL_HOST;
+			//$MYSQL_USER = $LOCAL_USER;
+			//$MYSQL_MDP = $LOCAL_MDP;
 			$MYSQL_DB = $LOCAL_DB;
 		}
 		else

@@ -43,6 +43,8 @@ function checkString($string, $type = NULL)
 	
 	$fields
 		Liste des champs obligatoires
+		Peut préciser le type d'un champ pour qu'il
+		soit reconnu sous la syntaxe CHAMP => TYPE
 */
 function checkFields()
 {
@@ -61,7 +63,6 @@ function checkFields()
 	$misfilled = array();
 	
 	$erreurs = array();
-	$multilangue = (isset($index['fr']['form-erreur-email']));
 
 	// Lecture des données
 	foreach($_POST as $key => $value)
@@ -71,17 +72,17 @@ function checkFields()
 			$unfilled = array_diff($unfilled, array($key));
 			if(checkString($value, $fields[$key]))
 			{	
-				if($multilangue) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
+				if(MULTILANGUE) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
 			}
 			else $misfilled[] = $key;
 		}
 	}
 	
 	// On vérifie que les champs sont remplis
-	$isUnfilled = ($multilangue)
+	$isUnfilled = (MULTILANGUE)
 		? index('form-erreur-incomplete')
 		: 'Un ou plusieurs champs sont incomplets';
-	$isMisfilled = ($multilangue)
+	$isMisfilled = (MULTILANGUE)
 		? index('form-erreur-incorrect')
 		: 'Un ou plusieurs champs sont incorrects';
 		
@@ -91,7 +92,7 @@ function checkFields()
 		$variable = ${$erreur. 'filled'};
 		if(isset($variable) and !empty($variable))
 		{
-			if($multilangue) foreach($variable as $key => $value) $variable[$key] = index('form-' .$value);
+			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = index('form-' .$value);
 			else foreach($variable as $key => $value) $variable[$key] = ucfirst($value);
 			$erreurs[] = ${'is' .ucfirst($erreur). 'filled'}. ' : ' .implode(', ', $variable);
 		}
@@ -103,6 +104,6 @@ function checkFields()
 		echo display(implode('<br />', $erreurs));
 		return false;
 	}
-	else return ($multilangue) ? $mailbody : true;
+	else return (MULTILANGUE) ? $mailbody : true;
 }
 ?>

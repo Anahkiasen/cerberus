@@ -70,12 +70,12 @@ class AdminSetup
 		global $index;
 		
 		$this->arrayLangues = $arrayLangues;
-		if(isset($index))
+		if(MULTILANGUE)
 		{
 			$this->multilangue = array_diff(array_keys($index), array('mail', 'http'));
 			if(count($this->multilangue) == 1) $this->multilangue = FALSE;
 		}
-		else $this->multilangue == FALSE;
+		else $this->multilangue = FALSE;
 		return $this->multilangue;
 	}
 	
@@ -154,7 +154,7 @@ class AdminSetup
 	{
 		echo '<div class="navbar" style="position:relative">';
 		
-		if($this->multilangue)
+		if(MULTILANGUE)
 		{
 			echo '<p style="position: absolute; right: 0; top: -12px">';
 			// Langue de l'admin

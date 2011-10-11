@@ -31,13 +31,32 @@ class Cerberus
 	
 	function __construct($modules, $mode = 'core')
 	{
-		global $index;
-		global $userAgent;
+		// Environnement du site
+		if(!defined('PRODUCTION'))
+		{
+			include('cerberus/cache/conf.php');
 
-		// Erreurs et environnement
-		// Si nous sommes en local on affiche toutes les erreurs, sinon on les masque
-		if(!defined('PRODUCTION')) $this->defineProduction();
-		//$errorReport = (!LOCAL) ? 0 : E_ALL | E_STRICT;
+			if(!isset($PRODUCTION)) $PRODUCTION = TRUE;
+			if(!isset($REWRITING)) $REWRITING = TRUE; 
+			
+			define('MULTILANGUE', isset($LANGUES));
+			if(MULTILANGUE) $this->langues = $LANGUES;
+			
+			if(in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1')))
+			{
+				define('PRODUCTION', FALSE);
+				define('REWRITING', FALSE);
+				define('LOCAL', TRUE);
+			}
+			else
+			{
+				define('PRODUCTION', $PRODUCTION);
+				define('REWRITING', $REWRITING);
+				define('LOCAL', FALSE);
+			}
+		}
+		
+		// Affichage et gestion des erreurs
 		error_reporting(E_ALL|E_STRICT);
 		set_error_handler('errorHandle');
 
@@ -65,14 +84,22 @@ class Cerberus
 		$this->inclure();
 	
 		// Lancement des modules annexes
-		if(file_exists('cerberus/cache/conf.php') and $this->mode == 'core')
+		if($this->mode == 'core')
 		{
-			connectSQL();
-			$this->meta();
+			global $index;
+			global $userAgent;
+			
+			if(file_exists('cerberus/cache/conf.php'))
+			{
+				connectSQL();
+				$this->meta();
+				if(MULTILANGUE) $index = createIndex($this->langues);
+			}
+			if(in_array('browserSelector', $modules))
+				if(function_exists('browserSelector')) browserSelector($userAgent);
 		}
-		if(in_array('browserSelector', $modules))
-			if(function_exists('browserSelector')) browserSelector($userAgent);
 	}
+		
 	
 	/* 
 	########################################
@@ -215,35 +242,6 @@ class Cerberus
 			}
 			else if($mode == 'titre') return $defaultTitle;
 		}
-	}
-	
-	// Mode production ou non
-	function defineProduction()
-	{
-		global $PRODUCTION;
-		global $REWRITING;
-		
-		if(!isset($PRODUCTION)) $PRODUCTION = TRUE;
-		if(!isset($REWRITING)) $REWRITING = TRUE; 
-		
-		if(in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1')))
-		{
-			define('PRODUCTION', FALSE);
-			define('REWRITING', FALSE);
-			define('LOCAL', TRUE);
-		}
-		else
-		{
-			define('PRODUCTION', $PRODUCTION);
-			define('REWRITING', $REWRITING);
-			define('LOCAL', FALSE);
-		}
-	}
-	
-	// En local ou non
-	function isLocal()
-	{
-		return in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1'));
 	}
 }
 

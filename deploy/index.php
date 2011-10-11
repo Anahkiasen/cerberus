@@ -148,11 +148,17 @@ if(!file_exists('../../index.php'))
 			
 			sfputs('../cache/conf.php',
 			"<?php
-			\$localhost = '$localhost';
-			\$MYSQL_HOST = '$MYSQL_HOST';
-			\$MYSQL_USER = '$MYSQL_USER';
-			\$MYSQL_MDP = '$MYSQL_MDP';
-			\$MYSQL_DB = '$MYSQL_DB';
+			// Environnement
+			\$PRODUCTION = FALSE;
+			\$REWRITING = FALSE;
+			\$LANGUES = FALSE;
+			
+			// MySQL
+			\$LOCAL_DB = '$localhost';
+			\$PROD_HOST = '$MYSQL_HOST';
+			\$PROD_USER = '$MYSQL_USER';
+			\$PROD_MDP = '$MYSQL_MDP';
+			\$PROD_DB = '$MYSQL_DB';
 			?>");
 			
 			connectSQL($localhost, $MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);

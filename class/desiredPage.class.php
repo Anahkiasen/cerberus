@@ -43,8 +43,6 @@ class desiredPage
 	// Fonctions moteur
 	function __construct($navigation)
 	{
-		global $index;
-		
 		// Arbre par défaut
 		if(empty($navigation)) $navigation = array('home' => array('home'), 'admin' => array('admin'));
 		
@@ -52,8 +50,7 @@ class desiredPage
 		$this->cacheTree = $navigation;
 		$this->allowedPages = array_keys($navigation);
 		$this->optionSubnav = (is_array($navigation[key($navigation)]));
-		$this->optionMultilangue = (isset($index));
-		$this->options = boolprint($this->optionMultilangue).boolprint($this->optionSubnav);
+		$this->options = boolprint(MULTILANGUE).boolprint($this->optionSubnav);
 		
 		// Page par défaut
 		$this->page = $this->allowedPages[0];
@@ -150,7 +147,7 @@ class desiredPage
 		// Navigation principale
 		foreach($this->treeNavigation as $key => $value)
 		{
-			$linkText = ($this->optionMultilangue) ? index('menu-' .$key) : $this->cacheTree[$key];			
+			$linkText = (MULTILANGUE) ? index('menu-' .$key) : $this->cacheTree[$key];			
 			$hover = ($key == $this->page) ? ' hover' : '';
 			$mono = (($this->optionMono or $value == 'mono') and $key != 'admin')
 				? 'id="mono-' .$key. '" rel="mono"'
@@ -169,7 +166,7 @@ class desiredPage
 		{
 			foreach($this->treeSubnav as $key => $value)
 			{
-				$linkText = ($this->optionMultilangue) ? index('menu-' .$this->page. '-' .$key) : $this->cacheTree[$key];						
+				$linkText = (MULTILANGUE) ? index('menu-' .$this->page. '-' .$key) : $this->cacheTree[$key];						
 				$hover = ($key == $this->pageSub) ? ' class="hover"' : '';
 				$keys[] = ($this->optionListedSub)
 					? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'

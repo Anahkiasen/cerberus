@@ -19,9 +19,9 @@ class form
 	*/
 	
 	// Construction
-	function __construct($multilangue = false, $params = NULL)
+	function __construct($multilangue = NULL, $params = NULL)
 	{
-		self::$multilangue = $multilangue;
+		self::$multilangue = (isset($multilangue)) ? $multilangue : MULTILANGUE;
 
 		$this->render = '<form method="post"';
 		if(is_array($params) and !empty($params)) foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
@@ -231,7 +231,7 @@ class form
 				$this->render .= '<input type="radio" ';
 				foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
 				$fieldName = (!self::$multilangue) ? $label : index('form-' .$label. '-'.$i);
-				if(isset($_POST[$label]) && $_POST[$label] == $i) $this->render .= 'checked="checked"';
+				if($params['value'] == $i) $this->render .= 'checked="checked"';
 				$this->render .= ' value="' .$i. '"> ' .$fieldName;
 			}
 		}
