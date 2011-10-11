@@ -29,14 +29,13 @@ function connectSQL()
 	if(file_exists($conf))
 	{
 		include($conf);
-		if(in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1')))
+		if(LOCAL)
 		{
 			// Si nous sommes en local
 			$MYSQL_HOST = $LOCAL_HOST;
 			$MYSQL_USER = $LOCAL_USER;
 			$MYSQL_MDP = $LOCAL_MDP;
 			$MYSQL_DB = $LOCAL_DB;
-			$isLocal = TRUE;
 		}
 		else
 		{
@@ -45,7 +44,6 @@ function connectSQL()
 			$MYSQL_USER = $PROD_USER;
 			$MYSQL_MDP = $PROD_MDP;
 			$MYSQL_DB = $PROD_DB;
-			$isLocal = FALSE;
 		}
 	}
 	
@@ -98,7 +96,7 @@ function connectSQL()
 		if(!file_exists($conf))
 		{
 			if(file_exists('cerberus/cache/')) mkdir('cerberus/cache/');
-			if($isLocal)
+			if(LOCAL)
 			{
 				sfputs($conf, 
 				"<?php

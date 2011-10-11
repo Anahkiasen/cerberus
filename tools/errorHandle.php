@@ -35,7 +35,8 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		$DEBUG['error'] = 'Unknown';
 		break;
 	}
-	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>';
+	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>
+	<h3>' .basename($errorFile). ':' .$errorLine. '</h3>';
 	
 	foreach($path as $id_file => $info)
 	{
@@ -44,7 +45,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		if(isset($info['type'], $info['function'], $info['class'])) $thisPath[] = 'La fonction appel&eacute;e &eacute;tait <strong>' .$info['class'].$info['type'].$info['function']. '</strong>';
 		else
 		{
-			if(isset($info['function'])) $thisPath[] = 'La fonction appel&eacute;e &eacute;tait <strong>' .$info['function']. '</strong>';
+			if(isset($info['function']) and $info['function'] != 'errorHandle') $thisPath[] = 'La fonction appel&eacute;e &eacute;tait <strong>' .$info['function']. '</strong>';
 			if(isset($info['class'])) $thisPath[] = 'La classe appel&eacute;e &eacute;tait <strong>' .$info['class']. '</strong>';
 		}
 		

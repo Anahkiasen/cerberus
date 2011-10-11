@@ -112,7 +112,7 @@ class desiredPage
 	{		
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
-				if($key != 'admin' or ($key == 'admin' and $GLOBALS['cerberus']->isLocal()))
+				if($key != 'admin' or ($key == 'admin' and LOCAL))
 					$this->treeNavigation[$key] = rewrite($key, array('subnav' => $this->optionSubnav));			
 		
 		if(!isset($this->treeSubnav) and $this->optionSubnav)
@@ -145,7 +145,7 @@ class desiredPage
 	function render(&$renderPage, &$renderSousPage, &$renderNavigation, &$renderSubnav, $glue = NULL)
 	{		
 		$this->createTree();
-		if(!$GLOBALS['cerberus']->isLocal()) unset($this->treeNavigation['admin']);
+		if(!LOCAL) unset($this->treeNavigation['admin']);
 
 		// Navigation principale
 		foreach($this->treeNavigation as $key => $value)

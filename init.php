@@ -226,7 +226,7 @@ class Cerberus
 		if(!isset($PRODUCTION)) $PRODUCTION = TRUE;
 		if(!isset($REWRITING)) $REWRITING = TRUE; 
 		
-		if($this->isLocal())
+		if(in_array($_SERVER['HTTP_HOST'], array('localhost:8888', '127.0.0.1')))
 		{
 			define('PRODUCTION', FALSE);
 			define('REWRITING', FALSE);
@@ -338,7 +338,7 @@ class dispatch extends Cerberus
 		$js = $css = NULL;
 		
 		// Fichiers par défaut
-		$scripts['*'] = beArray($scripts['*']);
+		beArray($scripts['*']);
 		$scripts['*'][] = 'assets/css/cerberus.css';
 		$scripts['*'][] = 'assets/'.$defaultCSS;
 		$scripts['*'][] = 'assets/'.$defaultJS;

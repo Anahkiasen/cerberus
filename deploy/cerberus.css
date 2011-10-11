@@ -24,16 +24,16 @@ table .additem,
 .readmore,
 .mosaique { background-color: #8a976a; }
 p.infoblock,
-.readmore { background-color:#069; }
+div.cerberus_debug { background-color:#069; }
 /*
 ########################################
 ######### BALISES COMMUNES #############
 ########################################
 */
-a img { border: none }
 p.clear { clear:both; }
 p.infoblock,
-p.readmore
+p.readmore,
+div.cerberus_debug
 {
 	background-image:url(overlay/noir-50.png);
 	margin:0;
@@ -42,7 +42,28 @@ p.readmore
 	color:#FFF;
 	text-align:center;
 	padding:5px;
+	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
 }
+div.cerberus_debug
+{
+	width: 75%;
+	margin:0 auto 15px;
+	padding: 10px;
+	text-align: left;
+}
+div.cerberus_debug p
+{
+	background-image: url(overlay/noir-25.png);
+	padding: 5px;
+	margin: 0;
+}
+div.cerberus_debug h2,
+div.cerberus_debug h3
+{
+	margin: 5px 0 0;
+	color: white;
+}
+div.cerberus_debug h3 { margin-bottom: 15px; }
 p.infoblock a
 {
 	color: #FFF;
