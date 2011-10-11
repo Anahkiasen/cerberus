@@ -93,7 +93,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		if(isset($GLOBALS['cerberus']))
 		{
 			$GLOBALS['cerberus']->injectModule('smail', 'stripHTML');
-			$mail = new sendMail('maxime@stappler.fr', $mailTitle, $DEBUG);
+			$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
 			$mail->messageHTML();
 			$mail->send();
 		}

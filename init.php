@@ -165,7 +165,7 @@ class Cerberus
 	// Chargement d'un module
 	function loadModule($module)
 	{
-		if(!function_exists($module))
+		if(!function_exists($module) and !class_exists($module))
 		{
 			$fichierModule = $this->getFile($module);
 			if($fichierModule)
@@ -218,7 +218,7 @@ class Cerberus
 		$module = func_get_args();
 		foreach($module as $thismodule)
 		{
-			if(!function_exists($thismodule)) include($this->getFile($thismodule));
+			if(!function_exists($thismodule) and !class_exists($thismodule)) include($this->getFile($thismodule));
 		}
 	}
 

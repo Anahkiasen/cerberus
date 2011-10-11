@@ -47,7 +47,7 @@ function mysqlQuery($query, $forceArray = FALSE, $cle = 'id')
 			if(isset($query[2])) echo display($query[2]);
 			else
 			{
-				echo display(htmlentities($query)).mysql_error();
+				echo display(htmlentities($query[0])).mysql_error();
 				exit(errorHandle('SQL', mysql_error(), __FILE__, __LINE__));
 			}
 			return false;

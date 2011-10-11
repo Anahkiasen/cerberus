@@ -272,6 +272,7 @@ fieldset dl:hover
 	background-image:url(overlay/noir-10.png);
 	background-repeat:repeat;
 }
+dd input[type=radio] { margin-left: 15px; }
 fieldset dt { margin-left:5px; }
 fieldset label span.mandatory { color:red; }
 /* Champs */

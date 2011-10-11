@@ -1,5 +1,5 @@
 <?php
-class sendMail
+class smail
 {
 	// Core
 	private $destinataire;
@@ -35,7 +35,7 @@ class sendMail
 					foreach($value as $v2) $this->contenu .= '- ' .$v2. '<br />';
 					$this->contenu .= '<br /><br />';
 				}
-				else $this->contenu .= $key. ' : ' .$value. '<br /><br />';		
+				else $this->contenu .= $key. ' : ' .$value. '<br /><br />';	
 			}	
 		}
 		else $this->contenu = $contenu;

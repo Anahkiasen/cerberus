@@ -77,7 +77,7 @@ class form
 		self::$mandatory = $mandatory;
 		
 		$this->render .= PHP_EOL. "
-		<fieldset>" .PHP_EOL. "
+		<fieldset class=\"" .normalize($name). "\">" .PHP_EOL. "
 			\t<legend>" .$fieldName. '</legend>';
 		
 		if(self::$openedManual) self::$openedManual = false;
