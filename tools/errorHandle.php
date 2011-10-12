@@ -84,26 +84,18 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	*/
 	
 	// Rassemblement des informations sur l'erreur
-	$mailTitle = '[DEBUG] ' .basename($errorFile). '::' .$errorLine;
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
 	if(!LOCAL)
 	{
-		if(isset($GLOBALS['cerberus']))
-		{
-			$GLOBALS['cerberus']->injectModule('smail', 'stripHTML');
-			$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
-			$mail->messageHTML();
-			$mail->send();
-		}
-		else
-		{
-			$DEBUG = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $DEBUG);
-			$DEBUG = strip_tags($DEBUG);
-			mail('maxime@stappler.fr', 'debug', $DEBUG);
-			echo 'nocerb';
-		}
+		if(!class_exists('smail')) include('cerberus/class/smail.class.php');
+		if(!function_exists('stripHTML')) include('cerberus/tools/stripHTML.php');
+		
+		$mailTitle = '[DEBUG] ' .basename($errorFile). '::' .$errorLine;
+		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
+		$mail->messageHTML();
+		$mail->send();
 	}
 	else echo $DEBUG;
 }

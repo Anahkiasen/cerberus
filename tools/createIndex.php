@@ -37,7 +37,7 @@ function createIndex($arrayLang = array('en', 'fr'), $database = 'langue')
 	$tables = mysqlQuery('SELECT tag FROM langue LIMIT 1');
 	if(!empty($tables))
 	{
-		if(file_exists($filename) and !PRODUCTION) unlink($filename); // Suppression de la version existante
+		if(!PRODUCTION) sunlink($filename); // Suppression de la version existante
 		if(file_exists($filename) and PRODUCTION) include_once($filename);
 		else
 		{
