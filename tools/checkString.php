@@ -72,7 +72,7 @@ function checkFields()
 			$unfilled = array_diff($unfilled, array($key));
 			if(checkString($value, $fields[$key]))
 			{	
-				if(MULTILANGUE) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .$value. '<br />';
+				if(MULTILANGUE) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .stripslashes($value). '<br />';
 			}
 			else $misfilled[] = $key;
 		}
