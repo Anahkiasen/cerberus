@@ -25,7 +25,7 @@ class AdminSetup
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
-		$systemPages = array('news', 'meta', 'backup');
+		$systemPages = array('news', 'meta', 'images', 'backup');
 		$adminNavigation = array_diff($navigation['admin'], array('admin'));
 		$thisNavigation = array_merge(beArray($customNavigation), $adminNavigation, $systemPages);
 	
@@ -156,7 +156,7 @@ class AdminSetup
 		
 		if(MULTILANGUE)
 		{
-			echo '<p style="position: absolute; right: 0; top: -12px">';
+			echo '<p style="position: absolute; right: 5px; top: -7px">';
 			// Langue de l'admin
 			foreach($this->multilangue as $langue)
 			{
@@ -170,6 +170,7 @@ class AdminSetup
 		// Navigation de l'admin
 		if(!empty($navigation)) foreach($navigation as $key => $value)
 		{
+			//if($value == 'news') echo '<br /><br />';
 			$textLien = ($this->arrayLangues) ? index('admin-' .$value) : ucfirst($value);
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
 			echo '<a href="' .rewrite('admin-' .$value). '" ' .$thisActive. '>' .$textLien. '</a>';	

@@ -174,7 +174,22 @@ class Cerberus
 				$thisModule = substr($thisModule, 5, -2);
 				$this->render .= $thisModule;
 			}
-			else $this->erreurs[] = 'Module ' .$module. ' non existant.';
+			else $this->erreurs[] = errorHandle('Warning', 'Module ' .$module. ' non existant.', __FILE__, __LINE__);
+		}
+	}
+		
+	// Fonction Inject
+	function injectModule()
+	{
+		$module = func_get_args();
+		foreach($module as $thismodule)
+		{
+			if(!function_exists($thismodule) and !class_exists($thismodule))
+			{
+				$fichier = $this->getFile($thismodule);
+				if($fichier) include($fichier);
+				else errorHandle('Warning', 'Module ' .$thismodule. ' non trouvé', __FILE__, __LINE__);
+			}
 		}
 	}
 			
@@ -212,16 +227,6 @@ class Cerberus
 	########################################
 	*/
 	
-	// Fonction Inject
-	function injectModule()
-	{
-		$module = func_get_args();
-		foreach($module as $thismodule)
-		{
-			if(!function_exists($thismodule) and !class_exists($thismodule)) include($this->getFile($thismodule));
-		}
-	}
-
 	// Fonction META 
 	function meta($mode = 'meta')
 	{
@@ -234,6 +239,7 @@ class Cerberus
 			global $sousPageVoulue;
 		
 			$defaultTitle = index('menu-' .$pageVoulue);
+			if($pageVoulue == 'admin' and isset($_GET['admin'])) $defaultTitle = 'Gestion ' .ucfirst($_GET['admin']);
 			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
 			{
 				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];
@@ -244,6 +250,12 @@ class Cerberus
 		}
 	}
 }
+
+/* 
+########################################
+########## CLASSE DISPATCH #############
+########################################
+*/
 
 class dispatch extends Cerberus
 {
