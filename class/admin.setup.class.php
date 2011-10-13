@@ -246,7 +246,7 @@ class AdminSetup
 		}
 		if(isset($_GET['load']))
 		{
-			include('cerberus/cache/conf.php');
+			include('cerberus/conf.php');
 			foreach(glob('cerberus/cache/sql/' .$_GET['load']. '/*.sql') as $file)
 				$fichier = $file;
 				

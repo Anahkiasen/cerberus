@@ -23,7 +23,7 @@ function connectSQL()
 	*/
 	
 	// Chemin du fichier config
-	$conf = 'cerberus/cache/conf.php';
+	$conf = 'cerberus/conf.php';
 	
 	// Récupération des identifiants du fichier config
 	if(file_exists($conf))

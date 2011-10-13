@@ -146,7 +146,7 @@ if(!file_exists('../../index.php'))
 			mkdir('../cache/');
 			mkdir('../cache/sql/');
 			
-			sfputs('../cache/conf.php',
+			sfputs('../conf.php',
 			"<?php
 			// Environnement
 			\$PRODUCTION = FALSE;

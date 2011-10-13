@@ -34,7 +34,7 @@ class Cerberus
 		// Environnement du site
 		if(!defined('PRODUCTION'))
 		{
-			include('cerberus/cache/conf.php');
+			include('cerberus/conf.php');
 
 			if(!isset($PRODUCTION)) $PRODUCTION = TRUE;
 			if(!isset($REWRITING)) $REWRITING = TRUE; 
@@ -89,7 +89,7 @@ class Cerberus
 			global $index;
 			global $userAgent;
 			
-			if(file_exists('cerberus/cache/conf.php'))
+			if(file_exists('cerberus/conf.php'))
 			{
 				connectSQL();
 				$this->meta();
