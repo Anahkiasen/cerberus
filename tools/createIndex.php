@@ -108,9 +108,9 @@ function index($string, $langue = NULL)
 {
 	global $index;
 	
-	$langueIndex = (empty($langue))
-		? $_SESSION['langueSite']
-		: $langue;
+	if(isset($langue)) $langueIndex = $langue;
+	elseif(!isset($langue) and isset($_SESSION['langueSite'])) $langueIndex = $_SESSION['langueSite'];
+	elseif(!isset($langue, $_SESSION['langueSite'])) $langueIndex = 'fr';
 		
 	if(isset($index[$langueIndex][$string]) and !empty($index[$langueIndex][$string])) return $index[$langueIndex][$string];
 	else return '<span style="color:red">[' .$string. '(' .$langueIndex. ')]</span>';

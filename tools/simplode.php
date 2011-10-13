@@ -12,7 +12,7 @@
 	$array
 		Array à imploser
 	$convert
-		TRUE	Passe les valeurs à la fonction bdd()
+		TRUE	Passe les valeurs à la fonction escape()
 		FALSE	Laisse les valeurs intactes
 */
 function simplode($glue1, $glue2, $array, $convert = TRUE)
@@ -28,7 +28,7 @@ function simplode($glue1, $glue2, $array, $convert = TRUE)
 			$plainedArray = array();
 			foreach($array as $key => $value)
 			{	
-				$value = ($convert) ? bdd($value) : $value;
+				$value = ($convert) ? escape($value) : $value;
 				if(is_array($glue1)) $plainedArray[] = $key.$glue1[0].$value.$glue1[1];
 				else $plainedArray[] = $key.$glue1.$value;
 			}

@@ -7,8 +7,8 @@ function postVar($post = NULL)
 		$key = str_replace('-', '_', $key);
 		if(!isset(${$key})) 
 		{
-			if(is_array($value)) foreach($value as $k2 => $v2) ${$key}[$k2] = bdd($v2);
-			else ${$key} = bdd($value);
+			if(is_array($value)) foreach($value as $k2 => $v2) ${$key}[$k2] = escape($v2);
+			else ${$key} = escape($value);
 		}
 	}
 }

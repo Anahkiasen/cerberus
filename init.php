@@ -117,7 +117,7 @@ class Cerberus
 		
 			// Packs
 			$packages = array(
-			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'bdd'),
+			'pack.sql' => array('backupSQL', 'connectSQL', 'mysqlQuery', 'escape'),
 			'pack.navigation' => array('baseref', 'desiredPage', 'rewrite'),
 			'class.admin' => array('admin', 'admin.setup', 'getURL', 'randomString'),
 			'class.mail' => array('smail', 'stripHTML'),

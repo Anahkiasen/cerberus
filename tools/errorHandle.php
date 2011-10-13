@@ -52,25 +52,19 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		// Arguments utilisés
 		if(isset($info['args']) and !empty($info['args']) and $info['function'] != 'errorHandle')
 		{
-			$arguments = NULL;
-			foreach($info['args'] as $numero => $argument)
+			foreach($info['args'] as $key => $value)
 			{
-				// Liste des possibilités d'arguments
-				switch($info['function'])
-				{
-					case 'include':
-					case 'include_once':
-						$arguments .= basename($argument). '<br />';
-						break;
-					
-					default:
-						if(is_array($argument)) $arguments .= implode(', ', $argument). '<br />';
-						else $arguments .= $argument. '<br />';
-						break;
-				}
-				
+				// Types d'arguments
+				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .basename($value). '"';
+				elseif(is_array($value)) $info['args'][$key] = 'ARRAY["' .implode('", "', $value). '"]';
+				else $info['args'][$key] = '"' .$value. '"';
 			}
-			$thisPath[] = 'Ses param&egrave;tres &eacute;taient : <em>' .$arguments. '</em>';
+			
+			// Affichage des arguments (saut de ligne si plus d'un)
+			$parametres = 'Ses param&egrave;tres &eacute;taient : ';
+			if(count($info['args']) > 1) $parametres .= '<br />';
+			$parametres .= '<em>' .implode(', ', $info['args']). '</em>';
+			$thisPath[] = $parametres;
 		}
 		
 		$DEBUG['path_' .$id_file] = '<p style="padding-left:' .($id_file*25+10). 'px">' .implode('<br />', $thisPath). '</p>';

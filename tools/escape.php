@@ -1,6 +1,6 @@
 <?php
 /*
-	Fonction bdd
+	Fonction escape
 	# Encode une chaîne pour insértion dans une base de données
 	
 	Fonction html
@@ -9,7 +9,7 @@
 	$string
 		La chaîne à encoder/décoder
 */
-function bdd($string)
+function escape($string)
 {
 	if(ctype_digit($string)) $string = intval($string);
 	else
