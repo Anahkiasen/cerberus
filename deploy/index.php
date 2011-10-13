@@ -207,6 +207,7 @@ if(!file_exists('../../index.php'))
 		{
 			mkdir('../../file/');
 			copy('timthumb.php', '../../file/timthumb.php');
+			copy('timthumb-config.php', '../../file/timthumb-config.php');
 		}
 		copydir('min', '../../min');
 			
