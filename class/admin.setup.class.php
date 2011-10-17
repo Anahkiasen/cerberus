@@ -169,7 +169,7 @@ class AdminSetup
 			foreach($this->multilangue as $langue)
 			{
 				$getAdmin = (isset($_GET['admin'])) ? '&admin=' .$_GET['admin'] : '';
-				$urlFlag = ($_SESSION['admin']['langue'] == $langue) ? 'flag_' .$langue : 'flag_' .$langue. '_off';
+				$urlFlag = (isset($_SESSION['admin']['langue']) and $_SESSION['admin']['langue'] == $langue) ? 'flag_' .$langue : 'flag_' .$langue. '_off';
 				echo '<a href="' .rewrite('admin', array('adminLangue' => $langue.$getAdmin)). '"><img src="assets/css/' .$urlFlag. '.png" alt="' .$langue. '" /></a> ';
 			}
 			echo '</p>';

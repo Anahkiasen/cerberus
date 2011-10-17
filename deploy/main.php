@@ -1,16 +1,7 @@
 <?php
 // Chargement du moteur Cerberus
-include_once('cerberus/init.php');
+require_once('cerberus/init.php');
 $cerberus = new Cerberus(array('browserSelector', 'cssFont', 'createIndex', 'pack.sql', 'pack.navigation'));
-connectSQL([BDD]);
-
-// Langues
-$index = createIndex(array('fr'));
-
-// Globales
-$meta = $cerberus->meta();
-$thisAgent = browserSelector();
-$rewriteMode = false;
 
 // Arbre de navigation et page en cours
 $navigation = array(

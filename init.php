@@ -95,8 +95,21 @@ class Cerberus
 				$this->meta();
 				if(MULTILANGUE) $index = createIndex($this->langues);
 			}
-			if(in_array('browserSelector', $modules))
-				if(function_exists('browserSelector')) browserSelector($userAgent);
+			if(in_array('browserSelector', $modules) and class_exists('browserSelector'))
+			{
+				$userAgent = new browserSelector();
+				$ip = $_SERVER['REMOTE_ADDR'];
+				
+				// Ajout du visiteur dans les statistiques de connexion
+				if(mysqlQuery('SELECT ip FROM logs WHERE ip="' .$ip. '"') == FALSE and ($ip))
+				{
+					$ua = $userAgent->detect();
+					$mobile = ($userAgent->mobile()) ? 1 : 0;
+					mysql_query('INSERT INTO logs VALUES("' .$ip. '", NOW(), "' .$ua['platform']. '", "' .$ua['browser']. '", "' .$ua['version']. '", "' .$ua['engine']. '", "' .$mobile. '")');
+				}
+				
+				$userAgent = $userAgent->css();
+			}
 		}
 	}
 		

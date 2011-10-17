@@ -184,8 +184,20 @@ if(!file_exists('../../index.php'))
 		  PRIMARY KEY (`user`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1'));
 		
+		// Table LOGS
+		mysql_query('DROP TABLE IF EXISTS `logs`;');
+		mysqlQuery(array('CREATE TABLE `logs` (
+		  `ip` varchar(255) NOT NULL,
+		  `platform` varchar(255) NOT NULL,
+		  `browser` varchar(255) NOT NULL,
+		  `version` varchar(255) NOT NULL,
+		  `engine` varchar(255) NOT NULL,
+		  `mobile` enum('0','1') NOT NULL,
+		  PRIMARY KEY (`ip`)
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));
+		
 		// Table META
-		mysql_query('DROP TABLE IF EXISTS `meta	`;');
+		mysql_query('DROP TABLE IF EXISTS `meta`;');
 		mysqlQuery(array('CREATE TABLE `meta` (
 		  `page` varchar(30) NOT NULL,
 		  `titre` varchar(200) NOT NULL,

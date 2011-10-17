@@ -2,40 +2,167 @@
 /*
 	Fonction browserSelector
 	# Crée une chaine contenant la définition exacte de l'user-agent de l'internaute
+	# Source : http://getkirby.com/
 */
-function browserSelector(&$renderAgent)
+class browserSelector
 {
-	$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
-	
-	$gecko = 'gecko';
-	$webkit = 'webkit';
-	$safari = 'safari';
-	$return = array();
-	
-	// Navigateur
-	if(!preg_match('/opera|webtv/i', $userAgent) && preg_match('/msie\s(\d)/', $userAgent, $array)) $return[] = 'ie ie' .$array[1];
-	else if(strstr($userAgent, 'firefox/2')) $return[] = $gecko. ' ff2';
-	else if(strstr($userAgent, 'firefox/3.5')) $return[] = $gecko. ' ff3 ff3_5';
-	else if(strstr($userAgent, 'firefox/3')) $return[] = $gecko. ' ff3';
-	else if(strstr($userAgent, 'gecko/')) $return[] = $gecko;
-	else if(preg_match('/opera(\s|\/)(\d+)/', $userAgent, $array)) $return[] = 'opera opera' .$array[2];
-	else if(strstr($userAgent, 'konqueror')) $return[] = 'konqueror';
-	else if(strstr($userAgent, 'chrome')) $return[] = $webkit. ' ' .$safari. ' chrome';
-	else if(strstr($userAgent, 'iron')) $return[] = $webkit. ' ' .$safari. ' iron';
-	else if(strstr($userAgent, 'applewebkit/')) $return[] = (preg_match('/version\/(\d+)/i', $userAgent, $array)) ? $webkit. ' ' .$safari. ' ' .$safari .$array[1] : $webkit. ' ' .$safari;
-	else if(strstr($userAgent, 'mozilla/')) $return[] = $gecko;
-	
-	// platform
-	if(strstr($userAgent, 'j2me')) $return[] = 'mobile';
-	else if(strstr($userAgent, 'iphone')) $return[] = 'iphone';
-	else if(strstr($userAgent, 'ipod')) $return[] = 'ipod';
-	else if(strstr($userAgent, 'mac')) $return[] = 'mac';
-	else if(strstr($userAgent, 'darwin')) $return[] = 'mac';
-	else if(strstr($userAgent, 'webtv')) $return[] = 'webtv';
-	else if(strstr($userAgent, 'win')) $return[] = 'win';
-	else if(strstr($userAgent, 'freebsd')) $return[] = 'freebsd';
-	else if(strstr($userAgent, 'x11') || strstr($userAgent, 'linux')) $return[] = 'linux';
-	
-	$renderAgent = join(' ', $return);
+	static public $ua = false;
+	static public $browser = false;
+	static public $engine = false;
+	static public $version = false;
+	static public $platform = false;
+
+	// Fonctions de détection
+	function name($ua = NULL)
+	{
+		self::detect($ua);
+		return self::$browser;
+	}
+
+	function engine($ua = NULL)
+	{
+		self::detect($ua);
+		return self::$engine;
+	}
+
+	function version($ua = NULL)
+	{
+		self::detect($ua);
+		return self::$version;
+	}
+
+	function platform($ua = NULL)
+	{
+		self::detect($ua);
+		return self::$platform;
+	}
+
+	function mobile($ua = NULL)
+	{
+		self::detect($ua);
+		return (self::$platform == 'mobile') ? true : false;
+	}
+
+	function iphone($ua = NULL)
+	{
+		self::detect($ua);
+		return (in_array(self::$platform, array('ipod', 'iphone'))) ? true : false;
+	}
+
+	function ios($ua = NULL)
+	{
+		self::detect($ua);
+		return (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
+	}
+
+	function css($ua = NULL, $array=false)
+	{
+		self::detect($ua);
+		$css[] = self::$engine;
+		$css[] = self::$browser;
+		if(self::$version) $css[] = self::$browser . str_replace('.', '_', self::$version);
+		$css[] = self::$platform;
+		return ($array) ? $css : implode(' ', $css);
+	}
+
+	// FONCTION COEUR
+	function detect($ua = null)
+	{
+		$ua = ($ua) ? strtolower($ua) : strtolower($_SERVER['HTTP_USER_AGENT']);
+
+		// On ne fait la détection qu'une seule fois
+		if(self::$ua == $ua) 
+			return array(
+				'browser'	=> self::$browser,
+				'engine'	 => self::$engine,
+				'version'	=> self::$version,
+				'platform' => self::$platform
+			);
+
+		self::$ua		 = $ua;
+		self::$browser	= false;
+		self::$engine	 = false;
+		self::$version	= false;
+		self::$platform = false;
+
+		// NAVIGATEUR
+		if(!preg_match('/opera|webtv/i', self::$ua) && preg_match('/msie\s(\d)/', self::$ua, $array))
+		{
+			self::$version = $array[1];
+			self::$browser = 'ie';
+			self::$engine	= 'trident';
+		}
+		else if(strstr(self::$ua, 'firefox/3.6'))
+		{
+			self::$version = 3.6;
+			self::$browser = 'fx';
+			self::$engine	= 'gecko';
+		}	
+		else if (strstr(self::$ua, 'firefox/3.5'))
+		{
+			self::$version = 3.5;
+			self::$browser = 'fx';
+			self::$engine	= 'gecko';
+		}	
+		else if(preg_match('/firefox\/(\d+)/i', self::$ua, $array))
+		{
+			self::$version = $array[1];
+			self::$browser = 'fx';
+			self::$engine	= 'gecko';
+		}
+		else if(preg_match('/opera(\s|\/)(\d+)/', self::$ua, $array))
+		{
+			self::$engine	= 'presto';
+			self::$browser = 'opera';
+			self::$version = $array[2];
+		}
+		else if(strstr(self::$ua, 'konqueror'))
+		{
+			self::$browser = 'konqueror';
+			self::$engine	= 'webkit';
+		}
+		else if(strstr(self::$ua, 'iron'))
+		{
+			self::$browser = 'iron';
+			self::$engine	= 'webkit';
+		}
+		else if(strstr(self::$ua, 'chrome'))
+		{
+			self::$browser = 'chrome';
+			self::$engine	= 'webkit';
+			if(preg_match('/chrome\/(\d+)/i', self::$ua, $array)) self::$version = $array[1];
+		}
+		else if(strstr(self::$ua, 'applewebkit/'))
+		{
+			self::$browser = 'safari';
+			self::$engine	= 'webkit';
+			if(preg_match('/version\/(\d+)/i', self::$ua, $array)) self::$version = $array[1];
+		}
+		else if(strstr(self::$ua, 'mozilla/'))
+		{
+			self::$engine	= 'gecko';
+			self::$browser = 'mozilla';
+		}
+
+		// PLATEFORME
+		if(strstr(self::$ua, 'j2me')) self::$platform = 'mobile';
+		else if(strstr(self::$ua, 'iphone')) self::$platform = 'iphone';
+		else if(strstr(self::$ua, 'ipod')) self::$platform = 'ipod';
+		else if(strstr(self::$ua, 'ipad')) self::$platform = 'ipad';
+		else if(strstr(self::$ua, 'mac')) self::$platform = 'mac';
+		else if(strstr(self::$ua, 'darwin')) self::$platform = 'mac';
+		else if(strstr(self::$ua, 'webtv')) self::$platform = 'webtv';
+		else if(strstr(self::$ua, 'win')) self::$platform = 'win';
+		else if(strstr(self::$ua, 'freebsd')) self::$platform = 'freebsd';
+		else if(strstr(self::$ua, 'x11') || strstr(self::$ua, 'linux')) self::$platform = 'linux';
+
+		return array
+		(
+			'browser'  => self::$browser,
+			'engine'   => self::$engine,
+			'version'  => self::$version,
+			'platform' => self::$platform
+		);
+	}
 }
 ?>
