@@ -59,7 +59,7 @@ class Cerberus
 		// Affichage et gestion des erreurs
 		error_reporting(E_ALL|E_STRICT);
 		set_error_handler('errorHandle');
-
+		
 		// Modules coeur
 		$modules = beArray($modules);
 		if($mode == 'core') $modules = array_merge(array(
@@ -79,7 +79,7 @@ class Cerberus
 			$this->unpackModules($modules);
 			$this->generate();
 		}
-				
+		
 		// Include du fichier
 		$this->inclure();
 	
@@ -236,7 +236,7 @@ class Cerberus
 	
 	/* 
 	########################################
-	########## FONCTIONS EXPORT ############
+	########## FONCTIONS UTILITAIRES #######
 	########################################
 	*/
 	
@@ -260,6 +260,18 @@ class Cerberus
 				return $thisMeta[$mode];
 			}
 			else if($mode == 'titre') return $defaultTitle;
+		}
+	}
+		
+	// Temps de calcul
+	function timer($event = NULL)
+	{
+		if(!isset($this->timer)) $this->timer['start'] = microtime(true);
+		if($event) $this->timer[$event] = microtime(true) - $this->timer['start'];
+		if($event == 'end' and LOCAL)
+		{
+			$this->timer['start'] = 0.0;
+			print_r($this->timer);
 		}
 	}
 }
@@ -419,7 +431,7 @@ class dispatch extends Cerberus
 			if(!empty($minCSS)) $css .= '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
 			if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
 			return array(trim($css), trim($js), $scripts);
-		}
+		}	
 	}
 }
 ?>
