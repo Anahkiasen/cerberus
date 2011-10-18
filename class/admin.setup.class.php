@@ -20,14 +20,15 @@ class AdminSetup
 	function __construct($customNavigation = NULL)
 	{	
 		global $navigation;
+		global $connected;
 		
-		$this->modeSQL = function_exists('connectSQL');
+		$this->modeSQL = $connected;
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
 		$systemPages = array('news', 'meta', 'images', 'backup');
 		$adminNavigation = array_diff($navigation['admin'], array('admin'));
-		$thisNavigation = array_merge(beArray($customNavigation), $adminNavigation, $systemPages);
+		$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
 	
 		// Identification	 
  		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
@@ -44,7 +45,7 @@ class AdminSetup
 					(file_exists('pages/admin-' .$_GET['admin']. '.php')
 						or in_array($_GET['admin'], $systemPages)))
 						
-					$title = ($this->arrayLangues) ? index('admin-' .$_GET['admin']) : ucfirst($_GET['admin']);
+					$title = ($this->arrayLangues) ? l::get('admin-' .$_GET['admin']) : ucfirst($_GET['admin']);
 			}
 			
 			// Navigation
@@ -80,7 +81,7 @@ class AdminSetup
 		$this->arrayLangues = $arrayLangues;
 		if(MULTILANGUE)
 		{
-			$this->multilangue = array_diff(array_keys($index), array('mail', 'http'));
+			$this->multilangue = config::get('langues');
 			if(count($this->multilangue) == 1) $this->multilangue = FALSE;
 		}
 		else $this->multilangue = FALSE;
@@ -179,7 +180,7 @@ class AdminSetup
 		if(!empty($navigation)) foreach($navigation as $key => $value)
 		{
 			//if($value == 'news') echo '<br /><br />';
-			$textLien = ($this->arrayLangues) ? index('admin-' .$value) : ucfirst($value);
+			$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : ucfirst($value);
 			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
 			echo '<a href="' .rewrite('admin-' .$value). '" ' .$thisActive. '>' .$textLien. '</a>';	
 		}

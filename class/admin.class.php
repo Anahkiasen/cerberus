@@ -40,7 +40,7 @@ class AdminPage extends AdminSetup
 		$this->getAdd = (isset($_GET['add_' .$this->table])) ? $_GET['add_' .$this->table] : NULL;
 
 		// Champs facultatifs
-		$facultativeFields = beArray($facultativeFields);
+		$facultativeFields = a::beArray($facultativeFields);
 		
 		// Récupération du nom des champs
 		$this->fields = array_keys(mysqlQuery('SHOW COLUMNS FROM ' .$table));
@@ -209,7 +209,7 @@ class AdminPage extends AdminSetup
 			else echo '<tr>';
 			
 				// Valeurs
-				$value = beArray($value);
+				$value = a::beArray($value);
 				foreach($fieldsDisplay as $fieldName)
 					echo '<td>' .html(str_replace('<br />', ' ', $value[$fieldName])). '</td>'; 
 				
@@ -290,7 +290,7 @@ class AdminPage extends AdminSetup
 
 			// Erreurs basiques
 			$errorDisplay = NULL;
-			$extension = strtolower(substr(strrchr($_FILES[$field]['name'], '.'), 1));
+			$extension = f::extension($_FILES[$field]['name']);
 			if($_FILES[$field]['error'] != 0) $errorDisplay = 'Une erreur est survenue lors du transfert.';
 			if(filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
 					
@@ -306,7 +306,7 @@ class AdminPage extends AdminSetup
 				{
 					case 'table':
 						$file = explode('.', $_FILES[$field]['name']);
-						$file = normalize($file[0]). '-' .md5(randomString()). '.' .$extension;
+						$file = normalize($file[0]). '-' .md5(str::random()). '.' .$extension;
 						$test = mysqlQuery('SHOW COLUMNS FROM ' .$this->table. '_thumb');
 						mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb SET path="' .$file. '", id_' .$this->table. '="' .$lastID. '"'));
 						break;
@@ -315,7 +315,7 @@ class AdminPage extends AdminSetup
 						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$lastID. '"');
 						if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
 						sunlink('assets/file/' .$this->table. '/' .$lastID. '.jpg');
-						$file = $lastID. '-' .md5(randomString()). '.' .$extension;
+						$file = $lastID. '-' .md5(str::random()). '.' .$extension;
 						break;
 						
 					default:

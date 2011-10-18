@@ -18,7 +18,7 @@ if(isset($_POST['oldfile']))
 {
 	$explode = explode('/', $_POST['oldfile']);
 	$dossier = $explode[2];
-	$extension = pathinfo($_POST['oldfile'], PATHINFO_EXTENSION);
+	$extension = f::extension($_POST['oldfile']);
 	rename($_POST['oldfile'], 'assets/file/' .$dossier. '/' .normalize($_POST['renommer']). '.jpg');
 	echo display('Le fichier a bien été renommé');
 }
@@ -39,7 +39,7 @@ if(isset($_GET['rename']))
 	
 	foreach($glob as $file)
 	{
-		$extension = pathinfo($file, PATHINFO_EXTENSION);
+		$extension = f::extension($file);
 		$newname = $PREFIXE.$basename. '-' .str_pad($i, $numpad, "0", STR_PAD_LEFT). '.' .$extension;
 		rename($file, 'assets/file/' .$basename. '/' .$newname);
 		
@@ -70,9 +70,9 @@ if(isset($_GET['rename']))
 // Liste des dossiers d'images
 foreach(glob('assets/file/*') as $file)
 {
-	if(is_dir($file) and !in_array(basename($file), array('cache', 'news')))
+	if(is_dir($file) and !in_array(f::filename($file), array('cache', 'news')))
 	{
-		$basename = basename($file);
+		$basename = f::filename($file);
 		$count = count(glob('assets/file/' .$basename. '/*'));
 	
 		echo '
@@ -111,7 +111,7 @@ if(isset($_GET['pictures']) and file_exists('assets/file/' .$_GET['pictures']))
 	
 	if($images) foreach($images as $image)
 	{
-		$basename = basename($image);
+		$basename = f::filename($image);
 		echo
 		'<tr>
 			<td><img src="' .timthumb($_GET['pictures']. '/' .$basename, 150, 100). '" /></td>

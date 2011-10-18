@@ -72,7 +72,7 @@ function checkFields()
 			$unfilled = array_diff($unfilled, array($key));
 			if(checkString($value, $fields[$key]))
 			{	
-				if(MULTILANGUE) $mailbody .= '<strong>' .index('form-' .$key). '</strong> : ' .stripslashes($value). '<br />';
+				if(MULTILANGUE) $mailbody .= '<strong>' .l::get('form-' .$key). '</strong> : ' .stripslashes($value). '<br />';
 			}
 			else $misfilled[] = $key;
 		}
@@ -80,10 +80,10 @@ function checkFields()
 	
 	// On vérifie que les champs sont remplis
 	$isUnfilled = (MULTILANGUE)
-		? index('form-erreur-incomplete')
+		? l::get('form-erreur-incomplete')
 		: 'Un ou plusieurs champs sont incomplets';
 	$isMisfilled = (MULTILANGUE)
-		? index('form-erreur-incorrect')
+		? l::get('form-erreur-incorrect')
 		: 'Un ou plusieurs champs sont incorrects';
 		
 	$typesErreur = array('un', 'mis');
@@ -92,7 +92,7 @@ function checkFields()
 		$variable = ${$erreur. 'filled'};
 		if(isset($variable) and !empty($variable))
 		{
-			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = index('form-' .$value);
+			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = l::get('form-' .$value);
 			else foreach($variable as $key => $value) $variable[$key] = ucfirst($value);
 			$erreurs[] = ${'is' .ucfirst($erreur). 'filled'}. ' : ' .implode(', ', $variable);
 		}

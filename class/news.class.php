@@ -34,9 +34,7 @@ class getNews
 		
 	function __construct($page = 'news')
 	{	
-		$GLOBALS['cerberus']->injectModule('getURL');
-		$this->url = getURL(true);
-
+		$this->url = url::short(url::current());
 		$this->page = str_replace('&pageSub=', '-', $page);
 	}
 	function setTable($table)

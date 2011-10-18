@@ -36,12 +36,12 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		break;
 	}
 	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>
-	<h3>' .basename($errorFile). ':' .$errorLine. '</h3>';
+	<h3>' .f::filename($errorFile). ':' .$errorLine. '</h3>';
 	
 	foreach($path as $id_file => $info)
 	{
 		// Provenance de l'erreur
-		if(isset($info['file'], $info['line'])) $thisPath[] = '<em>' .basename($info['file']). '</em> &agrave; la ligne <strong>' .$info['line']. '</strong>';
+		if(isset($info['file'], $info['line'])) $thisPath[] = '<em>' .f::filename($info['file']). '</em> &agrave; la ligne <strong>' .$info['line']. '</strong>';
 		if(isset($info['type'], $info['function'], $info['class'])) $thisPath[] = 'La fonction appel&eacute;e &eacute;tait <strong>' .$info['class'].$info['type'].$info['function']. '</strong>';
 		else
 		{
@@ -55,7 +55,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			foreach($info['args'] as $key => $value)
 			{
 				// Types d'arguments
-				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .basename($value). '"';
+				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .f::filename($value). '"';
 				elseif(is_array($value)) $info['args'][$key] = 'ARRAY["' .implode('", "', $value). '"]';
 				else $info['args'][$key] = '"' .$value. '"';
 			}
@@ -86,7 +86,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		if(!class_exists('smail')) include('cerberus/class/smail.class.php');
 		if(!function_exists('stripHTML')) include('cerberus/tools/stripHTML.php');
 		
-		$mailTitle = '[DEBUG] ' .basename($errorFile). '::' .$errorLine;
+		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
 		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
 		$mail->messageHTML();
 		$mail->send();

@@ -73,7 +73,7 @@ class form
 	// Ouvrir et fermer un fieldset
 	function openFieldset($name, $mandatory = false)
 	{
-		$fieldName = (!self::$multilangue) ? $name : index('form-' .$name);
+		$fieldName = (!self::$multilangue) ? $name : l::get('form-' .$name);
 		self::$mandatory = $mandatory;
 		
 		$this->render .= PHP_EOL. "
@@ -91,7 +91,7 @@ class form
 	// Champs manuels
 	function manualField($name, $full = false)
 	{
-		$fieldName = (!self::$multilangue) ? $name : index('form-' .$name);
+		$fieldName = (!self::$multilangue) ? $name : l::get('form-' .$name);
 		$mandatoryStar = (self::$mandatory)
 			? ' <span class="mandatory">*</span>'
 			: '';
@@ -178,7 +178,7 @@ class form
 		// Ouverture du champ
 		if($stateField)
 		{
-			$fieldName = (self::$multilangue == false) ? $label : index('form-' .$label);
+			$fieldName = (self::$multilangue == false) ? $label : l::get('form-' .$label);
 			$mandatoryStar = (self::$mandatory)
 				? ' <span class="mandatory">*</span>'
 				: '';
@@ -207,7 +207,7 @@ class form
 		}
 		if($type == 'submit')
 		{
-			$fieldName = (self::$multilangue == false) ? $label : index('form-submit-' .$label);
+			$fieldName = (self::$multilangue == false) ? $label : l::get('form-submit-' .$label);
 			if(self::$formType != 'plain') $this->render .= '<p style="text-align:center"><input type="submit" value="' .$fieldName. '" /></p>';
 			else $this->render .= '<input type="submit" value="' .$fieldName. '" />';
 		}
@@ -230,7 +230,7 @@ class form
 			{	
 				$this->render .= '<input type="radio" ';
 				foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
-				$fieldName = (!self::$multilangue) ? $label : index('form-' .$label. '-'.$i);
+				$fieldName = (!self::$multilangue) ? $label : l::get('form-' .$label. '-'.$i);
 				if($params['value'] == $i) $this->render .= 'checked="checked"';
 				$this->render .= ' value="' .$i. '"> ' .$fieldName;
 			}
@@ -452,7 +452,7 @@ class select extends form
 		// Ouverture du champ
 		if($stateField)
 		{
-			$fieldName = (!self::$multilangue) ? $label : index('form-' .$label);
+			$fieldName = (!self::$multilangue) ? $label : l::get('form-' .$label);
 			$mandatoryStar = (self::$mandatory)
 				? ' <span class="mandatory">*</span>'
 				: '';

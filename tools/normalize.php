@@ -93,7 +93,7 @@ function normalize($string, $url = false)
 	'Ž' => 'Z',
 	'ž' => 'z');
 	
-	$return = trim(strtolower(strtr($string, $specialChar)));
+	$return = str::trim(strtolower(strtr($string, $specialChar)));
 	if($url) $return = str_replace(' ', '-', $return);
 	else $return = str_replace(' ', '_', $return);
 	$return = str_replace('---', '-', $return);

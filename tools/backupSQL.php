@@ -9,74 +9,101 @@
 	$filename
 		Identifiant du fichier de sauvegarde - usuellement le nom de la base de données
 */
-function backupSQL($filename)
+function backupSQL()
 {	
-	// Définition du nom du dossier
-	$path = 'cerberus/cache/sql/';
-	$folderName = $path.date('Y-m-d');
-	$listeTables = mysqlQuery("SHOW TABLES");
-		
-	// Création du dossier à la date si inexistant
-	if(!file_exists($folderName) and !empty($listeTables)) 
+	// Sauvegarde et chargement de la base
+	$tables_base = mysqlQuery('SHOW TABLES');
+	if(empty($tables_base))
 	{
-		$listeTables = array_values($listeTables);
-		
-		// Suppression des sauvegardes inutiles
-		foreach(glob($path. '*') as $file)  
-		{  
-			if(is_dir($file))
-			{
-				$folderDate = explode('-', str_replace($path, '', $file));
-				
-				if($folderDate[0] != date('Y')) $unlink = true;
-				elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] > 1)) $unlink = true;
-				elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] == 1) and !in_array($folderDate[2], array(1, 15))) $unlink = true;
-				
-				if(isset($unlink))
-				{
-					sunlink($file);
-					//echo 'La sauvegarde du ' .implode('-', $folderDate). ' a bien été supprimée<br />';
-				}
-			}
-		}  
-	
-		// Récupération de la liste des tables
-		$file = NULL;
-		foreach($listeTables as $table)
-		{   
-			$file .= "DROP TABLE IF EXISTS $table;\n";
+		// Si la base de données est vide, chargement de dernière la sauvegarde
+		foreach(glob('cerberus/cache/sql/*') as $file)  
+			$fichier = $file;
 			
-			// Création de la table
-			$table_create = mysql_fetch_array(mysql_query("SHOW CREATE TABLE $table"));
-			$file .= $table_create[1].";\n";
+		if(isset($fichier))
+		{	
+			$fichier = explode('/', $fichier);
+			$fichier = $fichier[3];
 			
-			// Contenu de la table
-			$table_content = mysql_query("SELECT * FROM $table");
-			while($row = mysql_fetch_assoc($table_content))
-			{
-				$line_insert = "INSERT INTO $table (";
-				$line_value = ") VALUES (";
+			foreach(glob('cerberus/cache/sql/' .$fichier. '/*.sql') as $file)
+				$fichier = $file;
 				
-				// Valeurs
-				foreach($row as $field => $value)
-				{
-					$line_insert .= "`$field`, ";
-					$line_value .= "'" .mysql_real_escape_string($value). "', ";
-				}
-				
-				// Suppression du , en trop
-				$line_insert = substr($line_insert, 0, -2);
-				$line_value = substr($line_value, 0, -2);
-				$file .= $line_insert.$line_value. ");\n";
-			}
+			multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.mdp'), config::get('db.name')));
 		}
-	
-		// Création du fichier
-		$filename = $filename. '-' .date('H-i-s'). '.sql';
-		sfputs($folderName. '/' .$filename, $file);
-		
-		return 'Le fichier ' .$filename. ' a bien été crée<br />Tables : ' .implode(', ', $listeTables);
 	}
-	else return 'Une sauvegarde existe déjà pour cette date.';
+	elseif(!empty($tables_base))
+	{
+		$database_name = explode('_', config::get('db.name'));
+		$filename = (isset($database_name[1]))
+			? $database_name[1]
+			: $config::get('db.name');
+
+		// Définition du nom du dossier
+		$path = 'cerberus/cache/sql/';
+		$folderName = $path.date('Y-m-d');
+		$listeTables = mysqlQuery("SHOW TABLES");
+			
+		// Création du dossier à la date si inexistant
+		if(!file_exists($folderName) and !empty($listeTables)) 
+		{
+			$listeTables = array_values($listeTables);
+			
+			// Suppression des sauvegardes inutiles
+			foreach(glob($path. '*') as $file)  
+			{  
+				if(is_dir($file))
+				{
+					$folderDate = explode('-', str_replace($path, '', $file));
+					
+					if($folderDate[0] != date('Y')) $unlink = true;
+					elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] > 1)) $unlink = true;
+					elseif($folderDate[0] == date('Y') and (date('m') - $folderDate[1] == 1) and !in_array($folderDate[2], array(1, 15))) $unlink = true;
+					
+					if(isset($unlink))
+					{
+						sunlink($file);
+						//echo 'La sauvegarde du ' .implode('-', $folderDate). ' a bien été supprimée<br />';
+					}
+				}
+			}  
+		
+			// Récupération de la liste des tables
+			$file = NULL;
+			foreach($listeTables as $table)
+			{   
+				$file .= "DROP TABLE IF EXISTS $table;\n";
+				
+				// Création de la table
+				$table_create = mysql_fetch_array(mysql_query("SHOW CREATE TABLE $table"));
+				$file .= $table_create[1].";\n";
+				
+				// Contenu de la table
+				$table_content = mysql_query("SELECT * FROM $table");
+				while($row = mysql_fetch_assoc($table_content))
+				{
+					$line_insert = "INSERT INTO $table (";
+					$line_value = ") VALUES (";
+					
+					// Valeurs
+					foreach($row as $field => $value)
+					{
+						$line_insert .= "`$field`, ";
+						$line_value .= "'" .mysql_real_escape_string($value). "', ";
+					}
+					
+					// Suppression du , en trop
+					$line_insert = substr($line_insert, 0, -2);
+					$line_value = substr($line_value, 0, -2);
+					$file .= $line_insert.$line_value. ");\n";
+				}
+			}
+		
+			// Création du fichier
+			$filename = $filename. '-' .date('H-i-s'). '.sql';
+			f::write($folderName. '/' .$filename, $file);
+			
+			return 'Le fichier ' .$filename. ' a bien été crée<br />Tables : ' .implode(', ', $listeTables);
+		}
+		else return 'Une sauvegarde existe déjà pour cette date.';
+	}
 }
 ?>

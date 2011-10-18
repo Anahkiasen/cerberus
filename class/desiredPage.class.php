@@ -147,7 +147,7 @@ class desiredPage
 		// Navigation principale
 		foreach($this->treeNavigation as $key => $value)
 		{
-			$linkText = (MULTILANGUE) ? index('menu-' .$key) : $this->cacheTree[$key];			
+			$linkText = (MULTILANGUE) ? l::get('menu-' .$key) : $this->cacheTree[$key];			
 			$hover = ($key == $this->page) ? ' hover' : '';
 			$mono = (($this->optionMono or $value == 'mono') and $key != 'admin')
 				? 'id="mono-' .$key. '" rel="mono"'
@@ -166,7 +166,7 @@ class desiredPage
 		{
 			foreach($this->treeSubnav as $key => $value)
 			{
-				$linkText = (MULTILANGUE) ? index('menu-' .$this->page. '-' .$key) : $this->cacheTree[$key];						
+				$linkText = (MULTILANGUE) ? l::get('menu-' .$this->page. '-' .$key) : $this->cacheTree[$key];						
 				$hover = ($key == $this->pageSub) ? ' class="hover"' : '';
 				$keys[] = ($this->optionListedSub)
 					? '<li' .$hover.'><a href="' .$value. '">' .$linkText. '</a></li>'

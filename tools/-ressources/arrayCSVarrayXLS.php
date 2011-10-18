@@ -26,7 +26,7 @@ function arrayCSV($array, $filename = 'this', $entete = NULL)
 		}
 	}
 	
-	sfputs($filename. '.csv', $csv);
+	f::write($filename. '.csv', $csv);
 }
 function arrayXLS($array, $entete = NULL, $filename = 'this')
 {

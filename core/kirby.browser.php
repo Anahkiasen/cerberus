@@ -4,7 +4,7 @@
 	# Crée une chaine contenant la définition exacte de l'user-agent de l'internaute
 	# Source : http://getkirby.com/
 */
-class browserSelector
+class browser
 {
 	static public $ua = false;
 	static public $browser = false;

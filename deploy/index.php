@@ -99,6 +99,8 @@ h1
 <?php
 if(!file_exists('../../index.php'))
 {	
+	foreach(glob('cerberus/core/*.php') as $file) require_once($file);
+
 	if(isset($_POST['submit']))
 	{
 		// Fonctions moteur
@@ -118,9 +120,7 @@ if(!file_exists('../../index.php'))
 			
 			closedir($dir); 
 		} 
-		include('../tools/sfputs.php');
 		include('../tools/display.php');
-		include('../tools/connectSQL.php');
 		include('../tools/mysqlQuery.php');
 		
 		// Données SQL
@@ -146,7 +146,8 @@ if(!file_exists('../../index.php'))
 			mkdir('../cache/');
 			mkdir('../cache/sql/');
 			
-			sfputs('../conf.php',
+			// Deprecated
+			f::write('../conf.php',
 			"<?php
 			// Environnement
 			\$PRODUCTION = FALSE;
@@ -161,7 +162,7 @@ if(!file_exists('../../index.php'))
 			\$PROD_DB = '$MYSQL_DB';
 			?>");
 			
-			connectSQL($localhost, $MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
+			db::connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
 		}
 		
 		// Table langue
@@ -212,7 +213,7 @@ if(!file_exists('../../index.php'))
 		if(isset($_POST['site-tree']))
 		{
 			mkdir('../../pages/');
-			sfputs('../../pages/home-home.html', '');
+			f::write('../../pages/home-home.html', '');
 		}
 		if(isset($_POST['file-js'])) mkdir('../../js/');
 		if(isset($_POST['file-file']))
@@ -235,7 +236,7 @@ if(!file_exists('../../index.php'))
 		
 		$index = file_get_contents('main.php');
 		$index = str_replace('[BDD]', "'" .$MYSQL_DB. "'", $index);
-		sfputs('../../index.php', $index);
+		f::write('../../index.php', $index);
 		
 		if(isset($_POST['module-cache'])) copy('n.htaccess', '../../n.htaccess');
 		

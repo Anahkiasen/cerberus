@@ -29,8 +29,8 @@ function truncate($string, $count = 255, $mode = NULL, $trailing = NULL)
 			break;
 			
 		default:
-			$count -= mb_strlen($trailing);
-			if(mb_strlen($string) > $count)  return mb_substr($string, 0, $count).$trailing;
+			$count -= str::length($trailing);
+			if(str::length($string) > $count)  return mb_substr($string, 0, $count).$trailing;
 			else return $string;
 			break;
 	}

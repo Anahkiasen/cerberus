@@ -16,6 +16,6 @@ function stripHTML($string, $removeBreaks = false)
 	if($removeBreaks)
 		$string = preg_replace('/[\r\n\t ]+/', ' ', $string);
 
-	return trim($string);
+	return str::trim($string);
 }
 ?>

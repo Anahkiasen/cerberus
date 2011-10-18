@@ -21,7 +21,7 @@ function deduplicate($table, $index, $indexbis = NULL)
 		$csvFile .= '"' .implode('","', $value). '"
 ';
 	}
-	sfputs('deduplicate.csv', $csvFile);
+	f::write('deduplicate.csv', $csvFile);
 	echo 'Fichier écrit - ' .($t - $i). ' lignes supprimées.';
 }
 ?>
