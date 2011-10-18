@@ -39,14 +39,14 @@ class str
 	}	
 	
 	// Supprime tout HTML d'une ch$aine
-	function unhtml($string)
+	static function unhtml($string)
 	{
 		$string = strip_tags($string);
 		return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
 	
 	// Parse une chaîne
-	function parse($string, $mode = 'json')
+	static function parse($string, $mode = 'json')
 	{
 		if(is_array($string)) return $string;
 
@@ -98,7 +98,7 @@ class str
 	}
 	
 	// Met une chaîne au pluriel ou singulier (ou absence de)
-	function plural($count, $many, $one, $zero = '')
+	static function plural($count, $many, $one, $zero = '')
 	{
 		if($count == 1) return $one;
 		else if($count == 0 && !empty($zero)) return $zero;
@@ -106,7 +106,7 @@ class str
 	}
 
 	// Met une chaîne en minuscule
-	function lower($str)
+	static function lower($str)
 	{
 		return mb_strtolower($str, 'UTF-8');
 	}
@@ -122,7 +122,7 @@ class str
 		////// PAS TRIE
 	
 
-	function entities() {
+	static function entities() {
 
 		return array(
 			'&nbsp;' => '&#160;', '&iexcl;' => '&#161;', '&cent;' => '&#162;', '&pound;' => '&#163;', '&curren;' => '&#164;', '&yen;' => '&#165;', '&brvbar;' => '&#166;', '&sect;' => '&#167;',
@@ -161,7 +161,7 @@ class str
 
 	}
 
-	function xml($text, $html=true) {
+	static function xml($text, $html=true) {
 
 		// convert raw text to html safe text
 		if($html) $text = self::html($text);
@@ -171,7 +171,7 @@ class str
 
 	}
 
-	function unxml($string) {
+	static function unxml($string) {
 
 		// flip the conversion table
 		$table = array_flip(self::entities());
@@ -182,7 +182,7 @@ class str
 	}
 
 	
-	function encode($string) {
+	static function encode($string) {
 		$encoded = '';
 		$length	= str::length($string);
 		for($i=0; $i<$length; $i++) {
@@ -191,19 +191,19 @@ class str
 		return $encoded;
 	}
 
-	function email($email, $text=false) {
+	static function email($email, $text=false) {
 		if(empty($email)) return false;
 		$string = (empty($text)) ? $email : $text;
 		$email	= self::encode($email, 3);
 		return '<a title="' . $email . '" class="email" href="mailto:' . $email . '">' . self::encode($string, 3) . '</a>';
 	}
 
-	function link($link, $text=false) {
+	static function link($link, $text=false) {
 		$text = ($text) ? $text : $link;
 		return '<a href="' . $link . '">' . str::html($text) . '</a>';
 	}
 
-	function short($string, $chars, $rep='…') {
+	static function short($string, $chars, $rep='…') {
 		if(str::length($string) <= $chars) return $string;
 		$string = self::substr($string,0,($chars-str::length($rep)));
 		$punctuation = '.!?:;,-';
@@ -211,11 +211,11 @@ class str
 		return $string . $rep;
 	}
 
-	function shorturl($url, $chars=false, $base=false, $rep='…') {
+	static function shorturl($url, $chars=false, $base=false, $rep='…') {
 		return url::short($url, $chars, $base, $rep);
 	}
 
-	function cutout($str, $length, $rep='…') {
+	static function cutout($str, $length, $rep='…') {
 
 		$strlength = str::length($str);
 		if($length >= $strlength) return $str;
@@ -240,7 +240,7 @@ class str
 
 	}
 
-	function substr($str,$start) {
+	static function substr($str,$start) {
 		preg_match_all('/./u', $str, $ar);
 		if(func_num_args() >= 3) {
 			 $end = func_get_arg(2);
@@ -250,18 +250,18 @@ class str
 		}
 	}
 
-	function contains($str, $needle) {
+	static function contains($str, $needle) {
 		return strstr($str, $needle);
 	}
 
-	function match($string, $preg, $get=false, $placeholder=false) {
+	static function match($string, $preg, $get=false, $placeholder=false) {
 		$match = preg_match($preg, $string, $array);
 		if(!$match) return false;
 		if(!$get) return $array;
 		return a::get($array, $get, $placeholder);
 	}
 
-	function urlify($text)
+	static function urlify($text)
 	{
 		$text = trim($text);
 		$text = str::lower($text);
@@ -276,7 +276,7 @@ class str
 	}
 
 
-	function sanitize($string, $type = 'str', $default = NULL)
+	static function sanitize($string, $type = 'str', $default = NULL)
 	{
 
 		$string = stripslashes((string)$string);
@@ -348,23 +348,23 @@ class str
 
 	}
 
-	function ucwords($str)
+	static function ucwords($str)
 	{
 		return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
 	}
 
-	function ucfirst($str)
+	static function ucfirst($str)
 	{
 		return str::upper(str::substr($str, 0, 1)) . str::substr($str, 1);
 	}
 
-	function utf8($string)
+	static function utf8($string)
 	{
 		$encoding = mb_detect_encoding($string,'UTF-8, ISO-8859-1, GBK');
 		return ($encoding != 'UTF-8') ? iconv($encoding,'utf-8',$string) : $string;
 	}
 
-	function stripslashes($string)
+	static function stripslashes($string)
 	{
 		if(is_array($string)) return $string;
 		return (get_magic_quotes_gpc()) ? stripslashes(stripslashes($string)) : $string;

@@ -5,6 +5,8 @@ class db
 	private static 	$database	= false;
 	private static 	$charset	= false;
 	private static	$last_query = false;
+	public	static 	$trace		= array();
+	private static 	$affected 	= 0;
 
 	/*
 	########################################
@@ -12,10 +14,10 @@ class db
 	########################################
 	*/
 
-	function connect()
+	static function connect()
 	{
 		// Trousseau d'accès
-		if($_SERVER['HTTP_HOST'] == 'localhost:8888')
+		if(server::get('HTTP_HOST') == 'localhost:8888')
 		{
 			// Local MAMP
 			$dbhost = 'localhost';
@@ -23,7 +25,7 @@ class db
 			$dbmdp = 'root';
 			$dbname = NULL;
 		}
-		elseif($_SERVER['HTTP_HOST'] == '127.0.0.1')
+		elseif(server::get('HTTP_HOST') == '127.0.0.1')
 		{
 			// Local EasyPHP
 			$dbhost = 'localhost';
@@ -31,7 +33,7 @@ class db
 			$dbmdp = NULL;
 			$dbname = NULL;
 		}
-		elseif($_SERVER['HTTP_HOST'] == 'the8day.info')
+		elseif(server::get('HTTP_HOST') == 'the8day.info')
 		{
 			// Le Huitième Jour
 			$dbhost = 'db124.1and1.fr';
@@ -39,7 +41,7 @@ class db
 			$dbmdp = 'naxam35741';
 			$dbname = 'db144396219';
 		}
-		elseif($_SERVER['HTTP_HOST'] == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
+		elseif(server::get('HTTP_HOST') == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
 		{
 			// Stappler
 			$dbhost = 'hostingmysql51';
@@ -68,7 +70,7 @@ class db
 	}
 	
 	// Connexion à la base de données
-	function database($database)
+	static function database($database)
 	{
 		if(!$database) return self::error(l::get('db.errors.missing_db_name', 'Pas de base séléctionnée'), true);
 		else
@@ -84,15 +86,22 @@ class db
 		}
 	}
 	
-	function connection()
+	static function connection()
 	{
 		return (is_resource(self::$connection)) ? self::$connection : FALSE;
 	}
 	
-	// Sauvegarde de la base
-	function backup($file)
+	// Convertit une chaîne en chaîne sûre
+	static function escape($string)
 	{
-	
+		if(ctype_digit($string)) $string = intval($string);
+		else
+		{
+			$string = str::stripslashes($string);
+			$string = mysql_real_escape_string((string)$string, self::connect());
+			$string = addcslashes($string, '%_');
+		}
+		return $string;
 	}
 		
 	/*
@@ -101,10 +110,120 @@ class db
 	########################################
 	*/
 	
+	// Exécute une requête
+	static function query($sql, $fetch = true)
+	{
+		$connection = self::connect();
+		self::$last_query = $sql;
+		
+		$result = @mysql_query($sql);
+		self::$affected = @mysql_affected_rows();
+		self::$trace[] = $sql;
+
+		if(!$result)
+		{
+			echo display(htmlentities($sql));
+			echo errorHandle('SQL', mysql_error(), __FILE__, __LINE__);
+		}
+		if(!$fetch)	return $result;
+
+		$array = array();
+		while($r = self::fetch($result)) array_push($array, $r);
+		return $array;
+	}
+
 	
+	// Effectue une requête SELECT
+	static function select($table, $select = '*', $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
+	{
+		$sql = 'SELECT ' .$select. ' FROM ' .self::prefix($table);
+
+		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
+		if(!empty($order)) $sql .= ' ORDER BY ' . $order;
+		if($page !== NULL && $limit !== NULL) $sql .= ' LIMIT ' . $page . ',' . $limit;
+
+		return self::query($sql, $fetch);
+	}
 	
+	// Execute une requête INSERT
+	static function insert($table, $input, $ignore = false)
+	{
+		$ignore = ($ignore) ? ' IGNORE' : '';
+		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
+	}
 	
-	function error($message = NULL, $exit = FALSE)
+	/*
+	########################################
+	############### RACCOURCIS #############
+	########################################
+	*/
+
+	// Ne renvoit que la première ligne
+	static function row($table, $select = '*', $where = NULL, $order = NULL)
+	{
+		$result = self::select($table, $select, $where, $order, 0, 1, false);
+		return self::fetch($result);
+	}
+
+	/*
+	########################################
+	############### MOTEUR SQL #############
+	########################################
+	*/
+
+	// Transforme un array en syntaxe WHERE
+	static function where($array, $method = 'AND')
+	{
+		if(!is_array($array)) return $array;
+		else
+		{
+			$output = array();
+			foreach($array as $field => $value)
+			{
+				$output[] = $field. ' = \'' .self::escape($value). '\'';
+				$separator = ' ' .$method. ' ';
+			}
+			return implode(' ' . $method. ' ', $output);
+		}
+	}
+	
+	// Place les résultats SQL dans un array
+	static function fetch($result)
+	{
+		if(!$result) return array();
+		else return @mysql_fetch_assoc($result);
+	}
+	
+	// Transforme un array en syntaxe UPDATE/INSERT
+	static function values($input)
+	{
+		if(!is_array($input)) return $input;
+
+		$output = array();
+		foreach($input as $key => $value)
+		{
+			if($value === 'NOW()')
+				$output[] = $key. ' = NOW()';
+			
+			elseif(is_array($value))
+				$output[] = $key. ' = \'' . a::json($value) . '\'';
+			
+			else
+				$output[] = $key. ' = \'' . self::escape($value) . '\'';
+		}
+		return implode(', ', $output);
+	}
+	
+	// Ajoute un préfixe à la table si configuré
+	static function prefix($table)
+	{
+		$prefix = config::get('db.prefix');
+		if(!$prefix) return $table;
+		else return (!str::contains($table, $prefix)) ? $prefix.$table : $table;
+	}
+		
+	// Gère les erreurs
+	static function error($message = NULL, $exit = FALSE)
 	{
 		$connection = self::connection();
 		
@@ -124,14 +243,22 @@ class db
 			'status' => 'error',
 			'display' => $message);
 	}
-}
-class dbnazf
-{
-	public	static 	$trace	= array();
-	private static 	$affected = 0;
 
 
-	function disconnect()
+
+
+
+// ESDFGDG
+
+
+
+
+
+
+
+
+
+	static function disconnect()
 	{
 		if(!config::get('db.disconnect')) return false;
 
@@ -148,33 +275,11 @@ class dbnazf
 
 
 
-	function query($sql, $fetch=true) {
+
+	static function execute($sql)
+	{
 
 		$connection = self::connect();
-		if(core::error($connection)) return $connection;
-
-		// save the query
-		self::$last_query = $sql;
-
-		// execute the query
-		$result = @mysql_query($sql, $connection);
-
-		self::$affected = @mysql_affected_rows();
-		self::$trace[] = $sql;
-
-		if(!$result) return self::error(l::get('db.errors.query_failed', 'The database query failed'));
-		if(!$fetch)	return $result;
-
-		$array = array();
-		while($r = self::fetch($result)) array_push($array, $r);
-		return $array;
-
-	}
-
-	function execute($sql) {
-
-		$connection = self::connect();
-		if(core::error($connection)) return $connection;
 
 		// save the query
 		self::$last_query = $sql;
@@ -191,24 +296,22 @@ class dbnazf
 		return ($last_id === false) ? self::$affected : self::last_id();
 	}
 
-	function affected() {
+	static function affected()
+	{
 			return self::$affected;
 	}
 
-	function last_id() {
+	static function last_id()
+	{
 		$connection = self::connection();
 		return @mysql_insert_id($connection);
 	}
 
-	function fetch($result, $type=MYSQL_ASSOC) {
-		if(!$result) return array();
-		return @mysql_fetch_array($result, $type);
-	}
 
-	function fields($table) {
+	static function fields($table)
+	{
 
 		$connection = self::connect();
-		if(core::error($connection)) return $connection;
 
 		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
 
@@ -225,21 +328,18 @@ class dbnazf
 
 	}
 
-	function insert($table, $input, $ignore=false) {
-		$ignore = ($ignore) ? ' IGNORE' : '';
-		return self::execute('INSERT' . ($ignore) . ' INTO ' . self::prefix($table) . ' SET ' . self::values($input));
-	}
 
-	function insert_all($table, $fields, $values) {
+	static function insert_all($table, $fields, $values)
+	{
 			
 		$query = 'INSERT INTO ' . self::prefix($table) . ' (' . implode(',', $fields) . ') VALUES ';
 		$rows  = array();
 		
-		foreach($values AS $v) {    
+		foreach($values as $v) {    
 			$str = '(\'';
 			$sep = '';
 			
-			foreach($v AS $input) {
+			foreach($v as $input) {
 				$str .= $sep . db::escape($input);            
 				$sep = "','";  
 			}
@@ -253,38 +353,25 @@ class dbnazf
 	
 	}
 
-	function replace($table, $input) {
+	static function replace($table, $input)
+	{
 		return self::execute('REPLACE INTO ' . self::prefix($table) . ' SET ' . self::values($input));
 	}
 
-	function update($table, $input, $where) {
+	static function update($table, $input, $where)
+	{
 		return self::execute('UPDATE ' . self::prefix($table) . ' SET ' . self::values($input) . ' WHERE ' . self::where($where));
 	}
 
-	function delete($table, $where='') {
+	static function delete($table, $where = '')
+	{
 		$sql = 'DELETE FROM ' . self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
 		return self::execute($sql);
 	}
 
-	function select($table, $select='*', $where=null, $order=null, $page=null, $limit=null, $fetch=true) {
 
-		$sql = 'SELECT ' . $select . ' FROM ' . self::prefix($table);
-
-		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
-		if(!empty($order)) $sql .= ' ORDER BY ' . $order;
-		if($page !== null && $limit !== null) $sql .= ' LIMIT ' . $page . ',' . $limit;
-
-		return self::query($sql, $fetch);
-
-	}
-
-	function row($table, $select='*', $where=null, $order=null) {
-		$result = self::select($table, $select, $where, $order, 0,1, false);
-		return self::fetch($result);
-	}
-
-	function column($table, $column, $where=null, $order=null, $page=null, $limit=null) {
+	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL) {
 
 		$result = self::select($table, $column, $where, $order, $page, $limit, false);
 
@@ -293,12 +380,12 @@ class dbnazf
 		return $array;
 	}
 
-	function field($table, $field, $where=null, $order=null) {
+	static function field($table, $field, $where = NULL, $order = NULL) {
 		$result = self::row($table, $field, $where, $order);
 		return a::get($result, $field);
 	}
 
-	function join($table_1, $table_2, $on, $select, $where=null, $order=null, $page=null, $limit=null, $type="JOIN") {
+	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type="JOIN") {
 			return self::select(
 				self::prefix($table_1) . ' ' . $type . ' ' .
 				self::prefix($table_2) . ' ON ' .
@@ -311,18 +398,18 @@ class dbnazf
 			);
 	}
 
-	function left_join($table_1, $table_2, $on, $select, $where=null, $order=null, $page=null, $limit=null) {
+	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL) {
 			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
 	}
 
-	function count($table, $where='') {
+	static function count($table, $where='') {
 		$result = self::row($table, 'count(*)', $where);
 		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
 
-	function min($table, $column, $where=null) {
+	static function min($table, $column, $where = NULL) {
 
-		$sql = 'SELECT MIN(' . $column . ') AS min FROM ' . self::prefix($table);
+		$sql = 'SELECT MIN(' . $column . ') as min FROM ' . self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
 
 		$result = self::query($sql, false);
@@ -332,9 +419,9 @@ class dbnazf
 
 	}
 
-	function max($table, $column, $where=null) {
+	static function max($table, $column, $where = NULL) {
 
-		$sql = 'SELECT MAX(' . $column . ') AS max FROM ' . self::prefix($table);
+		$sql = 'SELECT MAX(' . $column . ') as max FROM ' . self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
 
 		$result = self::query($sql, false);
@@ -344,9 +431,9 @@ class dbnazf
 
 	}
 
-	function sum($table, $column, $where=null) {
+	static function sum($table, $column, $where = NULL) {
 
-		$sql = 'SELECT SUM(' . $column . ') AS sum FROM ' . self::prefix($table);
+		$sql = 'SELECT SUM(' . $column . ') as sum FROM ' . self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
 
 		$result = self::query($sql, false);
@@ -356,73 +443,36 @@ class dbnazf
 
 	}
 
-	function prefix($table) {
-		$prefix = config::get('db.prefix');
-		if(!$prefix) return $table;
-		return (!str::contains($table,$prefix)) ? $prefix . $table : $table;
-	}
 
-	function simple_fields($array) {
+	static function simple_fields($array) {
 		if(empty($array)) return false;
 		$output = array();
-		foreach($array AS $key => $value) {
+		foreach($array as $key => $value) {
 			$key = substr($key, strpos($key, '_')+1);
 			$output[$key] = $value;
 		}
 		return $output;
 	}
 
-	function values($input) {
-		if(!is_array($input)) return $input;
 
-		$output = array();
-		foreach($input AS $key => $value) {
-			if($value === 'NOW()')
-				$output[] = $key . ' = NOW()';
-			elseif(is_array($value))
-				$output[] = $key . ' = \'' . a::json($value) . '\'';
-			else
-				$output[] = $key . ' = \'' . self::escape($value) . '\'';
-		}
-		return implode(', ', $output);
-
-	}
-
-	function escape($value) {
-		$value = str::stripslashes($value);
-		return mysql_real_escape_string((string)$value, self::connect());
-	}
-
-	function search_clause($search, $fields, $mode='OR') {
+	static function search_clause($search, $fields, $mode='OR') {
 
 		if(empty($search)) return false;
 
 		$arr = array();
-		foreach($fields AS $f) array_push($arr, $f . ' LIKE \'%' . $search . '%\'');
+		foreach($fields as $f) array_push($arr, $f . ' LIKE \'%' . $search . '%\'');
 		return '(' . implode(' ' . trim($mode) . ' ', $arr) . ')';
 
 	}
 
-	function select_clause($fields) {
+	static function select_clause($fields) {
 		return implode(', ', $fields);
 	}
 
-	function in($array) {
+	static function in($array) {
 		return '\'' . implode('\',\'', $array) . '\'';
 	}
 
-	function where($array, $method='AND') {
-
-		if(!is_array($array)) return $array;
-
-		$output = array();
-		foreach($array AS $field => $value) {
-			$output[] = $field . ' = \'' . self::escape($value) . '\'';
-			$separator = ' ' . $method . ' ';
-		}
-		return implode(' ' . $method . ' ', $output);
-
-	}
 
 
 }

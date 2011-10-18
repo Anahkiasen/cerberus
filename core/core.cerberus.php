@@ -7,16 +7,12 @@ class Cerberus
 	########################################
 	*/
 	
-	// Cache des modules coeur
-	protected $connected;
-
 	// Paramètres
 	private $render;
 	private $erreur;
 	
 	// Modes
 	private $mode;
-	private $serverLocal = TRUE;
 				
 	function file_get_contents_utf8($fn)
 	{
@@ -27,20 +23,10 @@ class Cerberus
 	
 	function __construct($modules, $mode = 'core')
 	{		
-		global $connected;
-		
 		// Modules coeur
-		$modules = a::beArray($modules);
-		if($mode == 'core') $modules = array_merge(array(
-			'errorHandle',
-			'beArray', 'display', 'boolprint', 'timthumb',
-			'findString', 'sexist', 'simplode', 'sunlink'),
-			$modules);
-		
-		// Mode de Cerberus (core/include)	
-		if($mode != 'core' and isset($_GET['page']) and !empty($_GET['page'])) $this->mode = $_GET['page'];
-		elseif($mode != 'core' and !isset($_GET['page'])) $this->mode = 'home';
-		else $this->mode = 'core';
+		$this->mode = ($mode == 'core')
+			? 'core'
+			: get('page', 'home');
 
 		// Création ou non du fichier
 		if(!PRODUCTION or !file_exists('cerberus/cache/' .$this->mode. '.php'))
@@ -50,34 +36,8 @@ class Cerberus
 		}
 		
 		// Include du fichier
-		$this->inclure();
-	
-		// Lancement des modules annexes
-		if($this->mode == 'core')
-		{
-			global $index;
-			global $userAgent;
-			
-			if($connected) $this->meta();
-			if(class_exists('browser'))
-			{
-				$userAgent = new browser();
-				$ip = $_SERVER['REMOTE_ADDR'];
-				
-				// Ajout du visiteur dans les statistiques de connexion
-				if(mysqlQuery('SELECT ip FROM logs WHERE ip="' .$ip. '"') == FALSE and ($ip))
-				{
-					$ua = $userAgent->detect();
-					$mobile = ($userAgent->mobile() or $userAgent->ios()) ? 1 : 0;
-					if(!empty($ua['browser']) and !empty($ua['platform']))
-						mysql_query('INSERT INTO logs VALUES("' .$ip. '", NOW(), "' .$ua['platform']. '", "' .$ua['browser']. '", "' .$ua['version']. '", "' .$ua['engine']. '", "' .$mobile. '")');
-				}
-				
-				$userAgent = $userAgent->css();
-			}
-		}
-	}
-		
+		f::inclure('cerberus/cache/' .$this->mode. '.php');
+	}	
 	
 	/* 
 	########################################
@@ -87,12 +47,19 @@ class Cerberus
 	
 	// Chargement du moteur Cerberus
 	function unpackModules($modules)
-	{				
+	{	
+		$modules = a::beArray($modules);
+		if($this->mode == 'core')
+		{
+			$modules = array_merge(array(
+				'display', 'boolprint', 'timthumb',
+				'findString', 'sexist', 'simplode', 'sunlink'),
+				$modules);
+		}
+				
 		// Tri des modules et préparation des packs
 		if(!empty($modules))
 		{
-			$modules = a::beArray($modules);
-		
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL', 'mysqlQuery', 'escape'),
@@ -113,7 +80,8 @@ class Cerberus
 			asort($modulesArray);
 			$this->cacheCore = $modulesArray;
 			
-			foreach($modulesArray as $value) $this->loadModule($value);
+			foreach($modulesArray as $value)
+				$this->loadModule($value);
 		}
 	}
 	
@@ -192,13 +160,7 @@ class Cerberus
 			}
 		}
 	}
-	
-	// Include du fichier voulu
-	function inclure()
-	{
-		if(file_exists('cerberus/cache/' .$this->mode. '.php')) include_once('cerberus/cache/' .$this->mode. '.php');
-	}
-	
+		
 	/* 
 	########################################
 	########## FONCTIONS UTILITAIRES #######

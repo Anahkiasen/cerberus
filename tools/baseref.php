@@ -16,7 +16,7 @@ function baseref($array = NULL)
 	if(!empty($array))
 	{
 		foreach($array as $key => $value)
-			if(findString($key, $_SERVER['HTTP_HOST'])) $return = '/' .$value. '/';
+			if(findString($key, server::get('HTTP_HOST'))) $return = '/' .$value. '/';
 	}
 	if(empty($return) and isset($index['http'])) $return = $index['http'];
 	

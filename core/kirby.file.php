@@ -109,6 +109,22 @@ class f
 	{
 		return str::urlify($string);
 	}
-
+	
+	static function inclure($file, $type = 'once')
+	{
+		if(file_exists($file))
+		{
+			switch($type)
+			{
+				case 'once':
+					include_once $file;
+					break;
+					
+				default:
+					include $file;
+					break;
+			}
+		}
+	}
 }
 ?>

@@ -9,7 +9,7 @@ class l
 		$current = self::current();
 		$filename = 'cerberus/cache/lang-' .$current. '.php';
 	
-		$tables = mysqlQuery('SELECT tag FROM langue LIMIT 1');
+		$tables = db::row('langue', 'tag');
 		if(!empty($tables))
 		{
 			if(!PRODUCTION) sunlink($filename); // Suppression de la version existante
@@ -23,17 +23,16 @@ class l
 					// Ecriture du fichier PHP
 					$renderPHP = "<?php \n";
 					foreach($thisIndex as $tag => $langues)
-					{
 						$renderPHP .= '$lang[\'' .$tag. '\'] = \'' .addslashes($langues[$current]). "';\n";
-					}	
+
 					f::write($filename, $renderPHP. '?>');
 				}
 			}
 			
 			// Langue du site
-			if(!s::get('langue')) s::set('langue', config::get('langue_default'));
-			if(isset($_GET['getlangue']) && in_array($_GET['langue'], $config::get('langues'))) s::set('langue', $_GET['getlangue']);
-			
+			if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default'));
+			if(get('langue')) self::change(get('langue'));
+
 			// Langue de l'administration
 			if(!s::get('langueAdmin')) s::set('langueAdmin', config::get('langue_default'));
 			if(isset($_GET['getLangueAdmin']) && in_array($_GET['getLangueAdmin'], $config::get('langues'))) s::set('langueAdmin', $_GET['getLangueAdmin']);
@@ -57,21 +56,21 @@ class l
 	// Changer de langue
 	function change($langue = 'fr')
 	{
-		s::set('langue', l::strip($langue));
-		return s::get('langue');
+		s::set('langueSite', l::sanitize($langue));
+		return s::get('langueSite');
 	}
 	
 	// Langue en cours
 	static function current()
 	{
-		if(s::get('langue')) return s::get('langue');
+		if(s::get('langueSite')) return s::get('langueSite');
 		else
 		{
-			$langue = str::split($_SERVER['HTTP_ACCEPT_LANGUAGE'], '-');
+			$langue = str::split(server::get('http_accept_language'), '-');
 			$langue = str::trim(a::get($langue, 0));
 			$langue = l::sanitize($langue);
 			
-			s::set('langue', $langue);
+			s::set('langueSite', $langue);
 			return	$langue;
 		}
 	}
@@ -82,12 +81,12 @@ class l
 		$default = config::get('langue_default');
 		$array_langues = config::get('langues', array($default));
 		
-		if(!in_array($langue, $array_langues)) $langue = config::get('langues', $default);
+		if(!in_array($langue, $array_langues)) $langue = $default;
 		return $langue;
 	}
 
 	// Charger un fichier langue
-	function load($fileraw)
+	static function load($fileraw)
 	{
 		$file = str_replace('{langue}', l::current(), $fileraw);
 		if(!file_exists($file)) $file = str_replace('{langue}', config::get('langue_default', 'fr'), $fileraw);

@@ -13,49 +13,49 @@ class browser
 	static public $platform = false;
 
 	// Fonctions de détection
-	function name($ua = NULL)
+	static function name($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$browser;
 	}
 
-	function engine($ua = NULL)
+	static function engine($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$engine;
 	}
 
-	function version($ua = NULL)
+	static function version($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$version;
 	}
 
-	function platform($ua = NULL)
+	static function platform($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$platform;
 	}
 
-	function mobile($ua = NULL)
+	static function mobile($ua = NULL)
 	{
 		self::detect($ua);
 		return (self::$platform == 'mobile') ? true : false;
 	}
 
-	function iphone($ua = NULL)
+	static function iphone($ua = NULL)
 	{
 		self::detect($ua);
 		return (in_array(self::$platform, array('ipod', 'iphone'))) ? true : false;
 	}
 
-	function ios($ua = NULL)
+	static function ios($ua = NULL)
 	{
 		self::detect($ua);
 		return (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
 	}
 
-	function css($ua = NULL, $array=false)
+	static function css($ua = NULL, $array=false)
 	{
 		self::detect($ua);
 		$css[] = self::$engine;
@@ -66,9 +66,9 @@ class browser
 	}
 
 	// FONCTION COEUR
-	function detect($ua = null)
+	static function detect($ua = null)
 	{
-		$ua = ($ua) ? strtolower($ua) : strtolower($_SERVER['HTTP_USER_AGENT']);
+		$ua = ($ua) ? strtolower($ua) : strtolower(server::get('http_user_agent'));
 
 		// On ne fait la détection qu'une seule fois
 		if(self::$ua == $ua) 

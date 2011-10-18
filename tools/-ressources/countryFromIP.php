@@ -2,7 +2,7 @@
 function countryFromIP($possible = array('fr', 'de'), $default = 'fr')
 {
 	$ipDetail = array();
-	$ipAddr = $_SERVER['REMOTE_ADDR'];
+	$ipAddr = server::get('REMOTE_ADDR');
 	
 	if($ipAddr == "::1") $ipDetail['country_code'] = $default;
 	else

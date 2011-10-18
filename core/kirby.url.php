@@ -4,7 +4,7 @@ class url
 	// Retourne l'URL actuelle
 	static function current()
 	{
-		$http = (isset($_SESSION['HTTPS']) and $_SERVER['HTTPS'] == 'on')
+		$http = (isset($_SESSION['HTTPS']) and server::get('HTTPS') == 'on')
 			? 'https://'
 			: 'http://';
 		

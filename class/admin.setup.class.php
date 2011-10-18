@@ -22,7 +22,7 @@ class AdminSetup
 		global $navigation;
 		global $connected;
 		
-		$this->modeSQL = $connected;
+		$this->modeSQL = db::connection();
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
