@@ -16,57 +16,60 @@ class db
 
 	static function connect()
 	{
-		// Trousseau d'accès
-		if(server::get('HTTP_HOST') == 'localhost:8888')
-		{
-			// Local MAMP
-			$dbhost = 'localhost';
-			$dbuser = 'root';
-			$dbmdp = 'root';
-			$dbname = NULL;
-		}
-		elseif(server::get('HTTP_HOST') == '127.0.0.1')
-		{
-			// Local EasyPHP
-			$dbhost = 'localhost';
-			$dbuser = 'root';
-			$dbmdp = NULL;
-			$dbname = NULL;
-		}
-		elseif(server::get('HTTP_HOST') == 'the8day.info')
-		{
-			// Le Huitième Jour
-			$dbhost = 'db124.1and1.fr';
-			$dbuser = 'dbo144396219';
-			$dbmdp = 'naxam35741';
-			$dbname = 'db144396219';
-		}
-		elseif(server::get('HTTP_HOST') == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
-		{
-			// Stappler
-			$dbhost = 'hostingmysql51';
-			$dbuser = '859841_maxime';
-			$dbmdp = NULL;
-			$dbname = 'MAXSTA001';
-		}
-	
 		$connection	= self::connection();
-		$args		= func_get_args();
-		$host		= a::get($args, 0, config::get('db.host', $dbhost));
-		$user		= a::get($args, 1, config::get('db.user', $dbuser));
-		$password	= a::get($args, 2, config::get('db.password', $dbmdp));
-		$database	= a::get($args, 3, config::get('db.name', $dbname));
 		
-		// Pas de double connexion
-		$connection = (!$connection) ? @mysql_connect($host, $user, $password) : $connection;
+		// Connexion
+		if(!$connection)
+		{
+			// Trousseau d'accès
+			if(server::get('HTTP_HOST') == 'localhost:8888')
+			{
+				// Local MAMP
+				$dbhost = 'localhost';
+				$dbuser = 'root';
+				$dbmdp = 'root';
+				$dbname = NULL;
+			}
+			elseif(server::get('HTTP_HOST') == '127.0.0.1')
+			{
+				// Local EasyPHP
+				$dbhost = 'localhost';
+				$dbuser = 'root';
+				$dbmdp = NULL;
+				$dbname = NULL;
+			}
+			elseif(server::get('HTTP_HOST') == 'the8day.info')
+			{
+				// Le Huitième Jour
+				$dbhost = 'db124.1and1.fr';
+				$dbuser = 'dbo144396219';
+				$dbmdp = 'naxam35741';
+				$dbname = 'db144396219';
+			}
+			elseif(server::get('HTTP_HOST') == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
+			{
+				// Stappler
+				$dbhost = 'hostingmysql51';
+				$dbuser = '859841_maxime';
+				$dbmdp = NULL;
+				$dbname = 'MAXSTA001';
+			}
+
+			$args		= func_get_args();
+			$host		= a::get($args, 0, config::get('db.host', $dbhost));
+			$user		= a::get($args, 1, config::get('db.user', $dbuser));
+			$password	= a::get($args, 2, config::get('db.password', $dbmdp));
+			$database	= a::get($args, 3, config::get('db.name', $dbname));
+			
+			$connection = @mysql_connect($host, $user, $password);
+			self::$connection = $connection;
+			$database = self::database($database);
+			mysql_query("SET NAMES 'utf8'");
+		}
 
 		// Affichage des erreurs
 		if(!$connection) return self::error(l::get('db.errors.connect', 'Erreur de connexion à MySQL'), true);
-		self::$connection = $connection;
-		$database = self::database($database);
-		mysql_query("SET NAMES 'utf8'");
-
-		return $connection;
+		else return $connection;
 	}
 	
 	// Connexion à la base de données
@@ -131,7 +134,6 @@ class db
 		while($r = self::fetch($result)) array_push($array, $r);
 		return $array;
 	}
-
 	
 	// Effectue une requête SELECT
 	static function select($table, $select = '*', $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
@@ -139,7 +141,7 @@ class db
 		$sql = 'SELECT ' .$select. ' FROM ' .self::prefix($table);
 
 		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
-		if(!empty($order)) $sql .= ' ORDER BY ' . $order;
+		if(!empty($order)) $sql .= ' ORDER BY ' .$order;
 		if($page !== NULL && $limit !== NULL) $sql .= ' LIMIT ' . $page . ',' . $limit;
 
 		return self::query($sql, $fetch);
@@ -244,6 +246,26 @@ class db
 			'display' => $message);
 	}
 
+	// Vérifie si une table existe
+	static function is_table($table)
+	{
+		$tables = self::query('SHOW  TABLES');
+		$tables = a::extract($tables, 'Tables_in_buxmanager');
+		return (in_array($table, $tables));
+	}
+	
+	// Retourne le nombre d'entrées afféctées
+	static function affected()
+	{
+			return self::$affected;
+	}
+
+	// Retourne l'id de la dernière requête
+	static function last_id()
+	{
+		$connection = self::connection();
+		return @mysql_insert_id($connection);
+	}
 
 
 
@@ -295,18 +317,6 @@ class db
 		$last_id = self::last_id();
 		return ($last_id === false) ? self::$affected : self::last_id();
 	}
-
-	static function affected()
-	{
-			return self::$affected;
-	}
-
-	static function last_id()
-	{
-		$connection = self::connection();
-		return @mysql_insert_id($connection);
-	}
-
 
 	static function fields($table)
 	{
@@ -444,10 +454,12 @@ class db
 	}
 
 
-	static function simple_fields($array) {
+	static function simple_fields($array)
+	{
 		if(empty($array)) return false;
 		$output = array();
-		foreach($array as $key => $value) {
+		foreach($array as $key => $value)
+		{
 			$key = substr($key, strpos($key, '_')+1);
 			$output[$key] = $value;
 		}
@@ -472,8 +484,5 @@ class db
 	static function in($array) {
 		return '\'' . implode('\',\'', $array) . '\'';
 	}
-
-
-
 }
 ?>

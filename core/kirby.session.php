@@ -14,24 +14,25 @@ class s
 		else return a::get($_SESSION, $key, $default);
 	}
 
-	function remove($key)
+	static function remove($key)
 	{
-		return a::remove(&$_SESSION, $key, true);
+		unset($_SESSION[$key]);
+		//return a::remove(&$_SESSION, $key, true);
 	}
 
 	// Gestion de la session
-	function start()
+	static function start()
 	{
 		@session_start();
 	}
 
-	function destroy()
+	static function destroy()
 	{
 		@session_destroy();
 	}
 
 	// Fonctions utilitaires
-	function expired($time)
+	static function expired($time)
 	{
 		$elapsed_time = (time() - $time);
 		return ($elapsed_time >= 0 && $elapsed_time <= config::get('session.expires')) ? FALSE : TRUE;

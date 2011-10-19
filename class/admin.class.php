@@ -177,10 +177,14 @@ class AdminPage extends AdminSetup
 		if(!isset($manualQuery['ORDER BY'])) $manualQuery['ORDER BY'] = $index. ' DESC';
 		
 		// WHERE
-		if(MULTILANGUE) $whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
-		if(MULTILANGUE and !isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti;
-		elseif(MULTILANGUE and isset($manualQuery['WHERE'])) $manualQuery['WHERE'] = $whereMulti. ' AND ' .$manualQuery['WHERE'];
-											
+		if(MULTILANGUE  and $this->multilangue)
+		{
+			$whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
+			$manualQuery['WHERE'] = (!isset($manualQuery['WHERE']))
+				? $whereMulti
+				: $whereMulti. ' AND ' .$manualQuery['WHERE'];
+		}	
+										
 		// Tri des arguments
 		$ordreSyntaxe = array('SELECT', 'FROM', 'LEFT JOIN', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT');
 		foreach($ordreSyntaxe as $argument)

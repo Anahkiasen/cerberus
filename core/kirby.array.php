@@ -8,7 +8,7 @@ class a
 	}
 	
 	// Supprimer une entrée d'un tableau
-	function remove($array, $search, $multiple = FALSE)
+	static function remove($array, $search, $multiple = FALSE)
 	{
 		if(!$multiple) unset($array[$search]);
 		else 
@@ -36,7 +36,7 @@ class a
 	}
 	
 	// Insérer un élément à la position X
-	function inject($array, $position, $element = 'placeholder')
+	static function inject($array, $position, $element = 'placeholder')
 	{
 		$start = array_slice($array, 0, $position);
 		$end = array_slice($array, $position);
@@ -44,7 +44,7 @@ class a
 	}
 
 	// Extraire un champ d'un array multidimensionnel
-	function extract($array, $key)
+	static function extract($array, $key)
 	{
 		$output = array();
 		foreach($array as $a) if(isset($a[$key])) $output[] = $a[$key];
@@ -52,7 +52,7 @@ class a
 	}
 
 	// Shuffle un array en conservant les paires key/value
-	function shuffle($array)
+	static function shuffle($array)
 	{
 		$aux	= array();
 		$keys 	= array_keys($array);
@@ -67,32 +67,32 @@ class a
 	}
 
 	// Premier élément d'un array
-	function first($array)
+	static function first($array)
 	{
 		return array_shift($array);
 	}
 
 	// Dernier élément d'un array
-	function last($array)
+	static function last($array)
 	{
 		return array_pop($array);
 	}
 
 	// Cherche dans un array
-	function search($array, $search)
+	static function search($array, $search)
 	{
 		return preg_grep('#' . preg_quote($search) . '#i' , $array);
 	}
 
 	// Identique à search mais retourne un boolean
-	function contains($array, $search)
+	static function contains($array, $search)
 	{
 		$search = self::search($array, $search);
 		return (empty($search)) ? false : true;
 	}
 
 	// Remplit un array avec le placeholder X
-	function fill($array, $limit, $fill = 'placeholder')
+	static function fill($array, $limit, $fill = 'placeholder')
 	{
 		if(count($array) < $limit)
 		{
@@ -103,13 +103,24 @@ class a
 	}
 
 	// Vérifie que les champs $required se trouvent dans $array
-	function missing($array, $required = array())
+	static function missing($array, $required = array())
 	{
 		$missing = array();
 		foreach($required as $r)
 			if(empty($array[$r])) $missing[] = $r;
 
 		return $missing;
+	}
+	
+	static function rearrange($array, $subkey)
+	{
+		$output = array();
+		foreach($array as $key => $value)
+		{
+			if(isset($value[$subkey]))
+				$output[$value[$subkey]] = $value;
+		}
+		return $output;
 	}
 	
 	/*
@@ -119,13 +130,13 @@ class a
 	*/
 	
 	// Exporter au format JSON
-	function json($array)
+	static function json($array)
 	{
 		return @json_encode((array)$array);
 	}
 
 	// Exporter au format XML
-	function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0)
+	static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0)
 	{
 		$result  = ($level==0 && $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . "\n" : '';
 		$nlevel  = ($level+1);

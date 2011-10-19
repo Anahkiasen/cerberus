@@ -26,10 +26,10 @@ if(config::get('local'))
 define('REWRITING', config::get('rewriting'));
 define('PRODUCTION', config::get('production'));
 define('LOCAL', config::get('local'));
-define('MULTILANGUE', config::get('multilangue'));
+define('MULTILANGUE', config::get('local'));
 
 // Affichage et gestion des erreurs
-error_reporting(E_ALL|E_STRICT|E_DEPRECATED);
+error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
 set_error_handler('errorHandle');
 
 /*
@@ -76,19 +76,22 @@ $cerberus->meta();
 
 $ip = server::get('remote_addr');
 
-if(!db::row('logs', 'ip', array('ip' => $ip)) and ($ip))
+if(db::is_table('logs'))
 {
-	$ua = brower::detect();
-	$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
-	if(!empty($ua['browser']) and !empty($ua['platform']))
-		db::insert('logs', array(
-			'ip' => $ip,
-			'date' => 'NOW()',
-			'platform' => $ua['platform'],
-			'browser' => $ua['browser'],
-			'version' => $ua['version'],
-			'engine' => $ua['engine'],
-			'mobile' => $mobile));
+	if(!db::row('logs', 'ip', array('ip' => $ip)) and ($ip))
+	{
+		$ua = browser::detect();
+		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
+		if(!empty($ua['browser']) and !empty($ua['platform']))
+			db::insert('logs', array(
+				'ip' => $ip,
+				'date' => 'NOW()',
+				'platform' => $ua['platform'],
+				'browser' => $ua['browser'],
+				'version' => $ua['version'],
+				'engine' => $ua['engine'],
+				'mobile' => $mobile));
+	}
 }
 
 $userAgent = browser::css();

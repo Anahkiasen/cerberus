@@ -22,7 +22,7 @@ class Cerberus
 	}	
 	
 	function __construct($modules, $mode = 'core')
-	{		
+	{
 		// Modules coeur
 		$this->mode = ($mode == 'core')
 			? 'core'
@@ -46,7 +46,7 @@ class Cerberus
 	*/
 	
 	// Chargement du moteur Cerberus
-	function unpackModules($modules)
+	function unpackModules($modules = '')
 	{	
 		$modules = a::beArray($modules);
 		if($this->mode == 'core')
@@ -81,7 +81,7 @@ class Cerberus
 			$this->cacheCore = $modulesArray;
 			
 			foreach($modulesArray as $value)
-				$this->loadModule($value);
+				if($value) $this->loadModule($value);
 		}
 	}
 	
@@ -172,14 +172,17 @@ class Cerberus
 	{
 		global $meta;
 		
-		if($mode == 'meta') $meta = mysqlQuery('SELECT * FROM meta ORDER BY page ASC', true, 'page');
+		if($mode == 'meta')
+		{
+			$meta = a::rearrange(db::select('meta', '*', array('langue' => l::current()), 'page ASC'), 'page');
+		}
 		else
 		{
 			global $pageVoulue;
 			global $sousPageVoulue;
 		
 			$defaultTitle = l::get('menu-' .$pageVoulue);
-			if($pageVoulue == 'admin' and isset($_GET['admin'])) $defaultTitle = 'Gestion ' .ucfirst($_GET['admin']);
+			if($pageVoulue == 'admin' and get('admin')) $defaultTitle = 'Gestion ' .ucfirst($_GET['admin']);
 			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
 			{
 				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];

@@ -18,7 +18,7 @@ class str
 			foreach($parts as $p)
 			{
 				$p = self::trim($p);
-				if(!empty($p) && str::length($p) >= $length) $out[] = $p;
+				if(!empty($p) && str::length($p) >= $taille) $out[] = $p;
 			}
 	
 			return $out;

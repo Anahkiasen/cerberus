@@ -17,12 +17,14 @@ class l
 			else
 			{
 				// Récupération de la base de langues
-				$thisIndex = mysqlQuery('SELECT * FROM ' .$database. ' ORDER BY tag ASC', true, 'tag');
-				if($thisIndex)
+				$index = db::select($database, '*', NULL, 'tag ASC');
+				$index = a::rearrange($index, 'tag');
+				
+				if($index)
 				{
 					// Ecriture du fichier PHP
 					$renderPHP = "<?php \n";
-					foreach($thisIndex as $tag => $langues)
+					foreach($index as $tag => $langues)
 						$renderPHP .= '$lang[\'' .$tag. '\'] = \'' .addslashes($langues[$current]). "';\n";
 
 					f::write($filename, $renderPHP. '?>');
@@ -34,8 +36,8 @@ class l
 			if(get('langue')) self::change(get('langue'));
 
 			// Langue de l'administration
-			if(!s::get('langueAdmin')) s::set('langueAdmin', config::get('langue_default'));
-			if(isset($_GET['getLangueAdmin']) && in_array($_GET['getLangueAdmin'], $config::get('langues'))) s::set('langueAdmin', $_GET['getLangueAdmin']);
+			if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
+			if(isset($_GET['getLangueAdmin']) && in_array($_GET['getLangueAdmin'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['getLangueAdmin'];
 		}
 	}
 
@@ -67,18 +69,18 @@ class l
 		else
 		{
 			$langue = str::split(server::get('http_accept_language'), '-');
-			$langue = str::trim(a::get($langue, 0));
+			$langue = str::trim(a::get($langue, 0));			
 			$langue = l::sanitize($langue);
 			
 			s::set('langueSite', $langue);
-			return	$langue;
+			return $langue;
 		}
 	}
 	
 	// Langue autorisée ou non
-	function sanitize($langue)
+	static function sanitize($langue)
 	{
-		$default = config::get('langue_default');
+		$default = config::get('langue_default', 'fr');
 		$array_langues = config::get('langues', array($default));
 		
 		if(!in_array($langue, $array_langues)) $langue = $default;

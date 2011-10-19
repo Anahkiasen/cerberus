@@ -26,7 +26,8 @@ class AdminSetup
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
-		$systemPages = array('news', 'meta', 'images', 'backup');
+		$systemPages = array('meta', 'images', 'backup');
+		if(db::is_table('news')) array_push($systemPages, 'news');
 		$adminNavigation = array_diff($navigation['admin'], array('admin'));
 		$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
 	
@@ -81,7 +82,7 @@ class AdminSetup
 		$this->arrayLangues = $arrayLangues;
 		if(MULTILANGUE)
 		{
-			$this->multilangue = config::get('langues');
+			$this->multilangue = config::get('langues', array(config::get('langue_default', 'fr')));
 			if(count($this->multilangue) == 1) $this->multilangue = FALSE;
 		}
 		else $this->multilangue = FALSE;
@@ -163,7 +164,7 @@ class AdminSetup
 	{
 		echo '<div class="navbar" style="position:relative">';
 		
-		if(MULTILANGUE)
+		if(MULTILANGUE and $this->multilangue)
 		{
 			echo '<p style="position: absolute; right: 5px; top: -7px">';
 			// Langue de l'admin

@@ -4,7 +4,7 @@ class config
 	private static $config = array();
 	
 	// Charger un fichier config
-	function load($file)
+	static function load($file)
 	{
 		if(file_exists($file)) require_once($file);
 		self::$config = $config;
