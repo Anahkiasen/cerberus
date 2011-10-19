@@ -187,13 +187,14 @@ if(!file_exists('../../index.php'))
 		
 		// Table LOGS
 		mysql_query('DROP TABLE IF EXISTS `logs`;');
-		mysqlQuery(array('CREATE TABLE `logs` (
-		  `ip` varchar(255) NOT NULL,
-		  `platform` varchar(255) NOT NULL,
-		  `browser` varchar(255) NOT NULL,
-		  `version` varchar(255) NOT NULL,
-		  `engine` varchar(255) NOT NULL,
-		  `mobile` enum('0','1') NOT NULL,
+		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `logs` (
+		  `ip` varchar(20) NOT NULL,
+		  `date` datetime NOT NULL,
+		  `platform` varchar(10) NOT NULL,
+		  `browser` varchar(10) NOT NULL,
+		  `version` varchar(10) NOT NULL,
+		  `engine` varchar(10) NOT NULL,
+		  `mobile` enum(\'0\',\'1\') NOT NULL,
 		  PRIMARY KEY (`ip`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));
 		

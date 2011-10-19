@@ -110,6 +110,7 @@ class f
 		return str::urlify($string);
 	}
 	
+	// Inclure un fichier
 	static function inclure($file, $type = 'once')
 	{
 		if(file_exists($file))
