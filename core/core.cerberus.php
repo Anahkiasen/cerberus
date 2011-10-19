@@ -24,7 +24,8 @@ class Cerberus
 	function __construct($modules, $mode = 'core')
 	{
 		// Modules coeur
-		$this->mode = ($mode == 'core')
+		$this->mode = 
+			($mode == 'core')
 			? 'core'
 			: get('page', 'home');
 
@@ -51,6 +52,7 @@ class Cerberus
 		$modules = a::beArray($modules);
 		if($this->mode == 'core')
 		{
+			// Modules de base
 			$modules = array_merge(array(
 				'display', 'boolprint', 'timthumb',
 				'findString', 'sexist', 'simplode', 'sunlink'),
@@ -173,16 +175,15 @@ class Cerberus
 		global $meta;
 		
 		if($mode == 'meta')
-		{
 			$meta = a::rearrange(db::select('meta', '*', array('langue' => l::current()), 'page ASC'), 'page');
-		}
+
 		else
 		{
 			global $pageVoulue;
 			global $sousPageVoulue;
 		
 			$defaultTitle = l::get('menu-' .$pageVoulue);
-			if($pageVoulue == 'admin' and get('admin')) $defaultTitle = 'Gestion ' .ucfirst($_GET['admin']);
+			if($pageVoulue == 'admin' and get('admin')) $defaultTitle = 'Gestion ' .ucfirst(get('admin'));
 			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
 			{
 				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];
@@ -224,7 +225,11 @@ class dispatch extends Cerberus
 		
 		// Page en cours
 		if(!empty($current)) $this->current = $current;
-		else $this->current = $pageVoulue. '-' .$sousPageVoulue;
+		else
+		{
+			if($sousPageVoulue == 'admin' and isset($_GET['admin'])) $this->current = $pageVoulue. '-' .get('admin');
+			else $this->current = $pageVoulue. '-' .$sousPageVoulue;
+		}
 		
 		$explode = explode('-', $this->current);
 		$this->global = $explode[0];
@@ -327,30 +332,32 @@ class dispatch extends Cerberus
 		{					
 			foreach($scripts as $value) 
 			{
-				//$thisScript = strtolower($value);
-				$thisScript = $value;
-
-				// Si le script est présent dans les prédéfinis
-				if(isset($availableAPI[$value]))
+				if(!empty($value))
 				{
-					$minCSS[] = sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
-					if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
-					else $minJS[] = sexist('assets/js/' .$availableAPI[$value]. '.js');
-				}
-				
-				// Si le chemin est spécifié manuellement
-				elseif(findString('.js', $thisScript)) $minJS[] = sexist($thisScript);
-				elseif(findString('.css', $thisScript)) $minCSS[] = sexist($thisScript);
-				
-				// Sinon on vérifie la présence du script dans les fichiers
-				else
-				{
-					$minJS[] = sexist('assets/js/' .$thisScript. '.js');
-					$minCSS[] = sexist('assets/css/' .$thisScript. '.css');
-					if(isset($path))
+					$thisScript = $value;
+	
+					// Si le script est présent dans les prédéfinis
+					if(isset($availableAPI[$value]))
 					{
-						$minJS[] = sexist($path.'js/' .$thisScript. '.js');
-						$minCSS[] = sexist($path.'css/' .$thisScript. '.css');
+						$minCSS[] = sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
+						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+						else $minJS[] = sexist('assets/js/' .$availableAPI[$value]. '.js');
+					}
+					
+					// Si le chemin est spécifié manuellement
+					elseif(findString('.js', $thisScript)) $minJS[] = sexist($thisScript);
+					elseif(findString('.css', $thisScript)) $minCSS[] = sexist($thisScript);
+					
+					// Sinon on vérifie la présence du script dans les fichiers
+					else
+					{
+						$minJS[] = sexist('assets/js/' .$thisScript. '.js');
+						$minCSS[] = sexist('assets/css/' .$thisScript. '.css');
+						if(isset($path))
+						{
+							$minJS[] = sexist($path.'js/' .$thisScript. '.js');
+							$minCSS[] = sexist($path.'css/' .$thisScript. '.css');
+						}
 					}
 				}
 			}

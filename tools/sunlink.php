@@ -13,7 +13,7 @@ function sunlink($file, $empty = false)
 {
 	if(file_exists($file))
 	{
-		if(!is_dir($file)) unlink($file);
+		if(!is_dir($file)) return unlink($file);
 		else
 		{
 			if(substr($file, -1) == "/") $file = substr($file, 0, -1);
@@ -42,5 +42,6 @@ function sunlink($file, $empty = false)
 			}
 		}
 	}
+	else return false;
 }
 ?>

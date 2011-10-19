@@ -37,7 +37,7 @@ class l
 
 			// Langue de l'administration
 			if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
-			if(isset($_GET['getLangueAdmin']) && in_array($_GET['getLangueAdmin'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['getLangueAdmin'];
+			if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
 		}
 	}
 

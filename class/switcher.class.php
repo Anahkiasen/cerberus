@@ -10,10 +10,10 @@ class switcher
 		$this->possible = func_get_args();
 		
 		// Définition de la variante actuelle
-		if(isset($_SESSION['switch'])) $this->actual = $_SESSION['switch'];
+		if(isset(s::get('switch'))) $this->actual = s::get('switch');
 		if(!isset($this->actual)) $this->actual = $this->possible[0];
 		if(isset($_GET['switch']) and in_array($_GET['switch'], $this->possible)) $this->actual = $_GET['switch'];
-		$_SESSION['switch'] = $this->actual;
+		s::get('switch') = $this->actual;
 	}
 	
 	// Obtenir le chemin actuel

@@ -113,7 +113,7 @@ class db
 	########################################
 	*/
 	
-	// Exécute une requête
+	// Exécute une requête fetch
 	static function query($sql, $fetch = true)
 	{
 		$connection = self::connect();
@@ -135,6 +135,27 @@ class db
 		return $array;
 	}
 	
+	// Exécute une requête inline
+	static function execute($sql)
+	{
+		$connection = self::connect();
+		self::$last_query = $sql;
+
+		
+		$execute = @mysql_query($sql, $connection);
+		self::$affected = @mysql_affected_rows();
+		self::$trace[] = $sql;
+
+		if(!$execute)
+		{
+			echo display(htmlentities($sql));
+			echo errorHandle('SQL', mysql_error(), __FILE__, __LINE__);
+		}
+		
+		$last_id = self::last_id();
+		return ($last_id === false) ? self::$affected : self::last_id();
+	}
+
 	// Effectue une requête SELECT
 	static function select($table, $select = '*', $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
 	{
@@ -142,7 +163,7 @@ class db
 
 		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
 		if(!empty($order)) $sql .= ' ORDER BY ' .$order;
-		if($page !== NULL && $limit !== NULL) $sql .= ' LIMIT ' . $page . ',' . $limit;
+		if($page !== NULL and $limit !== NULL) $sql .= ' LIMIT ' .$page. ',' .$limit;
 
 		return self::query($sql, $fetch);
 	}
@@ -154,17 +175,37 @@ class db
 		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 	
+	// Requête UPDATE
+	static function update($table, $input, $where, $limit = NULL)
+	{
+		return self::execute('UPDATE ' .self::prefix($table). ' SET ' .self::values($input). ' WHERE ' .self::where($where). ' ' .$limit);
+	}
+	
 	/*
 	########################################
 	############### RACCOURCIS #############
 	########################################
 	*/
 
-	// Ne renvoit que la première ligne
+	// Ne renvoit que le premier résultat
 	static function row($table, $select = '*', $where = NULL, $order = NULL)
 	{
 		$result = self::select($table, $select, $where, $order, 0, 1, false);
 		return self::fetch($result);
+	}
+	
+	// Ne renvoit qu'un seul champ du premier résultat
+	static function field($table, $field, $where = NULL, $order = NULL)
+	{
+		$result = self::row($table, $field, $where, $order);
+		return a::get($result, $field);
+	}
+	
+	// Compte le nombre d'entrées
+	static function count($table, $where = '')
+	{
+		$result = self::row($table, 'count(*)', $where);
+		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
 
 	/*
@@ -172,7 +213,14 @@ class db
 	############### MOTEUR SQL #############
 	########################################
 	*/
-
+	
+	// Place les résultats SQL dans un array
+	static function fetch($result)
+	{
+		if(!$result) return array();
+		else return @mysql_fetch_assoc($result);
+	}
+	
 	// Transforme un array en syntaxe WHERE
 	static function where($array, $method = 'AND')
 	{
@@ -188,14 +236,7 @@ class db
 			return implode(' ' . $method. ' ', $output);
 		}
 	}
-	
-	// Place les résultats SQL dans un array
-	static function fetch($result)
-	{
-		if(!$result) return array();
-		else return @mysql_fetch_assoc($result);
-	}
-	
+		
 	// Transforme un array en syntaxe UPDATE/INSERT
 	static function values($input)
 	{
@@ -246,18 +287,29 @@ class db
 			'display' => $message);
 	}
 
+	/*
+	########################################
+	############### UTILITAIRES ############
+	########################################
+	*/
+
+	// Affiche la liste des tables
+	static function showtables()
+	{
+		$tables = self::query('SHOW TABLES', TRUE);
+		return a::simple($tables);
+	}
+
 	// Vérifie si une table existe
 	static function is_table($table)
 	{
-		$tables = self::query('SHOW  TABLES');
-		$tables = a::extract($tables, 'Tables_in_buxmanager');
-		return (in_array($table, $tables));
+		return (in_array($table, self::showtables()));
 	}
 	
 	// Retourne le nombre d'entrées afféctées
 	static function affected()
 	{
-			return self::$affected;
+		return self::$affected;
 	}
 
 	// Retourne l'id de la dernière requête
@@ -295,29 +347,6 @@ class db
 		return true;
 	}
 
-
-
-
-	static function execute($sql)
-	{
-
-		$connection = self::connect();
-
-		// save the query
-		self::$last_query = $sql;
-
-		// execute the query
-		$execute = @mysql_query($sql, $connection);
-
-		self::$affected = @mysql_affected_rows();
-		self::$trace[] = $sql;
-
-		if(!$execute) return self::error(l::get('db.errors.query_failed', 'The database query failed'));
-		
-		$last_id = self::last_id();
-		return ($last_id === false) ? self::$affected : self::last_id();
-	}
-
 	static function fields($table)
 	{
 
@@ -350,7 +379,7 @@ class db
 			$sep = '';
 			
 			foreach($v as $input) {
-				$str .= $sep . db::escape($input);            
+				$str .= $sep . self::escape($input);            
 				$sep = "','";  
 			}
 
@@ -359,18 +388,13 @@ class db
 		}
 		
 		$query .= implode(',', $rows);
-		return db::execute($query);
+		return self::execute($query);
 	
 	}
 
 	static function replace($table, $input)
 	{
 		return self::execute('REPLACE INTO ' . self::prefix($table) . ' SET ' . self::values($input));
-	}
-
-	static function update($table, $input, $where)
-	{
-		return self::execute('UPDATE ' . self::prefix($table) . ' SET ' . self::values($input) . ' WHERE ' . self::where($where));
 	}
 
 	static function delete($table, $where = '')
@@ -390,11 +414,6 @@ class db
 		return $array;
 	}
 
-	static function field($table, $field, $where = NULL, $order = NULL) {
-		$result = self::row($table, $field, $where, $order);
-		return a::get($result, $field);
-	}
-
 	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type="JOIN") {
 			return self::select(
 				self::prefix($table_1) . ' ' . $type . ' ' .
@@ -410,11 +429,6 @@ class db
 
 	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL) {
 			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
-	}
-
-	static function count($table, $where='') {
-		$result = self::row($table, 'count(*)', $where);
-		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
 
 	static function min($table, $column, $where = NULL) {

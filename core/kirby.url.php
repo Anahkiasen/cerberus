@@ -50,5 +50,32 @@ class url
 	{
 		return v::url($url);
 	}
+	
+	// Aller à l'URL indiquée
+	static function go($url = false, $code = false)
+	{
+		if(empty($url)) $url = config::get('url', '/');
+	
+		if($code)
+		{
+			switch($code)
+			{
+				case 301:
+					header('HTTP/1.1 301 Moved Permanently');
+					break;
+					
+				case 302:
+					header('HTTP/1.1 302 Found');
+					break;
+					
+				case 303:
+					header('HTTP/1.1 303 See Other');
+					break;
+			}
+		}
+
+		header('Location:' .$url);
+		exit();
+	}
 }
 ?>

@@ -23,10 +23,10 @@ if(config::get('local'))
 }
 
 // Constantes
-define('REWRITING', config::get('rewriting'));
-define('PRODUCTION', config::get('production'));
-define('LOCAL', config::get('local'));
-define('MULTILANGUE', config::get('local'));
+define('REWRITING', config::get('rewriting', FALSE));
+define('PRODUCTION', config::get('production', FALSE));
+define('LOCAL', config::get('local', FALSE));
+define('MULTILANGUE', config::get('multilangues', TRUE));
 
 // Affichage et gestion des erreurs
 error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
@@ -48,8 +48,8 @@ if(LOCAL) config::set(array(
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
 
-// Sauvegarde de la base
-if(db::connection()) backupSQL();
+// Connexion et backup de la base
+if(db::connect()) backupSQL();
 
 /*
 ########################################
@@ -61,7 +61,7 @@ if(db::connection()) backupSQL();
 if(MULTILANGUE)
 {
 	$index = new l();
-	l::load('cerberus/cache/lang-{langue}.php');
+	$index::load('cerberus/cache/lang-{langue}.php');
 	$index = l::get();
 }
 

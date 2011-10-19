@@ -107,8 +107,9 @@ class AdminPage extends AdminSetup
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
-			sunlink('assets/file/' .$this->table. '/' .$_GET['deleteThumb']. '.jpg');
-			echo display('Miniature supprimée');
+			$image = $this->getImage($_GET['deleteThumb']);
+			if(sunlink('assets/file/' .$this->table. '/' .$image)) echo display('Miniature supprimée');
+			else echo display('Miniature introuvable');
 		}
 	}
 	
@@ -273,24 +274,59 @@ class AdminPage extends AdminSetup
 	############## ENVOI D'IMAGES ##########
 	########################################
 	*/
+	
+	/*
+	Mode de sauvegarde de l'image
+	# TABLE - présence d'une tableur sœur TABLE_thumbs contenant les images.
+		Plusieurs image
+	# PATH - Champ path dans la table même stockant l'url de l'image
+		Une image
+	# ID - L'image prend l'id de l'entrée pour reconnaissance
+		Une image
+	*/
+	function imageMode($table = NULL)
+	{
+		if(!$table) $table = $this->table;
+		
+		if(config::get('image.' .$table)) return config::get('image.' .$table);
+		else
+		{
+			if(db::is_table($table. '_thumb')) $storageMode = 'table';
+			elseif(in_array('path', db::fields($table))) $storageMode = 'path';
+			else $storageMode = 'id';
+			
+			config::set('image.' .$table, $storageMode);
+			return $storageMode;
+		}
+	}
+	function getImage($idpic)
+	{
+		$mode = $this->imageMode();
+		switch($mode)
+		{
+			case 'table':
+				$image = db::field($this->table, 'path', array('id_' .$this->table => $idpic));
+				break;
+				
+			case 'path':
+				$image = db::field($this->table, 'path', array('id' => $idpic));
+				break;
+				
+			case 'default':
+				$image = basename(a::simple(glob('assets/file/' .$this->table. '/' .$idpic. '.*')));
+				break;
+		}
+		return $image;
+	}
+	
+	// Envoyer une image
 	function uploadImage($field = 'thumb')
 	{
 		$GLOBALS['cerberus']->injectModule('normalize', 'filecat');
 		
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
-			/*
-			Mode de sauvegarde de l'image
-			# TABLE - présence d'une tableur sœur TABLE_thumbs contenant les images.
-				Plusieurs image
-			# PATH - Champ path dans la table même stockant l'url de l'image
-				Une image
-			# ID - L'image prend l'id de l'entrée pour reconnaissance
-				Une image
-			*/
-			if(in_array($this->table. '_thumb', mysqlQuery('SHOW TABLES'))) $storageMode = 'table';
-			elseif(array_key_exists('path', mysqlQuery('SHOW COLUMNS FROM ' .$this->table))) $storageMode = 'path';
-			else $storageMode = 'id';
+			$storageMode = $this->imageMode();
 
 			// Erreurs basiques
 			$errorDisplay = NULL;

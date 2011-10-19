@@ -32,6 +32,7 @@ function backupSQL()
 	}
 	elseif(!empty($tables_base))
 	{
+	
 		$database_name = explode('_', config::get('db.name'));
 		$filename = (isset($database_name[1]))
 			? $database_name[1]

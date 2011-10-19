@@ -117,6 +117,51 @@ class str
 		return mb_strtoupper($str, 'UTF-8');
 	}
 
+	// Créer un lien à partir d'une chaîne
+	static function link($link, $text = NULL, $attr = NULL)
+	{
+		if($attr)
+			$attributes = (is_array($attr))
+				? simplode(array('="', '"'), ' ', $attr)
+				: $attr;
+		else $attributes = NULL;
+		
+		$text = ($text) ? $text : $link;
+		return '<a href="' . $link . '" ' .$attributes. '>' . str::html($text) . '</a>';
+	}
+	
+	// Utilise la fonction link en combinisaison avec rewrite()
+	static function slink($link, $params = NULL, $text = NULL, $attr = NULL)
+	{
+		$link = rewrite($link, $params);
+		return self::link($link, $text, $attr);
+	}
+	
+	// Affiche une image
+	static function img($src, $alt = NULL, $attr = NULL)
+	{
+		if($attr)
+			$attributes = (is_array($attr))
+				? simplode(array('="', '"'), ' ', $attr)
+				: $attr;
+		else $attributes = NULL;
+	
+		$alt = ($alt) ? $alt : basename($src);
+		return '<img src="' .$src. '" alt="' .$alt. '" ' .$attributes. ' />';
+	}
+
+	// Transforme une chaîne en HTML valide
+	static function html($string, $keep_html = true)
+	{
+		if($keep_html)
+			return stripslashes(implode('', preg_replace('/^([^<].+[^>])$/e', "htmlentities('\\1', ENT_COMPAT, 'utf-8')", preg_split('/(<.+?>)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE))));
+
+		else
+			return htmlentities($string, ENT_COMPAT, 'utf-8');
+	}
+
+
+
 
 
 		////// PAS TRIE
@@ -198,10 +243,6 @@ class str
 		return '<a title="' . $email . '" class="email" href="mailto:' . $email . '">' . self::encode($string, 3) . '</a>';
 	}
 
-	static function link($link, $text=false) {
-		$text = ($text) ? $text : $link;
-		return '<a href="' . $link . '">' . str::html($text) . '</a>';
-	}
 
 	static function short($string, $chars, $rep='…') {
 		if(str::length($string) <= $chars) return $string;

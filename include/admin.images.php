@@ -52,7 +52,7 @@ if(isset($_GET['rename']))
 
 <form method="post" action="<?= rewrite('admin-images') ?>">
 <p>Ajouter un préfixe au renommage automatique (ou <a href="<?= rewrite('admin-images', 'noprefix') ?>">supprimer le préfixe enregistré</a>) :<br />
-<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" /> <input type="submit" value="OK" style="width: 30px; position:relative; left:-10px; top: -5px" />
+<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" /> <input type="submit" value="OK" class="ok" />
 </form>
 
 <table>

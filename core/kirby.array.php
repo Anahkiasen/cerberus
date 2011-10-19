@@ -112,13 +112,36 @@ class a
 		return $missing;
 	}
 	
-	static function rearrange($array, $subkey)
+	// Simplifie un array
+	static function simple($array)
+	{
+		if(count($array) == 1)
+			$output = self::get(array_values($array), 0);
+		else
+		{
+			foreach($array as $key => $value)
+			{
+				if(is_array($value) and count($value) == 1)
+					$output[$key] = self::get(array_values($value), 0);
+				else $output[$key] = $value;
+			}
+		}
+		return $output;
+	}
+	
+	// Echange une clé et une sous-clé
+	static function rearrange($array, $subkey = NULL)
 	{
 		$output = array();
 		foreach($array as $key => $value)
 		{
 			if(isset($value[$subkey]))
 				$output[$value[$subkey]] = $value;
+			else
+			{
+				$keys = array_keys($value);
+				$output[$value[$keys[0]]] = $value;
+			}
 		}
 		return $output;
 	}

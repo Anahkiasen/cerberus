@@ -12,7 +12,6 @@ class getNews
 	
 	// Affichage des news
 	private $newsNumber = 5;
-	private $currentPage = 1;
 	private $newsPaginate = FALSE;
 	private $newsOrder = 'date';
 	private $newsStart;
@@ -34,9 +33,9 @@ class getNews
 		
 	function __construct($page = 'news')
 	{	
-		$this->url = url::short(url::current());
 		$this->page = str_replace('&pageSub=', '-', $page);
 	}
+	
 	function setTable($table)
 	{
 		$this->table = $table;
@@ -56,16 +55,18 @@ class getNews
 		$this->thumbCrop = $crop;
 	}
 	
-	function setNews($newsNumber, $newsPaginate, $newsOrder)
+	function setNews($limit, $newsPaginate, $newsOrder)
 	{
-		$this->newsNumber = $newsNumber;
 		$this->newsPaginate = $newsPaginate;
 		$this->newsOrder = $newsOrder;
 		
 		if($this->newsPaginate)
 		{
-			if(isset($_GET['pagenews'])) $this->currentPage = $_GET['pagenews'];
-			$this->newsStart = ($this->currentPage - 1) * $this->newsNumber;
+			$entries = db::count($this->table);
+			pager::set($entries, 1, $limit);
+			
+			if(isset($_GET['pagenews']))
+				pager::set($entries, $_GET['pagenews'], $limit);
 		}
 	}
 	function setTruncate($truncate, $mode)
@@ -87,23 +88,22 @@ class getNews
 	{
 		if(!empty($id))
 		{
-			$news= mysqlQuery('
-			SELECT id, titre, date, contenu, path
-			FROM ' .$this->table. '
-			WHERE id=' .$id, TRUE);
+			$news = db::select(
+				$this->table,
+				'id, titre, date, contenu, path',
+				array('id' => $id));
 		}
 		else
 		{
 			$limit = (!$this->newsPaginate)
-				? $this->newsNumber
-				: $this->newsStart. ',' .$this->newsNumber;
+				? pager::$limit
+				: pager::db(). ',' .pager::$limit;
 		
-			$news = mysqlQuery('
-			SELECT id, titre, date, contenu, path
-			FROM ' .$this->table. '
-			ORDER BY ' .$this->newsOrder. ' DESC
-			LIMIT ' .$limit,
-			TRUE);
+			$news = db::query('
+				SELECT id, titre, date, contenu, path
+				FROM ' .$this->table. '
+				ORDER BY ' .$this->newsOrder. ' DESC
+				LIMIT ' .$limit);
 		}		
 		
 		// Récupération des news
@@ -116,14 +116,23 @@ class getNews
 			$thisDate = ($this->displayDate)
 				? '<br /><p class="date">' .$value['date']. '</p>'
 				: NULL;
-			$thisThumb = ($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))
-				? '<a class="colorbox" href="assets/file/news/' .$value['path']. '">
-				<img src="' .timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1, false). '" class="float" />
-				</a>'
-				: NULL;
+			
+			if($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))
+			{
+				// Miniature
+				$thisThumb =
+					str::link(
+						'assets/file/news/' .$value['path'], 
+						str::img(
+							timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1, false),
+							$value['titre'],
+							array('class' => 'float')),
+						array('class' => 'colorbox'));
+			}
+			else $thisThumb = NULL;
 				
 			$thisLink = ($this->displayLink)
-				? rewrite($this->page, array('actualite' => $key, 'html' => $value['titre']))
+				? rewrite($this->page, array('actualite' => $value['id'], 'html' => $value['titre']))
 				: '#' .$key;
 			
 			// News
@@ -134,7 +143,7 @@ class getNews
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
-				<h2><a href="' .$thisLink. '">' .html($value['titre']). '</a>' .$thisDate. '</h2>
+				<h2>' .str::link($thisLink, html($value['titre'])).$thisDate. '</h2>
 				<div class="contenu">' .$thisThumb.$contenu. '</div>
 				<p class="clear">&nbsp;</p>
 			</div>';
@@ -145,16 +154,19 @@ class getNews
 	// Liste des archives
 	function selectArchives()
 	{
-		$startingPage = 1;
-		$newsCounter = 0;
-		
 		$nomsMois = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre');
 	
-		$news = mysqlQuery('
-		SELECT id, date, DATE_FORMAT(date, "%Y-%m") AS mois, YEAR(date) AS year, MONTH(date) AS month, titre
-		FROM ' .$this->table. '
-		ORDER BY date ASC', 
-		TRUE);
+		$news = 
+			db::query('
+			SELECT
+				id,
+				date,
+				DATE_FORMAT(date, "%Y-%m") AS mois,
+				YEAR(date) AS year,
+				MONTH(date) AS month,
+				titre
+			FROM ' .$this->table. '
+			ORDER BY date ASC');
 		
 		$actualDate = NULL;
 
@@ -169,30 +181,24 @@ class getNews
 				$actualDate = $value['mois'];
 			}
 			
-			$newsCounter++;
-			if($newsCounter == $this->newsNumber)
-			{
-				$startingPage++;
-				$newsCounter = 0;
-			}
 			$titre = stripslashes($value['titre']);
-			echo '<li><a href="' .rewrite($this->page, array('actualite' => $key, 'html' => $titre)). '">' .$titre. '</a></li>';
+			echo '<li>' .str::slink($this->page, array('actualite' => $value['id'], 'html' => $titre), $titre). '</li>';
 		}
 		echo '</ul></div><p class="clear"></p></div>';
 	}
 	
 	// Pagination
 	function paginate()
-	{
-		$nombreNews = mysqlQuery('SELECT COUNT(id) FROM ' .$this->table);
-		$nombrePages = ceil($nombreNews / $this->newsNumber);
-				
+	{			
 		// Pagination
 		echo '<div id="news-pagination">Pages - ';
-		for($i = 1; $i <= $nombrePages; $i++)
+		for($i = 1; $i <= pager::$pages; $i++)
 		{
-			$classHover = (!isset($_GET['actualite']) and $i == $this->currentPage) ? 'class="hover"' : '';	
-			echo '<a href="' .rewrite($this->page, array('pagenews' => $i)). '" ' .$classHover. '>' .$i. '</a>';
+			$attributes = (!isset($_GET['actualite']) and $i == pager::get())
+				? array('class' => 'hover')
+				: NULL;
+				
+			echo str::slink($this->page, array('pagenews' => $i), $i, $attributes);
 		}
 		echo '</div>';
 	}
@@ -203,14 +209,14 @@ class getNews
 	############################ */
 	
 	function adminNews()
-	{
+	{	
 		$newsAdmin = new AdminPage();
 		$newsAdmin->setPage('news');
 		$newsAdmin->createList(array('titre', 'date'));
 		$newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 
 		// Formulaire
-		$form = new form(false, array('action' => rewrite('admin-news', array($urlAction))));
+		$form = new form(false, array('action' => rewrite('admin-news', $urlAction)));
 		$form->getValues($newsAdmin->getFieldsTable());
 		
 		$form->openFieldset($diffText. ' une news');
@@ -218,12 +224,12 @@ class getNews
 			$form->addTextarea('contenu', 'Texte de la news');
 			if(isset($_GET['edit_news']))
 			{
-				$path = mysqlQuery('SELECT path FROM news WHERE id=' .$_GET['edit_news']);
-				$form->insertText('
+				$path = $newsAdmin->getImage(get('edit_news'));
+				if(file_exists('assets/file/news/' .$path)) $form->insertText('
 					<dl class="actualThumb">
 					<dt>Supprimer la miniature actuelle</dt>
 					<dd style="text-align:center"><p><img src="' .timthumb('news/' .$path, 125, 125, 1, false). '" /><br />
-					<a href="' .rewrite('admin-' .$this->page, array('edit' => $_GET['edit_news'], 'deleteThumb' => $_GET['edit_news'])). '">Supprimer</a></p></dd></dl>');
+					' .str::slink('admin-' .$this->page, array('edit_news' => $_GET['edit_news'], 'deleteThumb' => $_GET['edit_news']), 'Supprimer'). '</p></dd></dl>');
 			}
 			$form->addFile('thumb', 'Envoi d\'une miniature');
 			$form->addEdit();
