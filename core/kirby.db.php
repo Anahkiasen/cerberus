@@ -123,11 +123,7 @@ class db
 		self::$affected = @mysql_affected_rows();
 		self::$trace[] = $sql;
 
-		if(!$result)
-		{
-			echo display(htmlentities($sql));
-			echo errorHandle('SQL', mysql_error(), __FILE__, __LINE__);
-		}
+		if(!$result) self::error(l::get('db.errors.query', 'Requête incorrecte'));
 		if(!$fetch)	return $result;
 
 		$array = array();
@@ -146,11 +142,7 @@ class db
 		self::$affected = @mysql_affected_rows();
 		self::$trace[] = $sql;
 
-		if(!$execute)
-		{
-			echo display(htmlentities($sql));
-			echo errorHandle('SQL', mysql_error(), __FILE__, __LINE__);
-		}
+		if(!$execute) self::error(l::get('db.errors.execute', 'Requête incorrecte'));
 		
 		$last_id = self::last_id();
 		return ($last_id === false) ? self::$affected : self::last_id();
@@ -269,22 +261,16 @@ class db
 	static function error($message = NULL, $exit = FALSE)
 	{
 		$connection = self::connection();
-		
 		$error = (mysql_error()) ? @mysql_error($connection) : false;
-		$number = (mysql_errno()) ? @mysql_errno($connection) : 0;
 		
-		if(config::get('db.debug'))
+		if(!PRODUCTION)
 		{
-			if($error) $message .= $error. '(' .$number. ')';
-			if(self::$last_query) $message .= ' - Query: ' .self::$last_query;
+			if(self::$last_query) echo display(htmlentities(self::$last_query));
+			echo errorHandle('SQL', $error, __FILE__, __LINE__);
 		}
 		else $message .= ' - ' .l::get('db.error', 'Une erreur SQL est survenue');
 		
-		if($exit or config::get('db.debug')) die($message);
-		
-		return array(
-			'status' => 'error',
-			'display' => $message);
+		if($exit or PRODUCTION) die($message);
 	}
 
 	/*
@@ -298,6 +284,21 @@ class db
 	{
 		$tables = self::query('SHOW TABLES', TRUE);
 		return a::simple($tables);
+	}
+
+	// Liste les champs d'une table
+	static function fields($table)
+	{
+		$connection = self::connect();
+
+		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
+		if(!$fields) return self::error(l::get('db.errors.fields', 'Impossible de lister les champs'));
+
+		$count	= @mysql_num_fields($fields);
+		for($x = 0; $x < $count; $x++)
+			$output[] = @mysql_field_name($fields, $x);
+		
+		return $output;
 	}
 
 	// Vérifie si une table existe
@@ -346,27 +347,6 @@ class db
 		if(!$disconnect) return self::error(l::get('db.errors.disconnect', 'Disconnecting database failed'));
 		return true;
 	}
-
-	static function fields($table)
-	{
-
-		$connection = self::connect();
-
-		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
-
-		if(!$fields) return self::error(l::get('db.errors.listing_fields_failed', 'Listing fields failed'));
-
-		$output = array();
-		$count	= @mysql_num_fields($fields);
-
-		for($x=0; $x<$count; $x++) {
-			$output[] = @mysql_field_name($fields, $x);
-		}
-
-		return $output;
-
-	}
-
 
 	static function insert_all($table, $fields, $values)
 	{

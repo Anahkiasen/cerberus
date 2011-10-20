@@ -19,7 +19,7 @@ class AdminPage extends AdminSetup
 	
 	function __construct()
 	{		
-		$this->modeSQL = function_exists('connectSQL');
+		$this->modeSQL = db::connection();
 		$this->defineMultilangue();
 	}
 	function getFieldsTable()
@@ -36,14 +36,14 @@ class AdminPage extends AdminSetup
 	function setPage($table, $facultativeFields = array())
 	{
 		$this->table = $table;
-		$this->getEdit = (isset($_GET['edit_' .$this->table])) ? $_GET['edit_' .$this->table] : NULL;
-		$this->getAdd = (isset($_GET['add_' .$this->table])) ? $_GET['add_' .$this->table] : NULL;
+		$this->getEdit = get('edit_' .$this->table, NULL);
+		$this->getAdd = get('add_' .$this->table, NULL);
 
 		// Champs facultatifs
 		$facultativeFields = a::beArray($facultativeFields);
 		
 		// Récupération du nom des champs
-		$this->fields = array_keys(mysqlQuery('SHOW COLUMNS FROM ' .$table));
+		$this->fields = db::fields($table);
 		$this->index = $this->fields[0];
 		
 		// AJOUT ET MODIFICATION
@@ -178,7 +178,7 @@ class AdminPage extends AdminSetup
 		if(!isset($manualQuery['ORDER BY'])) $manualQuery['ORDER BY'] = $index. ' DESC';
 		
 		// WHERE
-		if(MULTILANGUE  and $this->multilangue)
+		if(MULTILANGUE and $this->multilangue)
 		{
 			$whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
 			$manualQuery['WHERE'] = (!isset($manualQuery['WHERE']))
@@ -198,6 +198,7 @@ class AdminPage extends AdminSetup
 		}
 
 		$items = mysqlQuery(simplode(' ', ' ', $orderedQuery, FALSE), TRUE);
+		print_r($items);
 		if($items) foreach($items as $key => $value)
 		{
 			// Divisions
@@ -221,16 +222,26 @@ class AdminPage extends AdminSetup
 				// Gestion
 				if(isset($this->tableRows))
 					foreach($this->tableRows as $function => $name)
-						echo '<td><a href="' .rewrite('admin-' .$_GET['admin'], array($function. '_' .$this->table => $key)). '"><img src="assets/css/' .$function. '.png" /></a></td>';
-
+					{
+						echo 
+						'<td>'
+							.str::slink(
+								'admin-' .$this->table,
+								array($function. '_' .$this->table => $key),
+								str::img(
+									'assets/css/' .$function. '.png',
+									$name),
+								array('title' => $name)).
+						'</td>';
+					}
 			echo '</tr>';
 		}
-		else echo '<tr><td colspan="50">Aucun élément à afficher</td></tr>';
+		else echo '<tr><td colspan="50">' .l::get('admin.no_results', 'Aucun élément à afficher'). '</td></tr>';
 		
 		// Ajouter un élément
 		echo '
 		<tr class="additem"><td colspan="50">
-			<a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">Ajouter un élément</a>
+			<a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">' .l::get('admin.add', 'Ajouter un élément'). '</a>
 		</td></tr>
 		</tbody></table><br /><br />';
 	}
@@ -244,7 +255,7 @@ class AdminPage extends AdminSetup
 	// Détermine si le formulaire est en mode ajout ou modif
 	function addOrEdit(&$typeEdit = NULL, &$editText = NULL, &$urlAction = NULL)
 	{
-		if(isset($this->getEdit))
+		if($this->getEdit)
 		{
 			$typeEdit = $this->getEdit;
 			$editText = 'Modifier';

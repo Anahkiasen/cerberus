@@ -2,7 +2,6 @@
 class AdminSetup
 {
 	// Options
-	private $modeSQL; // Utilise une BDD ou pas
 	protected $multilangue; // Site multilangue ou pas
 	private $arrayLangues; // Admin multilangue ou pas
 	
@@ -22,7 +21,6 @@ class AdminSetup
 		global $navigation;
 		global $connected;
 		
-		$this->modeSQL = db::connection();
 		$this->defineMultilangue();
 		
 		// Ajout des pages par défaut
@@ -41,12 +39,13 @@ class AdminSetup
 			$title = 'Administration';
 			if(!empty($thisNavigation))
 			{
-				if(	isset($_GET['admin']) and
-					in_array($_GET['admin'], $thisNavigation) and
-					(file_exists('pages/admin-' .$_GET['admin']. '.php')
-						or in_array($_GET['admin'], $systemPages)))
+				$admin = get('admin');
+				if(	isset($admin) and
+					in_array($admin, $thisNavigation) and
+					(file_exists('pages/admin-' .$admin. '.php')
+						or in_array($admin, $systemPages)))
 						
-					$title = ($this->arrayLangues) ? l::get('admin-' .$_GET['admin']) : ucfirst($_GET['admin']);
+					$title = ($this->arrayLangues) ? l::get('admin-' .$admin) : ucfirst($admin);
 			}
 			
 			// Navigation
@@ -64,7 +63,7 @@ class AdminSetup
 	{
 		if(isset($_GET['admin']))
 		{
-			$page = $_GET['admin'];
+			$page = get('admin');
 			
 			if(file_exists('cerberus/include/admin.' .$page. '.php'))
 				include_once('cerberus/include/admin.' .$page. '.php');
@@ -77,8 +76,6 @@ class AdminSetup
 	// Admin en plusieures langues
 	function defineMultilangue($arrayLangues = NULL)
 	{		
-		global $index;
-		
 		$this->arrayLangues = $arrayLangues;
 		if(MULTILANGUE)
 		{
@@ -133,12 +130,12 @@ class AdminSetup
 	// Vérification des identifiants
 	function checkLogin($user, $password)
 	{
-		if($this->modeSQL)
+		if(db::connection())
 		{
 			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
 			return (isset($queryQ) && md5($password) == $queryQ);
 		}
-		elseif(!$this->modeSQL and isset($this->loginUser)) return (md5($user) == $this->loginUser and md5($password) == $this->loginPass);
+		elseif(db::connection() and isset($this->loginUser)) return (md5($user) == $this->loginUser and md5($password) == $this->loginPass);
 		else return FALSE;
 	}
 	
