@@ -42,11 +42,12 @@ set_error_handler('errorHandle');
 if(LOCAL) config::set(array(
 	'db.host' => config::get('local.host'),
 	'db.user' => config::get('local.user'),
-	'db.mdp' => config::get('local.mdp'),
+	'db.password' => config::get('local.password'),
 	'db.name' => config::get('local.name')));
 
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
+
 
 // Connexion et backup de la base
 if(db::connect()) backupSQL();

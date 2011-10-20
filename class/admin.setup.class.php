@@ -30,7 +30,7 @@ class AdminSetup
 		$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
 	
 		// Identification	 
- 		if(isset($_GET['logoff'])) unset($_SESSION['admin']);
+ 		if(isset($_GET['logoff'])) s::remove('admin');
 		$this->adminLogin();
 		
 		if($this->granted)
@@ -65,11 +65,8 @@ class AdminSetup
 		{
 			$page = get('admin');
 			
-			if(file_exists('cerberus/include/admin.' .$page. '.php'))
-				include_once('cerberus/include/admin.' .$page. '.php');
-
-			elseif(file_exists('pages/admin-' .$page. '.php'))
-				include_once('pages/admin-' .$page. '.php');
+			$include = f::inclure('cerberus/include/admin.' .$page. '.php');
+			if(!$include) f::inclure('pages/admin-' .$page. '.php');
 		}
 	}
 	
@@ -132,7 +129,7 @@ class AdminSetup
 	{
 		if(db::connection())
 		{
-			$queryQ = mysqlQuery('SELECT password FROM admin WHERE user="' .md5($user). '"');
+			$queryQ = db::field('admin', 'password', array('user' => md5($user)));
 			return (isset($queryQ) && md5($password) == $queryQ);
 		}
 		elseif(db::connection() and isset($this->loginUser)) return (md5($user) == $this->loginUser and md5($password) == $this->loginPass);

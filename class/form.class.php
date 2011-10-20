@@ -24,7 +24,7 @@ class form
 		self::$multilangue = (isset($multilangue)) ? $multilangue : MULTILANGUE;
 
 		$this->render = '<form method="post"';
-		if(is_array($params) and !empty($params)) foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
+		if(is_array($params) and !empty($params)) $this->render .= simplode(array('="', '"'), ' ', $params, FALSE);
 		$this->render .= '>';
 	}
 	
@@ -163,8 +163,6 @@ class form
 	// -------------
 	function attachElement($params)
 	{
-		global $index;
-
 		// Définitions	
 		$type = $params['type'];
 		list($params['name'], $label) = $this->defineNameLabel($params['name'], $params['label']);
@@ -442,9 +440,7 @@ class select extends form
 	
 	// Création du champ
 	function createElement()
-	{
-		global $index;
-			
+	{			
 		$label = $this->label;
 		$stateField = (!self::$openedManual 
 		and self::$formType != 'plain');

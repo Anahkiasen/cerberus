@@ -31,7 +31,7 @@ list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
 	<div id="main">
 		<div id="header"></div>
 		<div id="menu"><?= $renderNav ?></div>
-		<div id="corps"><? if(file_exists('pages/' .$pageVoulueFile)) include_once('pages/' .$pageVoulueFile) ?></div>
+		<div id="corps"><? $desiredPage->content() ?></div>
 		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Concept : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
 	</div>
 	

@@ -50,10 +50,7 @@ class smail
 	// Message en HTML
 	function messageHTML($absoluteURL = NULL)
 	{
-		global $index;
-		$this->absoluteURL = (isset($index['http']))
-			? $index['http']
-			: $absoluteURL;
+		$this->absoluteURL = config::get('http', $absoluteURL);
 			
 		$this->messageHTML = '
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">

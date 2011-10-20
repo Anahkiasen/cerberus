@@ -2,21 +2,15 @@
 // Suppression et chargement
 if(isset($_GET['delete']))
 {
-	$path = 'cerberus/cache/sql/' .$_GET['delete']. '/';
-	if(file_exists($path))
-	{
-		sunlink($path);
-		echo display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
-	}
+	if(sunlink('cerberus/cache/sql/' .$_GET['delete']. '/')) echo display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
 	else echo display('Sauvegarde introuvable');
 }
 if(isset($_GET['load']))
 {
-	include('cerberus/conf.php');
 	foreach(glob('cerberus/cache/sql/' .$_GET['load']. '/*.sql') as $file)
 		$fichier = $file;
 		
-	multiQuery(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
+	//multiQuery(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
 	echo display('La sauvegarde du ' .$_GET['load']. ' a bien été chargée');
 }
 

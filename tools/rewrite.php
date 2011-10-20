@@ -18,6 +18,10 @@ function rewrite($page, $params = NULL)
 	global $navigation;
 		
 	// Détermination de la page/sous-page
+	$hashless = url::strip_hash($page);
+	$hash = str_replace($hashless, '', $page);
+	$page = $hashless;
+	
 	if(!is_array($page)) $page = explode('-', $page);
 	$page0 = $page[0];
 	
@@ -82,6 +86,6 @@ function rewrite($page, $params = NULL)
 		}
 	}
 	
-	return $lien;
+	return $lien.$hash;
 }
 ?>

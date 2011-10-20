@@ -54,6 +54,13 @@ class db
 				$dbmdp = NULL;
 				$dbname = 'MAXSTA001';
 			}
+			else
+			{
+				$dbhost =
+				$dbuser =
+				$dbmdp =
+				$dbname = NULL;
+			}
 
 			$args		= func_get_args();
 			$host		= a::get($args, 0, config::get('db.host', $dbhost));
@@ -82,7 +89,7 @@ class db
 			else
 			{
 				$select = @mysql_select_db($database, self::connection());
-				if(!$select) return self::error(l::get('db.errors.missing_db', 'Erreur de connexion à la base'), true);
+				if(!$select) return self::error(l::get('db.errors.missing_db', 'Erreur de connexion &agrave; la base'), true);
 				self::$database = $database;
 				return $database;
 			}
@@ -101,8 +108,12 @@ class db
 		else
 		{
 			$string = str::stripslashes($string);
-			$string = mysql_real_escape_string((string)$string, self::connect());
-			$string = addcslashes($string, '%_');
+			if(self::connection())
+			{
+				$string = mysql_real_escape_string((string)$string, self::connection());
+				$string = addcslashes($string, '%_');
+			}
+			else $string = addslashes($string);
 		}
 		return $string;
 	}
@@ -153,7 +164,7 @@ class db
 	{
 		$sql = 'SELECT ' .$select. ' FROM ' .self::prefix($table);
 
-		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 		if(!empty($order)) $sql .= ' ORDER BY ' .$order;
 		if($page !== NULL and $limit !== NULL) $sql .= ' LIMIT ' .$page. ',' .$limit;
 
@@ -199,6 +210,40 @@ class db
 		$result = self::row($table, 'count(*)', $where);
 		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
+	
+	// Supprimer des entrées
+	static function delete($table, $where = '')
+	{
+		$sql = 'DELETE FROM ' .self::prefix($table);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
+		return self::execute($sql);
+	}
+	
+	// Insère plusieurs entrées à la fois
+	static function insert_all($table, $fields, $values)
+	{
+		if($fields) $fields = '(' .implode(',', $fields). ')'; 
+		$query = 'INSERT INTO ' .self::prefix($table). ' ' .$fields. ' VALUES ';
+		$rows  = array();
+		
+		foreach($values as $v)
+		{    
+			$str = '(\'';
+			$sep = '';
+			
+			foreach($v as $input)
+			{
+				$str .= $sep.self::escape($input);            
+				$sep = "','";  
+			}
+
+			$str .= '\')';
+			$rows[] = $str;
+		}
+		
+		$query .= implode(',', $rows);
+		return self::execute($query);
+	}
 
 	/*
 	########################################
@@ -225,7 +270,7 @@ class db
 				$output[] = $field. ' = \'' .self::escape($value). '\'';
 				$separator = ' ' .$method. ' ';
 			}
-			return implode(' ' . $method. ' ', $output);
+			return implode(' ' .$method. ' ', $output);
 		}
 	}
 		
@@ -241,10 +286,10 @@ class db
 				$output[] = $key. ' = NOW()';
 			
 			elseif(is_array($value))
-				$output[] = $key. ' = \'' . a::json($value) . '\'';
+				$output[] = $key. ' = \'' .a::json($value). '\'';
 			
 			else
-				$output[] = $key. ' = \'' . self::escape($value) . '\'';
+				$output[] = $key. ' = \'' .self::escape($value). '\'';
 		}
 		return implode(', ', $output);
 	}
@@ -263,12 +308,8 @@ class db
 		$connection = self::connection();
 		$error = (mysql_error()) ? @mysql_error($connection) : false;
 		
-		if(!PRODUCTION)
-		{
-			if(self::$last_query) echo display(htmlentities(self::$last_query));
-			echo errorHandle('SQL', $error, __FILE__, __LINE__);
-		}
-		else $message .= ' - ' .l::get('db.error', 'Une erreur SQL est survenue');
+		if(self::$last_query and !PRODUCTION) echo display(htmlentities(self::$last_query));
+		errorHandle('SQL', $error, __FILE__, __LINE__);
 		
 		if($exit or PRODUCTION) die($message);
 	}
@@ -320,6 +361,12 @@ class db
 		return @mysql_insert_id($connection);
 	}
 
+	// Retour le prochain ID
+	static function increment($table)
+	{
+		$result = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$table. '"'));
+		return $result['Auto_increment'];
+	}
 
 
 
@@ -348,41 +395,12 @@ class db
 		return true;
 	}
 
-	static function insert_all($table, $fields, $values)
-	{
-			
-		$query = 'INSERT INTO ' . self::prefix($table) . ' (' . implode(',', $fields) . ') VALUES ';
-		$rows  = array();
-		
-		foreach($values as $v) {    
-			$str = '(\'';
-			$sep = '';
-			
-			foreach($v as $input) {
-				$str .= $sep . self::escape($input);            
-				$sep = "','";  
-			}
-
-			$str .= '\')';
-			$rows[] = $str;
-		}
-		
-		$query .= implode(',', $rows);
-		return self::execute($query);
-	
-	}
 
 	static function replace($table, $input)
 	{
-		return self::execute('REPLACE INTO ' . self::prefix($table) . ' SET ' . self::values($input));
+		return self::execute('REPLACE INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 
-	static function delete($table, $where = '')
-	{
-		$sql = 'DELETE FROM ' . self::prefix($table);
-		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
-		return self::execute($sql);
-	}
 
 
 	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL) {
@@ -394,10 +412,12 @@ class db
 		return $array;
 	}
 
-	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type="JOIN") {
+	// Faire une requête jointe
+	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
+	{
 			return self::select(
-				self::prefix($table_1) . ' ' . $type . ' ' .
-				self::prefix($table_2) . ' ON ' .
+				self::prefix($table_1). ' ' .$type. ' ' .
+				self::prefix($table_2). ' ON ' .
 				self::where($on),
 				$select,
 				self::where($where),
@@ -413,8 +433,8 @@ class db
 
 	static function min($table, $column, $where = NULL) {
 
-		$sql = 'SELECT MIN(' . $column . ') as min FROM ' . self::prefix($table);
-		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
+		$sql = 'SELECT MIN(' .$column. ') as min FROM ' .self::prefix($table);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 
 		$result = self::query($sql, false);
 		$result = self::fetch($result);
@@ -425,8 +445,8 @@ class db
 
 	static function max($table, $column, $where = NULL) {
 
-		$sql = 'SELECT MAX(' . $column . ') as max FROM ' . self::prefix($table);
-		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
+		$sql = 'SELECT MAX(' .$column. ') as max FROM ' .self::prefix($table);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 
 		$result = self::query($sql, false);
 		$result = self::fetch($result);
@@ -437,8 +457,8 @@ class db
 
 	static function sum($table, $column, $where = NULL) {
 
-		$sql = 'SELECT SUM(' . $column . ') as sum FROM ' . self::prefix($table);
-		if(!empty($where)) $sql .= ' WHERE ' . self::where($where);
+		$sql = 'SELECT SUM(' .$column. ') as sum FROM ' .self::prefix($table);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 
 		$result = self::query($sql, false);
 		$result = self::fetch($result);
@@ -466,8 +486,8 @@ class db
 		if(empty($search)) return false;
 
 		$arr = array();
-		foreach($fields as $f) array_push($arr, $f . ' LIKE \'%' . $search . '%\'');
-		return '(' . implode(' ' . trim($mode) . ' ', $arr) . ')';
+		foreach($fields as $f) array_push($arr, $f. ' LIKE \'%' .$search. '%\'');
+		return '(' .implode(' ' .trim($mode). ' ', $arr). ')';
 
 	}
 
@@ -476,7 +496,7 @@ class db
 	}
 
 	static function in($array) {
-		return '\'' . implode('\',\'', $array) . '\'';
+		return '\'' .implode('\',\'', $array). '\'';
 	}
 }
 ?>

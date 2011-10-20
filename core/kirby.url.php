@@ -40,7 +40,7 @@ class url
 	}
 
 	// Supprimer le hash
-	function strip_hash($url)
+	static function strip_hash($url)
 	{
 		return preg_replace('/#.*$/is', '', $url);
 	}

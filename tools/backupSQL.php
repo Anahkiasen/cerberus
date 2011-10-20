@@ -12,7 +12,7 @@
 function backupSQL()
 {	
 	// Sauvegarde et chargement de la base
-	$tables_base = mysqlQuery('SHOW TABLES');
+	$tables_base = db::showtables();
 	if(empty($tables_base))
 	{
 		// Si la base de données est vide, chargement de dernière la sauvegarde
@@ -41,12 +41,11 @@ function backupSQL()
 		// Définition du nom du dossier
 		$path = 'cerberus/cache/sql/';
 		$folderName = $path.date('Y-m-d');
-		$listeTables = mysqlQuery("SHOW TABLES");
 			
 		// Création du dossier à la date si inexistant
-		if(!file_exists($folderName) and !empty($listeTables)) 
+		if(!file_exists($folderName) and !empty($tables_base)) 
 		{
-			$listeTables = array_values($listeTables);
+			$tables_base = array_values($tables_base);
 			
 			// Suppression des sauvegardes inutiles
 			foreach(glob($path. '*') as $file)  
@@ -69,7 +68,7 @@ function backupSQL()
 		
 			// Récupération de la liste des tables
 			$file = NULL;
-			foreach($listeTables as $table)
+			foreach($tables_base as $table)
 			{   
 				$file .= "DROP TABLE IF EXISTS $table;\n";
 				
@@ -102,7 +101,7 @@ function backupSQL()
 			$filename = $filename. '-' .date('H-i-s'). '.sql';
 			f::write($folderName. '/' .$filename, $file);
 			
-			return 'Le fichier ' .$filename. ' a bien été crée<br />Tables : ' .implode(', ', $listeTables);
+			return 'Le fichier ' .$filename. ' a bien été crée<br />Tables : ' .implode(', ', $tables_base);
 		}
 		else return 'Une sauvegarde existe déjà pour cette date.';
 	}

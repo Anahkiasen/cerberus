@@ -37,6 +37,6 @@ function timthumb($file, $width = NULL, $height = NULL, $crop = 1)
 	$params['zc'] = $crop;
 	$params['s'] = 1;
 	
-	return 'assets/file/timthumb.php?src=assets/file/' .$file. '&' .simplode('=', '&', $params);
+	return 'cerberus/class/timthumb.class.php?src=assets/file/' .$file. '&' .simplode('=', '&', $params);
 }
 ?>

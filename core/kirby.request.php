@@ -7,6 +7,7 @@ class r
 		return strtoupper(server::get('request_method'));
 	}
 
+	// Récupérer une information
 	static function get($key = FALSE, $default = NULL)
 	{
 		$request = (self::method() == 'GET') ? $_REQUEST : array_merge($_REQUEST, self::body());

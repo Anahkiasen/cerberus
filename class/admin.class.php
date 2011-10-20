@@ -35,16 +35,19 @@ class AdminPage extends AdminSetup
 	
 	function setPage($table, $facultativeFields = array())
 	{
+		// Information sur la table
 		$this->table = $table;
 		$this->getEdit = get('edit_' .$this->table, NULL);
 		$this->getAdd = get('add_' .$this->table, NULL);
 
-		// Champs facultatifs
+		// Champs de mise à jour
+		$fieldsUpdate = array();
 		$facultativeFields = a::beArray($facultativeFields);
 		
 		// Récupération du nom des champs
 		$this->fields = db::fields($table);
-		$this->index = $this->fields[0];
+		$this->index = a::get($this->fields, 0, 'id');
+		
 		
 		// AJOUT ET MODIFICATION
 		if(isset($_POST['edit'])) 
@@ -70,13 +73,17 @@ class AdminPage extends AdminSetup
 			// Execution de la requête
 			if(empty($emptyFields))
 			{		
-				$uploadImage = $this->uploadImage();
-				if(!empty($uploadImage)) $fieldsUpdate['path'] = $uploadImage;
-				
 				if($_POST['edit'] == 'add')
-					mysqlQuery(array('INSERT INTO ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate), 'Objet ajouté'));
+				{
+					db::insert($this->table, $fieldsUpdate);
+					echo display('Objet ajouté');
+				}
 				else
-					mysqlQuery(array('UPDATE ' .$this->table. ' SET ' .simplode(array('="', '"'), ',', $fieldsUpdate). ' WHERE ' .$this->index. '="' .$_POST['edit']. '"', 'Objet modifié'));
+				{
+					db::update($this->table, $fieldsUpdate, array($this->index => $_POST['edit']));
+					echo display('Objet modifié');
+				}
+				$uploadImage = $this->uploadImage();
 			}
 			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
@@ -198,7 +205,6 @@ class AdminPage extends AdminSetup
 		}
 
 		$items = mysqlQuery(simplode(' ', ' ', $orderedQuery, FALSE), TRUE);
-		print_r($items);
 		if($items) foreach($items as $key => $value)
 		{
 			// Divisions
@@ -337,36 +343,34 @@ class AdminPage extends AdminSetup
 		
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
-			$storageMode = $this->imageMode();
-
 			// Erreurs basiques
 			$errorDisplay = NULL;
 			$extension = f::extension($_FILES[$field]['name']);
-			if($_FILES[$field]['error'] != 0) $errorDisplay = 'Une erreur est survenue lors du transfert.';
+			if($_FILES[$field]['error'] != 0) $errorDisplay .= 'Une erreur est survenue lors du transfert.';
 			if(filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
 					
 			// Si aucune erreur
 			if(empty($errorDisplay))
 			{	
-				$autoIncrement = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$this->table. '"'));
 				$lastID = ($_POST['edit'] == 'add')
-					? $autoIncrement['Auto_increment']
+					? db::increment($this->table)
 					: $_POST['edit'];
 			
+				$storageMode = $this->imageMode();
 				switch($storageMode)
 				{
 					case 'table':
 						$file = explode('.', $_FILES[$field]['name']);
 						$file = normalize($file[0]). '-' .md5(str::random()). '.' .$extension;
-						$test = mysqlQuery('SHOW COLUMNS FROM ' .$this->table. '_thumb');
-						mysqlQuery(array('INSERT INTO ' .$this->table. '_thumb SET path="' .$file. '", id_' .$this->table. '="' .$lastID. '"'));
+						db::insert($this->table. '_thumb', array('path' => $file, 'id_' .$this->table => $lastID));
 						break;
 						
 					case 'path':
-						$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$lastID. '"');
-						if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
-						sunlink('assets/file/' .$this->table. '/' .$lastID. '.jpg');
+						$path = db::field($this->table, 'path', array($this->index => $lastID));
 						$file = $lastID. '-' .md5(str::random()). '.' .$extension;
+						
+						if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
+						db::update($this->table, array('path' => $file), array('id' => $lastID));
 						break;
 						
 					default:
@@ -376,12 +380,7 @@ class AdminPage extends AdminSetup
 				
 				// Sauvegarde de l'image
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->table. '/' .$file);
-				if($resultat)
-				{
-					echo display('Image ajoutée au serveur');
-					if($storageMode == 'path') return $file;
-					else return NULL;
-				}
+				if($resultat) echo display('Image ajoutée au serveur');
 				else echo display('Une erreur est survenue lors du transfert.');
 			}
 			else echo display($errorDisplay);

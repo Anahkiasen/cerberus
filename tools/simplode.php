@@ -28,7 +28,7 @@ function simplode($glue1, $glue2, $array, $convert = TRUE)
 			$plainedArray = array();
 			foreach($array as $key => $value)
 			{	
-				$value = ($convert) ? escape($value) : $value;
+				$value = ($convert) ? db::escape($value) : $value;
 				if(is_array($glue1)) $plainedArray[] = $key.$glue1[0].$value.$glue1[1];
 				else $plainedArray[] = $key.$glue1.$value;
 			}

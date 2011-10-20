@@ -7,8 +7,8 @@ function postVar($post = NULL)
 		$key = str_replace('-', '_', $key);
 		if(!isset(${$key})) 
 		{
-			if(is_array($value)) foreach($value as $k2 => $v2) ${$key}[$k2] = escape($v2);
-			else ${$key} = escape($value);
+			if(is_array($value)) foreach($value as $k2 => $v2) ${$key}[$k2] = db::escape($v2);
+			else ${$key} = db::escape($value);
 		}
 	}
 }

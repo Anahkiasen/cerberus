@@ -125,7 +125,9 @@ class f
 					include $file;
 					break;
 			}
+			return true;
 		}
+		else return false;
 	}
 }
 ?>

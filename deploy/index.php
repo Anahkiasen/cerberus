@@ -217,12 +217,7 @@ if(!file_exists('../../index.php'))
 			f::write('../../pages/home-home.html', '');
 		}
 		if(isset($_POST['file-js'])) mkdir('../../js/');
-		if(isset($_POST['file-file']))
-		{
-			mkdir('../../file/');
-			copy('timthumb.php', '../../file/timthumb.php');
-			copy('timthumb-config.php', '../../file/timthumb-config.php');
-		}
+		if(isset($_POST['file-file'])) mkdir('../../file/');
 		copydir('min', '../../min');
 			
 		// Déplacement des fichiers CSS et PHP

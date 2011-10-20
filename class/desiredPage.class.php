@@ -114,7 +114,7 @@ class desiredPage
 		
 		if(!isset($this->treeSubnav) and $this->optionSubnav)
 			foreach($this->cacheTree[$this->page] as $key)
-			$this->treeSubnav[$key] = rewrite(array($this->page, $key), array('subnav' => $this->optionSubnav));			
+			$this->treeSubnav[$key] = rewrite($this->page. '-' .$key, array('subnav' => $this->optionSubnav));			
 	}
 	
 	// Altération des liens de la liste
@@ -198,9 +198,10 @@ class desiredPage
 		if($this->page == 'admin') new AdminSetup();
 		else
 		{
-			if(isset($switcher) and file_exists($switcher->path('php').$this->filePath)) include_once $switcher->path('php').$this->filePath;
-			elseif(file_exists('pages/' .$this->filePath)) include_once('pages/' .$this->filePath);
-			else echo display('Une erreur est survenue lors du chargement de la page');
+			$page = FALSE;
+			if(isset($switcher)) $page = f::inclure($switcher->path('php').$this->filePath);
+			if(!$page) $page = f::inclure('pages/' .$this->filePath);
+			if(!$page) echo display('Une erreur est survenue lors du chargement de la page');
 		}
 	}
 	

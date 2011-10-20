@@ -13,6 +13,13 @@ if(isset($_GET['deleteFolder']))
 	else echo display('Une erreur est survenue durant la suppression du dossier');
 }
 
+// Supprimer une image
+if(isset($_GET['delete_image']))
+{
+	if(sunlink('assets/file/' .$_GET['pictures']. '/' .$_GET['delete_image']))
+		echo display('Image ' .$_GET['delete_image']. ' supprimée');
+}
+
 // Renommer une image
 if(isset($_POST['oldfile']))
 {
@@ -23,7 +30,7 @@ if(isset($_POST['oldfile']))
 	echo display('Le fichier a bien été renommé');
 }
 
-// Renommer les images
+// Renommer les images en masse
 if(isset($_GET['rename']))
 {
 	$i = 0;
