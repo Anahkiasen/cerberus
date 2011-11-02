@@ -11,4 +11,7 @@
  * See http://code.google.com/p/minify/wiki/CustomSource for other ideas
  **/
 
-return array();
+return array(
+    // 'js' => array('//js/file1.js', '//js/file2.js'),
+    // 'css' => array('//css/file1.css', '//css/file2.css'),
+);

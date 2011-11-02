@@ -18,23 +18,29 @@ class AdminSetup
 	
 	function __construct($customNavigation = NULL)
 	{	
-		global $navigation;
-		global $connected;
-		
+		global $connected, $navigation;
+
 		$this->defineMultilangue();
-		
-		// Ajout des pages par défaut
-		$systemPages = array('meta', 'images', 'backup');
-		if(db::is_table('news')) array_unshift($systemPages, 'news');
-		$adminNavigation = array_diff($navigation['admin'], array('admin'));
-		$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
-	
+			
 		// Identification	 
  		if(isset($_GET['logoff'])) s::remove('admin');
 		$this->adminLogin();
 		
 		if($this->granted)
 		{
+			// Ajout des pages par défaut
+			$systemPages = array('images', 'backup');
+			if(db::is_table('meta')) array_unshift($systemPages, 'meta');
+			if(db::is_table('news')) array_unshift($systemPages, 'news');
+			
+			$adminNavigation = array_diff($navigation['admin'], array('admin'));
+			$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
+		
+			// Droits de l'utilisateur
+			$droits = str::parse(db::field('admin', 'droits', array('user' => md5($_SESSION['admin']['user']))));
+			foreach($thisNavigation as $key => $page)
+				if(in_array($page, $droits)) $thisNavigation = a::remove($thisNavigation, $key);
+
 			// Vérification de la page
 			$title = 'Administration';
 			if(!empty($thisNavigation))
@@ -92,23 +98,13 @@ class AdminSetup
 	// Formulaire d'identification et vérification
 	function adminLogin()
 	{
-		$admin_form = 
-		'<form method="post">
-			<fieldset class="login"><legend>Identification</legend>
-				<dl>
-					<dt>Identifiant</dt>
-					<dd><input type="text" name="user" /></dd>
-				</dl>
-				<dl>
-					<dt>Mot de passe</dt>
-					<dd><input type="password" name="password" /></dd>
-				</dl>
-				<dl class="submit">
-					<dd><p style="text-align:center"><input type="submit" value="Connexion" /></p></dd> 
-				</dl>
-			</fieldset>
-		</form>';
-		
+		$admin_form = new form(false);
+		$admin_form->openFieldset('Identification');
+			$admin_form->addText('user', 'Identifiant');
+			$admin_form->addPass('password', 'Mot de passe');
+			$admin_form->addSubmit('Connexion');
+		$admin_form->closeFieldset();
+				
 		// Vérification du formulaire		
 		if(isset($_POST['user'], $_POST['password']))
 		{
@@ -164,24 +160,24 @@ class AdminSetup
 			// Langue de l'admin
 			foreach($this->multilangue as $langue)
 			{
-				$getAdmin = (isset($_GET['admin'])) ? '&admin=' .$_GET['admin'] : '';
-				$urlFlag = (isset($_SESSION['admin']['langue']) and $_SESSION['admin']['langue'] == $langue) ? 'flag_' .$langue : 'flag_' .$langue. '_off';
-				echo '<a href="' .rewrite('admin', array('adminLangue' => $langue.$getAdmin)). '"><img src="assets/css/' .$urlFlag. '.png" alt="' .$langue. '" /></a> ';
+				$flag_state = (isset($_SESSION['admin']['langue']) and $_SESSION['admin']['langue'] == $langue) ? NULL : '_off';
+				echo str::slink(NULL, str::img('assets/css/flag_' .$langue.$flag_state. '.png', $langue), array('adminLangue' => $langue));
 			}
 			echo '</p>';
 		}
 	
 		// Navigation de l'admin
-		if(!empty($navigation)) foreach($navigation as $key => $value)
+		if(!empty($navigation))
+		foreach($navigation as $key => $value)
 		{
-			//if($value == 'news') echo '<br /><br />';
-			$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : ucfirst($value);
-			$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? 'class="hover"' : '';
-			echo '<a href="' .rewrite('admin-' .$value). '" ' .$thisActive. '>' .$textLien. '</a>';	
+			if(!empty($value))
+			{
+				$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : ucfirst($value);
+				$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? array('class' => 'hover') : NULL;
+				echo str::slink('admin-' .$value, $textLien, NULL, $thisActive);
+			}	
 		}
-		echo 
-		'<a href="' .rewrite('admin', 'logoff'). '">Déconnexion</a>
-		</div><br />';
+		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
 	}
 }
 ?>

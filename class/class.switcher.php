@@ -45,7 +45,7 @@ class switcher
 		elseif(file_exists('pages/switch-'.$content.'.php')) return 'pages/switch-'.$content.'.php';
 		else
 		{
-			echo display('Une erreur est survenue durant le chargement de la page');
+			prompt('Une erreur est survenue durant le chargement de la page');
 			errorHandle('Warning', 'Bloc [' .$content. '] non trouvé', __FILE__, __LINE__);
 		}
 	}

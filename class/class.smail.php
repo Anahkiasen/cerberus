@@ -41,7 +41,8 @@ class smail
 		else $this->contenu = $contenu;
 		$this->messageText = stripHTML($this->contenu);
 		
-		if(findString(',', $destinataire)) $this->destinaire = explode(', ', $destinataire);
+		if(findString(',', $destinataire))
+			$this->destinaire = explode(', ', $destinataire);
 		
 		$this->boundary = '-----=' .md5(rand());
 		$this->boundary_alt = '-----=' .md5(rand());
@@ -134,8 +135,8 @@ class smail
 	
 	function __toString()
 	{
-		if($this->send()) echo display('Votre message a bien été envoyé');
-		else echo display('Une erreur est survenue durant l\'envoi du message');
+		if($this->send()) prompt('Votre message a bien été envoyé');
+		else prompt('Une erreur est survenue durant l\'envoi du message');
 	}
 }
 ?>

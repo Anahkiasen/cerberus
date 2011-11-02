@@ -76,16 +76,16 @@ class AdminPage extends AdminSetup
 				if($_POST['edit'] == 'add')
 				{
 					db::insert($this->table, $fieldsUpdate);
-					echo display('Objet ajouté');
+					prompt('Objet ajouté');
 				}
 				else
 				{
 					db::update($this->table, $fieldsUpdate, array($this->index => $_POST['edit']));
-					echo display('Objet modifié');
+					prompt('Objet modifié');
 				}
 				$uploadImage = $this->uploadImage();
 			}
-			else echo display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
+			else prompt('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields));
 		}
 		
 		// SUPPRESSION
@@ -94,7 +94,7 @@ class AdminPage extends AdminSetup
 			// Images liées
 			if(in_array('path', $this->fields))
 			{
-				$path = mysqlQuery('SELECT path FROM ' .$this->table .' WHERE ' .$this->index. '="' .$_GET['delete_' .$this->table]. '"');
+				$path = db::field($this->table, 'path', array($this->index => $_GET['delete_' .$this->table]));
 				if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
 			}
 			else
@@ -110,13 +110,14 @@ class AdminPage extends AdminSetup
 				}
 			}
 						
-			mysqlQuery(array('DELETE FROM ' .$this->table. ' WHERE ' .$this->index. '="' .$_GET['delete_' .$this->table]. '"', 'Objet supprimé'));
+			db::delete($this->table, array($this->index => $_GET['delete_' .$this->table]));
+			prompt('Objet supprimé');
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
 			$image = $this->getImage($_GET['deleteThumb']);
-			if(sunlink('assets/file/' .$this->table. '/' .$image)) echo display('Miniature supprimée');
-			else echo display('Miniature introuvable');
+			if(sunlink('assets/file/' .$this->table. '/' .$image)) prompt('Miniature supprimée');
+			else prompt('Miniature introuvable');
 		}
 	}
 	
@@ -163,7 +164,7 @@ class AdminPage extends AdminSetup
 		/* ######## CONSTRUCTION DE LA REQUÊTE ########## */
 		
 		// Liste des champs
-		$availableFields = array_keys(mysqlQuery('DESCRIBE ' .$this->table));
+		$availableFields = db::fields($this->table);
 		$fieldsQuery = $fieldsDisplay;
 		
 		// Définition de l'index et des champs erronés
@@ -204,50 +205,54 @@ class AdminPage extends AdminSetup
 			}
 		}
 
-		$items = mysqlQuery(simplode(' ', ' ', $orderedQuery, FALSE), TRUE);
-		if($items) foreach($items as $key => $value)
+		$query = simplode(' ', ' ', $orderedQuery);
+		$items = a::rearrange(db::query($query));
+		if($items)
 		{
-			// Divisions
-			if(!empty($divideBy))
+			foreach($items as $key => $value)
 			{
-				if(!isset($thisGroup) or $thisGroup != $value[$divideBy])
+				// Divisions
+				if(!empty($divideBy))
 				{
-					echo '<tr class="entete"><td colspan="50" class="groupby">' .ucfirst($value[$divideBy]). '</td></tr>';
-					$thisGroup = $value[$divideBy];
-				}
-			}
-						
-			if(isset($thisGroup)) echo '<tr class="divide" group="' .ucfirst($thisGroup). '">';
-			else echo '<tr>';
-			
-				// Valeurs
-				$value = a::beArray($value);
-				foreach($fieldsDisplay as $fieldName)
-					echo '<td>' .html(str_replace('<br />', ' ', $value[$fieldName])). '</td>'; 
-				
-				// Gestion
-				if(isset($this->tableRows))
-					foreach($this->tableRows as $function => $name)
+					if(!isset($thisGroup) or $thisGroup != $value[$divideBy])
 					{
-						echo 
-						'<td>'
-							.str::slink(
-								'admin-' .$this->table,
-								array($function. '_' .$this->table => $key),
-								str::img(
-									'assets/css/' .$function. '.png',
-									$name),
-								array('title' => $name)).
-						'</td>';
+						echo '<tr class="entete"><td colspan="50" class="opener" opener="' .str::slugify($value[$divideBy]). '">' .ucfirst($value[$divideBy]). '</td></tr>';
+						$thisGroup = $value[$divideBy];
 					}
-			echo '</tr>';
+				}
+							
+				if(isset($thisGroup)) echo '<tr id="' .$key. '" class="opened" opened="' .str::slugify($thisGroup). '">';
+				else echo '<tr id="' .$key. '">';
+				
+					// Valeurs
+					$value = a::beArray($value);
+					foreach($fieldsDisplay as $fieldName)
+						echo '<td>' .stripslashes(str_replace('<br />', ' ', $value[$fieldName])). '</td>'; 
+					
+					// Gestion
+					if(isset($this->tableRows))
+						foreach($this->tableRows as $function => $name)
+						{
+							echo 
+							'<td>'
+								.str::slink(
+									'admin-' .$this->table,
+									str::img(
+										'assets/css/' .$function. '.png',
+										$name),
+									array($function. '_' .$this->table => $key),
+									array('title' => $name)).
+							'</td>';
+						}
+				echo '</tr>';
+			}
 		}
 		else echo '<tr><td colspan="50">' .l::get('admin.no_results', 'Aucun élément à afficher'). '</td></tr>';
 		
 		// Ajouter un élément
 		echo '
-		<tr class="additem"><td colspan="50">
-			<a href="' .rewrite('admin-' .$this->table, 'add_' .$this->table). '">' .l::get('admin.add', 'Ajouter un élément'). '</a>
+		<tr class="additem"><td colspan="50">'
+			.str::slink(NULL, l::get('admin.add', 'Ajouter un élément'), 'add_'.$this->table).'
 		</td></tr>
 		</tbody></table><br /><br />';
 	}
@@ -339,7 +344,7 @@ class AdminPage extends AdminSetup
 	// Envoyer une image
 	function uploadImage($field = 'thumb')
 	{
-		$GLOBALS['cerberus']->injectModule('normalize', 'filecat');
+		$GLOBALS['cerberus']->injectModule('filecat');
 		
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
@@ -361,7 +366,7 @@ class AdminPage extends AdminSetup
 				{
 					case 'table':
 						$file = explode('.', $_FILES[$field]['name']);
-						$file = normalize($file[0]). '-' .md5(str::random()). '.' .$extension;
+						$file = str::slugify($file[0]). '-' .md5(str::random()). '.' .$extension;
 						db::insert($this->table. '_thumb', array('path' => $file, 'id_' .$this->table => $lastID));
 						break;
 						
@@ -380,10 +385,10 @@ class AdminPage extends AdminSetup
 				
 				// Sauvegarde de l'image
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->table. '/' .$file);
-				if($resultat) echo display('Image ajoutée au serveur');
-				else echo display('Une erreur est survenue lors du transfert.');
+				if($resultat) prompt('Image ajoutée au serveur');
+				else prompt('Une erreur est survenue lors du transfert.');
 			}
-			else echo display($errorDisplay);
+			else prompt($errorDisplay);
 		}
 	}
 }

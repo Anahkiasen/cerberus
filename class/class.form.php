@@ -24,7 +24,7 @@ class form
 		self::$multilangue = (isset($multilangue)) ? $multilangue : MULTILANGUE;
 
 		$this->render = '<form method="post"';
-		if(is_array($params) and !empty($params)) $this->render .= simplode(array('="', '"'), ' ', $params, FALSE);
+		if(is_array($params) and !empty($params)) $this->render .= simplode(array('="', '"'), ' ', $params);
 		$this->render .= '>';
 	}
 	
@@ -41,13 +41,13 @@ class form
 		if(isset($fieldsTable[1])) $this->table = $fieldsTable[1];
 		if(isset($_GET['edit_' .$fieldsTable[1]]))
 		{
-			$modif = mysqlQuery('SELECT ' .implode(',', $fieldsTable[0]). ' FROM ' .$fieldsTable[1]. ' WHERE ' .$fieldsTable[0][0]. '="' .$_GET['edit_' .$fieldsTable[1]]. '"');
-			foreach($fieldsTable[0] as $value) $post[$value] = html($modif[$value]); 
+			$modif = db::row($fieldsTable[1], implode(',', $fieldsTable[0]), array($fieldsTable[0][0] => $_GET['edit_' .$fieldsTable[1]]));
+			foreach($fieldsTable[0] as $value) $post[$value] = stripslashes($modif[$value]); 
 		}
 		else foreach($fieldsTable[0] as $value) $post[$value] = NULL;
 		
 		if(isset($_POST)) foreach($fieldsTable[0] as $value)
-			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = html($_POST[$value]);
+			if(isset($_POST[$value]) && !empty($_POST[$value])) $post[$value] = stripslashes($_POST[$value]);
 			
 		self::$valuesArray = $post;
 	}
@@ -77,7 +77,7 @@ class form
 		self::$mandatory = $mandatory;
 		
 		$this->render .= PHP_EOL. "
-		<fieldset class=\"" .normalize($name). "\">" .PHP_EOL. "
+		<fieldset class=\"" .str::slugify($name). "\">" .PHP_EOL. "
 			\t<legend>" .$fieldName. '</legend>';
 		
 		if(self::$openedManual) self::$openedManual = false;
@@ -138,15 +138,13 @@ class form
 	// Définitions
 	function defineNameLabel($name, $label)
 	{
-		$GLOBALS['cerberus']->injectModule('normalize');
-			
 		$thisLabel = (empty($label))
 			? $name
 			: $label;
 		if(self::$multilangue == false)
 		{
 			$thisLabel = ucfirst($thisLabel);
-			$thisName = normalize(str_replace('-', '', $name));
+			$thisName = str::slugify(str_replace('-', '', $name));
 		}
 		else $thisName = $name;
 				
@@ -184,7 +182,7 @@ class form
 			// Champ sous le label plutôt qu'à droite
 			$underfield = (isset($params['underfield'])) 
 				? 'underfield'
-				: '';
+				: NULL;
 			unset($params['underfield']);
 	
 			$this->render .= PHP_EOL. "
@@ -197,9 +195,9 @@ class form
 		unset($params['label'], $params['type']);
 		
 		// LISTE DES CHAMPS
-		if($type == 'text')
+		if($type == 'text' or $type == 'password')
 		{
-			$this->render .= '<input type="text" ';
+			$this->render .= '<input type="' .$type. '" ';
 			foreach($params as $key => $value) $this->render .= $key. '="' .$value. '" ';
 			$this->render .= ' />';
 		}
@@ -272,15 +270,19 @@ class form
 	function addRadio($name, $number, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['number'] = $number;
-		$this->addElement($label, $name, "radio",  $value, $additionalParams);
+		$this->addElement($label, $name, "radio", $value, $additionalParams);
 	}
 	function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addElement($label, $name, "text",  $value, $additionalParams);
+		$this->addElement($label, $name, "text", $value, $additionalParams);
+	}
+	function addPass($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	{
+		$this->addElement($label, $name, "password", $value, $additionalParams);
 	}
 	function addHidden($name, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addElement('', $name, "hidden",  $value, $additionalParams);
+		$this->addElement('', $name, "hidden", $value, $additionalParams);
 	}
 	function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{

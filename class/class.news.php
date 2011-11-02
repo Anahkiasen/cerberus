@@ -34,6 +34,9 @@ class getNews
 	function __construct($page = 'news')
 	{	
 		$this->page = str_replace('&pageSub=', '-', $page);
+		$this->multiWhere = (MULTILANGUE)
+			? array('langue' => l::current())
+			: NULL;
 	}
 	
 	function setTable($table)
@@ -62,11 +65,15 @@ class getNews
 		
 		if($this->newsPaginate)
 		{
-			$entries = db::count($this->table);
-			pager::set($entries, 1, $limit);
-			
-			if(isset($_GET['pagenews']))
-				pager::set($entries, $_GET['pagenews'], $limit);
+			$entries = db::count($this->table, $this->multiWhere);
+			if($entries != 0)
+			{
+				pager::set($entries, 1, $limit);
+				
+				if(isset($_GET['pagenews']))
+					pager::set($entries, $_GET['pagenews'], $limit);
+			}
+			else $this->newsPaginate = FALSE;
 		}
 	}
 	function setTruncate($truncate, $mode)
@@ -85,13 +92,14 @@ class getNews
 	############################ */
 
 	function selectNews($id = NULL)
-	{
+	{	
+		// News seule ou toutes
 		if(!empty($id))
 		{
 			$news = db::select(
 				$this->table,
 				'id, titre, date, contenu, path',
-				array('id' => $id));
+				array_merge(array('id' => $id), $this->multiWhere));
 		}
 		else
 		{
@@ -99,15 +107,17 @@ class getNews
 				? pager::$limit
 				: pager::db(). ',' .pager::$limit;
 		
-			$news = db::query('
-				SELECT id, titre, date, contenu, path
-				FROM ' .$this->table. '
-				ORDER BY ' .$this->newsOrder. ' DESC
-				LIMIT ' .$limit);
+			$news = db::select(
+				$this->table,
+				'id, titre, date, contenu, path',
+				$this->multiWhere,
+				$this->newsOrder. ' DESC',
+				pager::db(),
+				pager::$limit);
 		}		
 		
 		// Récupération des news
-		foreach($news as $key => $value)
+		if($news) foreach($news as $key => $value)
 		{
 			if(!empty($id)) $alt = 'wide';
 			else $alt = (isset($alt) and $alt == 'alt') ? '' : 'alt';
@@ -138,69 +148,74 @@ class getNews
 			// News
 			$contenu = $value['contenu'];
 			if($this->truncateNews != FALSE and empty($id)) $contenu = truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
-			$contenu = nl2br(bbcode(html($contenu)));
-			if($this->displayLink and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">Lire la suite</p></a>';
+			$contenu = nl2br(bbcode(stripslashes($contenu)));
+			if($this->displayLink and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">' .l::get('news-more'). '</p></a>';
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
-				<h2>' .str::link($thisLink, html($value['titre'])).$thisDate. '</h2>
+				<h2>' .str::link($thisLink, stripslashes($value['titre'])).$thisDate. '</h2>
 				<div class="contenu">' .$thisThumb.$contenu. '</div>
 				<p class="clear">&nbsp;</p>
 			</div>';
 		}
+		else promptm('news-none', 'Aucune news à afficher');
 		echo '<p class="clear"></p>';
 	}
 		
 	// Liste des archives
 	function selectArchives()
 	{
-		$nomsMois = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre');
-	
-		$news = 
-			db::query('
-			SELECT
-				id,
-				date,
-				DATE_FORMAT(date, "%Y-%m") AS mois,
-				YEAR(date) AS year,
-				MONTH(date) AS month,
-				titre
-			FROM ' .$this->table. '
-			ORDER BY date ASC');
+		$news = db::select(
+			$this->table,
+			'id,
+			date,
+			DATE_FORMAT(date, "%Y-%m") AS mois,
+			YEAR(date) AS year,
+			MONTH(date) AS month,
+			titre',
+			$this->multiWhere,
+			'date ASC');
 		
 		$actualDate = NULL;
 
-		echo '<div class="news-archives"><h1>Archives par mois</h1>';
-		foreach($news as $key => $value)
+		echo '<h1>' .l::get('news-archives'). '</h1>';
+		if($news)
 		{
-			// Date actuelle
-			if($value['mois'] != $actualDate)
+			echo '<div class="news-archives">';
+			foreach($news as $key => $value)
 			{
-				if(!empty($actualDate)) echo '</ul></div>';
-				echo '<div class="news-archives-month"><h2>' .$nomsMois[$value['month']-1]. ' ' .$value['year']. '</h2><ul>';
-				$actualDate = $value['mois'];
+				// Date actuelle
+				if($value['mois'] != $actualDate)
+				{
+					if(!empty($actualDate)) echo '</ul></div>';
+					echo '<div class="news-archives-month"><h2>' .l::month($value['date']). ' ' .$value['year']. '</h2><ul>';
+					$actualDate = $value['mois'];
+				}
+				
+				$titre = stripslashes($value['titre']);
+				echo '<li>' .str::slink($this->page, $titre, array('actualite' => $value['id'], 'html' => $titre)). '</li>';
 			}
-			
-			$titre = stripslashes($value['titre']);
-			echo '<li>' .str::slink($this->page, array('actualite' => $value['id'], 'html' => $titre), $titre). '</li>';
+			echo '</ul></div><p class="clear"></p></div>';
 		}
-		echo '</ul></div><p class="clear"></p></div>';
 	}
 	
 	// Pagination
 	function paginate()
 	{			
-		// Pagination
-		echo '<div id="news-pagination">Pages - ';
-		for($i = 1; $i <= pager::$pages; $i++)
+		if($this->newsPaginate)
 		{
-			$attributes = (!isset($_GET['actualite']) and $i == pager::get())
-				? array('class' => 'hover')
-				: NULL;
-				
-			echo str::slink($this->page, array('pagenews' => $i), $i, $attributes);
+			// Pagination
+			echo '<div id="news-pagination">Pages - ';
+			for($i = 1; $i <= pager::$pages; $i++)
+			{
+				$attributes = (!isset($_GET['actualite']) and $i == pager::get())
+					? array('class' => 'hover')
+					: NULL;
+					
+				echo str::slink($this->page, $i, array('pagenews' => $i), $attributes);
+			}
+			echo '</div>';
 		}
-		echo '</div>';
 	}
 }
 ?>
