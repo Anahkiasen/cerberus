@@ -36,6 +36,10 @@ function checkString($string, $type = NULL)
 		case 'number':
 			return (!empty($string) and preg_match("#^\d+$#", $string));
 			break;
+			
+		case 'facultative':
+			return true;
+			break;
 		
 		default:
 			return (!empty($string));
@@ -63,19 +67,21 @@ function checkFields()
 	}
 	$unfilled = array_keys($fields);
 	$misfilled = array();
-	
 	$erreurs = array();
 
 	// Lecture des données
-	foreach($_POST as $key => $value)
+	foreach($fields as $key => $type)
 	{
-		if(!empty($value) and isset($fields[$key]))
+		$POST = $_POST[$key];
+		if(!empty($POST) or $type == 'facultative')
 		{
 			$unfilled = array_diff($unfilled, array($key));
-			if(checkString($value, $fields[$key]))
+			if(checkString($POST, $type))
 			{	
-				if(MULTILANGUE)
-					$mailbody .= '<strong>' .l::get('form-' .$key). '</strong> : ' .stripslashes($value). '<br />';
+				$mailbody .= (MULTILANGUE)
+					? '<strong>' .l::get('form-' .$key). '</strong> : '
+					: '<strong>' .ucfirst($key). '</strong> : ';
+				$mailbody .= stripslashes($POST). '<br />';
 			}
 			else $misfilled[] = $key;
 		}
@@ -100,7 +106,7 @@ function checkFields()
 	// Affiche des possibles erreurs, sinon validation	
 	if(!empty($erreurs))
 	{
-		echo display(implode('<br />', $erreurs));
+		prompt(implode('<br />', $erreurs));
 		return false;
 	}
 	else return (MULTILANGUE) ? $mailbody : true;

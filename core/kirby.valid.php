@@ -2,21 +2,21 @@
 class v
 {
 	// Vérifie qu'une email est valide
-	function email($email)
+	static function email($email)
 	{
 		$regex = '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i';
 		return (preg_match($regex, $email));
 	}
 
 	// Vérifie qu'une URL est valide
-	function url($url)
+	static function url($url)
 	{
 		$regex = '/^(https?|ftp|rmtp|mms|svn):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i';
 		return (preg_match($regex, $url));
 	}
 
 	// Vérifie qu'une date est valide
-	function date($date)
+	static function date($date)
 	{
 		$time = strtotime($date);
 		if(!$time) return false;
@@ -29,7 +29,7 @@ class v
 	}
 	
 	// Vérifie qu'un nom de fichier est valide
-	function filename($string)
+	static function filename($string)
 	{
 		$options = array(
 			'format'	 => 'a-zA-Z0-9_-',
@@ -40,7 +40,7 @@ class v
 	}
 	
 	// Vérifie qu'une chaîne est valide
-	function string($string, $options)
+	static function string($string, $options)
 	{
 		$format = NULL;
 		$min_length = $max_length = 0;
@@ -58,12 +58,12 @@ class v
 
 
 
-	function password($password)
+	static function password($password)
 	{
 		return self::string($password, array('min_length' => 4));
 	}
 
-	function passwords($password1, $password2)
+	static function passwords($password1, $password2)
 	{
 
 		if($password1 == $password2
@@ -72,7 +72,7 @@ class v
 			{
 			return true;
 		} 
-		else  return false;
+		else return false;
 	}
 }
 ?>

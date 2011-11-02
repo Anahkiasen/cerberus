@@ -158,7 +158,13 @@ class db
 		$last_id = self::last_id();
 		return ($last_id === false) ? self::$affected : self::last_id();
 	}
-
+	
+	/*
+	########################################
+	############### RACCOURCIS #############
+	########################################
+	*/
+	
 	// Effectue une requête SELECT
 	static function select($table, $select = '*', $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
 	{
@@ -169,6 +175,51 @@ class db
 		if($page !== NULL and $limit !== NULL) $sql .= ' LIMIT ' .$page. ',' .$limit;
 
 		return self::query($sql, $fetch);
+	}
+	
+	// Ne renvoit que le premier résultat
+	static function row($table, $select = '*', $where = NULL, $order = NULL)
+	{
+		$result = self::select($table, $select, $where, $order, 0, 1, false);
+		return self::fetch($result);
+	}
+	
+	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
+	{
+
+		$result = self::select($table, $column, $where, $order, $page, $limit, false);
+
+		$array = array();
+		while($r = self::fetch($result)) array_push($array, a::get($r, $column));
+		return $array;
+	}
+	
+	// Ne renvoit qu'un seul champ du premier résultat
+	static function field($table, $field, $where = NULL, $order = NULL)
+	{
+		$result = self::row($table, $field, $where, $order);
+		return a::get($result, $field);
+	}
+	
+	// Faire une requête JOIN
+	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
+	{
+			return self::select(
+				self::prefix($table_1). ' ' .$type. ' ' .
+				self::prefix($table_2). ' ON ' .
+				self::where($on),
+				$select,
+				self::where($where),
+				$order,
+				$page,
+				$limit
+			);
+	}
+
+	// Faire une requête LEFT JOIN
+	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
+	{
+			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
 	}
 	
 	// Execute une requête INSERT
@@ -184,24 +235,12 @@ class db
 		return self::execute('UPDATE ' .self::prefix($table). ' SET ' .self::values($input). ' WHERE ' .self::where($where). ' ' .$limit);
 	}
 	
-	/*
-	########################################
-	############### RACCOURCIS #############
-	########################################
-	*/
-
-	// Ne renvoit que le premier résultat
-	static function row($table, $select = '*', $where = NULL, $order = NULL)
+	// Supprimer des entrées
+	static function delete($table, $where = '')
 	{
-		$result = self::select($table, $select, $where, $order, 0, 1, false);
-		return self::fetch($result);
-	}
-	
-	// Ne renvoit qu'un seul champ du premier résultat
-	static function field($table, $field, $where = NULL, $order = NULL)
-	{
-		$result = self::row($table, $field, $where, $order);
-		return a::get($result, $field);
+		$sql = 'DELETE FROM ' .self::prefix($table);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
+		return self::execute($sql);
 	}
 	
 	// Compte le nombre d'entrées
@@ -211,30 +250,22 @@ class db
 		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
 	
-	// Supprimer des entrées
-	static function delete($table, $where = '')
-	{
-		$sql = 'DELETE FROM ' .self::prefix($table);
-		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
-		return self::execute($sql);
-	}
-	
 	// Insère plusieurs entrées à la fois
 	static function insert_all($table, $fields, $values)
 	{
 		if($fields) $fields = '(' .implode(',', $fields). ')'; 
 		$query = 'INSERT INTO ' .self::prefix($table). ' ' .$fields. ' VALUES ';
-		$rows  = array();
+		$rows = array();
 		
 		foreach($values as $v)
-		{    
+		{
 			$str = '(\'';
 			$sep = '';
 			
 			foreach($v as $input)
 			{
-				$str .= $sep.self::escape($input);            
-				$sep = "','";  
+				$str .= $sep.self::escape($input);
+				$sep = "','"; 
 			}
 
 			$str .= '\')';
@@ -262,18 +293,38 @@ class db
 	static function where($array, $method = 'AND')
 	{
 		if(!is_array($array)) return $array;
-		else
+
+		$output = array();
+		foreach($array as $field => $value)
 		{
-			$output = array();
-			foreach($array as $field => $value)
+			$operand = '=';
+			$operand2 = 'IN';
+			
+			// Modifiers
+			if(substr($field, -1) == '!')
 			{
-				$output[] = $field. ' = \'' .self::escape($value). '\'';
-				$separator = ' ' .$method. ' ';
+				$operand = '!=';
+				$operand2 = 'NOT IN';
+				$field = substr($field, 0, -1);
 			}
-			return implode(' ' .$method. ' ', $output);
+			else if(substr($field, -1) == '?')
+			{
+				$operand = 'LIKE';
+				$field = substr($field, 0, -1);
+			}
+			
+			// Construction
+			$field = (strpos($field, '.') === false) ? '`' .$field. '`' : $field;
+			
+			if(is_string($value)) $output[] = $field. ' ' .$operand. ' \'' .self::escape($value). '\'';
+			else if(is_array($value)) $output[] = $field. ' ' .$operand2. ' (' .implode(',', $value). ')';
+			else $output[] = $field. ' ' .$operand. ' ' .self::escape($value). '';
+			
+			$separator = ' ' .$method. ' ';
 		}
-	}
-		
+		return implode(' ' .$method. ' ', $output);
+	}	
+			
 	// Transforme un array en syntaxe UPDATE/INSERT
 	static function values($input)
 	{
@@ -308,7 +359,7 @@ class db
 		$connection = self::connection();
 		$error = (mysql_error()) ? @mysql_error($connection) : false;
 		
-		if(self::$last_query and !PRODUCTION) echo display(htmlentities(self::$last_query));
+		if(self::$last_query and !PRODUCTION) prompt(htmlentities(self::$last_query));
 		errorHandle('SQL', $error, __FILE__, __LINE__);
 		
 		if($exit or PRODUCTION) die($message);
@@ -353,6 +404,17 @@ class db
 	{
 		return self::$affected;
 	}
+	
+	// Affiche un message selon le status de la dernière requête
+	static function status($true, $false, $format = TRUE)
+	{
+		$return = (self::$affected)
+			? $true
+			: $false;
+		
+		if($format) prompt($return);
+		else return $return;
+	}
 
 	// Retourne l'id de la dernière requête
 	static function last_id()
@@ -395,40 +457,9 @@ class db
 		return true;
 	}
 
-
 	static function replace($table, $input)
 	{
 		return self::execute('REPLACE INTO ' .self::prefix($table). ' SET ' .self::values($input));
-	}
-
-
-
-	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL) {
-
-		$result = self::select($table, $column, $where, $order, $page, $limit, false);
-
-		$array = array();
-		while($r = self::fetch($result)) array_push($array, a::get($r, $column));
-		return $array;
-	}
-
-	// Faire une requête jointe
-	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
-	{
-			return self::select(
-				self::prefix($table_1). ' ' .$type. ' ' .
-				self::prefix($table_2). ' ON ' .
-				self::where($on),
-				$select,
-				self::where($where),
-				$order,
-				$page,
-				$limit
-			);
-	}
-
-	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL) {
-			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
 	}
 
 	static function min($table, $column, $where = NULL) {

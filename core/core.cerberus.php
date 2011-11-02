@@ -64,8 +64,8 @@ class Cerberus
 		{
 			// Packs
 			$packages = array(
-			'pack.sql' => array('backupSQL', 'mysqlQuery', 'escape'),
-			'pack.navigation' => array('baseref', 'desiredPage', 'rewrite'),
+			'pack.sql' => array('backupSQL'),
+			'pack.navigation' => array('baseref', 'navigation', 'rewrite'),
 			'class.admin' => array('admin', 'admin.setup'),
 			'class.mail' => array('smail', 'stripHTML'),
 			'class.form' => array('form', 'checkString'),
@@ -97,17 +97,10 @@ class Cerberus
 		
 		foreach($cheminsValides as $chemin)
 		{
-			$extension = (strpos($chemin, 'class') === FALSE)
-				? '.php'
-				: '.class.php';
-				
-			if(file_exists($chemin.$module.$extension))
-			{
-				$found = true;
-				return $chemin.$module.$extension;
-			}
+			if(file_exists($chemin.$module.'.php')) return $chemin.$module.'.php';
+			elseif(file_exists($chemin.'class.'.$module.'.php')) return $chemin.'class.'.$module.'.php';
 		}
-		if(!isset($found)) return false;
+		return false;
 	}		
 
 	// Chargement d'un module
@@ -147,20 +140,15 @@ class Cerberus
 	########################################
 	*/
 	
-	// Mise en cache des fonctions requises
+	// Affichage des erreurs et rendu du fichier
 	function generate()
 	{
-		// Affichage des erreurs et création du fichier
-		if(!empty($this->erreurs)) foreach($this->erreurs as $value) echo $value. '<br />';
+		if(!empty($this->erreurs))
+			foreach($this->erreurs as $value) echo $value. '<br />';
+		
 		else
-		{
 			if(!empty($this->render))
-			{
-				$thisFile = fopen('cerberus/cache/' .$this->mode. '.php', 'w+');
-				fputs($thisFile, '<?php' .$this->render. '?>');
-				fclose($thisFile);
-			}
-		}
+				f::write('cerberus/cache/' .$this->mode. '.php', '<?php' .$this->render. '?>');
 	}
 		
 	/* 
@@ -172,25 +160,33 @@ class Cerberus
 	// Fonction META 
 	function meta($mode = 'meta')
 	{
-		global $meta;
+		global $meta, $pageVoulue, $sousPageVoulue;
 		
+		// Récupération des informations
 		if($mode == 'meta')
 			$meta = a::rearrange(db::select('meta', '*', array('langue' => l::current()), 'page ASC'), 'page');
 
 		else
 		{
-			global $pageVoulue;
-			global $sousPageVoulue;
-		
-			$defaultTitle = l::get('menu-' .$pageVoulue);
-			if($pageVoulue == 'admin' and get('admin')) $defaultTitle = 'Gestion ' .ucfirst(get('admin'));
-			if(isset($meta[$pageVoulue. '-' .$sousPageVoulue]))
+			$pagenow = $pageVoulue. '-' .$sousPageVoulue;
+			$default_title = ($pageVoulue == 'admin' and get('admin'))
+				? 'Gestion ' .ucfirst(get('admin'))
+				: l::get('menu-' .$pageVoulue);
+				
+			if(isset($meta[$pagenow]))
 			{
-				$thisMeta = $meta[$pageVoulue. '-' .$sousPageVoulue];
-				$thisMeta['titre'] = $defaultTitle. ' - ' .$thisMeta['titre'];
-				return $thisMeta[$mode];
+				// titre
+				$meta[$pagenow]['titre'] = $default_title. ' - ' .$meta[$pagenow]['titre'];
+				
+				// keywords
+				$meta[$pagenow]['keywords'] = NULL;
+				/* $keywords = explode(' ', $meta[$pagenow]['description']);
+				shuffle($keywords);
+				for($i = 0; $i <= 20; $i++) $meta[$pagenow]['keywords'] .= str::slugify($keywords[$i]). ' '; */
+								
+				return $meta[$pagenow][$mode];
 			}
-			else if($mode == 'titre') return $defaultTitle;
+			else return $default_title;
 		}
 	}
 		
@@ -340,7 +336,7 @@ class dispatch extends Cerberus
 					if(isset($availableAPI[$value]))
 					{
 						$minCSS[] = sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
-						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>';
+						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>' . "\n";
 						else $minJS[] = sexist('assets/js/' .$availableAPI[$value]. '.js');
 					}
 					
@@ -367,7 +363,7 @@ class dispatch extends Cerberus
 			$minJS = array_filter($minJS);
 			if(!empty($minCSS)) $css .= '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
 			if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
-			return array(str::trim($css), str::trim($js), $scripts);
+			return array(str::trim($css)."\n", str::trim($js)."\n", $scripts);
 		}	
 	}
 }

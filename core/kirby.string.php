@@ -32,7 +32,7 @@ class str
 		return trim($string);
 	}
 	
-	// Longueur d'une cha�ne
+	// Longueur d'une chaîne
 	static function length($str)
 	{
 		return mb_strlen($str, 'UTF-8');
@@ -45,7 +45,7 @@ class str
 		return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
 	
-	// Parse une cha�ne
+	// Parse une chaîne
 	static function parse($string, $mode = 'json')
 	{
 		if(is_array($string)) return $string;
@@ -80,7 +80,7 @@ class str
 		return $result;
 	}
 	
-	// G�n�re une cha�ne al�atoire
+	// Génère une chaîne aléatoire
 	static function random($length = false)
 	{
 		$length = ($length) ? $length : rand(10,20);
@@ -97,7 +97,7 @@ class str
 		return $string;
 	}
 	
-	// Met une cha�ne au pluriel ou singulier (ou absence de)
+	// Met une chaîne au pluriel ou singulier (ou absence de)
 	static function plural($count, $many, $one, $zero = '')
 	{
 		if($count == 1) return $one;
@@ -105,19 +105,19 @@ class str
 		else return $many;
 	}
 
-	// Met une cha�ne en minuscule
+	// Met une chaîne en minuscule
 	static function lower($str)
 	{
 		return mb_strtolower($str, 'UTF-8');
 	}
 
-	// Met une cha�ne en majuscule
+	// Met une chaîne en majuscule
 	static function upper($str)
 	{
 		return mb_strtoupper($str, 'UTF-8');
 	}
 
-	// Cr�er un lien � partir d'une cha�ne
+	// Créer un lien à partir d'une chaîne
 	static function link($link, $text = NULL, $attr = NULL)
 	{
 		if($attr)
@@ -130,8 +130,22 @@ class str
 		return '<a href="' . $link . '" ' .$attributes. '>' . str::html($text) . '</a>';
 	}
 	
+	// Ajout des balises HTML autour d'une chaîne
+	static function wrap($balise, $text = NULL, $attr = NULL)
+	{
+		if($attr)
+			$attributes = (is_array($attr))
+				? simplode(array('="', '"'), ' ', $attr)
+				: $attr;
+		else $attributes = NULL;
+	
+		$balise = a::beArray($balise);
+		foreach($balise as $bal) $text = self::wrap($balise, $text, $attr[$bal]);
+		return $text;
+	}
+	
 	// Utilise la fonction link en combinisaison avec rewrite()
-	static function slink($link, $params = NULL, $text = NULL, $attr = NULL)
+	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
 	{
 		$link = rewrite($link, $params);
 		return self::link($link, $text, $attr);
@@ -146,11 +160,11 @@ class str
 				: $attr;
 		else $attributes = NULL;
 	
-		$alt = ($alt) ? $alt : basename($src);
+		$alt = ($alt) ? $alt : pathinfo($src, PATHINFO_FILENAME);
 		return '<img src="' .$src. '" alt="' .$alt. '" ' .$attributes. ' />';
 	}
 
-	// Transforme une cha�ne en HTML valide
+	// Transforme une chaîne en HTML valide
 	static function html($string, $keep_html = true)
 	{
 		if($keep_html)
@@ -160,6 +174,52 @@ class str
 			return htmlentities($string, ENT_COMPAT, 'utf-8');
 	}
 
+	// Créer un lien mailto
+	static function email($email, $text = FALSE)
+	{
+		if(empty($email)) return false;
+		$string = (empty($text)) ? $email : $text;
+		$email	= self::encode($email, 3);
+		return '<a title="' .$email. '" class="email" href="mailto:' .$email. '">' .self::encode($string, 3). '</a>';
+	}
+
+	// Normalise une chaîne
+	static function slugify($text)
+	{
+		$foreign = array
+		(
+			'/À|Á|Â|Ã|Ä|Å|Ǻ|Ā|Ă|Ą|Ǎ|А/' => 'A',
+			'/à|á|â|ã|ä|å|ǻ|ā|ă|ą|ǎ|ª|а/' => 'a',
+			'/È|É|Ê|Ë/' => 'E',
+			'/è|é|ê|ë/' => 'e',
+			'/Ì|Í|Î|Ï/' => 'I',
+			'/ì|í|î|ï/' => 'i',
+			'/Ò|Ó|Ô|Õ|Ö|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ø|Ǿ|О/' => 'O',
+			'/ò|ó|ô|õ|ö|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|о/' => 'o',
+			'/Ù|Ú|Û|Ü/' => 'U',
+			'/ù|ú|û|ü/' => 'u',
+			'/Ç/' => 'C',
+			'/ç/' => 'c',
+			'/Ñ/' => 'N',
+			'/Œ/' => 'OE',
+			'/œ/' => 'oe',
+			'/Ý/' => 'Y',
+			'/Þ/' => 'B',
+			'/ß/' => 's',
+			'/Š/' => 'S',
+			'/š/' => 's',
+			'/Ž/' => 'Z',
+			'/ž/' => 'z',
+			'/æ/' => 'ae'
+		);
+		
+		$text = preg_replace(array_keys($foreign), array_values($foreign), $text);
+		$text = preg_replace('![^a-z0-9]!i', '-', $text);
+		$text = preg_replace('/-+/', '-', $text);
+		$text = trim($text, '-');
+		$text = str::lower($text);
+		return $text;
+	}
 
 
 
@@ -222,10 +282,9 @@ class str
 		$table = array_flip(self::entities());
 
 		// convert html entities to xml entities
-		return strtr($string, $table);
+		return strip_tags(strtr($string, $table));
 
 	}
-
 	
 	static function encode($string) {
 		$encoded = '';
@@ -236,15 +295,9 @@ class str
 		return $encoded;
 	}
 
-	static function email($email, $text=false) {
-		if(empty($email)) return false;
-		$string = (empty($text)) ? $email : $text;
-		$email	= self::encode($email, 3);
-		return '<a title="' . $email . '" class="email" href="mailto:' . $email . '">' . self::encode($string, 3) . '</a>';
-	}
 
-
-	static function short($string, $chars, $rep='�') {
+	static function short($string, $chars, $rep='…')
+	{
 		if(str::length($string) <= $chars) return $string;
 		$string = self::substr($string,0,($chars-str::length($rep)));
 		$punctuation = '.!?:;,-';
@@ -252,11 +305,11 @@ class str
 		return $string . $rep;
 	}
 
-	static function shorturl($url, $chars=false, $base=false, $rep='�') {
+	static function shorturl($url, $chars=false, $base=false, $rep='…') {
 		return url::short($url, $chars, $base, $rep);
 	}
 
-	static function cutout($str, $length, $rep='�') {
+	static function cutout($str, $length, $rep='…') {
 
 		$strlength = str::length($str);
 		if($length >= $strlength) return $str;
@@ -281,15 +334,11 @@ class str
 
 	}
 
-	static function substr($str,$start) {
-		preg_match_all('/./u', $str, $ar);
-		if(func_num_args() >= 3) {
-			 $end = func_get_arg(2);
-			 return join('',array_slice($ar[0],$start,$end));
-		} else {
-			 return join('',array_slice($ar[0],$start));
-		}
+	static function substr($str, $start, $end = null)
+	{
+		return mb_substr($str, $start, ($end == null) ? mb_strlen($str, 'UTF-8') : $end, 'UTF-8');
 	}
+
 
 	static function contains($str, $needle) {
 		return strstr($str, $needle);
@@ -300,20 +349,6 @@ class str
 		if(!$match) return false;
 		if(!$get) return $array;
 		return a::get($array, $get, $placeholder);
-	}
-
-	static function urlify($text)
-	{
-		$text = trim($text);
-		$text = str::lower($text);
-		$text = str_replace('�', 'ae', $text);
-		$text = str_replace('�', 'oe', $text);
-		$text = str_replace('�', 'ue', $text);
-		$text = str_replace('�', 'ss', $text);
-		$text = preg_replace("![^a-z0-9]!i","-", $text);
-		$text = preg_replace("![-]{2,}!","-", $text);
-		$text = preg_replace("!-$!","", $text);
-		return $text;
 	}
 
 
@@ -378,7 +413,7 @@ class str
 				$string = str_replace('\t','',$string);
 				break;
 			case 'url':
-				$string = self::urlify($string);
+				$string = self::slugify($string);
 				break;
 			case 'filename':
 				$string = f::save_name($string);

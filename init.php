@@ -1,7 +1,12 @@
 <?php
 // Chargement du moteur
 include('tools/errorHandle.php');
-foreach(glob('cerberus/core/*.php') as $file) require_once($file);
+date_default_timezone_set('Europe/Paris');
+ini_set('error_log', 'cerberus/cache/error.log');
+ini_set('log_errors', 'On');
+
+require_once('cerberus/class/core.cerberus.php');
+foreach(glob('cerberus/class/kirby.*.php') as $file) require_once($file);
 s::start();
 
 /*
@@ -62,7 +67,7 @@ if(db::connect()) backupSQL();
 if(MULTILANGUE)
 {
 	$index = new l();
-	$index::load('cerberus/cache/lang-{langue}.php');
+	$index->load('cerberus/cache/lang-{langue}.php');
 	$index = l::get();
 }
 

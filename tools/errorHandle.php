@@ -7,6 +7,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	
 	// Date de l'erreur
 	$DEBUG['date'] = 'Une erreur est survenue &agrave; ' .date('H:i:s \l\e Y-m-d'). '<br />';
+	if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
 	
 	// Type d'erreur
 	switch ($errorType)
@@ -56,7 +57,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			{
 				// Types d'arguments
 				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .f::filename($value). '"';
-				elseif(is_array($value)) $info['args'][$key] = 'ARRAY["' .implode('", "', $value). '"]';
+				elseif(is_array($value)) $info['args'][$key] = '<pre>' .print_r($value, TRUE). '</pre>';
 				else $info['args'][$key] = '"' .$value. '"';
 			}
 			
@@ -67,7 +68,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			$thisPath[] = $parametres;
 		}
 		
-		$DEBUG['path_' .$id_file] = '<p style="padding-left:' .($id_file*25+10). 'px">' .implode('<br />', $thisPath). '</p>';
+		$DEBUG['path_' .$id_file] = '<div style="padding-left:' .($id_file*25+10). 'px">' .implode('<br />', $thisPath). '</div>';
 		$thisPath = array();
 	}
 	
@@ -83,7 +84,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	// Si local affichage de l'erreur, sinon envoi d'un mail
 	if(!LOCAL)
 	{
-		if(!class_exists('smail')) include('cerberus/class/smail.class.php');
+		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
 		if(!function_exists('stripHTML')) include('cerberus/tools/stripHTML.php');
 		
 		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;

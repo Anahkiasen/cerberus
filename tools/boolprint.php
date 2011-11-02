@@ -8,7 +8,6 @@
 */
 function boolprint($boolean)
 {
-	if($boolean) return 'TRUE';
-	else return 'FALSE';
+	return ($boolean) ? 'TRUE' : 'FALSE';
 }
 ?>

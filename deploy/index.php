@@ -99,7 +99,7 @@ h1
 <?php
 if(!file_exists('../../index.php'))
 {	
-	foreach(glob('cerberus/core/*.php') as $file) require_once($file);
+	foreach(glob('cerberus/class/*.php') as $file) require_once($file);
 
 	if(isset($_POST['submit']))
 	{
@@ -169,25 +169,25 @@ if(!file_exists('../../index.php'))
 		if($_POST['site-multi'])
 		{
 			mysql_query('DROP TABLE IF EXISTS `langue`;');
-			mysqlQuery(array('CREATE TABLE IF NOT EXISTS `langue` (
+			db::execute('CREATE TABLE IF NOT EXISTS `langue` (
 			  `tag` varchar(255) NOT NULL,
 			  `fr` varchar(255) NOT NULL,
 			  PRIMARY KEY (`tag`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));	
-			mysqlQuery(array('INSERT INTO langue VALUES ("menu-home", "Accueil")'));
+			) ENGINE=MyISAM DEFAULT CHARSET=latin1;');	
+			db::execute('INSERT INTO langue VALUES ("menu-home", "Accueil")');
 		}
 		
 		// Table ADMIN
 		mysql_query('DROP TABLE IF EXISTS `admin`;');
-		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `admin` (
+		db::execute('CREATE TABLE IF NOT EXISTS `admin` (
 		  `user` varchar(32) NOT NULL,
 		  `password` varchar(32) NOT NULL,
 		  PRIMARY KEY (`user`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1'));
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1');
 		
 		// Table LOGS
 		mysql_query('DROP TABLE IF EXISTS `logs`;');
-		mysqlQuery(array('CREATE TABLE IF NOT EXISTS `logs` (
+		db::execute('CREATE TABLE IF NOT EXISTS `logs` (
 		  `ip` varchar(20) NOT NULL,
 		  `date` datetime NOT NULL,
 		  `platform` varchar(10) NOT NULL,
@@ -196,18 +196,18 @@ if(!file_exists('../../index.php'))
 		  `engine` varchar(10) NOT NULL,
 		  `mobile` enum(\'0\',\'1\') NOT NULL,
 		  PRIMARY KEY (`ip`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
 		
 		// Table META
 		mysql_query('DROP TABLE IF EXISTS `meta`;');
-		mysqlQuery(array('CREATE TABLE `meta` (
+		db::execute('CREATE TABLE `meta` (
 		  `page` varchar(30) NOT NULL,
 		  `titre` varchar(200) NOT NULL,
 		  `description` text NOT NULL,
 		  `url` varchar(150) NOT NULL,
 		  `langue` enum(\'fr\',\'en\') NOT NULL,
 		  PRIMARY KEY (`page`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;'));
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
 		
 		// Création des dossiers
 		mkdir('../../css/');

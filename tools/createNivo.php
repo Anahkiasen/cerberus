@@ -22,8 +22,6 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 {
 	global $nivoSlider;
 	
-	if(!function_exists('findString')) include_once('cerberus/tools/findString.php');
-	
 	// Pourcentages
 	if(findString('%', array($largeur, $hauteur)))
 	{
@@ -33,12 +31,12 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 	elseif(findString('%', $largeur))
 	{
 		$largeur = str_replace('%', '', $largeur);
-		$largeur = $hauteur * ($largeur / 100);
+		$largeur = floor($hauteur * ($largeur / 100));
 	}
 	elseif(findString('%', $hauteur))
 	{
 		$hauteur = str_replace('%', '', $hauteur);
-		$hauteur = $largeur * ($hauteur / 100);
+		$hauteur = floor($largeur * ($hauteur / 100));
 	}
 
 	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">';
@@ -47,7 +45,7 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 	foreach($arrayImages as $file)
 	{
 		$file = str_replace('assets/file/', '', $file);
-		echo '<img src="' .timthumb($file, $largeur, $hauteur). '" />';
+		echo str::img(timthumb($file, $largeur, $hauteur));
 	}
 	echo '</div>';
 		

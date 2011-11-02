@@ -4,30 +4,29 @@
 // Préfixe
 if(isset($_POST['prefixpost'])) $_SESSION['prefix'] = $_POST['prefixpost'];
 if(isset($_GET['noprefix'])) unset($_SESSION['prefix']);
-$PREFIXE = (isset($_SESSION['prefix'])) ? $_SESSION['prefix'] : NULL;
+$PREFIXE = a::get($_SESSION, 'prefix', NULL);
 
 // Supprimer un dossier
 if(isset($_GET['deleteFolder']))
 {
-	if(sunlink('assets/file/' .$_GET['deleteFolder']. '/')) echo display('Le dossier a bien été supprimé');
-	else echo display('Une erreur est survenue durant la suppression du dossier');
+	if(sunlink('assets/file/' .$_GET['deleteFolder']. '/')) prompt('Le dossier a bien été supprimé');
+	else prompt('Une erreur est survenue durant la suppression du dossier');
 }
 
 // Supprimer une image
 if(isset($_GET['delete_image']))
 {
 	if(sunlink('assets/file/' .$_GET['pictures']. '/' .$_GET['delete_image']))
-		echo display('Image ' .$_GET['delete_image']. ' supprimée');
+		prompt('Image ' .$_GET['delete_image']. ' supprimée');
 }
 
 // Renommer une image
 if(isset($_POST['oldfile']))
 {
-	$explode = explode('/', $_POST['oldfile']);
-	$dossier = $explode[2];
+	$dossier = a::get(explode('/', $_POST['oldfile']), 2);
 	$extension = f::extension($_POST['oldfile']);
-	rename($_POST['oldfile'], 'assets/file/' .$dossier. '/' .normalize($_POST['renommer']). '.jpg');
-	echo display('Le fichier a bien été renommé');
+	rename($_POST['oldfile'], 'assets/file/' .$dossier. '/' .str::slugify($_POST['renommer']). '.jpg');
+	prompt('Le fichier a bien été renommé');
 }
 
 // Renommer les images en masse
@@ -53,12 +52,12 @@ if(isset($_GET['rename']))
 		$i++;
 	}
 	
-	echo display('Les images ont bien été renommées au format ' .$PREFIXE.$basename. '-XX');
+	prompt('Les images ont bien été renommées au format ' .$PREFIXE.$basename. '-XX');
 }
 ?>
 
 <form method="post" action="<?= rewrite('admin-images') ?>">
-<p>Ajouter un préfixe au renommage automatique (ou <a href="<?= rewrite('admin-images', 'noprefix') ?>">supprimer le préfixe enregistré</a>) :<br />
+<p>Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
 <input type="text" name="prefixpost" value="<?= $PREFIXE ?>" /> <input type="submit" value="OK" class="ok" />
 </form>
 
@@ -86,9 +85,9 @@ foreach(glob('assets/file/*') as $file)
 		<tr>
 			<td>' .$basename. '</td>
 			<td>' .$count. '</td>
-			<td><a href="' .rewrite('admin-images', array('rename' => $basename)). '">' .$PREFIXE.$basename. '-XX.jpg</a></td>
-			<td><a href="' .rewrite('admin-images', array('pictures' => $basename)). '"><img src="assets/css/picture.png" alt="Voir les images" /></a></td>
-			<td><a href="' .rewrite('admin-images', array('deleteFolder' => $basename)). '"><img src="assets/css/delete.png" alt="Supprimer le dossier" /></a></td>
+			<td>' .str::slink(NULL, $PREFIXE.$basename.'-XX.jpg', array('rename' => $basename)). '</td>
+			<td>' .str::slink(NULL, str::img('assets/css/picture.png', 'Voir les images'), array('pictures' => $basename)). '</td>
+			<td>' .str::slink(NULL, str::img('assets/css/delete.png', 'Supprimer le dossier'), array('deleteFolder' => $basename)). '</td>
 		</tr>';
 	}
 }
@@ -129,7 +128,7 @@ if(isset($_GET['pictures']) and file_exists('assets/file/' .$_GET['pictures']))
 				<input type="hidden" name="oldfile" value="' .$image. '" />
 				</form>
 				</td>
-			<td><a href="' .rewrite('admin-images', array('pictures' => $_GET['pictures'], 'delete_image' => $basename)). '"><img src="assets/css/delete.png" /></a></td>
+			<td>' .str::slink('admin-images', str::img('assets/css/delete.png'), array('pictures' => $_GET['pictures'], 'delete_image' => $basename)). '</td>
 		</tr>';
 	}
 	echo '</tbody></table>';

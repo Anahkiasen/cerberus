@@ -10,9 +10,9 @@ class pager
 	static function set($entries, $page, $limit)
 	{
 		self::$entries = $entries;
-		self::$limit   = $limit;
-		self::$pages   = ($entries > 0) ? ceil($entries / $limit) : 0;
-		self::$page    = self::sanitize($page, self::$pages);
+		self::$limit = $limit;
+		self::$pages = ($entries > 0) ? ceil($entries / $limit) : 0;
+		self::$page = self::sanitize($page, self::$pages);
 	}
 
 	// Page actuelle
@@ -77,7 +77,7 @@ class pager
 	// Retourne l'entrée de début pour une requête
 	static function db()
 	{
-		return (self::$page-1) *  self::$limit;
+		return (self::$page-1) * self::$limit;
 	}
 }
 ?>

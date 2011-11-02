@@ -29,7 +29,7 @@ function sunlink($file, $empty = false)
 					if($contents != '.' && $contents != '..')
 					{
 						$path = $file . "/" . $contents;
-					   
+						
 						// Suppression du fichier/dossier
 						if(is_dir($path)) sunlink($path);
 						else unlink($path);
@@ -37,7 +37,7 @@ function sunlink($file, $empty = false)
 				}
 				closedir($fileHandle);
 		
-				if($empty == false and !rmdir($file)) return false;	   
+				if($empty == false and !rmdir($file)) return false;
 				return true;
 			}
 		}

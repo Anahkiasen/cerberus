@@ -6,7 +6,7 @@ $cerberus = new Cerberus(array('browserSelector', 'cssFont', 'createIndex', 'pac
 // Arbre de navigation et page en cours
 $navigation = array(
 	);
-$desiredPage = new desiredPage($navigation);
+$desiredPage = new navigation($navigation);
 list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->render();
 
 // Dispatch des fonctions PHP

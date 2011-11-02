@@ -16,13 +16,12 @@ function backupSQL()
 	if(empty($tables_base))
 	{
 		// Si la base de données est vide, chargement de dernière la sauvegarde
-		foreach(glob('cerberus/cache/sql/*') as $file)  
+		foreach(glob('cerberus/cache/sql/*') as $file) 
 			$fichier = $file;
 			
 		if(isset($fichier))
 		{	
-			$fichier = explode('/', $fichier);
-			$fichier = $fichier[3];
+			$fichier = a::get(explode('/', $fichier), 3);
 			
 			foreach(glob('cerberus/cache/sql/' .$fichier. '/*.sql') as $file)
 				$fichier = $file;
@@ -34,9 +33,7 @@ function backupSQL()
 	{
 	
 		$database_name = explode('_', config::get('db.name'));
-		$filename = (isset($database_name[1]))
-			? $database_name[1]
-			: config::get('db.name');
+		$filename = a::get($database_name, 1, config::get('db.name'));
 
 		// Définition du nom du dossier
 		$path = 'cerberus/cache/sql/';
@@ -48,8 +45,8 @@ function backupSQL()
 			$tables_base = array_values($tables_base);
 			
 			// Suppression des sauvegardes inutiles
-			foreach(glob($path. '*') as $file)  
-			{  
+			foreach(glob($path. '*') as $file) 
+			{
 				if(is_dir($file))
 				{
 					$folderDate = explode('-', str_replace($path, '', $file));
@@ -64,12 +61,12 @@ function backupSQL()
 						//echo 'La sauvegarde du ' .implode('-', $folderDate). ' a bien été supprimée<br />';
 					}
 				}
-			}  
+			} 
 		
 			// Récupération de la liste des tables
 			$file = NULL;
 			foreach($tables_base as $table)
-			{   
+			{
 				$file .= "DROP TABLE IF EXISTS $table;\n";
 				
 				// Création de la table

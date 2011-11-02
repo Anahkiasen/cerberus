@@ -12,10 +12,10 @@
 	$array
 		Array à imploser
 	$convert
-		TRUE	Passe les valeurs à la fonction escape()
+		TRUE	Passe les valeurs à la fonction db::escape()
 		FALSE	Laisse les valeurs intactes
 */
-function simplode($glue1, $glue2, $array, $convert = TRUE)
+function simplode($glue1, $glue2, $array, $convert = FALSE)
 {
 	if(is_array($array))
 	{

@@ -158,9 +158,9 @@ class browser
 
 		return array
 		(
-			'browser'  => self::$browser,
-			'engine'   => self::$engine,
-			'version'  => self::$version,
+			'browser' => self::$browser,
+			'engine' => self::$engine,
+			'version' => self::$version,
 			'platform' => self::$platform
 		);
 	}

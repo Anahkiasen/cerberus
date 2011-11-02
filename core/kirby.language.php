@@ -12,7 +12,7 @@ class l
 		$tables = db::row('langue', 'tag');
 		if(!empty($tables))
 		{
-			if(!PRODUCTION) sunlink($filename); // Suppression de la version existante
+			if(!PRODUCTION or LOCAL) sunlink($filename); // Suppression de la version existante
 			if(file_exists($filename) and PRODUCTION) self::load($filename);
 			else
 			{
@@ -32,17 +32,19 @@ class l
 			}
 			
 			// Langue du site
-			if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default'));
+			if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
 			if(get('langue')) self::change(get('langue'));
 
 			// Langue de l'administration
 			if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
 			if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
+			
+			self::locale();
 		}
 	}
 
 	// Changer une traduction
-	function set($key, $value = NULL)
+	static function set($key, $value = NULL)
 	{
 		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
 		else self::$lang[$key] = $value;
@@ -52,11 +54,19 @@ class l
 	static function get($key = NULL, $default = NULL)
 	{
 		if(empty($key)) return self::$lang;
-		else return a::get(self::$lang, $key, $default);
+		else
+		{
+			if(LOCAL) $default = '<span style="color:red">[' .$key. '(' .self::current(). ')]</span>';
+			$translate = a::get(self::$lang, $key, $default);
+			return (empty($translate)) ? $default : stripslashes($translate);
+		}
 	}
 	
+	// Affiche une valeur formattée
+	
+	
 	// Changer de langue
-	function change($langue = 'fr')
+	static function change($langue = 'fr')
 	{
 		s::set('langueSite', l::sanitize($langue));
 		return s::get('langueSite');
@@ -76,6 +86,26 @@ class l
 			return $langue;
 		}
 	}
+	
+	// Règle l'environnement dans la langue correcte
+	static function locale($language = FALSE)
+	{
+		if(!$language) $language = l::current();
+		$default_locales = array(
+			'de' => array('de_DE.UTF8','de_DE@euro','de_DE','de','ge'),
+			'fr' => array('fr_FR.UTF8','fr_FR','fr'),
+			'es' => array('es_ES.UTF8','es_ES','es'),
+			'it' => array('it_IT.UTF8','it_IT','it'),
+			'pt' => array('pt_PT.UTF8','pt_PT','pt'),
+			'zh' => array('zh_CN.UTF8','zh_CN','zh'),
+			'en' => array('en_US.UTF8','en_US','en'),
+		);
+		$locales = config::get('locales', array());
+		$locales = array_merge($default_locales, $locales);
+		setlocale(LC_ALL, a::get($locales, $language, array('en_US.UTF8','en_US','en')));
+		return setlocale(LC_ALL, 0);
+	}
+
 	
 	// Langue autorisée ou non
 	static function sanitize($langue)
@@ -101,12 +131,28 @@ class l
 		}
 	}
 	
+	// Traduction d'un jour
+	static function day($day)
+	{
+		$day = strtotime($day);
+		return strftime('%A', $day);
+	}
+	
+	// Traduction d'un mois
+	static function month($month)
+	{
+		$month = strtotime($month);
+		return strftime('%B', $month);
+	}
+	
 	// Charger du contenu traduit
 	static function content($file)
 	{
-		$file = 'pages/text/' .self::current(). '-' .$file. '.html';
-		if(file_exists($file)) include $file;
-		else echo '<span style="color:red">[' .$file. '(' .self::current(). ')]</span>';
+		$file = 'pages/text/' .self::current(). '-' .$file;
+		
+		$page = f::inclure($file.'.html');
+		if(!$page) $page = f::inclure($file.'.php');
+		if(!$page) echo '<span style="color:red">[' .$file. '(' .self::current(). ')]</span>';
 	}
 }
 ?>

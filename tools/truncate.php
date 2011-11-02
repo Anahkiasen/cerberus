@@ -30,7 +30,7 @@ function truncate($string, $count = 255, $mode = NULL, $trailing = NULL)
 			
 		default:
 			$count -= str::length($trailing);
-			if(str::length($string) > $count)  return mb_substr($string, 0, $count).$trailing;
+			if(str::length($string) > $count) return mb_substr($string, 0, $count).$trailing;
 			else return $string;
 			break;
 	}

@@ -7,7 +7,7 @@ class config
 	static function load($file)
 	{
 		if(file_exists($file)) require_once($file);
-		self::$config = $config;
+		if(isset($config)) self::set($config);
 		return self::get();
 	}
 	

@@ -10,12 +10,19 @@
 	$params
 		Paramètres à faire passer
 */
-function rewrite($page, $params = NULL)
+function rewrite($page = NULL, $params = NULL)
 {
 	// Importation des variables
-	$GLOBALS['cerberus']->injectModule('normalize');
-	global $meta;
-	global $navigation;
+	global $meta, $navigation;
+	
+	// Page actuelle
+	if(!$page)
+	{
+		global $pageVoulue, $sousPageVoulue;
+		$page = ($pageVoulue == 'admin')
+			? $pageVoulue.'-'.get('admin')
+			: $pageVoulue.'-'.$sousPageVoulue;
+	}
 		
 	// Détermination de la page/sous-page
 	$hashless = url::strip_hash($page);
@@ -23,15 +30,14 @@ function rewrite($page, $params = NULL)
 	$page = $hashless;
 	
 	if(!is_array($page)) $page = explode('-', $page);
-	$page0 = $page[0];
-	
+	$page0 = a::get($page, 0);
 	if(isset($page[1])) $page1 = $page[1];
 	elseif(!isset($page[1]) and isset($navigation[$page0])) $page1 = $navigation[$page0][0];
 	else $page1 = NULL;
 	
-	// Pas de sous-navigation
 	if(is_array($params))
 	{
+		// Pas de sous-navigation
 		if(isset($params['subnav']))
 		{
 			if($params['subnav'] != true) $page1 = NULL;
@@ -81,7 +87,7 @@ function rewrite($page, $params = NULL)
 		if(isset($meta[$thisPage]) and !isset($thisHTML)) $thisHTML = (!empty($meta[$thisPage]['url'])) ? $meta[$thisPage]['url'] : $meta[$thisPage]['titre'];
 		if(isset($thisHTML))
 		{
-			$lien .= normalize($thisHTML, true);
+			$lien .= str::slugify($thisHTML, true);
 			$lien .= '.html';
 		}
 	}

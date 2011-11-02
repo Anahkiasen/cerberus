@@ -1,7 +1,13 @@
 <?php
 /*
 	Fonction display
-	# Affiche un message d'information/erreur
+	# Retourne un message d'information/erreur
+	
+	Fonction prompt
+	# Affiche un message formaté avec display
+	
+	Fonction promptm
+	# Version multilingue de prompt
 	
 	$message
 		Message à afficher
@@ -16,9 +22,19 @@ function display($message)
 {
 	return '<p class="infoblock">' .$message. '</p>';
 }
-function debug($message)
+function prompt($message)
 {
-	if(is_array($message)) return '<div style="display:none">' .print_r($message). '</div>';
-	else return '<p style="display:none">' .$message. '</p>';
+	echo display($message);
+}
+function promptm($message, $default = NULL)
+{
+	echo display(l::get($message, $default));
+}
+function debug($variable)
+{
+	$display = (LOCAL) ? NULL : 'display:none';
+	
+	if(is_array($variable)) return '<div style="' .$display. '"><pre>' .print_r($variable, true). '</pre></div>';
+	else return '<p style="' .$display. '">' .$variable. '</p>';
 }
 ?>

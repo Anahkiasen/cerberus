@@ -22,10 +22,10 @@ $form->openFieldset($diffText. ' une news');
 				<dd style="text-align:center"><p><img src="' .timthumb('news/' .$path, 125, 125, 1, false). '" /><br />	' 
 					.str::slink(
 					'admin-news',
+					'Supprimer',
 					array(
 						'edit_news' => $_GET['edit_news'],
-						'deleteThumb' => $_GET['edit_news']),
-					'Supprimer'). 
+						'deleteThumb' => $_GET['edit_news'])). 
 				'</p></dd></dl>');
 		}
 	}

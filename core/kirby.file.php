@@ -8,7 +8,7 @@ class f
 		if(!file_exists($dossier))
 		{
 			if(!mkdir($dossier, 0700, true))
-				echo display('Impossible de créer le dossier');
+				prompt('Impossible de créer le dossier');
 			else self::write($file, $content);
 		}
 		else
@@ -24,27 +24,27 @@ class f
 	}
 	
 	// Écrit à la fin d'un fichier
-	function append($file, $content)
+	static function append($file, $content)
 	{
 		return self::write($file, $content, true);
 	}
 	
 	// Lit un fichier
-	function read($file, $parse = false)
+	static function read($file, $parse = false)
 	{
 		$content = @file_get_contents($file);
 		return ($parse) ? str::parse($content, $parse) : $content;
 	}
 
 	// Déplacer un fichier
-	function move($old, $new)
+	static function move($old, $new)
 	{
 		if(!file_exists($old)) return false;
 		else return (@rename($old, $new) && file_exists($new));
 	}
 
 	// Supprimer un fichier
-	function remove($file)
+	static function remove($file)
 	{
 		return (file_exists($file) && is_file($file) && !empty($file)) ? @unlink($file) : false;
 	}
@@ -62,7 +62,7 @@ class f
 	}
 
 	// Retourne le nom d'un fichier sans l'extension ni le chemin
-	function name($name, $remove_path = false)
+	static function name($name, $remove_path = false)
 	{
 		if($remove_path == true) $name = self::filename($name);
 		else
@@ -74,13 +74,13 @@ class f
 	}
 
 	// Retourne le nom du dossier courant
-	function dirname($file = __FILE__)
+	static function dirname($file = __FILE__)
 	{
 		return dirname($file);
 	}
 	
 	// Calcule la taille d'un fichier
-	function size($file, $nice = false)
+	static function size($file, $nice = false)
 	{
 		@clearstatcache();
 		$size = @filesize($file);
@@ -89,7 +89,7 @@ class f
 	}
 
 	// Affiche lisiblement la taille d'un fichier
-	function nice_size($size)
+	static function nice_size($size)
 	{
 		$size = str::sanitize($size, 'int');
 		if($size < 1) return '0 kb';
@@ -99,15 +99,15 @@ class f
 	}
 	
 	// Convertit un fichier
-	function convert($name, $type = 'jpg')
+	static function convert($name, $type = 'jpg')
 	{
 		return self::name($name) . $type;
 	}
 
 	// Retourne un nom de fichier sûr
-	function safe_name($string)
+	static function safe_name($string)
 	{
-		return str::urlify($string);
+		return str::slugify($string);
 	}
 	
 	// Inclure un fichier

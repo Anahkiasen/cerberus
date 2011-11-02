@@ -28,13 +28,13 @@ class url
 	}
 
 	// Présence de requêtes GET à la fin de l'URL
-	function has_query($url)
+	static function has_query($url)
 	{
 		return (str::contains($url, '?'));
 	}
 
 	// Supprimer les requêtes
-	function strip_query($url)
+	static function strip_query($url)
 	{
 		return preg_replace('/\?.*$/is', '', $url);
 	}
@@ -46,7 +46,7 @@ class url
 	}
 
 	// Vérifier si l'URL est valide
-	function valid($url)
+	static function valid($url)
 	{
 		return v::url($url);
 	}

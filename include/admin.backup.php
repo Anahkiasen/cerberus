@@ -2,16 +2,16 @@
 // Suppression et chargement
 if(isset($_GET['delete']))
 {
-	if(sunlink('cerberus/cache/sql/' .$_GET['delete']. '/')) echo display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
-	else echo display('Sauvegarde introuvable');
+	if(sunlink('cerberus/cache/sql/' .$_GET['delete']. '/')) prompt('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
+	else prompt('Sauvegarde introuvable');
 }
 if(isset($_GET['load']))
 {
 	foreach(glob('cerberus/cache/sql/' .$_GET['load']. '/*.sql') as $file)
 		$fichier = $file;
 		
-	//multiQuery(file_get_contents($fichier), array($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB));
-	echo display('La sauvegarde du ' .$_GET['load']. ' a bien été chargée');
+	multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.password'), config::get('db.name')));
+	prompt('La sauvegarde du ' .$_GET['load']. ' a bien été chargée');
 }
 
 echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
@@ -26,19 +26,18 @@ echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
 	<tbody>';
 	
 // Liste des sauvegardes
-foreach(glob('./cerberus/cache/sql/*') as $file)  
-{  
+foreach(glob('./cerberus/cache/sql/*') as $file)
+{
 	if(is_dir($file))
 	{
 		$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
 		echo 
 		'<tr>
 		<td>' .$folderDate. '</td>
-		<td><a href="' .rewrite('admin-backup', array('load' => $folderDate)). '"><img src="assets/css/load.png" /></a></td>
-		<td><a href="' .rewrite('admin-backup', array('delete' => $folderDate)). '"><img src="assets/css/delete.png" /></a></td>
+		<td>' .str::slink(NULL, str::img('assets/css/load.png'), array('load' => $folderDate)). '</td>
+		<td>' .str::slink(NULL, str::img('assets/css/delete.png'), array('delete' => $folderDate)). '</td>
 		</tr>';
 	}
-}  
+}
 echo '</tbody></table>';
-
 ?>
