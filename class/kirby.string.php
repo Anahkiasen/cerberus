@@ -131,7 +131,7 @@ class str
 	}
 	
 	// Ajout des balises HTML autour d'une chaîne
-	static function wrap($balise, $text = NULL, $attr = NULL)
+	static function wrap($balise, $texte = NULL, $attr = NULL)
 	{
 		if($attr)
 			$attributes = (is_array($attr))
@@ -139,9 +139,21 @@ class str
 				: $attr;
 		else $attributes = NULL;
 	
-		$balise = a::beArray($balise);
-		foreach($balise as $bal) $text = self::wrap($balise, $text, $attr[$bal]);
-		return $text;
+		if(is_array($balise))
+		{
+			foreach($balise as $bal => $balattr)
+			{
+				if(is_numeric($bal))
+				{
+					$bal = $balattr;
+					$balattr = NULL;
+				}
+				$texte = self::wrap($bal, $texte, $balattr);
+			}
+		}		
+		else $texte = '<' .$balise. ' ' .$attributes. '>' .$texte. '</' .$balise. '>';
+		
+		return $texte;
 	}
 	
 	// Utilise la fonction link en combinisaison avec rewrite()
