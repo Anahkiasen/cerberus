@@ -70,8 +70,12 @@ class db
 			
 			$connection = @mysql_connect($host, $user, $password);
 			self::$connection = $connection;
-			$database = self::database($database);
-			mysql_query("SET NAMES 'utf8'");
+			if($connection)
+			{
+				$database = self::database($database);
+				mysql_query("SET NAMES 'utf8'");
+			}
+			else return self::error(l::get('db.errors.connect', 'Erreur de connexion à MySQL'), true);
 		}
 
 		// Affichage des erreurs

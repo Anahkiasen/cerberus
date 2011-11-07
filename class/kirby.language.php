@@ -121,7 +121,8 @@ class l
 	static function load($fileraw)
 	{
 		$file = str_replace('{langue}', l::current(), $fileraw);
-		if(!file_exists($file)) $file = str_replace('{langue}', config::get('langue_default', 'fr'), $fileraw);
+		if(!file_exists($file))
+			$file = str_replace('{langue}', config::get('langue_default', 'fr'), $fileraw);
 		
 		if(file_exists($file))
 		{

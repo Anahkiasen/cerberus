@@ -56,6 +56,7 @@ $cerberus = new Cerberus(config::get('cerberus'));
 
 // Connexion et backup de la base
 if(db::connect()) backupSQL();
+else exit('Impossible d\'établir une connexion à la base de données');
 
 /*
 ########################################
