@@ -88,8 +88,9 @@ if(db::is_table('logs'))
 	if(!db::row('logs', 'ip', array('ip' => $ip)) and ($ip))
 	{
 		$ua = browser::detect();
-		$domaine = substr(url::short(url::current()), 0, -1);
+		$domaine = a::get(explode('/', url::short()), 0);
 		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
+		
 		if(!empty($ua['browser']) and !empty($ua['platform']))
 			db::insert('logs', array(
 				'ip' => $ip,
