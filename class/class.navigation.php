@@ -41,10 +41,16 @@ class navigation
 	*/
 	
 	// Fonctions moteur
-	function __construct($navigation)
+	function __construct($navigation = NULL)
 	{
+		if(!$navigation and db::is_table('structure'))
+		{
+			$navbis = db::select('structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
+			foreach($navbis as $values) $navigation[$values['parent']][] = $values['page'];
+		}
+	
 		// Navigation par défaut
-		if(!isset($navigation))
+		if(!isset($navigation) or empty($navigation))
 			 $navigation = array(
 			 	'home' => array('home'),
 				'admin' => array('admin'));
@@ -114,6 +120,13 @@ class navigation
 	{
 		$this->optionListed = $menu;
 		$this->optionListedSub = $submenu;
+	}
+	
+	// Vérifie la présence d'une clé dans l'arbre
+	function get($key)
+	{
+		if($this->navigation[$key]) return $this->navigation[$key];
+		else return false;
 	}
 	
 	/*

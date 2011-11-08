@@ -364,7 +364,7 @@ class db
 		$error = (mysql_error()) ? @mysql_error($connection) : false;
 		
 		if(self::$last_query and !PRODUCTION) prompt(htmlentities(self::$last_query));
-		errorHandle('SQL', $error, __FILE__, __LINE__);
+		if($error) errorHandle('SQL', $error, __FILE__, __LINE__);
 		
 		if($exit or PRODUCTION) die($message);
 	}
@@ -398,9 +398,17 @@ class db
 	}
 
 	// Vérifie si une table existe
-	static function is_table($table)
+	static function is_table($tables)
 	{
-		return (in_array($table, self::showtables()));
+		$tables = func_get_args();
+		$found = 0;
+		
+		foreach($tables as $table)
+			if(in_array($table, self::showtables()))
+				$found++;
+
+
+		return ($found == count($tables));
 	}
 	
 	// Retourne le nombre d'entrées afféctées

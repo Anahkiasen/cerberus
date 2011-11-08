@@ -19,6 +19,7 @@ body
 form input[type=submit],
 fieldset legend,
 table thead td,
+table thead th,
 table tr.entete td,
 table .additem,
 .readmore,
