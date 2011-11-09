@@ -48,6 +48,7 @@ class navigation
 			$navbis = db::select('structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
 			foreach($navbis as $values) $navigation[$values['parent']][] = $values['page'];
 		}
+		elseif($navigation and !db::is_table('structure')) $this->createStructure($navigation);
 	
 		// Navigation par défaut
 		if(!isset($navigation) or empty($navigation))
@@ -133,6 +134,35 @@ class navigation
 		if(!$key) return $this->navigation;
 		elseif($key and $this->navigation[$key]) return $this->navigation[$key];
 		else return false;
+	}
+	
+	// Met à jour l'arbre de navigation à la nouvelle version
+	function createStructure($navigation)
+	{
+		mysql_query("DROP TABLE IF EXISTS `structure`;
+		CREATE TABLE `structure` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `page` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+		  `parent` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+		  `parent_priority` int(11) NOT NULL,
+		  `page_priority` int(11) NOT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;");
+		
+		$pparent = 1;
+		$ppage = 1;
+		foreach($navigation as $parent => $pages)
+		{
+			$pages = a::beArray($pages);
+			foreach($pages as $page)
+			{
+				$last = db::insert('structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage);
+				db::update('meta', array('page' => $last), array('page' => $parent.'-'.$page));
+				$ppage++;
+			}
+			
+			$pparent++;
+		}
 	}
 	
 	/*

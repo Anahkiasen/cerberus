@@ -82,8 +82,10 @@ class r
 
 }
 
-function get($key=false, $default = NULL)
+// Récupérer une valeur GET
+function get($key = FALSE, $default = NULL)
 {
-	return r::get($key, $default);
+	return a::get($_GET, $key, $default);
+	//return r::get($key, $default);
 }
 ?>

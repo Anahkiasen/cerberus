@@ -58,7 +58,13 @@ class form
 		return self::$valuesArray;
 	}
 	
-	// Assigner une valeur à une variable
+	// Ajoute une valeur au tableau
+	function addValue($key, $value)
+	{
+		self::$valuesArray[$key] = $value;
+	}
+	
+	// Changer le type de formulaire
 	function setType($type)
 	{
 		self::$formType = $type;
@@ -163,8 +169,9 @@ class form
 	{
 		// Définitions	
 		$type = $params['type'];
+		$name_unsan = $params['name'];
 		list($params['name'], $label) = $this->defineNameLabel($params['name'], $params['label']);
-		if(empty($params['value'])) $params['value'] = $this->defineValue($params['name']);
+		if(empty($params['value'])) $params['value'] = $this->defineValue($name_unsan);
 		
 		// State Fieldset
 		$stateField = (self::$openedManual == false 

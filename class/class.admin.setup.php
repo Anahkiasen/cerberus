@@ -31,7 +31,7 @@ class AdminSetup
 			// Ajout des pages par défaut
 			$systemPages = array('images', 'backup');
 			if(db::is_table('meta')) array_unshift($systemPages, 'meta');
-			//if(db::is_table('structure')) array_unshift($systemPages, 'arborescence');
+			if(db::is_table('structure')) array_unshift($systemPages, 'structure');
 			if(db::is_table('news')) array_unshift($systemPages, 'news');
 			
 			$adminNavigation = array_diff($navigation['admin'], array('admin'));
