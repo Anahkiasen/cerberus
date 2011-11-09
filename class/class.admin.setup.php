@@ -61,7 +61,7 @@ class AdminSetup
 			
 			// Navigation
 			echo '<h1>' .$title. '</h1>';
-			$this->admin_navigation($thisNavigation, 'arborescence');
+			$this->admin_navigation($thisNavigation, $systemPages[1]);
 			
 			echo '<div id="admin">';
 			if($title != 'Administration') $this->content();
