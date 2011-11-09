@@ -139,24 +139,26 @@ class navigation
 	// Met à jour l'arbre de navigation à la nouvelle version
 	function createStructure($navigation)
 	{
-		mysql_query("DROP TABLE IF EXISTS `structure`;
-		CREATE TABLE `structure` (
+		mysql_query("DROP TABLE IF EXISTS `structure`;");
+		mysql_query("CREATE TABLE `structure` (
 		  `id` int(11) NOT NULL AUTO_INCREMENT,
 		  `page` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 		  `parent` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 		  `parent_priority` int(11) NOT NULL,
 		  `page_priority` int(11) NOT NULL,
 		  PRIMARY KEY (`id`)
-		) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;");
+		) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 		
 		$pparent = 1;
 		$ppage = 1;
 		foreach($navigation as $parent => $pages)
 		{
+			$ppage = 1;
 			$pages = a::beArray($pages);
 			foreach($pages as $page)
 			{
-				$last = db::insert('structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage);
+				$last = db::insert('structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage));
+				echo $last. ' - ' .$parent.'-'.$page.'<br/>';
 				db::update('meta', array('page' => $last), array('page' => $parent.'-'.$page));
 				$ppage++;
 			}

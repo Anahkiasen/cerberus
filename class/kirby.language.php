@@ -56,7 +56,7 @@ class l
 		if(empty($key)) return self::$lang;
 		else
 		{
-			if(LOCAL) $default = '<span style="color:red">[' .$key. '(' .self::current(). ')]</span>';
+			//if(LOCAL) $default = '<span style="color:red">[' .$key. '(' .self::current(). ')]</span>';
 			$translate = a::get(self::$lang, $key, $default);
 			return (empty($translate)) ? $default : stripslashes($translate);
 		}

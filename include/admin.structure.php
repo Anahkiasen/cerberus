@@ -1,20 +1,32 @@
 <?php
-$metaAdmin = new AdminPage();
-$metaAdmin->setPage('meta');
+if(get('meta_structure'))
+{
+	$metaAdmin = new AdminPage();
+	$metaAdmin->setPage('meta');
 
-if(isset($_POST['lien']))
-	unset($_POST);
+	if(isset($_POST['lien']))
+		unset($_POST);
+}
+
+if(isset($_POST['titre']))
+{
+	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
+	$already = db::field('langue', $_SESSION['admin']['langue'], array('tag' => $index));
+	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['titre']), array('tag' => $index));
+	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['titre']));
+}
 
 $strucAdmin = new AdminPage();
 $strucAdmin->setPage('structure');
 $strucAdmin->addRow('meta', 'META');
 $strucAdmin->createList(
-	array('index' => 'pageid', 'Titre' => 'fr', 'Ordre' => 'page_priority'),
+	array('index' => 'pageid', 'Titre' => $_SESSION['admin']['langue'], 'Ordre' => 'page_priority'),
 	array(
-		'SELECT' => 'S.id AS id, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.fr, (SELECT fr FROM langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+		'SELECT' => 'S.id AS id, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM langue WHERE tag = CONCAT("menu-", parent)) AS categ',
 		'FROM' => 'meta M',
 		'LEFT JOIN' => 'structure S ON S.id=M.page LEFT JOIN langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
 		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
+		'WHERE' => 'S.parent IS NOT NULL',
 		'DIVIDE' => 'categ'));
 
 // Formulaire
@@ -62,7 +74,7 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 	$form->getValues($strucAdmin->getFieldsTable());
 	
 	$test = $form->passValues();
-	$titre = get('edit_structure') ? l::get('menu-'.$test['parent'].'-'.$test['page']) : NULL;
+	$titre = get('edit_structure') ? l::get('menu-'.$test['parent'].'-'.$test['page'], NULL) : NULL;
 	$form->addValue('titre', $titre);
 	
 	$form->openFieldset($diffText. ' l\'arobrescence');

@@ -54,7 +54,7 @@ class AdminPage extends AdminSetup
 		{
 			// Vérification des champs disponibles
 			$emptyFields = array();
-			if(MULTILANGUE) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
+			if(MULTILANGUE and in_array('langue', db::fields($this->table))) $fieldsUpdate['langue'] = $_SESSION['admin']['langue'];
 			foreach($_POST as $key => $value)
 			{
 				if(findString('_annee', $key))
@@ -186,7 +186,8 @@ class AdminPage extends AdminSetup
 		if(!isset($manualQuery['ORDER BY'])) $manualQuery['ORDER BY'] = $index. ' DESC';
 		
 		// WHERE
-		if(MULTILANGUE and $this->multilangue)
+		$fields = db::fields($this->table);
+		if(MULTILANGUE and $this->multilangue and in_array('langue', $fields))
 		{
 			$whereMulti = 'langue="' .$_SESSION['admin']['langue']. '"';
 			$manualQuery['WHERE'] = (!isset($manualQuery['WHERE']))
