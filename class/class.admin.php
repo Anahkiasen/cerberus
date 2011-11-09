@@ -220,9 +220,10 @@ class AdminPage extends AdminSetup
 						$thisGroup = $value[$divideBy];
 					}
 				}
-							
-				if(isset($thisGroup)) echo '<tr id="' .$key. '" class="opened" opened="' .str::slugify($thisGroup). '">';
-				else echo '<tr id="' .$key. '">';
+				
+				$selected = ($this->getEdit	== $key) ? 'selected' : NULL;
+				if(isset($thisGroup)) echo '<tr id="' .$key. '" class="opened ' .$selected. '" opened="' .str::slugify($thisGroup). '">';
+				else echo '<tr id="' .$key. '" class="' .$selected. '">';
 				
 					// Valeurs
 					$value = a::beArray($value);

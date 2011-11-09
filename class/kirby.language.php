@@ -126,7 +126,7 @@ class l
 		
 		if(file_exists($file))
 		{
-			require($file);
+			include($file);
 			self::$lang = $lang;
 			return l::get();
 		}

@@ -31,6 +31,7 @@ class AdminSetup
 			// Ajout des pages par défaut
 			$systemPages = array('images', 'backup');
 			if(db::is_table('meta')) array_unshift($systemPages, 'meta');
+			//if(db::is_table('structure')) array_unshift($systemPages, 'arborescence');
 			if(db::is_table('news')) array_unshift($systemPages, 'news');
 			
 			$adminNavigation = array_diff($navigation['admin'], array('admin'));
@@ -38,9 +39,13 @@ class AdminSetup
 		
 			// Droits de l'utilisateur
 			$droits = str::parse(db::field('admin', 'droits', array('user' => md5($_SESSION['admin']['user']))));
-			foreach($thisNavigation as $key => $page)
-				if(in_array($page, $droits)) $thisNavigation = a::remove($thisNavigation, $key);
-
+			if(!empty($droits))
+			{
+				foreach($droits as $page)
+					if(in_array($page, $thisNavigation)) $sanitizedNavigation[] = $page;
+				$thisNavigation = $sanitizedNavigation;
+			}
+			
 			// Vérification de la page
 			$title = 'Administration';
 			if(!empty($thisNavigation))
@@ -56,7 +61,7 @@ class AdminSetup
 			
 			// Navigation
 			echo '<h1>' .$title. '</h1>';
-			$this->admin_navigation($thisNavigation);
+			$this->admin_navigation($thisNavigation, 'arborescence');
 			
 			echo '<div id="admin">';
 			if($title != 'Administration') $this->content();
@@ -150,7 +155,7 @@ class AdminSetup
 	############## NAVIGATION ##############
 	######################################## 
 	*/
-	function admin_navigation($navigation)
+	function admin_navigation($navigation, $cesure)
 	{
 		echo '<div class="navbar" style="position:relative">';
 		
@@ -172,6 +177,7 @@ class AdminSetup
 		{
 			if(!empty($value))
 			{
+				if($value == $cesure) echo '</div><div class="navbar" style="background-image:url(assets/css/overlay/noir-75.png)">';
 				$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : ucfirst($value);
 				$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? array('class' => 'hover') : NULL;
 				echo str::slink('admin-' .$value, $textLien, NULL, $thisActive);

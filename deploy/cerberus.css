@@ -180,6 +180,7 @@ p.readmore:active { background-image:url(overlay/blanc-25.png); }
 	background-image:url(overlay/blanc-25.png);
 	text-align:center;
 }
+.admin table .selected { background-color: #D6DBBD; }
 .admin table .additem:hover td { background-image:url(overlay/blanc-50.png); }
 .admin table .additem td a:hover { color:#FFF; }
 .admin #contenu table .additem td a { color:#FFF; }

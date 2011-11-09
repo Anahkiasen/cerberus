@@ -95,6 +95,11 @@ class navigation
 			}
 			$this->filepath = $page.$substring.$pageSub.$extension;
 		}
+		else
+		{
+			// Page d'admin
+			if(get('admin')) $pageSub = get('admin');
+		}
 		
 		// Enregistrement des variables
 		$this->navigation = $navigation;
@@ -123,9 +128,10 @@ class navigation
 	}
 	
 	// Vérifie la présence d'une clé dans l'arbre
-	function get($key)
+	function get($key = NULL)
 	{
-		if($this->navigation[$key]) return $this->navigation[$key];
+		if(!$key) return $this->navigation;
+		elseif($key and $this->navigation[$key]) return $this->navigation[$key];
 		else return false;
 	}
 	
