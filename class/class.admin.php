@@ -196,7 +196,7 @@ class AdminPage extends AdminSetup
 		}	
 										
 		// Tri des arguments
-		$ordreSyntaxe = array('SELECT', 'FROM', 'LEFT JOIN', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT');
+		$ordreSyntaxe = array('SELECT', 'FROM', 'RIGHT JOIN', 'LEFT JOIN', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT');
 		foreach($ordreSyntaxe as $argument)
 		{
 			if(array_key_exists($argument, $manualQuery))

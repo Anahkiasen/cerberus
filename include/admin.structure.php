@@ -24,7 +24,7 @@ $strucAdmin->createList(
 	array(
 		'SELECT' => 'S.id AS id, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM langue WHERE tag = CONCAT("menu-", parent)) AS categ',
 		'FROM' => 'meta M',
-		'LEFT JOIN' => 'structure S ON S.id=M.page LEFT JOIN langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
+		'RIGHT JOIN' => 'structure S ON S.id=M.page LEFT JOIN langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
 		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
 		'WHERE' => 'S.parent IS NOT NULL',
 		'DIVIDE' => 'categ'));
@@ -34,9 +34,15 @@ if(isset($_GET['meta_structure']))
 {
 	global $navigation;
 
-	$meta = a::simple(db::left_join('meta M', 'structure S', 'S.id = M.page', 'M.id, M.page AS idx, M.titre, M.description, M.url', array('M.page' => $_GET['meta_structure'])));
+	$meta = a::simple(db::join('meta M', 'structure S', 'S.id = M.page', 'M.id, M.page AS idx, M.titre, M.description, M.url', array('M.page' => $_GET['meta_structure']), NULL, NULL, NULL, 'RIGHT JOIN'));
 	$availablePages = a::simple(a::rearrange(db::select('structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
-	$_GET['edit_meta'] = $meta['id'];
+	if(!isset($meta['id']))
+	{
+		$last = db::insert('meta', array('page' => $_GET['meta_structure'], 'langue' => $_SESSION['admin']['langue']));
+		$meta = array('titre' => NULL, 'idx' => NULL, 'url' => NULL, 'description' => NULL);
+		$_GET['edit_meta'] = $last;
+	}
+	else $_GET['edit_meta'] = $meta['id'];
 
 	// Formulaire
 	$form = new form(false, array('action' => rewrite('admin-structure', array('meta_structure' => get('meta_structure')))));

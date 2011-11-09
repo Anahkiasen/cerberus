@@ -165,14 +165,13 @@ class Cerberus
 		// Récupération des informations
 		if($mode == 'meta')
 		{
-			if(!s::get('metadata') and db::is_table('structure', 'meta'))
+			if(db::is_table('structure', 'meta'))
 			{
 				$metadata = db::left_join('meta M', 'structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
 				foreach($metadata as $values)
 					$meta[$values['parent'].'-'.$values['page']] = $values;
-				s::set('metadata', $meta);
+				//s::set('metadata', $meta);
 			}
-			else $meta = s::get('metadata');
 		}
 		else
 		{

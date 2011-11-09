@@ -156,6 +156,7 @@ class a
 				else $output[$key] = $value;
 			}
 		}
+		if(!isset($output)) $output = array();
 		return $output;
 	}
 
