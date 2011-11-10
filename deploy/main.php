@@ -1,13 +1,11 @@
 <?php
 // Chargement du moteur Cerberus
 require_once('cerberus/init.php');
-$cerberus = new Cerberus(array('browserSelector', 'cssFont', 'createIndex', 'pack.sql', 'pack.navigation'));
 
 // Arbre de navigation et page en cours
-$navigation = array(
-	);
-$desiredPage = new navigation($navigation);
-list($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav, $pageVoulueFile) = $desiredPage->render();
+$desired = new navigation();
+$desiredPage->render($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav);
+$navigation = $desired->get();
 
 // Dispatch des fonctions PHP
 $cerberus->cerberusDispatch(array(
@@ -27,12 +25,12 @@ list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
 <?= $css ?>
 </head>
 
-<body class="<?= $pageVoulue ?>">
+<body class="<?= $desired->css() ?>">
 	<div id="main">
 		<div id="header"></div>
 		<div id="menu"><?= $renderNav ?></div>
 		<div id="corps"><? $desiredPage->content() ?></div>
-		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Concept : <a href="http://www.stappler.fr/">Le Principe de Stappler</a></div>
+		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Concept : <?= str::link('http://www.stappler.fr/', 'Le Principe de Stappler') ?></div>
 	</div>
 	
 	<?= $js ?>

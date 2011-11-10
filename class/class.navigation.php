@@ -275,5 +275,11 @@ class navigation
 			if(!$page) prompt('Une erreur est survenue lors du chargement de la page');
 		}
 	}
+	
+	// Récupération de la classe CSS
+	function css
+	{
+		return $this->page. ' ' .$this->page.'-'.$this->pageSub;
+	}
 }
 ?>

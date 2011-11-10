@@ -2,12 +2,14 @@
 if(get('meta_structure'))
 {
 	$metaAdmin = new AdminPage();
-	$metaAdmin->setPage('meta');
+	$metaAdmin->setPage('meta', array('titre', 'url', 'description'));
 
-	if(isset($_POST['lien']))
+	// Si formulaire META
+	if(isset($_POST['url']))
 		unset($_POST);
 }
 
+// Sinon
 if(isset($_POST['titre']))
 {
 	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
@@ -55,7 +57,7 @@ if(isset($_GET['meta_structure']))
 			$select->appendList($availablePages, false);
 			$form->insertText($select);
 		$form->addText('titre', 'Titre de la page', $meta['titre']);
-		$form->addText('lien', 'URL de la page', $meta['url']);
+		$form->addText('url', 'URL de la page', $meta['url']);
 		$form->addTextarea('description', 'Description de la page', $meta['description'], array('underfield' => true));
 		$form->addEdit();
 		$form->addSubmit('Modifier');

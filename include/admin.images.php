@@ -1,4 +1,4 @@
-<h1>Liste des dossiers d'images</h1>
+<h1>Dossiers d'images</h1>
 
 <?php
 // Préfixe
@@ -58,7 +58,7 @@ if(isset($_GET['rename']))
 
 <form method="post" action="<?= rewrite('admin-images') ?>">
 <p>Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
-<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" /> <input type="submit" value="OK" class="ok" />
+<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" />
 </form>
 
 <table>

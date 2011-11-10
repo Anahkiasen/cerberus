@@ -31,6 +31,7 @@ div.cerberus_debug { background-color:#069; }
 ######### BALISES COMMUNES #############
 ########################################
 */
+a img { border: none }
 p.clear { clear:both; }
 p.infoblock,
 p.readmore,
@@ -52,7 +53,7 @@ div.cerberus_debug
 	padding: 10px;
 	text-align: left;
 }
-div.cerberus_debug p
+div.cerberus_debug div
 {
 	background-image: url(overlay/noir-25.png);
 	padding: 5px;
@@ -65,6 +66,12 @@ div.cerberus_debug h3
 	color: white;
 }
 div.cerberus_debug h3 { margin-bottom: 15px; }
+div.cerberus_debug pre
+{
+	background-image: url(overlay/noir-10.png);
+	margin: 10px 0 0 0;
+	padding: 15px;
+}
 p.infoblock a
 {
 	color: #FFF;
@@ -175,12 +182,12 @@ p.readmore:active { background-image:url(overlay/blanc-25.png); }
 }
 .navbar a:hover { background-image:url(overlay/blanc-25.png); }
 .navbar a.hover { background-image:url(overlay/blanc-50.png); }
+.admin table .selected { background-color: #D6DBBD; }
 .admin table .additem td
 {
 	background-image:url(overlay/blanc-25.png);
 	text-align:center;
 }
-.admin table .selected { background-color: #D6DBBD; }
 .admin table .additem:hover td { background-image:url(overlay/blanc-50.png); }
 .admin table .additem td a:hover { color:#FFF; }
 .admin #contenu table .additem td a { color:#FFF; }
@@ -347,6 +354,13 @@ input[type=submit]:active
 	background-image:url(overlay/blanc-50.png);
 	border:none;
 	margin-top:15px;
+}
+input[type=submit].ok
+{
+	width: 30px;
+	position:relative;
+	left:-10px;
+	top: -5px
 }
 fieldset dl.submit dd,
 fieldset dl.submit.submit,

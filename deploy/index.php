@@ -99,7 +99,7 @@ h1
 <?php
 if(!file_exists('../../index.php'))
 {	
-	foreach(glob('cerberus/class/*.php') as $file) require_once($file);
+	foreach(glob('cerberus/class/kirby.*.php') as $file) require_once($file);
 
 	if(isset($_POST['submit']))
 	{
@@ -114,14 +114,13 @@ if(!file_exists('../../index.php'))
 				if(($file != '.') && ($file != '..')) 
 				{
 					if(is_dir($source. '/' .$file)) copydir($source. '/' . $file, $destination. '/' .$file); 
-					else copy($source. '/' .$file, $destination. '/' .$file); 
+					else f::move($source. '/' .$file, $destination. '/' .$file); 
 				} 
 			} 
 			
 			closedir($dir); 
 		} 
 		include('../tools/display.php');
-		include('../tools/mysqlQuery.php');
 		
 		// Données SQL
 		if(isset($_POST['sql-local']))
@@ -145,22 +144,6 @@ if(!file_exists('../../index.php'))
 			
 			mkdir('../cache/');
 			mkdir('../cache/sql/');
-			
-			// Deprecated
-			f::write('../conf.php',
-			"<?php
-			// Environnement
-			\$PRODUCTION = FALSE;
-			\$REWRITING = FALSE;
-			\$LANGUES = FALSE;
-			
-			// MySQL
-			\$LOCAL_DB = '$localhost';
-			\$PROD_HOST = '$MYSQL_HOST';
-			\$PROD_USER = '$MYSQL_USER';
-			\$PROD_MDP = '$MYSQL_MDP';
-			\$PROD_DB = '$MYSQL_DB';
-			?>");
 			
 			db::connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
 		}
@@ -210,7 +193,7 @@ if(!file_exists('../../index.php'))
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
 		
 		// Création des dossiers
-		mkdir('../../css/');
+		mkdir('../../assets/css/');
 		if(isset($_POST['site-tree']))
 		{
 			mkdir('../../pages/');
@@ -221,20 +204,22 @@ if(!file_exists('../../index.php'))
 		copydir('min', '../../min');
 			
 		// Déplacement des fichiers CSS et PHP
-		copy('styles.css', '../../css/styles.css');
-		copy('mail.css', '../../css/mail.css');
-		copy('img/delete.png', '../../css/delete.png');
-		copy('img/edit.png', '../../css/edit.png');
-		copy('img/load.png', '../../css/load.png');
+		f::move('assets/css/styles.css', '../../assets/css/styles.css');
+		f::move('assets/css/mail.css', '../../assets/css/mail.css');
+		f::move('assets/img/delete.png', '../../assets/css/delete.png');
+		f::move('assets/img/edit.png', '../../assets/css/edit.png');
+		f::move('assets/img/load.png', '../../assets/css/load.png');
+		f::move('assets/img/meta.png', '../../assets/css/meta.png');
 		
-		copy('cerberus.css', '../../css/cerberus.css');
-		copydir('overlay', '../../css/overlay');
+		f::move('assets/css/cerberus.css', '../../assets/css/cerberus.css');
+		copydir('assets/css/overlay', '../../assets/css/overlay');
 		
 		$index = file_get_contents('main.php');
 		$index = str_replace('[BDD]', "'" .$MYSQL_DB. "'", $index);
 		f::write('../../index.php', $index);
+		f::move('conf.php', '../conf.php');
 		
-		if(isset($_POST['module-cache'])) copy('n.htaccess', '../../n.htaccess');
+		if(isset($_POST['module-cache'])) f::move('n.htaccess', '../../n.htaccess');
 		
 		echo 'Cerberus correctement d&eacute;ploy&eacute;';
 	}

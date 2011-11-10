@@ -374,7 +374,7 @@ class AdminPage extends AdminSetup
 						
 					case 'path':
 						$path = db::field($this->table, 'path', array($this->index => $lastID));
-						$file = $lastID. '-' .md5(str::random()). '.' .$extension;
+						$file = $lastID. '-' .str::slugify($_FILES[$field]['name']). '-' .md5(str::random()). '.' .$extension;
 						
 						if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
 						db::update($this->table, array('path' => $file), array('id' => $lastID));
