@@ -278,7 +278,7 @@ class str
 
 	}
 
-	static function xml($text, $html=true) {
+	static function xml($text, $html = true) {
 
 		// convert raw text to html safe text
 		if($html) $text = self::html($text);
@@ -301,14 +301,14 @@ class str
 	static function encode($string) {
 		$encoded = '';
 		$length	= str::length($string);
-		for($i=0; $i<$length; $i++) {
+		for($i = 0; $i<$length; $i++) {
 			$encoded .= (rand(1,2)==1) ? '&#' . ord($string[$i]) . ';' : '&#x' . dechex(ord($string[$i])) . ';';
 		}
 		return $encoded;
 	}
 
 
-	static function short($string, $chars, $rep='…')
+	static function short($string, $chars, $rep = '…')
 	{
 		if(str::length($string) <= $chars) return $string;
 		$string = self::substr($string,0,($chars-str::length($rep)));
@@ -317,11 +317,11 @@ class str
 		return $string . $rep;
 	}
 
-	static function shorturl($url, $chars=false, $base=false, $rep='…') {
+	static function shorturl($url, $chars = false, $base = false, $rep = '…') {
 		return url::short($url, $chars, $base, $rep);
 	}
 
-	static function cutout($str, $length, $rep='…') {
+	static function cutout($str, $length, $rep = '…') {
 
 		$strlength = str::length($str);
 		if($length >= $strlength) return $str;
@@ -356,7 +356,7 @@ class str
 		return strstr($str, $needle);
 	}
 
-	static function match($string, $preg, $get=false, $placeholder=false) {
+	static function match($string, $preg, $get = false, $placeholder = false) {
 		$match = preg_match($preg, $string, $array);
 		if(!$match) return false;
 		if(!$get) return $array;

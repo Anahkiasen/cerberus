@@ -196,7 +196,7 @@ class a
 	// Exporter au format XML
 	static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = ' ', $level = 0)
 	{
-		$result = ($level==0 && $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . "\n" : '';
+		$result = ($level == 0 && $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . "\n" : '';
 		$nlevel = ($level+1);
 		$result .= str_repeat($tab, $level) . '<' . $tag . '>' . "\n";
 		

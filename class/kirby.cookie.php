@@ -2,7 +2,7 @@
 class cookie
 {
 	// Créer un cookie
-	static function set($key, $value, $expires = 3600, $domain='/')
+	static function set($key, $value, $expires = 3600, $domain = '/')
 	{
 		if(is_array($value)) $value = a::json($value);
 		$_COOKIE[$key] = $value;
@@ -16,7 +16,7 @@ class cookie
 	}
 	
 	// Supprimer un cookie
-	static function remove($key, $domain='/')
+	static function remove($key, $domain = '/')
 	{
 		$_COOKIE[$key] = false;
 		return @setcookie($key, false, time()-3600, $domain);

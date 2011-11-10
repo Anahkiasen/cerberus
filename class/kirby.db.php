@@ -165,11 +165,11 @@ class db
 	
 	/*
 	########################################
-	############### RACCOURCIS #############
+	############### DIRECTIVES #############
 	########################################
 	*/
 	
-	// Effectue une requête SELECT
+	// SELECT
 	static function select($table, $select = '*', $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
 	{
 		$sql = 'SELECT ' .$select. ' FROM ' .self::prefix($table);
@@ -181,31 +181,28 @@ class db
 		return self::query($sql, $fetch);
 	}
 	
-	// Ne renvoit que le premier résultat
-	static function row($table, $select = '*', $where = NULL, $order = NULL)
+	// INSERT
+	static function insert($table, $input, $ignore = false)
 	{
-		$result = self::select($table, $select, $where, $order, 0, 1, false);
-		return self::fetch($result);
+		$ignore = ($ignore) ? ' IGNORE' : '';
+		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 	
-	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
+	// UPDATE
+	static function update($table, $input, $where, $limit = NULL)
 	{
-
-		$result = self::select($table, $column, $where, $order, $page, $limit, false);
-
-		$array = array();
-		while($r = self::fetch($result)) array_push($array, a::get($r, $column));
-		return $array;
+		return self::execute('UPDATE ' .self::prefix($table). ' SET ' .self::values($input). ' WHERE ' .self::where($where). ' ' .$limit);
 	}
 	
-	// Ne renvoit qu'un seul champ du premier résultat
-	static function field($table, $field, $where = NULL, $order = NULL)
+	// DELETE
+	static function delete($table, $where = '')
 	{
-		$result = self::row($table, $field, $where, $order);
-		return a::get($result, $field);
+		$sql = 'DELETE FROM ' .self::prefix($table);
+		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
+		return self::execute($sql);
 	}
 	
-	// Faire une requête JOIN
+	// JOIN
 	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
 	{
 			return self::select(
@@ -220,41 +217,20 @@ class db
 			);
 	}
 
-	// Faire une requête LEFT JOIN
+	// LEFT JOIN
 	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
 	{
 			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
 	}
-	
-	// Execute une requête INSERT
-	static function insert($table, $input, $ignore = false)
-	{
-		$ignore = ($ignore) ? ' IGNORE' : '';
-		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
-	}
-	
-	// Requête UPDATE
-	static function update($table, $input, $where, $limit = NULL)
-	{
-		return self::execute('UPDATE ' .self::prefix($table). ' SET ' .self::values($input). ' WHERE ' .self::where($where). ' ' .$limit);
-	}
-	
-	// Supprimer des entrées
-	static function delete($table, $where = '')
-	{
-		$sql = 'DELETE FROM ' .self::prefix($table);
-		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
-		return self::execute($sql);
-	}
-	
-	// Compte le nombre d'entrées
+			
+	// COUNT
 	static function count($table, $where = '')
 	{
 		$result = self::row($table, 'count(*)', $where);
 		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
 	
-	// Insère plusieurs entrées à la fois
+	// INSERT ALL
 	static function insert_all($table, $fields, $values)
 	{
 		if($fields) $fields = '(' .implode(',', $fields). ')'; 
@@ -278,8 +254,124 @@ class db
 		
 		$query .= implode(',', $rows);
 		return self::execute($query);
+	}	
+	
+	/*
+	########################################
+	########## RESULTATS PARTIELS ##########
+	########################################
+	*/
+	
+	// Ne renvoit que le premier résultat
+	static function row($table, $select = '*', $where = NULL, $order = NULL)
+	{
+		$result = self::select($table, $select, $where, $order, 0, 1, false);
+		return self::fetch($result);
+	}
+		
+	// Ne renvoit qu'un seul champ du premier résultat
+	static function field($table, $field, $where = NULL, $order = NULL)
+	{
+		$result = self::row($table, $field, $where, $order);
+		return a::get($result, $field);
+	}
+	
+	// Ne renvoit qu'un seul champ
+	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
+	{
+
+		$result = self::select($table, $column, $where, $order, $page, $limit, false);
+
+		$array = array();
+		while($r = self::fetch($result)) array_push($array, a::get($r, $column));
+		return $array;
+	}
+	
+	/*
+	########################################
+	############### UTILITAIRES ############
+	########################################
+	*/
+
+	// Affiche la liste des tables
+	static function showtables()
+	{
+		$tables = self::query('SHOW TABLES', TRUE);
+		return a::simple($tables);
 	}
 
+	// Liste les champs d'une table
+	static function fields($table)
+	{
+		$connection = self::connect();
+
+		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
+		if(!$fields) return self::error(l::get('db.errors.fields', 'Impossible de lister les champs'));
+
+		$count	= @mysql_num_fields($fields);
+		for($x = 0; $x < $count; $x++)
+			$output[] = @mysql_field_name($fields, $x);
+		
+		return $output;
+	}
+
+	// Vérifie si une table existe
+	static function is_table($tables)
+	{
+		$tables = func_get_args();
+		$found = 0;
+		
+		foreach($tables as $table)
+			if(in_array($table, self::showtables()))
+				$found++;
+
+
+		return ($found == count($tables));
+	}
+	
+	// Vérifie si un champ existe dans un table
+	static function is_field($field, $table)
+	{
+		return in_array($field, self::fields($table));
+	}
+	
+	// Retourne le nombre d'entrées afféctées par la dernière requête
+	static function affected()
+	{
+		return self::$affected;
+	}
+	
+	// Retourne l'id de la dernière requête
+	static function last_id()
+	{
+		$connection = self::connection();
+		return @mysql_insert_id($connection);
+	}
+	
+	// Retourne la dernière requête
+	static function last_sql()
+	{
+		prompt(end(self::$trace));
+	}
+	
+	// Affiche un message selon le status de la dernière requête
+	static function status($true, $false, $format = TRUE)
+	{
+		$return = (self::$affected)
+			? $true
+			: $false;
+		
+		if($format) prompt($return);
+		else return $return;
+	}
+
+	// Retour le prochain ID
+	static function increment($table)
+	{
+		$result = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$table. '"'));
+		return $result['Auto_increment'];
+	}
+	
 	/*
 	########################################
 	############### MOTEUR SQL #############
@@ -311,18 +403,28 @@ class db
 				$operand2 = 'NOT IN';
 				$field = substr($field, 0, -1);
 			}
-			else if(substr($field, -1) == '?')
+			elseif(substr($field, -2) == '??')
+			{
+				$regex = TRUE;
+				$operand = 'LIKE';
+				$field = substr($field, 0, -2);
+			}
+			elseif(substr($field, -1) == '?')
 			{
 				$operand = 'LIKE';
 				$field = substr($field, 0, -1);
 			}
 			
+			// Nettoyage de la requête
+			if(!is_array($value))
+				if(!isset($regex)) $value = self::escape($value);
+			
 			// Construction
 			$field = (strpos($field, '.') === false) ? '`' .$field. '`' : $field;
 			
-			if(is_string($value)) $output[] = $field. ' ' .$operand. ' \'' .self::escape($value). '\'';
+			if(is_string($value)) $output[] = $field. ' ' .$operand. ' \'' .$value. '\'';
 			else if(is_array($value)) $output[] = $field. ' ' .$operand2. ' (' .implode(',', $value). ')';
-			else $output[] = $field. ' ' .$operand. ' ' .self::escape($value). '';
+			else $output[] = $field. ' ' .$operand. ' ' .$value. '';
 			
 			$separator = ' ' .$method. ' ';
 		}
@@ -369,88 +471,9 @@ class db
 		if($exit or PRODUCTION) die($message);
 	}
 
-	/*
-	########################################
-	############### UTILITAIRES ############
-	########################################
-	*/
-
-	// Affiche la liste des tables
-	static function showtables()
-	{
-		$tables = self::query('SHOW TABLES', TRUE);
-		return a::simple($tables);
-	}
-
-	// Liste les champs d'une table
-	static function fields($table)
-	{
-		$connection = self::connect();
-
-		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
-		if(!$fields) return self::error(l::get('db.errors.fields', 'Impossible de lister les champs'));
-
-		$count	= @mysql_num_fields($fields);
-		for($x = 0; $x < $count; $x++)
-			$output[] = @mysql_field_name($fields, $x);
-		
-		return $output;
-	}
-
-	// Vérifie si une table existe
-	static function is_table($tables)
-	{
-		$tables = func_get_args();
-		$found = 0;
-		
-		foreach($tables as $table)
-			if(in_array($table, self::showtables()))
-				$found++;
 
 
-		return ($found == count($tables));
-	}
-	
-	// Retourne le nombre d'entrées afféctées
-	static function affected()
-	{
-		return self::$affected;
-	}
-	
-	// Affiche un message selon le status de la dernière requête
-	static function status($true, $false, $format = TRUE)
-	{
-		$return = (self::$affected)
-			? $true
-			: $false;
-		
-		if($format) prompt($return);
-		else return $return;
-	}
-
-	// Retourne l'id de la dernière requête
-	static function last_id()
-	{
-		$connection = self::connection();
-		return @mysql_insert_id($connection);
-	}
-
-	// Retour le prochain ID
-	static function increment($table)
-	{
-		$result = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$table. '"'));
-		return $result['Auto_increment'];
-	}
-
-
-
-// ESDFGDG
-
-
-
-
-
-
+// FONCTIONS À TRIER
 
 
 
@@ -469,13 +492,15 @@ class db
 		return true;
 	}
 
+	// REPLACE
 	static function replace($table, $input)
 	{
 		return self::execute('REPLACE INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 
-	static function min($table, $column, $where = NULL) {
-
+	// MIN
+	static function min($table, $column, $where = NULL)
+	{
 		$sql = 'SELECT MIN(' .$column. ') as min FROM ' .self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 
@@ -483,11 +508,10 @@ class db
 		$result = self::fetch($result);
 
 		return a::get($result, 'min', 1);
-
 	}
 
-	static function max($table, $column, $where = NULL) {
-
+	static function max($table, $column, $where = NULL)
+	{
 		$sql = 'SELECT MAX(' .$column. ') as max FROM ' .self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 
@@ -495,11 +519,10 @@ class db
 		$result = self::fetch($result);
 
 		return a::get($result, 'max', 1);
-
 	}
 
-	static function sum($table, $column, $where = NULL) {
-
+	static function sum($table, $column, $where = NULL)
+	{
 		$sql = 'SELECT SUM(' .$column. ') as sum FROM ' .self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 
@@ -507,9 +530,7 @@ class db
 		$result = self::fetch($result);
 
 		return a::get($result, 'sum', 0);
-
 	}
-
 
 	static function simple_fields($array)
 	{
@@ -524,21 +545,22 @@ class db
 	}
 
 
-	static function search_clause($search, $fields, $mode='OR') {
-
+	static function search_clause($search, $fields, $mode = 'OR')
+	{
 		if(empty($search)) return false;
 
 		$arr = array();
 		foreach($fields as $f) array_push($arr, $f. ' LIKE \'%' .$search. '%\'');
 		return '(' .implode(' ' .trim($mode). ' ', $arr). ')';
-
 	}
 
-	static function select_clause($fields) {
+	static function select_clause($fields)
+	{
 		return implode(', ', $fields);
 	}
 
-	static function in($array) {
+	static function in($array)
+	{
 		return '\'' .implode('\',\'', $array). '\'';
 	}
 }

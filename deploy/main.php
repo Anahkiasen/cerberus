@@ -4,7 +4,7 @@ require_once('cerberus/init.php');
 
 // Arbre de navigation et page en cours
 $desired = new navigation();
-$desiredPage->render($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav);
+$desired->render($pageVoulue, $sousPageVoulue, $renderNav, $renderSubnav);
 $navigation = $desired->get();
 
 // Dispatch des fonctions PHP
@@ -29,7 +29,7 @@ list($css, $js, $thisScripts) = $cerberus->cerberusAPI(array(
 	<div id="main">
 		<div id="header"></div>
 		<div id="menu"><?= $renderNav ?></div>
-		<div id="corps"><? $desiredPage->content() ?></div>
+		<div id="corps"><? $desired->content() ?></div>
 		<div id="footer">&copy;Copyright <?= date('Y') ?> - [WEBSITE] - Concept : <?= str::link('http://www.stappler.fr/', 'Le Principe de Stappler') ?></div>
 	</div>
 	

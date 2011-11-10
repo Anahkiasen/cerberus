@@ -12,7 +12,7 @@ class url
 	}
 
 	// Raccourcit l'URL
-	static function short($url = NULL, $chars = false, $base = false, $rep='…')
+	static function short($url = NULL, $chars = false, $base = false, $rep = '…')
 	{
 		if(!$url) $url = self::current();
 		$url = str_replace('http://','',$url);

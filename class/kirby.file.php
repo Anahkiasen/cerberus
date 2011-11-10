@@ -96,8 +96,8 @@ class f
 		$size = str::sanitize($size, 'int');
 		if($size < 1) return '0 kb';
 
-		$unit=array('b','kb','mb','gb','tb','pb');
-		return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+		$unit = array('b','kb','mb','gb','tb','pb');
+		return @round($size/pow(1024,($i = floor(log($size,1024)))),2).' '.$unit[$i];
 	}
 	
 	// Convertit un fichier

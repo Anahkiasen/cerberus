@@ -55,7 +55,7 @@ class browser
 		return (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
 	}
 
-	static function css($ua = NULL, $array=false)
+	static function css($ua = NULL, $array = false)
 	{
 		self::detect($ua);
 		$css[] = self::$engine;
