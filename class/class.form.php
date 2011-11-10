@@ -229,14 +229,23 @@ class form
 		}
 		if($type == 'radio')
 		{
-			for($i = 0; $i <= $params['number']; $i++)
-			{	
-				$this->render .= '<input type="radio" ';
-				foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
-				$fieldName = (!self::$multilangue) ? $label : l::get('form-' .$label. '-'.$i);
-				if($params['value'] == $i) $this->render .= 'checked="checked"';
-				$this->render .= ' value="' .$i. '"> ' .$fieldName;
-			}
+			if(!is_array($params['number']))
+				for($i = 0; $i <= $params['number']; $i++)
+				{	
+					$this->render .= '<input type="radio" ';
+					foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
+					$fieldName = (!self::$multilangue) ? $label : l::get('form-' .$label. '-'.$i);
+					if($params['value'] == $i) $this->render .= 'checked="checked"';
+					$this->render .= ' value="' .$i. '"> ' .$fieldName;
+				}
+			else
+				foreach($params['number'] as $thislabel => $thisvalue)
+				{
+					$this->render .= '<input type="radio" ';
+					foreach($params as $key => $value) if($key != 'value' && $key != 'number') $this->render .= $key. '="' .$value. '" ';
+					if($params['value'] == $thisvalue) $this->render .= 'checked="checked"';
+					$this->render .= ' value="' .$thisvalue. '"> ' .$thislabel;
+				}
 		}
 		if($type == 'file')
 		{

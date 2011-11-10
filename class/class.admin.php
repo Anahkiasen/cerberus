@@ -210,6 +210,12 @@ class AdminPage extends AdminSetup
 		$items = a::rearrange(db::query($query));
 		if($items)
 		{
+			// Fonctions en cours d'utilisation
+			$SELECTED = 0;
+			if(isset($this->tableRows))
+				foreach($this->tableRows as $function => $name)
+					if(isset($_GET[$function. '_' .$this->table])) $SELECTED = $_GET[$function. '_' .$this->table];
+			
 			foreach($items as $key => $value)
 			{
 				// Divisions
@@ -222,7 +228,7 @@ class AdminPage extends AdminSetup
 					}
 				}
 				
-				$selected = ($this->getEdit	== $key) ? 'selected' : NULL;
+				$selected = ($SELECTED == $key) ? 'selected' : NULL;
 				if(isset($thisGroup)) echo '<tr id="' .$key. '" class="opened ' .$selected. '" opened="' .str::slugify($thisGroup). '">';
 				else echo '<tr id="' .$key. '" class="' .$selected. '">';
 				
@@ -235,7 +241,11 @@ class AdminPage extends AdminSetup
 					if(isset($this->tableRows))
 						foreach($this->tableRows as $function => $name)
 						{
-							echo 
+							if(findString('{key}', $function))
+							{
+								echo '<td>' .str_replace('{key}', $key, $function). '</td>';
+							}
+							else echo 
 							'<td>'
 								.str::slink(
 									'admin-' .$this->table,
@@ -346,15 +356,13 @@ class AdminPage extends AdminSetup
 	// Envoyer une image
 	function uploadImage($field = 'thumb')
 	{
-		$GLOBALS['cerberus']->injectModule('filecat');
-		
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
 			// Erreurs basiques
 			$errorDisplay = NULL;
 			$extension = f::extension($_FILES[$field]['name']);
 			if($_FILES[$field]['error'] != 0) $errorDisplay .= 'Une erreur est survenue lors du transfert.';
-			if(filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
+			if(f::filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
 					
 			// Si aucune erreur
 			if(empty($errorDisplay))

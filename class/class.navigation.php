@@ -96,16 +96,13 @@ class navigation
 			}
 			$this->filepath = $page.$substring.$pageSub.$extension;
 		}
-		else
-		{
-			// Page d'admin
-			if(get('admin')) $pageSub = get('admin');
-		}
+		else if(get('admin')) $pageSub = get('admin');
 		
 		// Enregistrement des variables
 		$this->navigation = $navigation;
 		$this->page = $page;
 		$this->pageSub = $pageSub;
+		$this->pageDATA = db::row('structure', 'id,cache', array('parent' => $this->page, 'page' => $this->pageSub));
 		$this->allowedPages = $allowed_pages;
 	}
 	
@@ -261,19 +258,34 @@ class navigation
 	
 	// Génération du contenu
 	function content()
-	{		
+	{
 		global $switcher;
+		$page = FALSE;
 		
 		// Chargement de l'admin ou d'une page
-		if($this->page == '404') f::inclure('cerberus/include/404.php');
-		elseif($this->page == 'admin') new AdminSetup();
-		else
+		switch($this->page)
 		{
-			$page = FALSE;
-			if(isset($switcher)) $page = f::inclure($switcher->path('php').$this->filepath);
-			if(!$page) $page = f::inclure('pages/' .$this->filepath);
-			if(!$page) prompt('Une erreur est survenue lors du chargement de la page');
-		}
+			case '404';
+				f::inclure('cerberus/include/404.php');
+				break;
+				
+			case 'admin':
+				new AdminSetup();
+				break;
+				
+			default:
+				if(isset($switcher)) $page = sexist($switcher->path('php').$this->filepath);
+				if(!$page) $page = sexist('pages/' .$this->filepath);
+				
+				if(!$page) prompt('Une erreur est survenue lors du chargement de la page');
+				else
+				{
+					$to_cache = a::get($this->pageDATA, 'cache', TRUE);
+					if($to_cache) include content::cache($page, NULL, false);
+					else include $page;
+				}
+				break;
+			}
 	}
 	
 	// Récupération de la classe CSS

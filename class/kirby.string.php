@@ -226,7 +226,7 @@ class str
 		);
 		
 		$text = preg_replace(array_keys($foreign), array_values($foreign), $text);
-		$text = preg_replace('![^a-z0-9]!i', '-', $text);
+		$text = preg_replace('![^a-z0-9_]!i', '-', $text);
 		$text = preg_replace('/-+/', '-', $text);
 		$text = trim($text, '-');
 		$text = str::lower($text);

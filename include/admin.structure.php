@@ -22,9 +22,9 @@ $strucAdmin = new AdminPage();
 $strucAdmin->setPage('structure');
 $strucAdmin->addRow('meta', 'META');
 $strucAdmin->createList(
-	array('index' => 'pageid', 'Titre' => $_SESSION['admin']['langue'], 'Ordre' => 'page_priority'),
+	array('index' => 'pageid', 'Titre' => $_SESSION['admin']['langue'], 'En cache' => 'cache', 'Ordre' => 'page_priority'),
 	array(
-		'SELECT' => 'S.id AS id, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+		'SELECT' => 'S.id AS id, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM langue WHERE tag = CONCAT("menu-", parent)) AS categ',
 		'FROM' => 'meta M',
 		'RIGHT JOIN' => 'structure S ON S.id=M.page LEFT JOIN langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
 		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
@@ -90,6 +90,7 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 		$form->addText('parent', 'Page parente');
 		$form->addText('titre');
 		$form->addText('page_priority', 'Ordre');
+		$form->addRadio('cache', array('Oui' => 1, 'Non' => 0), 'Autoriser la mise en cache');
 		
 		$form->addEdit();
 		$form->addSubmit($diffText);

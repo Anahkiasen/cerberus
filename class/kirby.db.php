@@ -152,7 +152,6 @@ class db
 		$connection = self::connect();
 		self::$last_query = $sql;
 
-		
 		$execute = @mysql_query($sql, $connection);
 		self::$affected = @mysql_affected_rows();
 		self::$trace[] = $sql;
