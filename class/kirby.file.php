@@ -133,7 +133,7 @@ class f
 	}
 	
 	// Détecte le type d'un fichier
-	function filecat($extension) 
+	static function filecat($extension) 
 	{
 		$typeArray = array(
 			'audio' 		=> array('aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma'),
