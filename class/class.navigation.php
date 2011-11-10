@@ -277,7 +277,7 @@ class navigation
 	}
 	
 	// Récupération de la classe CSS
-	function css
+	function css()
 	{
 		return $this->page. ' ' .$this->page.'-'.$this->pageSub;
 	}
