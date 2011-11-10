@@ -48,7 +48,7 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 		echo str::img(timthumb($file, $largeur, $hauteur));
 	}
 	echo '</div>';
-		
+	
 	$nivoSlider[$path] = $options;
 }
 ?>

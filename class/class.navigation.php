@@ -281,7 +281,7 @@ class navigation
 				else
 				{
 					$to_cache = a::get($this->pageDATA, 'cache', TRUE);
-					if($to_cache) include content::cache($page, NULL, false);
+					if($to_cache) include content::cache($page, NULL, TRUE);
 					else include $page;
 				}
 				break;

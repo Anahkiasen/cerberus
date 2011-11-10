@@ -22,13 +22,18 @@ class content
 	// Met en cache un ficheir ou l'inclut s'il existe
 	static function cache($filepath, $basename = NULL, $return = FALSE)
 	{
-		if(config::get('cache') == FALSE or LOCAL) return $filepath;
+		if(config::get('cache', TRUE) == FALSE or LOCAL) return $filepath;
 		else
 		{
 			global $pageVoulue, $sousPageVoulue;
-			
+						
 			if(!$basename) $basename = $pageVoulue. '-' .$sousPageVoulue;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
+			
+			// Variables en cache
+			$getvar = array_diff($_GET,
+				array('page' => $pageVoulue, 'pageSub' => $sousPageVoulue));
+			if(!empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
 			
 			// Rercherche d'un fichier en cache
 			$found_files = glob($basename.'*');
@@ -44,7 +49,7 @@ class content
 			}
 			if(!isset($cachename))
 				$cachename = $basename. '-' .$modifiedPHP. '.html';
-	
+
 			if(file_exists($cachename)) return $cachename;
 			else
 			{
@@ -53,7 +58,7 @@ class content
 				$content = content::end(true);
 				
 				f::write($cachename, $content);
-				
+
 				if($return == FALSE) echo $content;
 				else return $cachename;
 			}
