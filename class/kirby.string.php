@@ -52,6 +52,10 @@ class str
 
 		switch($mode)
 		{
+			case 'csv':
+				$result = explode("\r", $string);
+				foreach($result as $key => $value) $result[$key] = explode(';', $value);
+				break;
 			case 'json':
 				$result = (array)@json_decode($string, true);
 				break;

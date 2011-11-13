@@ -13,7 +13,7 @@
 		FALSE	Renverra true dès que la fonction trouvera n'importe quelle $needle dans n'importe
 				quelle $haystack.
 */
-function findString($needle, $haystack, $exclusive = true)
+function findString($needle, $haystack, $case = false, $exclusive = true)
 {
 	// Si nous avons plusieurs termes/phrases
 	if(is_array($needle) or is_array($haystack))
@@ -24,6 +24,13 @@ function findString($needle, $haystack, $exclusive = true)
 			$numberEntry = count($needle);
 			foreach($needle as $value)
 			{
+				// Insensible à la casse
+				if(!$case)
+				{
+					$haystack = strtolower($haystack);
+					$value = strtolower($value);
+				}
+				
 				$pos = strpos($haystack, $value);
 				if($pos !== false) $result++;
 			}
@@ -33,6 +40,12 @@ function findString($needle, $haystack, $exclusive = true)
 			$numberEntry = count($haystack);
 			foreach($haystack as $value)
 			{
+				if(!$case)
+				{
+					$needle = strtolower($needle);
+					$value = strtolower($value);
+				}
+				
 				$pos = strpos($value, $needle);
 				if($pos !== false) $result++;
 			}
@@ -45,6 +58,12 @@ function findString($needle, $haystack, $exclusive = true)
 	}
 	else
 	{
+		if(!$case)
+		{
+			$haystack = strtolower($haystack);
+			$needle = strtolower($needle);
+		}
+		
 		// Simple strpos
 		$pos = strpos($haystack, $needle);
 		if($pos === false) return FALSE;
