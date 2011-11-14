@@ -53,7 +53,7 @@ class switcher
 		else
 		{
 			// Mise en cache ou non
-			if($cache) return content::cache($bloc, $content, TRUE);
+			if($cache) return content::cache($bloc, $this->current().'-'.$content, TRUE, FALSE);
 			else return $bloc;
 		}
 	}

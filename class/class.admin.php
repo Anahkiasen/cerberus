@@ -244,10 +244,13 @@ class AdminPage extends AdminSetup
 					if(isset($this->tableRows))
 						foreach($this->tableRows as $function => $name)
 						{
+							// Colonne personnalisée
 							if(findString('{key}', $function))
 							{
 								echo '<td>' .str_replace('{key}', $key, $function). '</td>';
 							}
+							
+							// Fonctions
 							else echo 
 							'<td>'
 								.str::slink(
