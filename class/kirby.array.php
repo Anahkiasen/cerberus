@@ -8,18 +8,22 @@ class a
 		else return (isset($array[$key])) ? $array[$key] : $default;
 	}
 	
-	// Supprimer une entrée d'un tableau
+	// Supprimer une/des entrée(s) d'un tableau
 	static function remove($array, $search, $multiple = FALSE)
 	{
-		if(!$multiple) unset($array[$search]);
-		else 
+		if(!is_array($search)) $search = array($search);
+		foreach($search as $searchkey)
 		{
-			$found_all = FALSE;
-			while(!$found_all)
+			if(!$multiple) unset($array[$searchkey]);
+			else 
 			{
-				$index = array_search($search, $array);
-				if($index !== false) unset($array[$index]);
-				else $found_all = true;
+				$found_all = FALSE;
+				while(!$found_all)
+				{
+					$index = array_search($searchkey, $array);
+					if($index !== false) unset($array[$index]);
+					else $found_all = true;
+				}
 			}
 		}
 		return $array;

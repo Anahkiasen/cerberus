@@ -34,7 +34,7 @@ function debug($variable)
 {
 	$display = (LOCAL) ? NULL : 'display:none';
 	
-	if(is_array($variable)) return '<div style="' .$display. '"><pre>' .print_r($variable, true). '</pre></div>';
+	if(is_array($variable)) return '<div style="' .$display. '"><pre style="' .$display. '">' .print_r($variable, true). '</pre></div>';
 	else return '<p style="' .$display. '">' .$variable. '</p>';
 }
 ?>

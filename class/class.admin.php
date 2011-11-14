@@ -236,8 +236,8 @@ class AdminPage extends AdminSetup
 					$value = a::beArray($value);
 					foreach($fieldsDisplay as $fieldName)
 					{
-						$fieldName = a::get(explode('.', $fieldName), 1);
-						echo '<td>' .stripslashes(str_replace('<br />', ' ', $value[$fieldName])). '</td>'; 
+						$fieldIndex = a::get(explode('.', $fieldName), 1, $fieldName);
+						echo '<td>' .stripslashes(str_replace('<br />', ' ', $value[$fieldIndex])). '</td>'; 
 					}
 					
 					// Gestion

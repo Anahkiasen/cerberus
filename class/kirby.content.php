@@ -26,17 +26,16 @@ class content
 		else
 		{
 			global $pageVoulue, $sousPageVoulue;
-						
+							
 			if(!$basename) $basename = $pageVoulue. '-' .$sousPageVoulue;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
 			
 			// Variables en cache
-			$getvar = array_diff($_GET,
-				array('page' => $pageVoulue, 'pageSub' => $sousPageVoulue));
+			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID'));
 			if(!empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
-			
+
 			// Rercherche d'un fichier en cache
-			$found_files = glob($basename.'*');
+			$found_files = glob($basename.'-[0-9]*.html');
 			$modifiedPHP = filemtime($filepath);
 			if(isset($found_files[0]))
 			{
