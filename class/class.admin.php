@@ -211,7 +211,7 @@ class AdminPage extends AdminSetup
 		if($items)
 		{
 			// Fonctions en cours d'utilisation
-			$SELECTED = 0;
+			$SELECTED = NULL;
 			if(isset($this->tableRows))
 				foreach($this->tableRows as $function => $name)
 					if(isset($_GET[$function. '_' .$this->table])) $SELECTED = $_GET[$function. '_' .$this->table];

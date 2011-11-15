@@ -20,47 +20,67 @@ class content
 	}
 	
 	// Met en cache un ficheir ou l'inclut s'il existe
-	static function cache($filepath, $basename = NULL, $return = FALSE, $GET = TRUE)
+	static function cache($filepath, $basename = NULL, $return = TRUE, $GET = TRUE)
 	{
-		if(config::get('cache', TRUE) == FALSE or LOCAL) return $filepath;
-		else
+		if(file_exists($filepath))
 		{
-			global $pageVoulue, $sousPageVoulue;
-							
-			if(!$basename) $basename = $pageVoulue. '-' .$sousPageVoulue;
-			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
-			
-			// Variables en cache
-			if($GET) $getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID'));
-			if($getvar and !empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
-			
-			// Rercherche d'un fichier en cache
-			$found_files = glob($basename.'-[0-9]*.html');
-			$modifiedPHP = filemtime($filepath);
-			if(isset($found_files[0]))
+			if(!$basename)
 			{
-				$modified = explode('-', $found_files[0]);
-				$modified = end($modified);
-				
-				// Si le fichier a été mis à jour on vide le cache
-				if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= 86400) $cachename = $found_files[0];
-				else unlink($found_files[0]);
+				// Si mise en cache autorisée
+				global $pageVoulue, $sousPageVoulue;
+				$basename = $pageVoulue. '-' .$sousPageVoulue;
+				$cache = db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
 			}
-			if(!isset($cachename))
-				$cachename = $basename. '-' .$modifiedPHP. '.html';
-
-			if(file_exists($cachename)) return $cachename;
+			else $cache = TRUE;
+			
+			if(config::get('cache', TRUE) == FALSE or !$cache) return $filepath;
 			else
 			{
-				content::start();
-				f::inclure($filepath);
-				$content = content::end(true);
+				$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
 				
-				f::write($cachename, $content);
-
-				if($return == FALSE) echo $content;
-				else return $cachename;
+				// Variables en cache
+				if($GET) $getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID'));
+				if(isset($getvar) and !empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
+				
+				// Rercherche d'un fichier en cache
+				$found_files = glob($basename.'-[0-9]*.html');
+				$modifiedPHP = filemtime($filepath);
+				if(isset($found_files[0]))
+				{
+					$modified = explode('-', $found_files[0]);
+					$modified = end($modified);
+					
+					//$duree_cache = array(1 => 604800, 2 => 604800);
+					
+					// Si le fichier a été mis à jour on vide le cache
+					if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= 604800) $cachename = $found_files[0];
+					else unlink($found_files[0]);
+				}
+				if(!isset($cachename))
+					$cachename = $basename. '-' .$modifiedPHP. '.html';
+	
+				if(file_exists($cachename))
+				{
+					if($return) return $cachename;
+					else include $cachename;
+				}
+				else
+				{
+					content::start();
+					f::inclure($filepath);
+					$content = content::end(true);
+					
+					f::write($cachename, $content);
+	
+					if($return) return $cachename;
+					else echo $content;
+				}
 			}
+		}
+		else
+		{
+			prompt('Le fichier ' .$filepath. ' est introuvable');
+			errorHandle('Warning', 'Le fichier ' .$filepath. ' est introuvable', __FILE__, __LINE__);
 		}
 	}
 

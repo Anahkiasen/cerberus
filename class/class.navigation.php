@@ -246,13 +246,15 @@ class navigation
 		else $renderSubnav = NULL;
 
 		// Assignation des valeurs
+		$this->renderNavigation = $renderNavigation;
+		$this->renderSubnav = $renderSubnav;
 		$renderPage = $this->page;
 		$renderSousPage = $this->pageSub;
 	}
 	
 	/*
 	########################################
-	############## PAGE EN COURS ###########
+	############### EXPORTS ################
 	######################################## 
 	*/
 	
@@ -274,18 +276,21 @@ class navigation
 				break;
 				
 			default:
-				if(isset($switcher)) $page = sexist($switcher->path('php').$this->filepath);
-				if(!$page) $page = sexist('pages/' .$this->filepath);
-				
-				if(!$page) prompt('Une erreur est survenue lors du chargement de la page');
-				else
-				{
-					$to_cache = a::get($this->pageDATA, 'cache', TRUE);
-					if($to_cache) include content::cache($page, NULL, TRUE);
-					else include $page;
-				}
+				include content::cache('pages/' .$this->filepath, NULL, TRUE, TRUE);
 				break;
 			}
+	}
+	
+	// Récupère le menu rendu
+	function getmenu()
+	{
+		return $this->renderNavigation;
+	}
+	function getsub()
+	{
+		$subnav = $this->get($this->page);
+		if($subnav and count($subnav) != 1 and $this->page != 'admin') return $this->renderSubnav;
+		else return false;
 	}
 	
 	// Récupération de la classe CSS

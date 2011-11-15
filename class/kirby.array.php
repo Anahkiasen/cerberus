@@ -184,6 +184,40 @@ class a
 		}
 		return $output;
 	}
+	
+	// Trie un array multidimensionnel par une sous-clé
+	static function subsort($array, $index, $order = 'ASC', $natsort = TRUE, $case_sensitive = FALSE) 
+	{
+		if(is_array($array) and count($array) > 0) 
+		{
+			foreach(array_keys($array) as $key) 
+				$temp[$key] = $array[$key][$index];
+			
+			if(!$natsort) 
+			{
+				($order == 'ASC')
+					? asort($temp)
+					: arsort($temp);
+			}
+			else 
+			{
+				($case_sensitive)
+					? natsort($temp)
+					: natcasesort($temp);
+					
+				if($order != 'ASC') 
+					$temp = array_reverse($temp, TRUE);
+			}
+			
+			foreach(array_keys($temp) as $key)
+				(is_numeric($key))
+					? $sorted[] = $array[$key] 
+					: $sorted[$key] = $array[$key];
+					
+			return $sorted;
+		}
+		return $array;
+	}
 
 	/*
 	########################################

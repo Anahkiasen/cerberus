@@ -41,21 +41,9 @@ class switcher
 	// Récupération du contenu
 	function content($content, $cache = TRUE)
 	{
-		$bloc = NULL;
-		$bloc = sexist($this->path('php').$content.'.php');
-		if(!$bloc) $bloc = sexist('pages/switch-'.$content.'.php');
-		
-		if(!$bloc)
-		{
-			prompt('Une erreur est survenue durant le chargement de la page');
-			errorHandle('Warning', 'Bloc [' .$content. '] non trouvé', __FILE__, __LINE__);
-		}
-		else
-		{
-			// Mise en cache ou non
-			if($cache) return content::cache($bloc, $this->current().'-'.$content, TRUE, FALSE);
-			else return $bloc;
-		}
+		$path = 'pages/switch-'.$content.'.php';
+		if($cache) return content::cache($path, $this->current(). '-' .$content, TRUE, FALSE);
+		else return $path;
 	}
 	
 	function returnList()
