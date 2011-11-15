@@ -48,7 +48,6 @@ class AdminPage extends AdminSetup
 		$this->fields = db::fields($table);
 		$this->index = a::get($this->fields, 0, 'id');
 		
-		
 		// AJOUT ET MODIFICATION
 		if(isset($_POST['edit'])) 
 		{
@@ -374,10 +373,11 @@ class AdminPage extends AdminSetup
 			if(empty($errorDisplay))
 			{	
 				$lastID = ($_POST['edit'] == 'add')
-					? db::increment($this->table)
+					? db::increment($this->table) - 1
 					: $_POST['edit'];
-			
+								
 				$storageMode = $this->imageMode();
+
 				switch($storageMode)
 				{
 					case 'table':
@@ -387,10 +387,11 @@ class AdminPage extends AdminSetup
 						break;
 						
 					case 'path':
-						$path = db::field($this->table, 'path', array($this->index => $lastID));
 						$file = $lastID. '-' .str::slugify($_FILES[$field]['name']). '-' .md5(str::random()). '.' .$extension;
 						
-						if(isset($path) and !empty($path)) f::remove('assets/file/' .$this->table. '/' .$path);
+						$path = db::field($this->table, 'path', array($this->index => $lastID));
+						if($path) f::remove('assets/file/' .$this->table. '/' .$path);
+						
 						db::update($this->table, array('path' => $file), array('id' => $lastID));
 						break;
 						
