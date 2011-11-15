@@ -81,6 +81,7 @@ class content
 		{
 			prompt('Le fichier ' .$filepath. ' est introuvable');
 			errorHandle('Warning', 'Le fichier ' .$filepath. ' est introuvable', __FILE__, __LINE__);
+			return false;
 		}
 	}
 

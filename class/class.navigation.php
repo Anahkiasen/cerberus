@@ -81,7 +81,7 @@ class navigation
 		else $substring = NULL;
 		
 		// Include de la page
-		if($page != 'admin')
+		if($page != 'admin' and $page != '404')
 		{
 			$extension = $this->extension($page.$substring.$pageSub);
 			if(!$extension)
@@ -276,7 +276,8 @@ class navigation
 				break;
 				
 			default:
-				include content::cache('pages/' .$this->filepath, NULL, TRUE, TRUE);
+				$content = content::cache('pages/' .$this->filepath, NULL, TRUE, TRUE);
+				if($content) include $content;
 				break;
 			}
 	}
