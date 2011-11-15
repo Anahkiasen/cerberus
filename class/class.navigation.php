@@ -129,7 +129,7 @@ class navigation
 	function get($key = NULL)
 	{
 		if(!$key) return $this->navigation;
-		elseif($key and $this->navigation[$key]) return $this->navigation[$key];
+		elseif($key and isset($this->navigation[$key])) return $this->navigation[$key];
 		else return false;
 	}
 	
