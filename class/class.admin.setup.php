@@ -18,7 +18,7 @@ class AdminSetup
 	
 	function __construct($customNavigation = NULL)
 	{	
-		global $connected, $navigation;
+		global $connected, $desired;
 
 		$this->defineMultilangue();
 			
@@ -34,7 +34,7 @@ class AdminSetup
 			if(MULTILANGUE) array_unshift($systemPages, 'langue');
 			if(db::is_table('news')) array_unshift($systemPages, 'news');
 			
-			$adminNavigation = array_diff($navigation['admin'], array('admin'));
+			$adminNavigation = array_diff($desired->get('admin'), array('admin'));
 			$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
 		
 			// Droits de l'utilisateur

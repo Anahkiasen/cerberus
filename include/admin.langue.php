@@ -34,7 +34,7 @@ $langueAdmin = new AdminPage();
 $langueAdmin->setPage('langue');
 $langueAdmin->createList(
 	array_merge(array('Identifiant' => 'tag'), $LANGUES),
-	array('WHERE' => 'tag NOT LIKE "menu-%"'));
+	array('WHERE' => 'tag NOT LIKE "menu-%"', 'ORDER BY' => 'tag ASC'));
 
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
 
