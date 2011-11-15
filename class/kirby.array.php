@@ -269,5 +269,22 @@ class a
 		}
 		return $result . str_repeat($tab, $level) . '</' . $tag . '>' . "\n";
 	}
+	
+	// Exporter au format CSV
+	static function csv($array, $filename = 'this', $entete = NULL)
+	{
+		$csv = $entete;
+		$ligne = NULL;
+		
+		foreach($array as $ligne => $colonne)
+		{
+			if(!empty($csv)) $csv .= "\n";
+			foreach($colonne as $key => $value)
+				$colonne[$key] = '"' .stripslashes($value). '"';
+				$csv .= implode(';', $colonne);
+		}
+
+		f::write($filename. '.csv', $csv);
+	}
 }
 ?>

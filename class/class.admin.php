@@ -151,13 +151,13 @@ class AdminPage extends AdminSetup
 			$nomColonne = (is_numeric($key))
 				? $value
 				: $key;
-			echo '<td>' .ucfirst($nomColonne). '</td>';
+			echo '<th class="tablerow-data">' .ucfirst($nomColonne). '</th>';
 		}
 		
 		// Colonnes gestion
 		if(isset($this->tableRows))
 			foreach($this->tableRows as $function => $name)
-				echo '<td>' .$name. '</td>';
+				echo '<th class="tablerow-function">' .$name. '</th>';
 				
 		echo '</tr></thead><tbody>';
 		
@@ -237,7 +237,7 @@ class AdminPage extends AdminSetup
 					foreach($fieldsDisplay as $fieldName)
 					{
 						$fieldIndex = a::get(explode('.', $fieldName), 1, $fieldName);
-						echo '<td>' .stripslashes(str_replace('<br />', ' ', $value[$fieldIndex])). '</td>'; 
+						echo '<td class="tablerow-data">' .stripslashes(str_replace('<br />', ' ', $value[$fieldIndex])). '</td>'; 
 					}
 					
 					// Gestion

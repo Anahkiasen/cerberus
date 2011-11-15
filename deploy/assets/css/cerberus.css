@@ -72,6 +72,7 @@ div.cerberus_debug pre
 	margin: 10px 0 0 0;
 	padding: 15px;
 }
+a:hover p.infoblock { background-image: url(overlay/blanc-10.png); }
 p.infoblock a
 {
 	color: #FFF;
@@ -216,13 +217,16 @@ table td
 table td:first-child { text-align:left; }
 table tr:hover { background-image:url(overlay/noir-10.png); }
 table thead td,
+table thead th,
 table td.entete,
 table tr.entete td
 {
+	font-weight: 100;
 	background-image:url(overlay/noir-25.png);
 	color:#FFF;
 }
 table thead td a,
+table thead th a,
 table tr.entete td a,
 table td.entete a
 {
