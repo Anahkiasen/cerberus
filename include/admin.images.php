@@ -9,14 +9,14 @@ $PREFIXE = a::get($_SESSION, 'prefix', NULL);
 // Supprimer un dossier
 if(isset($_GET['deleteFolder']))
 {
-	if(sunlink('assets/file/' .$_GET['deleteFolder']. '/')) prompt('Le dossier a bien été supprimé');
+	if(f::remove('assets/file/' .$_GET['deleteFolder']. '/')) prompt('Le dossier a bien été supprimé');
 	else prompt('Une erreur est survenue durant la suppression du dossier');
 }
 
 // Supprimer une image
 if(isset($_GET['delete_image']))
 {
-	if(sunlink('assets/file/' .$_GET['pictures']. '/' .$_GET['delete_image']))
+	if(f::remove('assets/file/' .$_GET['pictures']. '/' .$_GET['delete_image']))
 		prompt('Image ' .$_GET['delete_image']. ' supprimée');
 }
 

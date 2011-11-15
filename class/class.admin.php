@@ -95,7 +95,7 @@ class AdminPage extends AdminSetup
 			if(in_array('path', $this->fields))
 			{
 				$path = db::field($this->table, 'path', array($this->index => $_GET['delete_' .$this->table]));
-				if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
+				if(isset($path) and !empty($path)) f::remove('assets/file/' .$this->table. '/' .$path);
 			}
 			else
 			{
@@ -105,7 +105,7 @@ class AdminPage extends AdminSetup
 					foreach($picExtension as $value)
 					{
 						$thisFile = $_GET['delete_' .$this->table]. '.' .$value;
-						sunlink('assets/file/' .$this->table. '/' .$thisFile);
+						f::remove('assets/file/' .$this->table. '/' .$thisFile);
 					}
 				}
 			}
@@ -116,7 +116,7 @@ class AdminPage extends AdminSetup
 		if(isset($_GET['deleteThumb']))
 		{
 			$image = $this->getImage($_GET['deleteThumb']);
-			if(sunlink('assets/file/' .$this->table. '/' .$image)) prompt('Miniature supprimée');
+			if(f::remove('assets/file/' .$this->table. '/' .$image)) prompt('Miniature supprimée');
 			else prompt('Miniature introuvable');
 		}
 	}
@@ -390,7 +390,7 @@ class AdminPage extends AdminSetup
 						$path = db::field($this->table, 'path', array($this->index => $lastID));
 						$file = $lastID. '-' .str::slugify($_FILES[$field]['name']). '-' .md5(str::random()). '.' .$extension;
 						
-						if(isset($path) and !empty($path)) sunlink('assets/file/' .$this->table. '/' .$path);
+						if(isset($path) and !empty($path)) f::remove('assets/file/' .$this->table. '/' .$path);
 						db::update($this->table, array('path' => $file), array('id' => $lastID));
 						break;
 						

@@ -12,7 +12,7 @@ class l
 		$tables = db::row('langue', 'tag');
 		if(!empty($tables))
 		{
-			if(!PRODUCTION or LOCAL) sunlink($filename); // Suppression de la version existante
+			if(!PRODUCTION or LOCAL) f::remove($filename); // Suppression de la version existante
 			if(file_exists($filename) and PRODUCTION) self::load($filename);
 			else
 			{

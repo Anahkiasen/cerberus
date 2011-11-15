@@ -57,7 +57,7 @@ function backupSQL()
 					
 					if(isset($unlink))
 					{
-						sunlink($file);
+						f::remove($file);
 						//echo 'La sauvegarde du ' .implode('-', $folderDate). ' a bien été supprimée<br />';
 					}
 				}

@@ -48,7 +48,44 @@ class f
 	// Supprimer un fichier
 	static function remove($file)
 	{
-		return (file_exists($file) && is_file($file) && !empty($file)) ? @unlink($file) : false;
+		if(is_dir($file))
+			return (file_exists($file))
+				? self::remove_folder($file)
+				: false;
+				
+		else
+			return (file_exists($file) and is_file($file) and !empty($file))
+				? @unlink($file)
+				: false;
+	}
+	
+	// Supprime un dossier
+	static function remove_folder($folder)
+	{
+		if(substr($file, -1) == "/") $file = substr($file, 0, -1);
+		
+		if(!file_exists($file) || !is_dir($file)) return false;
+		elseif(!is_readable($file)) return false;
+		else
+		{
+			// Lecture du dossier
+			$fileHandle = opendir($file);
+			while ($contents = readdir($fileHandle))
+			{
+				if($contents != '.' && $contents != '..')
+				{
+					$path = $file . "/" . $contents;
+					
+					// Suppression du fichier/dossier
+					if(is_dir($path)) self::remove_folder($path);
+					else self::remove($path);
+				}
+			}
+			closedir($fileHandle);
+	
+			if($empty == false and !rmdir($file)) return false;
+			return true;
+		}	
 	}
 
 	// Récupère l'extension d'un fichier

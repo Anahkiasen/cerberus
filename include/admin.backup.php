@@ -2,7 +2,7 @@
 // Suppression et chargement
 if(isset($_GET['delete']))
 {
-	if(sunlink('cerberus/cache/sql/' .$_GET['delete']. '/')) prompt('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
+	if(f::remove('cerberus/cache/sql/' .$_GET['delete']. '/')) prompt('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
 	else prompt('Sauvegarde introuvable');
 }
 if(isset($_GET['load']))
