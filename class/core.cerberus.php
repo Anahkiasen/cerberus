@@ -54,8 +54,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'display', 'timthumb',
-				'findString', 'sexist', 'simplode'),
+				'display', 'timthumb', 'findString'),
 				$modules);
 		}
 				

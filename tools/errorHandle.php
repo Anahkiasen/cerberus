@@ -88,8 +88,8 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		if(!function_exists('stripHTML')) include('cerberus/tools/stripHTML.php');
 		
 		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
-		$mail->setExpediteur('CerberusDebug', config::get('mail'));
 		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
+		$mail->setExpediteur('CerberusDebug', config::get('mail'));
 		$mail->messageHTML();
 		$mail->send();
 	}
