@@ -24,6 +24,6 @@ function timthumb($file, $width = NULL, $height = NULL, $crop = 1)
 		? realpath('assets/file/' .$file)
 		: 'assets/file/' .$file;
 		
-	return 'cerberus/class/class.timthumb.php?src=' .$file. '&' .simplode('=', '&', $params);
+	return 'cerberus/class/class.timthumb.php?src=' .$file. '&' .a::simplode('=', '&', $params);
 }
 ?>

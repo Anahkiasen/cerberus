@@ -64,7 +64,7 @@ function rewrite($page = NULL, $params = NULL)
 		if(!empty($params))
 		{
 			// Si les paramètres sont un array on les implode, sinon on les ajoute en brut
-			if(is_array($params)) $lien .= '&' .simplode('=', '&', $params);
+			if(is_array($params)) $lien .= '&' .a::simplode('=', '&', $params);
 			else $lien .= '&' .$params;
 		}
 	}
@@ -76,7 +76,7 @@ function rewrite($page = NULL, $params = NULL)
 	
 		if(!empty($params))
 		{
-			if(is_array($params)) $lien .= simplode('-', '/', $params);
+			if(is_array($params)) $lien .= a::simplode('-', '/', $params);
 			else $lien .= $params;
 			if($lien[strlen($lien)-1] != '/') $lien .= '/';
 		}

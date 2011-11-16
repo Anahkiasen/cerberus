@@ -126,7 +126,7 @@ class str
 	{
 		if($attr)
 			$attributes = (is_array($attr))
-				? simplode(array('="', '"'), ' ', $attr)
+				? a::simplode(array('="', '"'), ' ', $attr)
 				: $attr;
 		else $attributes = NULL;
 		
@@ -139,7 +139,7 @@ class str
 	{
 		if($attr)
 			$attributes = (is_array($attr))
-				? simplode(array('="', '"'), ' ', $attr)
+				? a::simplode(array('="', '"'), ' ', $attr)
 				: $attr;
 		else $attributes = NULL;
 	
@@ -172,7 +172,7 @@ class str
 	{
 		if($attr)
 			$attributes = (is_array($attr))
-				? simplode(array('="', '"'), ' ', $attr)
+				? a::simplode(array('="', '"'), ' ', $attr)
 				: $attr;
 		else $attributes = NULL;
 	

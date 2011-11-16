@@ -218,6 +218,29 @@ class a
 		}
 		return $array;
 	}
+	
+	// Implose un array via différentes glues (glue 1 autour de la valeur, glue 2 entre les entrées)
+	static function simplode($glue1, $glue2, $array, $escape = FALSE)
+	{
+		if(is_array($array))
+		{
+			if(empty($glue2))
+			{
+				// WIP
+			}
+			else
+			{
+				$plainedArray = array();
+				foreach($array as $key => $value)
+				{	
+					$value = ($escape) ? db::escape($value) : $value;
+					if(is_array($glue1)) $plainedArray[] = $key.$glue1[0].$value.$glue1[1];
+					else $plainedArray[] = $key.$glue1.$value;
+				}
+				return implode($glue2, $plainedArray);
+			}
+		}
+	}
 
 	/*
 	########################################

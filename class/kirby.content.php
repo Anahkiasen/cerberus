@@ -34,7 +34,7 @@ class content
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
 			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue'));
-			if(isset($getvar) and !empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
+			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base
 			$page = f::sexist('pages/' .$CORE. '.php');

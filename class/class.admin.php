@@ -205,7 +205,7 @@ class AdminPage extends AdminSetup
 			}
 		}
 
-		$query = simplode(' ', ' ', $orderedQuery);
+		$query = a::simplode(' ', ' ', $orderedQuery);
 		$items = a::rearrange(db::query($query));
 		if($items)
 		{
