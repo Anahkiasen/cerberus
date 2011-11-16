@@ -5,13 +5,11 @@ RewriteEngine on
 RewriteBase /
 
 # PAGES
-RewriteRule ^(.+)/(.+)/$ index.php?page=$1&pageSub=$2 [L]
-RewriteRule ^(.+)/(.+)/(.+).html$ index.php?page=$1&pageSub=$2 [L]
-RewriteRule ^(.+)/$ index.php?page=$1 [L]
-RewriteRule ^(.+)/(.+).html$ index.php?page=$1 [L]
+RewriteRule ^(.+)/(.+)/(.+)-(.+)/(.+\.html)?$ index.php?page=$1&pageSub=$2&$3=$4 [L]
+RewriteRule ^(.+)/(.+)/(.+\.html)?$ index.php?page=$1&pageSub=$2 [L]
+RewriteRule ^(.+)/(.+\.html)?$ index.php?page=$1 [L]
 
 FileETag None
-
 # Expire content
 <IfModule mod_expires.c>
 	ExpiresActive On

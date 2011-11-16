@@ -79,7 +79,7 @@ function checkFields()
 			if(checkString($POST, $type))
 			{	
 				$mailbody .= (MULTILANGUE)
-					? '<strong>' .l::get('form-' .$key). '</strong> : '
+					? '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : '
 					: '<strong>' .ucfirst($key). '</strong> : ';
 				$mailbody .= stripslashes($POST). '<br />';
 			}
@@ -99,7 +99,12 @@ function checkFields()
 		{
 			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = l::get('form-' .$value, ucfirst($value));
 			else foreach($variable as $key => $value) $variable[$key] = ucfirst($value);
-			$erreurs[] = ${'is' .ucfirst($erreur). 'filled'}. ' : ' .implode(', ', $variable);
+			$new_error = ${'is' .ucfirst($erreur). 'filled'}. ' :';
+			$new_error .= (count($variable) > 3) ? '<br />' : ' ';
+			$new_error .= implode(', ', $variable);
+			
+			$erreurs[] = $new_error;
+			$new_error = NULL;
 		}
 	}
 
