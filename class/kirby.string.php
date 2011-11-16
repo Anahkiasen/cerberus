@@ -237,7 +237,11 @@ class str
 		return $text;
 	}
 
-
+	// Affiche la valeur d'un booléen
+	static function boolprint($boolean)
+	{
+		return ($boolean) ? 'TRUE' : 'FALSE';
+	}
 
 
 		////// PAS TRIE

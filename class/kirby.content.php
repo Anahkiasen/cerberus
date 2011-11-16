@@ -22,13 +22,13 @@ class content
 	}
 	
 	// Mise en cache de la page
-	static function cache_start()
+	static function cache_start($basename)
 	{
-		global $pageVoulue, $sousPageVoulue, $switcher;
-		$basename = $CORE = $pageVoulue. '-' .$sousPageVoulue;
+		global $switcher;
+		$CORE = $basename;
 		$cache = db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
 
-		if($cache)
+		if($cache and !LOCAL)
 		{			
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
@@ -37,8 +37,8 @@ class content
 			if(isset($getvar) and !empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base
-			$page = sexist('pages/' .$CORE. '.php');
-			if(!$page) $page = sexist('pages/' .$CORE. '.html');
+			$page = f::sexist('pages/' .$CORE. '.php');
+			if(!$page) $page = f::sexist('pages/' .$CORE. '.html');
 			$modifiedPHP = ($page) ? filemtime($page) : time(); 
 			
 			// Rercherche d'un fichier en cache

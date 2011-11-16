@@ -97,7 +97,7 @@ function checkFields()
 		$variable = ${$erreur. 'filled'};
 		if(isset($variable) and !empty($variable))
 		{
-			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = l::get('form-' .$value);
+			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = l::get('form-' .$value, ucfirst($value));
 			else foreach($variable as $key => $value) $variable[$key] = ucfirst($value);
 			$erreurs[] = ${'is' .ucfirst($erreur). 'filled'}. ' : ' .implode(', ', $variable);
 		}

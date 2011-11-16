@@ -61,7 +61,7 @@ class navigation
 		$pageSub = NULL;
 		$page = (isset($_GET['404'])) ? '404' : $allowed_pages[0];
 		$this->optionSubnav = (isset($navigation[$page]) and is_array($navigation[$page]));
-		$this->options = boolprint(MULTILANGUE).boolprint($this->optionSubnav);
+		$this->options = str::boolprint(MULTILANGUE).str::boolprint($this->optionSubnav);
 		
 		// Page actuelle
 		if(get('page'))
@@ -296,6 +296,12 @@ class navigation
 		$subnav = $this->get($this->page);
 		if($subnav and count($subnav) != 1 and $this->page != 'admin') return $this->renderSubnav;
 		else return false;
+	}
+	
+	// Page en cours
+	function current()
+	{
+		return $this->page. '-' .$this->pageSub;
 	}
 	
 	// Récupération de la classe CSS

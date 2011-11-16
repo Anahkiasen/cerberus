@@ -169,6 +169,12 @@ class f
 		else return false;
 	}
 	
+	// Retourne le chemin d'un fichier seulement s'il existe
+	static function sexist($file)
+	{
+		return (file_exists($file)) ? $file : NULL;
+	}
+
 	// Détecte le type d'un fichier
 	static function filecat($extension) 
 	{

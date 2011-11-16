@@ -5,8 +5,9 @@ date_default_timezone_set('Europe/Paris');
 ini_set('error_log', 'cerberus/cache/error.log');
 ini_set('log_errors', 'On');
 
-require_once('cerberus/class/core.cerberus.php');
 foreach(glob('cerberus/class/kirby.*.php') as $file) require_once($file);
+require_once('cerberus/class/core.cerberus.php');
+require_once('cerberus/class/class.navigation.php');
 s::start();
 
 /*
@@ -49,14 +50,19 @@ if(LOCAL) config::set(array(
 	'db.user' => config::get('local.user'),
 	'db.password' => config::get('local.password'),
 	'db.name' => config::get('local.name')));
+	if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
+
+$desired = new navigation();
+$start = content::cache_start($desired->current());
+if(!$start)
+{
+	content::cache_end();
+	exit();
+}
 
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
-
-
-// Connexion et backup de la base
-if(db::connect()) backupSQL();
-else exit('Impossible d\'établir une connexion à la base de données');
+if(db::connection()) backupSQL();
 
 /*
 ########################################

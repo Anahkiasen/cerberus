@@ -54,7 +54,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'display', 'boolprint', 'timthumb',
+				'display', 'timthumb',
 				'findString', 'sexist', 'simplode'),
 				$modules);
 		}
@@ -342,24 +342,24 @@ class dispatch extends Cerberus
 					// Si le script est présent dans les prédéfinis
 					if(isset($availableAPI[$value]))
 					{
-						$minCSS[] = sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
+						$minCSS[] = f::sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
 						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>' . "\n";
-						else $minJS[] = sexist('assets/js/' .$availableAPI[$value]. '.js');
+						else $minJS[] = f::sexist('assets/js/' .$availableAPI[$value]. '.js');
 					}
 					
 					// Si le chemin est spécifié manuellement
-					elseif(findString('.js', $thisScript)) $minJS[] = sexist($thisScript);
-					elseif(findString('.css', $thisScript)) $minCSS[] = sexist($thisScript);
+					elseif(findString('.js', $thisScript)) $minJS[] = f::sexist($thisScript);
+					elseif(findString('.css', $thisScript)) $minCSS[] = f::sexist($thisScript);
 					
 					// Sinon on vérifie la présence du script dans les fichiers
 					else
 					{
-						$minJS[] = sexist('assets/js/' .$thisScript. '.js');
-						$minCSS[] = sexist('assets/css/' .$thisScript. '.css');
+						$minJS[] = f::sexist('assets/js/' .$thisScript. '.js');
+						$minCSS[] = f::sexist('assets/css/' .$thisScript. '.css');
 						if(isset($path))
 						{
-							$minJS[] = sexist($path.'js/' .$thisScript. '.js');
-							$minCSS[] = sexist($path.'css/' .$thisScript. '.css');
+							$minJS[] = f::sexist($path.'js/' .$thisScript. '.js');
+							$minCSS[] = f::sexist($path.'css/' .$thisScript. '.css');
 						}
 					}
 				}
