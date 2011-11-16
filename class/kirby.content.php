@@ -1,6 +1,8 @@
 <?php
 class content
 {
+	static private $cachename = NULL;
+
 	// Démarre la récupération du contenu
 	static function start()
 	{
@@ -19,72 +21,66 @@ class content
 		ob_end_flush();
 	}
 	
-	// Met en cache un ficheir ou l'inclut s'il existe
-	static function cache($filepath, $basename = NULL, $return = TRUE, $GET = TRUE)
+	// Mise en cache de la page
+	static function cache_start()
 	{
-		if(file_exists($filepath))
-		{
-			if(!$basename)
-			{
-				// Si mise en cache autorisée
-				global $pageVoulue, $sousPageVoulue;
-				$basename = $pageVoulue. '-' .$sousPageVoulue;
-				$cache = db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
-			}
-			else $cache = TRUE;
+		global $pageVoulue, $sousPageVoulue, $switcher;
+		$basename = $CORE = $pageVoulue. '-' .$sousPageVoulue;
+		$cache = db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
+
+		if($cache)
+		{			
+			// Variables en cache
+			if($switcher) $basename = $switcher->current(). '-' .$basename;
+			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
+			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue'));
+			if(isset($getvar) and !empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
 			
-			if(config::get('cache', TRUE) == FALSE or !$cache) return $filepath;
+			// Date de modification du fichier de base
+			$page = sexist('pages/' .$CORE. '.php');
+			if(!$page) $page = sexist('pages/' .$CORE. '.html');
+			$modifiedPHP = ($page) ? filemtime($page) : time(); 
+			
+			// Rercherche d'un fichier en cache
+			$found_files = glob($basename.'-[0-9]*.html');
+			if(isset($found_files[0]))
+			{
+				$modified = explode('-', $found_files[0]);
+				$modified = end($modified);
+				
+				// Si le fichier a été mis à jour on vide le cache
+				if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= 604800) $cachename = $found_files[0];
+				else unlink($found_files[0]);
+			}
+			if(!isset($cachename))
+				$cachename = $basename. '-' .$modifiedPHP. '.html';
+
+			if(file_exists($cachename))
+			{
+				f::inclure($cachename);
+				return false;
+			}
 			else
 			{
-				$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
-				
-				// Variables en cache
-				if($GET) $getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID'));
-				if(isset($getvar) and !empty($getvar)) $basename .= '-' .simplode('-', '-', $getvar);
-				
-				// Rercherche d'un fichier en cache
-				$found_files = glob($basename.'-[0-9]*.html');
-				$modifiedPHP = filemtime($filepath);
-				if(isset($found_files[0]))
-				{
-					$modified = explode('-', $found_files[0]);
-					$modified = end($modified);
-					
-					//$duree_cache = array(1 => 604800, 2 => 604800);
-					
-					// Si le fichier a été mis à jour on vide le cache
-					if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= 604800) $cachename = $found_files[0];
-					else unlink($found_files[0]);
-				}
-				if(!isset($cachename))
-					$cachename = $basename. '-' .$modifiedPHP. '.html';
-	
-				if(file_exists($cachename))
-				{
-					if($return) return $cachename;
-					else include $cachename;
-				}
-				else
-				{
-					content::start();
-					f::inclure($filepath);
-					$content = content::end(true);
-					
-					f::write($cachename, $content);
-	
-					if($return) return $cachename;
-					else echo $content;
-				}
+				self::start();
+				self::$cachename = $cachename;
+				return true;
 			}
 		}
-		else
-		{
-			prompt('Le fichier ' .$filepath. ' est introuvable');
-			errorHandle('Warning', 'Le fichier ' .$filepath. ' est introuvable', __FILE__, __LINE__);
-			return false;
-		}
+		else return true;
 	}
 
+	// Affichage de la page
+	static function cache_end()
+	{
+		if(self::$cachename)
+		{
+			$OB = self::end(TRUE);
+			f::write(self::$cachename, $OB);
+			echo $OB;
+		}
+	}
+		
 	// Détermine le type du fichier
 	static function type()
 	{

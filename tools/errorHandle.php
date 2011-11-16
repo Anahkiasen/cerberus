@@ -68,7 +68,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			$thisPath[] = $parametres;
 		}
 		
-		$DEBUG['path_' .$id_file] = '<div style="padding-left:' .($id_file*25+10). 'px">' .implode('<br />', $thisPath). '</div>';
+		$DEBUG['path_' .$id_file] = '<div style="padding-left:' .($id_file * 25 + 10). 'px">' .implode('<br />', $thisPath). '</div>';
 		$thisPath = array();
 	}
 	
@@ -88,6 +88,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		if(!function_exists('stripHTML')) include('cerberus/tools/stripHTML.php');
 		
 		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
+		$mail->setExpediteur('CerberusDebug', config::get('mail'));
 		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
 		$mail->messageHTML();
 		$mail->send();

@@ -276,8 +276,12 @@ class navigation
 				break;
 				
 			default:
-				$content = content::cache('pages/' .$this->filepath, NULL, TRUE, TRUE);
-				if($content) include $content;
+				$inclure = f::inclure('pages/' .$this->filepath);
+				if(!$inclure)
+				{
+					prompt('Le fichier ' .$this->filepath. ' est introuvable');
+					errorHandle('Warning', 'Le fichier ' .$this->filepath. ' est introuvable', __FILE__, __LINE__);
+				}
 				break;
 			}
 	}

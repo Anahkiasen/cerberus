@@ -39,11 +39,9 @@ class switcher
 	}
 	
 	// Récupération du contenu
-	function content($content, $cache = TRUE)
+	function content($content)
 	{
-		$path = 'pages/switch-'.$content.'.php';
-		if($cache) return content::cache($path, $this->current(). '-' .$content, TRUE, FALSE);
-		else return $path;
+		return 'pages/switch-'.$content.'.php';
 	}
 	
 	function returnList()
@@ -58,9 +56,9 @@ class switcher
 }
 
 // Raccourci
-function __($page, $cache = TRUE)
+function __($page)
 {
 	global $switcher;
-	return $switcher->content($page, $cache);
+	return $switcher->content($page);
 }
 ?>
