@@ -289,6 +289,7 @@ dd input[type=radio] { margin-left: 15px; }
 fieldset dt { margin-left:5px; }
 fieldset label span.mandatory { color:red; }
 /* Champs */
+input[type=button],
 input[type=text],
 input[type=password],
 input[type=file],
@@ -310,6 +311,15 @@ textarea
 	-moz-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
 	box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
 }
+input[type=button]
+{
+	cursor: pointer;
+	padding: 5px;
+	width: auto;
+	position: static;
+}
+input[type=button]:hover { background-color: #999; }
+input[type=button]:active {	background-color:#222; }
 fieldset dl:hover input[type=text],
 fieldset dl:hover input[type=password],
 fieldset dl:hover input[type=file],

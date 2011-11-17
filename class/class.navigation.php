@@ -234,10 +234,12 @@ class navigation
 			foreach($this->treeSubnav as $key => $value)
 			{
 				$texte = l::get('menu-' .$this->page. '-' .$key);
-				$hover = ($key == $this->pageSub) ? ' class="hover"' : '';
+				$parametres = array('class' => 'menu-' .$this->page. '-'.$key);
+				if($key == $this->pageSub) $parametres['class'] .= ' hover';
+				
 				$keys[] = ($this->optionListedSub)
-					? '<li' .$hover.'>' .str::link($value, $texte). '</li>'
-					: str::link($value, $texte, $hover);
+					? '<li class="' .$parametres['class']. '">' .str::link($value, $texte). '</li>'
+					: str::link($value, $texte, $parametres);
 			}
 			$renderSubnav = ($this->optionListedSub)
 				? '<ul>' .implode($glue, $keys). '</ul>'

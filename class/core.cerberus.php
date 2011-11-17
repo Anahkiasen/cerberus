@@ -307,7 +307,7 @@ class dispatch extends Cerberus
 		if(isset($switcher)) $path = $switcher->path();
 		$defaultCSS = 'css/styles.css';
 		$defaultJS = 'js/core.js';
-		$js = $css = NULL;
+		$this->JS = $this->CSS = array();
 		
 		// Fichiers par défaut
 		a::beArray($scripts['*']);
@@ -341,36 +341,53 @@ class dispatch extends Cerberus
 					// Si le script est présent dans les prédéfinis
 					if(isset($availableAPI[$value]))
 					{
-						$minCSS[] = f::sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
-						if(findString('http', $availableAPI[$value])) $js .= '<script type="text/javascript" src="' .$availableAPI[$value]. '"></script>' . "\n";
-						else $minJS[] = f::sexist('assets/js/' .$availableAPI[$value]. '.js');
+						$this->CSS['min'][] = f::sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
+						if(findString('http', $availableAPI[$value])) $this->JS['url'][] = $availableAPI[$value];
+						else $this->JS['min'][] = f::sexist('assets/js/' .$availableAPI[$value]. '.js');
 					}
 					
 					// Si le chemin est spécifié manuellement
-					elseif(findString('.js', $thisScript)) $minJS[] = f::sexist($thisScript);
-					elseif(findString('.css', $thisScript)) $minCSS[] = f::sexist($thisScript);
+					elseif(findString('.js', $thisScript)) $this->JS['min'][] = f::sexist($thisScript);
+					elseif(findString('.css', $thisScript)) $this->CSS['min'][] = f::sexist($thisScript);
 					
 					// Sinon on vérifie la présence du script dans les fichiers
 					else
 					{
-						$minJS[] = f::sexist('assets/js/' .$thisScript. '.js');
-						$minCSS[] = f::sexist('assets/css/' .$thisScript. '.css');
+						$this->JS['min'][] = f::sexist('assets/js/' .$thisScript. '.js');
+						$this->CSS['min'][] = f::sexist('assets/css/' .$thisScript. '.css');
 						if(isset($path))
 						{
-							$minJS[] = f::sexist($path.'js/' .$thisScript. '.js');
-							$minCSS[] = f::sexist($path.'css/' .$thisScript. '.css');
+							$this->JS['min'][] = f::sexist($path.'js/' .$thisScript. '.js');
+							$this->CSS['min'][] = f::sexist($path.'css/' .$thisScript. '.css');
 						}
 					}
 				}
 			}
-			
-			// Création des fichiers Minify
-			$minCSS = array_filter($minCSS);
-			$minJS = array_filter($minJS);
-			if(!empty($minCSS)) $css .= '<link type="text/css" rel="stylesheet" href="min/?f=' .implode(',', $minCSS). '" />';
-			if(!empty($minJS)) $js .= '<script type="text/javascript" src="min/?f=' .implode(',', $minJS). '"></script>';
-			return array(str::trim($css)."\n", str::trim($js)."\n", $scripts);
 		}	
+	}
+	
+	// Affichage des scripts
+	function getCSS()
+	{
+		$this->CSS['url'][] = 'min/?f=' .implode(',', array_filter($this->CSS['min']));
+		echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		
+		if(isset($this->CSS['inline'])) echo '<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>' . "\n";
+	}
+	function getJS()
+	{
+		$this->JS['url'][] = 'min/?f=' .implode(',', array_filter($this->JS['min']));
+		echo '<script type="text/javascript" src="' .implode('"></script>' . "\n". '<script type="text/javascript" src="', $this->JS['url']). '"></script>' . "\n";		
+		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .implode("\n", $this->JS['inline']). '</script>' . "\n";
+	}
+	function addJS()
+	{
+		$args = func_get_args();
+		$javascript = $args[0];
+		$javascript = str_replace('<script type="text/javascript">', '', $javascript);
+		$javascript = str_replace('</script>', '', $javascript);
+		
+		if(isset($args[1])) $this->JS['inline'][$args[1]] = $javascript;
+		else $this->JS['inline'][] = $javascript;
 	}
 }
 ?>

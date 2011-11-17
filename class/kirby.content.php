@@ -15,12 +15,13 @@ class content
 		if($return)
 		{
 			$content = ob_get_contents();
+			$content = trim(preg_replace('/\s+/', ' ', $content));
 			ob_end_clean();
 			return $content;
 		}
 		ob_end_flush();
 	}
-	
+			
 	// Mise en cache de la page
 	static function cache_start($basename)
 	{

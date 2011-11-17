@@ -236,7 +236,7 @@ class str
 		$text = str::lower($text);
 		return $text;
 	}
-
+	
 	// Affiche la valeur d'un booléen
 	static function boolprint($boolean)
 	{

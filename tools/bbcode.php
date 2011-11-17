@@ -10,21 +10,23 @@
 */
 function bbcode($contenu, $css = TRUE)
 {
-	if(!$css)
+	if($css)
 	{
-		$contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<span class="b">$1</span>', $contenu);
-		$contenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<span class="i">$1</span>', $contenu);
-		$contenu = preg_replace('#\[u\](.+)\[/u\]#isU', '<span class="u">$1</span>', $contenu);
-		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<span class="h4">$1</span><br /><br />', $contenu);
+		$contenu = preg_replace('#\[gras\](.+)\[/gras\]#isU', '<strong>$1</strong>', $contenu);
+		$contenu = preg_replace('#\[italique\](.+)\[/italique\]#isU', '<em>$1</em>', $contenu);
+		$contenu = preg_replace('#\[souligne\](.+)\[/souligne\]#isU', '<ins>$1</ins>', $contenu);
+		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<h2>$1</h2>', $contenu);
+		$contenu = preg_replace('#\[soustitre\](.+)\[/soustitre\]#isU', '<h3>$1</h3>', $contenu);
 	}
 	else
 	{
-		$contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', $contenu);
-		$contenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<em>$1</em>', $contenu);
-		$contenu = preg_replace('#\[u\](.+)\[/u\]#isU', '<ins>$1</ins>', $contenu);
-		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<h2 style="margin-bottom: 3px">$1</h2>', $contenu);
+		$contenu = preg_replace('#\[gras\](.+)\[/gras\]#isU', '<span class="b">$1</span>', $contenu);
+		$contenu = preg_replace('#\[italique\](.+)\[/italique\]#isU', '<span class="i">$1</span>', $contenu);
+		$contenu = preg_replace('#\[souligne\](.+)\[/souligne\]#isU', '<span class="u">$1</span>', $contenu);
+		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<span class="h4">$1</span><br /><br />', $contenu);
 	}
-	$contenu = preg_replace('#\[image\](.+)\[/image\]#isU', '<img src="$1" />', $contenu);
+	
+	$contenu = preg_replace('#\[image\](.+)\[/image\]#isU', str::img('$1'), $contenu);
 	$contenu = preg_replace('#\[taille="(.+)"\](.+)\[/taille\]#isU', '<span style="font-size:$1">$2</span>', $contenu);
 	$contenu = preg_replace('#\[couleur="(.+)"\](.+)\[/couleur\]#isU', '<span style="color:$1">$2</span>', $contenu);
 	$contenu = preg_replace('#\[lien\](.+)\[/lien\]#isU', '<a href="$1">$1</a>', $contenu);
