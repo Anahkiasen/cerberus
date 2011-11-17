@@ -363,6 +363,8 @@ class dispatch extends Cerberus
 					}
 				}
 			}
+			
+			return $scripts;
 		}	
 	}
 	

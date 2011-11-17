@@ -41,7 +41,7 @@ class smail
 		else $this->contenu = $contenu;
 		$this->messageText = stripHTML($this->contenu);
 		
-		if(strpos($destinataire, ',') !== FALSE)
+		if(!is_array($destinataire) and strpos($destinataire, ',') !== FALSE)
 			$this->destinaire = explode(', ', $destinataire);
 		
 		$this->boundary = '-----=' .md5(rand());
