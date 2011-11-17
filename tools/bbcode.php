@@ -12,17 +12,17 @@ function bbcode($contenu, $css = TRUE)
 {
 	if($css)
 	{
-		$contenu = preg_replace('#\[gras\](.+)\[/gras\]#isU', '<strong>$1</strong>', $contenu);
-		$contenu = preg_replace('#\[italique\](.+)\[/italique\]#isU', '<em>$1</em>', $contenu);
-		$contenu = preg_replace('#\[souligne\](.+)\[/souligne\]#isU', '<ins>$1</ins>', $contenu);
+		$contenu = preg_replace('#\[[gras|b]\](.+)\[/[gras|b]\]#isU', '<strong>$1</strong>', $contenu);
+		$contenu = preg_replace('#\[[italique|i]\](.+)\[/[italique|i]\]#isU', '<em>$1</em>', $contenu);
+		$contenu = preg_replace('#\[[souligne|u]\](.+)\[/[souligne|u]\]#isU', '<ins>$1</ins>', $contenu);
 		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<h2>$1</h2>', $contenu);
 		$contenu = preg_replace('#\[soustitre\](.+)\[/soustitre\]#isU', '<h3>$1</h3>', $contenu);
 	}
 	else
 	{
-		$contenu = preg_replace('#\[gras\](.+)\[/gras\]#isU', '<span class="b">$1</span>', $contenu);
-		$contenu = preg_replace('#\[italique\](.+)\[/italique\]#isU', '<span class="i">$1</span>', $contenu);
-		$contenu = preg_replace('#\[souligne\](.+)\[/souligne\]#isU', '<span class="u">$1</span>', $contenu);
+		$contenu = preg_replace('#\[[gras|b]\](.+)\[/[gras|b]\]#isU', '<span class="b">$1</span>', $contenu);
+		$contenu = preg_replace('#\[[italique|i]\](.+)\[/[italique|i]\]#isU', '<span class="i">$1</span>', $contenu);
+		$contenu = preg_replace('#\[[souligne|u]\](.+)\[/[souligne|u]\]#isU', '<span class="u">$1</span>', $contenu);
 		$contenu = preg_replace('#\[titre\](.+)\[/titre\]#isU', '<span class="h4">$1</span><br /><br />', $contenu);
 	}
 	
