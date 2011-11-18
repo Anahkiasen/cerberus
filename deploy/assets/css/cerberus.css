@@ -297,6 +297,7 @@ select,
 textarea
 {
 	border: none;
+	background-color: #666;
 	background:#666 url(background-45.png);
 	color:#FFF;
 	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
@@ -340,14 +341,19 @@ fieldset input[type=password]
 	right:3px;
 	top:3px;
 }
-fieldset select,
-fieldset dl:hover select
+fieldset select
 {
 	border:5px solid #666;
 	padding:10px;
 	right:3px;
 	top:1px;
 }
+fieldset dl:hover select { border:5px solid #666; }
+.ie fieldset select,
+.win.chrome fieldset select,
+.opera fieldset select,
+.fx fieldset select { padding: 2px; }
+.win.chrome fieldset select { background: #666 !important }
 dl.textarea textarea { right:-2px; }
 /* Bouton valider */
 input[type=submit]

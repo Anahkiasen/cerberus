@@ -18,7 +18,7 @@ class f
 				$mode		= ($append) ? FILE_APPEND : false;
 				$write 		= @file_put_contents($file, $content, $mode);
 			
-			if($write)
+			if($write and file_exists($file))
 				@chmod($file, 0777);
 			
 			return $write;

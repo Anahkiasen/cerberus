@@ -6,6 +6,7 @@ class content
 	// Démarre la récupération du contenu
 	static function start()
 	{
+		//ob_start("ob_gzhandler");
 		ob_start();
 	}
 
@@ -60,7 +61,9 @@ class content
 
 			if(file_exists($cachename))
 			{
+				self::start();
 				f::inclure($cachename);
+				self::end();
 				return false;
 			}
 			else
