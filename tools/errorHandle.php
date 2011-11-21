@@ -2,11 +2,13 @@
 function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue', $errorFile = __FILE__, $errorLine = __LINE__)
 {	
 	// Récupération du chemin du fichier
+	global $desired;
 	$path = array_reverse(debug_backtrace());
 	$indentation = 0;
 	
-	// Date de l'erreur
-	$DEBUG['date'] = 'Une erreur est survenue &agrave; ' .date('H:i:s \l\e Y-m-d'). '<br />';
+	// Date et position de l'erreur
+	$currentPage = (isset($desired)) ? ' sur la page ['.$desired->current().']' : NULL;
+	$DEBUG['date'] = 'Une erreur est survenue &agrave; ' .date('H:i:s \l\e Y-m-d').$currentPage. '<br />';
 	if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
 	
 	// Type d'erreur
@@ -36,6 +38,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		$DEBUG['error'] = 'Unknown';
 		break;
 	}
+		
 	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>
 	<h3>' .f::filename($errorFile). ':' .$errorLine. '</h3>';
 	

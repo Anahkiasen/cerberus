@@ -52,6 +52,44 @@ if(LOCAL) config::set(array(
 	'db.name' => config::get('local.name')));
 	if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
 
+/*
+########################################
+############# STATISTIQUES #############
+########################################
+*/
+
+$ip = server::get('remote_addr');
+if(db::is_table('logs'))
+{
+	if(!db::row('logs', 'ip', array('ip' => $ip)) and ($ip))
+	{
+		$ua = browser::detect();
+		$domaine = a::get(explode('/', url::short()), 0);
+		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
+		
+		if(!empty($ua['browser']) and !empty($ua['platform']))
+			db::insert('logs', array(
+				'ip' => $ip,
+				'date' => 'NOW()',
+				'platform' => $ua['platform'],
+				'browser' => $ua['browser'],
+				'version' => $ua['version'],
+				'engine' => $ua['engine'],
+				'mobile' => $mobile,
+				'domaine' => $domaine));
+	}
+}
+
+// Ajout des balises HTML averc leur selecteur correct
+echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
+echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">';
+
+/*
+########################################
+############# MISE EN CACHE ############
+########################################
+*/
+
 $desired = new navigation();
 $start = content::cache_start($desired->current());
 if(!$start)
@@ -80,35 +118,4 @@ if(MULTILANGUE)
 
 // Génération du fichier META
 $cerberus->meta();
-
-/*
-########################################
-############# STATISTIQUES #############
-########################################
-*/
-
-$ip = server::get('remote_addr');
-
-if(db::is_table('logs'))
-{
-	if(!db::row('logs', 'ip', array('ip' => $ip)) and ($ip))
-	{
-		$ua = browser::detect();
-		$domaine = a::get(explode('/', url::short()), 0);
-		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
-		
-		if(!empty($ua['browser']) and !empty($ua['platform']))
-			db::insert('logs', array(
-				'ip' => $ip,
-				'date' => 'NOW()',
-				'platform' => $ua['platform'],
-				'browser' => $ua['browser'],
-				'version' => $ua['version'],
-				'engine' => $ua['engine'],
-				'mobile' => $mobile,
-				'domaine' => $domaine));
-	}
-}
-
-$userAgent = browser::css();
 ?>
