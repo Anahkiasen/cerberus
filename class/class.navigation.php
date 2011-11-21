@@ -303,13 +303,15 @@ class navigation
 	// Page en cours
 	function current()
 	{
-		return $this->page. '-' .$this->pageSub;
+		return ($this->pageSub)
+			? $this->page. '-' .$this->pageSub
+			: $this->page;
 	}
 	
 	// Récupération de la classe CSS
 	function css()
 	{
-		return $this->page. ' ' .$this->page.'-'.$this->pageSub;
+		return $this->page. ' ' .$this->current();
 	}
 }
 ?>
