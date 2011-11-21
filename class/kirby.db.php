@@ -232,7 +232,7 @@ class db
 	// INSERT ALL
 	static function insert_all($table, $fields, $values)
 	{
-		if($fields) $fields = '(' .implode(',', $fields). ')'; 
+		$fields = ($fields) ? '(' .implode(',', $fields). ')' : NULL; 
 		$query = 'INSERT INTO ' .self::prefix($table). ' ' .$fields. ' VALUES ';
 		$rows = array();
 		

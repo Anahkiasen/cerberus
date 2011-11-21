@@ -54,6 +54,7 @@ class str
 		{
 			case 'csv':
 				$result = explode("\r", $string);
+				if(count($result == 1)) $result = explode("\n", $string);
 				foreach($result as $key => $value) $result[$key] = explode(';', $value);
 				break;
 			case 'json':

@@ -28,6 +28,43 @@ if(get('bdd'))
 		a::csv($index, 'langues', implode(';', db::fields('langue')));
 		prompt('Le fichier a bien été crée, pour le télécharger ' .str::link('langues.csv', 'cliquez ici'));
 	}
+	else
+	{
+		if(isset($_FILES['import']['name']))
+		{
+			$filename = 'tmp.csv';
+			$resultat = move_uploaded_file($_FILES['import']['tmp_name'], $filename);
+			if($resultat)
+			{
+				$csv_content = file_get_contents($filename);
+				$index = str::parse($csv_content, 'csv');
+				foreach($index as $ligne => $colonnes)
+				{
+					if($ligne != 0 and count($colonnes) > 1)
+						foreach($colonnes as $langue => $value)
+							{
+								$index_clean[$ligne][$langue] = substr($value, 1, -1);
+							}
+				}
+				db::delete('langue');
+				db::insert_all('langue', NULL, $index_clean);
+				db::status('Fichier de langue correctement importé', 'Erreur lors de l\'import du fichier langue');
+			}
+		}
+		else
+		{
+		?>
+		<form enctype="multipart/form-data" method="post">
+		<fieldset>
+		<legend>Importer</legend>
+		<dl class="file">
+		<dt><label>Importer des traductions (CSV)</label></dt>
+		<dd><input type="file" name="import" /><input type="submit" class="ok" value="ok" /></dd>
+		</dl>
+		</fieldset><p class="clear"></p></form>
+		<?
+		}
+	}
 }
 
 $langueAdmin = new AdminPage();
