@@ -298,7 +298,7 @@ class dispatch extends Cerberus
 		
 		// API
 		$availableAPI = array(
-		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js',
+		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js',
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'colorbox' => 'jquery.colorbox-min',

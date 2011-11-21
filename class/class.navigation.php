@@ -124,15 +124,7 @@ class navigation
 		$this->optionListed = $menu;
 		$this->optionListedSub = $submenu;
 	}
-	
-	// Vérifie la présence d'une clé dans l'arbre
-	function get($key = NULL)
-	{
-		if(!$key) return $this->navigation;
-		elseif($key and isset($this->navigation[$key])) return $this->navigation[$key];
-		else return false;
-	}
-	
+		
 	// Met à jour l'arbre de navigation à la nouvelle version
 	function createStructure($navigation)
 	{
@@ -286,6 +278,14 @@ class navigation
 				}
 				break;
 			}
+	}
+	
+	// Vérifie la présence d'une clé dans l'arbre
+	function get($key = NULL)
+	{
+		if(!$key) return $this->navigation;
+		elseif($key and isset($this->navigation[$key])) return $this->navigation[$key];
+		else return false;
 	}
 	
 	// Récupère le menu rendu

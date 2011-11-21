@@ -13,7 +13,7 @@
 function rewrite($page = NULL, $params = NULL)
 {
 	// Importation des variables
-	global $meta, $navigation;
+	global $meta, $desired;
 	
 	// Page actuelle
 	if(!$page)
@@ -28,12 +28,12 @@ function rewrite($page = NULL, $params = NULL)
 	$hashless = url::strip_hash($page);
 	$hash = str_replace($hashless, '', $page);
 	$page = $hashless;
-	
+
 	if(!is_array($page)) $page = explode('-', $page);
 	$page0 = a::get($page, 0);
+	
 	if(isset($page[1])) $page1 = $page[1];
-	elseif(!isset($page[1]) and isset($navigation[$page0])) $page1 = $navigation[$page0][0];
-	else $page1 = NULL;
+	else $page1 = a::get($desired->get($page0), 0, NULL);
 	
 	if(is_array($params))
 	{
