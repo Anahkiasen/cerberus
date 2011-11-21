@@ -79,10 +79,11 @@ if(db::is_table('logs'))
 				'domaine' => $domaine));
 	}
 }
+$userAgent = browser::css();
 
 // Ajout des balises HTML averc leur selecteur correct
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">';
+echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">';
 
 /*
 ########################################
