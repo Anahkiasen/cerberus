@@ -47,7 +47,7 @@ function rewrite($page = NULL, $params = NULL)
 		// Si le nom HTML de la page est fourni
 		if(isset($params['html']))
 		{
-			$thisHTML = $params['html'];
+			$pageHTML = $params['html'];
 			unset($params['html']);
 		}	
 	}
@@ -82,14 +82,16 @@ function rewrite($page = NULL, $params = NULL)
 		}
 		$lien = str_replace($page0. '-', '', $lien);
 				
-		// Si présence du nom HTML de la page (fourni ou dans la base META) on l'ajoute
+		// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
 		$thisPage = $page0. '-' .$page1;
-		if(isset($meta[$thisPage]) and !isset($thisHTML)) $thisHTML = (!empty($meta[$thisPage]['url'])) ? $meta[$thisPage]['url'] : $meta[$thisPage]['titre'];
-		if(isset($thisHTML))
+		
+		if(isset($meta[$thisPage]) and !isset($pageHTML))
 		{
-			$lien .= str::slugify($thisHTML, true);
-			$lien .= '.html';
+			$meta_url = trim($meta[$thisPage]['url']);
+			$pageHTML = (!empty($meta_url)) ? $meta_url : $meta[$thisPage]['titre'];
 		}
+		if(isset($pageHTML) and !empty($pageHTML))
+			$lien .= str::slugify($pageHTML, true). '.html';
 	}
 	
 	return $lien.$hash;

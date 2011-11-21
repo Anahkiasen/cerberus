@@ -12,10 +12,17 @@ if(get('meta_structure'))
 // Sinon
 if(isset($_POST['titre']))
 {
+	// Page actuelle
 	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
 	$already = db::field('langue', $_SESSION['admin']['langue'], array('tag' => $index));
 	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['titre']), array('tag' => $index));
 	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['titre']));
+	
+	// Page parente
+	$index = 'menu-'.$_POST['parent'];
+	$already = db::field('langue', $_SESSION['admin']['langue'], array('tag' => $index));
+	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['parent_titre']), array('tag' => $index));
+	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['parent_titre']));
 }
 
 $strucAdmin = new AdminPage();
@@ -83,12 +90,19 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 	
 	$test = $form->passValues();
 	$titre = get('edit_structure') ? l::get('menu-'.$test['parent'].'-'.$test['page'], NULL) : NULL;
+	$parent_titre = l::get('menu-'.$test['parent']);
 	$form->addValue('titre', $titre);
+	$form->addValue('parent_titre', $parent_titre);
+	
 	
 	$form->openFieldset($diffText. ' l\'arobrescence');
 		$form->addText('page', 'Identifiant de la page');
-		$form->addText('parent', 'Page parente');
-		$form->addText('titre');
+		$form->addText('parent', 'Identifiant de la catégorie');
+		$form->addText('titre', 'Titre de la page');
+		$form->addtext('parent_titre', 'Titre de la catégorie');
+	$form->closeFieldset();
+	
+	$form->openFieldset('Options');
 		$form->addText('page_priority', 'Ordre');
 		$form->addRadio('cache', array('Oui' => 1, 'Non' => 0), 'Autoriser la mise en cache');
 		
