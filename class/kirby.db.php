@@ -422,7 +422,7 @@ class db
 			$field = (strpos($field, '.') === false) ? '`' .$field. '`' : $field;
 			
 			if(is_string($value)) $output[] = $field. ' ' .$operand. ' \'' .$value. '\'';
-			else if(is_array($value)) $output[] = $field. ' ' .$operand2. ' (' .implode(',', $value). ')';
+			else if(is_array($value)) $output[] = $field. ' ' .$operand2. ' ("' .implode('","', $value). '")';
 			else $output[] = $field. ' ' .$operand. ' ' .$value. '';
 			
 			$separator = ' ' .$method. ' ';
