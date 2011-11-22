@@ -65,7 +65,7 @@ class l
 	static function flags($path, $langue = NULL)
 	{
 		$array = ($langue) ? array(self::sanitize($langue)) : config::get('langues');
-		foreach($array as $langue)
+		if($langue != NULL or count($array) > 1) foreach($array as $langue)
 		{
 			$currentpath = $path;
 			$hover = (self::current() == $langue) ? NULL : '-off';
