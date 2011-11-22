@@ -153,44 +153,60 @@ if(!file_exists('../../index.php'))
 		{
 			mysql_query('DROP TABLE IF EXISTS `langue`;');
 			db::execute('CREATE TABLE IF NOT EXISTS `langue` (
-			  `tag` varchar(255) NOT NULL,
+			  `tag` varchar(40) NOT NULL,
 			  `fr` varchar(255) NOT NULL,
 			  PRIMARY KEY (`tag`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1;');	
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci;');	
 			db::execute('INSERT INTO langue VALUES ("menu-home", "Accueil")');
 		}
 		
 		// Table ADMIN
 		mysql_query('DROP TABLE IF EXISTS `admin`;');
 		db::execute('CREATE TABLE IF NOT EXISTS `admin` (
-		  `user` varchar(32) NOT NULL,
-		  `password` varchar(32) NOT NULL,
-		  PRIMARY KEY (`user`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1');
+		  `user` varchar(32) collate utf8_unicode_ci NOT NULL,
+		  `password` varchar(32) collate utf8_unicode_ci NOT NULL,
+		  `droits` varchar(255) collate utf8_unicode_ci NOT NULL,
+		  PRIMARY KEY  (`user`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci');
 		
 		// Table LOGS
 		mysql_query('DROP TABLE IF EXISTS `logs`;');
 		db::execute('CREATE TABLE IF NOT EXISTS `logs` (
-		  `ip` varchar(20) NOT NULL,
+		  `id` smallint(4) NOT NULL auto_increment,
+		  `ip` varchar(20) collate utf8_unicode_ci NOT NULL,
 		  `date` datetime NOT NULL,
-		  `platform` varchar(10) NOT NULL,
-		  `browser` varchar(10) NOT NULL,
-		  `version` varchar(10) NOT NULL,
-		  `engine` varchar(10) NOT NULL,
-		  `mobile` enum(\'0\',\'1\') NOT NULL,
-		  PRIMARY KEY (`ip`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
+		  `platform` varchar(10) collate utf8_unicode_ci NOT NULL,
+		  `browser` varchar(10) collate utf8_unicode_ci NOT NULL,
+		  `version` varchar(10) collate utf8_unicode_ci NOT NULL,
+		  `engine` varchar(10) collate utf8_unicode_ci NOT NULL,
+		  `mobile` enum('0','1') collate utf8_unicode_ci NOT NULL,
+		  `domaine` varchar(255) collate utf8_unicode_ci NOT NULL,
+		  PRIMARY KEY  (`id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci;');
 		
 		// Table META
 		mysql_query('DROP TABLE IF EXISTS `meta`;');
-		db::execute('CREATE TABLE `meta` (
-		  `page` varchar(30) NOT NULL,
-		  `titre` varchar(200) NOT NULL,
-		  `description` text NOT NULL,
-		  `url` varchar(150) NOT NULL,
-		  `langue` enum(\'fr\',\'en\') NOT NULL,
-		  PRIMARY KEY (`page`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
+		db::execute('CREATE TABLE IF NOT EXISTS `meta` (
+		  `id` tinyint(4) NOT NULL auto_increment,
+		  `page` tinyint(4) NOT NULL,
+		  `titre` text collate utf8_unicode_ci NOT NULL,
+		  `description` text collate utf8_unicode_ci NOT NULL,
+		  `url` varchar(50) collate utf8_unicode_ci NOT NULL,
+		  `langue` enum('fr') collate utf8_unicode_ci NOT NULL,
+		  PRIMARY KEY  (`id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci;');
+		
+		// Table Structure
+		mysql_query('DROP TABLE IF EXISTS `structure`;');
+		db::execute('CREATE TABLE IF NOT EXISTS `structure` (
+		  `id` tinyint(3) NOT NULL auto_increment,
+		  `page` varchar(20) collate utf8_unicode_ci NOT NULL,
+		  `parent` varchar(20) collate utf8_unicode_ci NOT NULL,
+		  `parent_priority` tinyint(3) NOT NULL,
+		  `page_priority` tinyint(3) NOT NULL,
+		  `cache` enum('0','1') collate utf8_unicode_ci NOT NULL,
+		  PRIMARY KEY  (`id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;');
 		
 		// Création des dossiers
 		mkdir('../../assets/css/');

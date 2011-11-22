@@ -48,9 +48,11 @@ class AdminSetup
 			
 			// Vidage du cache
 			if(isset($_GET['empty_cache']))
+			{
+				prompt('Le cache a été correctement vidé');
 				foreach(glob('cerberus/cache/*.*') as $file)
 					f::remove($file);
-
+			}
 			
 			// Vérification de la page
 			$title = 'Administration';
