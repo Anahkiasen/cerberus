@@ -46,6 +46,12 @@ class AdminSetup
 				$thisNavigation = $sanitizedNavigation;
 			}
 			
+			// Vidage du cache
+			if(isset($_GET['empty_cache']))
+				foreach(glob('cerberus/cache/*.*') as $file)
+					f::remove($file);
+
+			
 			// Vérification de la page
 			$title = 'Administration';
 			if(!empty($thisNavigation))
@@ -184,7 +190,7 @@ class AdminSetup
 				echo str::slink('admin-' .$value, $textLien, NULL, $thisActive);
 			}	
 		}
-		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
+		echo str::slink(NULL, 'Vider le cache', 'empty_cache').str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
 	}
 }
 ?>
