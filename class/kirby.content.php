@@ -18,8 +18,8 @@ class content
 			$content = ob_get_contents();
 			ob_end_clean();
 			$content = str::accents($content);
-			$content = preg_replace('/(\/\/|<!--|\/\*)([a-zA-Z0-9&; \t\r#]+)(-->|\*\/)?\r/', ' ', $content);
 			$content = trim(preg_replace('/\s+/', ' ', $content));
+			$content = preg_replace('/(\/\/|<!--|\/\*)([a-zA-Z0-9&; #]+)(-->|\*\/)/', ' ', $content);
 			return $content;
 		}
 		ob_end_flush();
