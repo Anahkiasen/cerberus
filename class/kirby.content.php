@@ -37,7 +37,7 @@ class content
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
-			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue'));
+			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid'));
 			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base

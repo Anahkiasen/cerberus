@@ -197,6 +197,7 @@ class getNews
 			}
 			echo '</ul></div><p class="clear"></p></div>';
 		}
+		else promptm('news-none', 'Aucune news à afficher');
 	}
 	
 	// Pagination

@@ -56,13 +56,28 @@ class l
 		if(empty($key)) return self::$lang;
 		else
 		{
-			//if(LOCAL) $default = '<span style="color:red">[' .$key. '(' .self::current(). ')]</span>';
 			$translate = a::get(self::$lang, $key, $default);
 			return (empty($translate)) ? $default : stripslashes($translate);
 		}
 	}
 	
-	// Affiche une valeur formattée
+	// Affiche un lien vers une ou la totalité des langues
+	static function flags($path, $langue = NULL)
+	{
+		$array = ($langue) ? array(self::sanitize($langue)) : config::get('langues');
+		foreach($array as $langue)
+		{
+			$currentpath = $path;
+			$hover = (self::current() == $langue) ? NULL : '-off';
+			$currentpath = str_replace('{langue}', $langue, $path);
+			$currentpath = str_replace('{hover}', $hover, $currentpath);
+			
+			echo str::slink(
+				NULL,
+				str::img($currentpath, strtoupper($langue). ' VERSION'),
+				array('langue' => $langue));
+		}
+	}
 	
 	
 	// Changer de langue
