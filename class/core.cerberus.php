@@ -193,7 +193,7 @@ class Cerberus
 		// META d'une page seule
 		else
 		{
-			$pageVoulue = $desired->getPage();
+			$pageVoulue = $desired->page;
 			$current = $desired->current();
 			$title_prefix = ($pageVoulue == 'admin' and get('admin'))
 				? 'Gestion ' .ucfirst(get('admin'))
@@ -222,15 +222,14 @@ class dispatch extends Cerberus
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
 	{	
-		global $pageVoulue;
-		global $sousPageVoulue;
+		global $desired;
 		
 		// Page en cours
 		if(!empty($current)) $this->current = $current;
 		else
 		{
-			if($sousPageVoulue == 'admin' and isset($_GET['admin'])) $this->current = $pageVoulue. '-' .get('admin');
-			else $this->current = $pageVoulue. '-' .$sousPageVoulue;
+			if($desired->page == 'admin' and isset($_GET['admin'])) $this->current = $desired->page. '-' .get('admin');
+			else $this->current = $desired->current();
 		}
 		
 		$explode = explode('-', $this->current);
@@ -294,8 +293,8 @@ class dispatch extends Cerberus
 	// Modules JS/CSS
 	function getAPI($scripts)
 	{
-		global $switcher;
-		
+		global $switcher, $desired;
+
 		// API
 		$availableAPI = array(
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js',
@@ -328,7 +327,6 @@ class dispatch extends Cerberus
 			$scripts['*'][] = $path.$defaultCSS;
 			$scripts['*'][] = $path.$defaultJS;
 		}
-		
 		$this->scripts = $scripts = $this->dispatchArray($scripts);
 		if($scripts)
 		{
@@ -337,7 +335,7 @@ class dispatch extends Cerberus
 				if(!empty($value))
 				{
 					$thisScript = $value;
-	
+
 					// Si le script est présent dans les prédéfinis
 					if(isset($availableAPI[$value]))
 					{

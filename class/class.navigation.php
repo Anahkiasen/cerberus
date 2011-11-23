@@ -21,8 +21,8 @@ class navigation
 	private $options;
 
 	// Paramètres
-	private $page = 'home';
-	private $pageSub;
+	public $page = 'home';
+	public $sousPage;
 	private $allowedPages;
 
 	// Caches
@@ -58,7 +58,7 @@ class navigation
 		
 		// Options et modes
 		$allowed_pages = array_keys($navigation);
-		$pageSub = NULL;
+		$sousPage = NULL;
 		$page = (isset($_GET['404'])) ? '404' : $allowed_pages[0];
 		$this->optionSubnav = (isset($navigation[$page]) and is_array($navigation[$page]));
 		$this->options = str::boolprint(MULTILANGUE).str::boolprint($this->optionSubnav);
@@ -74,7 +74,7 @@ class navigation
 		if($this->optionSubnav and isset($navigation[$page]) and !empty($navigation[$page]))
 		{
 			$substring = '-';
-			$pageSub = (get('pageSub') and in_array(get('pageSub'), $navigation[$page]))
+			$sousPage = (get('pageSub') and in_array(get('pageSub'), $navigation[$page]))
 				? get('pageSub')
 				: $navigation[$page][0];
 		}
@@ -83,26 +83,26 @@ class navigation
 		// Include de la page
 		if($page != 'admin' and $page != '404')
 		{
-			$extension = $this->extension($page.$substring.$pageSub);
+			$extension = $this->extension($page.$substring.$sousPage);
 			if(!$extension)
 			{
 				$page = $allowed_pages[0];
 				if($this->optionSubnav)
 				{
 					$substring = '-';
-					$pageSub = $navigation[$page][0];
+					$sousPage = $navigation[$page][0];
 				}
-				$extension = $this->extension($page.$substring.$pageSub);
+				$extension = $this->extension($page.$substring.$sousPage);
 			}
-			$this->filepath = $page.$substring.$pageSub.$extension;
+			$this->filepath = $page.$substring.$sousPage.$extension;
 		}
-		else if(get('admin')) $pageSub = get('admin');
+		else if(get('admin')) $sousPage = get('admin');
 		
 		// Enregistrement des variables
 		$this->navigation = $navigation;
 		$this->page = $page;
-		$this->pageSub = $pageSub;
-		$this->pageDATA = db::row('structure', 'id,cache', array('parent' => $this->page, 'page' => $this->pageSub));
+		$this->sousPage = $sousPage;
+		$this->pageDATA = db::row('structure', 'id,cache', array('parent' => $this->page, 'page' => $this->sousPage));
 		$this->allowedPages = $allowed_pages;
 	}
 	
@@ -185,7 +185,7 @@ class navigation
 	}
 	
 	// Rendu HTML des arbres de navigation
-	function render(&$renderPage, &$renderSousPage, &$renderNavigation, &$renderSubnav, $glue = NULL)
+	function render(&$renderPage = NULL, &$renderSousPage = NULL, &$renderNavigation = NULL, &$renderSubnav = NULL, $glue = NULL)
 	{		
 		$this->createTree();
 		if(!LOCAL) unset($this->treeNavigation['admin']);
@@ -219,7 +219,7 @@ class navigation
 			{
 				$texte = l::get('menu-' .$this->page. '-' .$key);
 				$parametres = array('class' => 'menu-' .$this->page. '-'.$key);
-				if($key == $this->pageSub) $parametres['class'] .= ' hover';
+				if($key == $this->sousPage) $parametres['class'] .= ' hover';
 				
 				$keys[] = ($this->optionListedSub)
 					? '<li class="' .$parametres['class']. '">' .str::link($value, $texte). '</li>'
@@ -235,7 +235,7 @@ class navigation
 		$this->renderNavigation = $renderNavigation;
 		$this->renderSubnav = $renderSubnav;
 		$renderPage = $this->page;
-		$renderSousPage = $this->pageSub;
+		$renderSousPage = $this->sousPage;
 	}
 	
 	/*
@@ -296,16 +296,9 @@ class navigation
 	// Page en cours
 	function current()
 	{
-		return ($this->pageSub)
-			? $this->page. '-' .$this->pageSub
-			: $this->page;
+		return ($this->sousPage) ? $this->page. '-' .$this->sousPage : $this->page;
 	}
-	
-	function getPage()
-	{
-		return $this->page;
-	}
-	
+		
 	// Récupération de la classe CSS
 	function css()
 	{

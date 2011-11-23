@@ -18,10 +18,8 @@ function rewrite($page = NULL, $params = NULL)
 	// Page actuelle
 	if(!$page)
 	{
-		global $pageVoulue, $sousPageVoulue;
-		$page = ($pageVoulue == 'admin')
-			? $pageVoulue.'-'.get('admin')
-			: $pageVoulue.'-'.$sousPageVoulue;
+		global $desired;
+		$page = $desired->current();
 	}
 		
 	// Détermination de la page/sous-page
