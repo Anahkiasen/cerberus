@@ -23,22 +23,24 @@ class l
 		$tables = db::row('langue', 'tag');
 		if(!empty($tables))
 		{
-			if(!PRODUCTION or LOCAL) f::remove($filename); // Suppression de la version existante
-			if(file_exists($filename) and PRODUCTION) self::load($filename);
+			if(file_exists($filename)) self::load($filename);
 			else
 			{
 				// Récupération de la base de langues
-				$index = db::select($database, '*', NULL, 'tag ASC');
-				$index = a::rearrange($index, 'tag');
+				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
+				$index = a::simple(a::rearrange($index, 'tag', true));
 				
 				if($index)
 				{
-					// Ecriture du fichier PHP
-					$renderPHP = "<?php \n";
-					foreach($index as $tag => $langues)
-						$renderPHP .= '$lang[\'' .$tag. '\'] = \'' .addslashes($langues[$current]). "';\n";
-
-					f::write($filename, $renderPHP. '?>');
+					if(CACHE)
+					{
+						$renderPHP = "<?php \n";
+						foreach($index as $tag => $traduction)
+							$renderPHP .= '$lang[\'' .$tag. '\'] = \'' .addslashes($traduction). "';\n";
+						
+						f::write($filename, $renderPHP. '?>');
+					}
+					else self::$lang = $index;
 				}
 			}
 		}

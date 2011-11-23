@@ -30,7 +30,7 @@ class Cerberus
 			: get('page', 'home');
 
 		// Création ou non du fichier
-		if(!PRODUCTION or !file_exists('cerberus/cache/' .$this->mode. '.php'))
+		if(!LOCAL or !file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
 			$this->unpackModules($modules);
 			$this->generate();
@@ -110,9 +110,13 @@ class Cerberus
 			$fichierModule = $this->getFile($module);
 			if($fichierModule)
 			{
-				$thisModule = trim($this->file_get_contents_utf8($fichierModule));
-				$thisModule = substr($thisModule, 5, -2);
-				$this->render .= $thisModule;
+				if(CACHE)
+				{
+					$thisModule = trim($this->file_get_contents_utf8($fichierModule));
+					$thisModule = substr($thisModule, 5, -2);
+					$this->render .= $thisModule;
+				}
+				else f::inclure($fichierModule);
 			}
 			else $this->erreurs[] = errorHandle('Warning', 'Module ' .$module. ' non existant.', __FILE__, __LINE__);
 		}
@@ -169,24 +173,22 @@ class Cerberus
 			
 			if(!$meta)
 			{
-				if(db::is_table('structure', 'meta'))
-				{
-					$metadata = db::left_join('meta M', 'structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
-					foreach($metadata as $values)
-					{
-						if(empty($values['description'])) $values['description'] = $values['titre'];
-						if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
-						
-						$meta_index = $values['parent'].'-'.$values['page'];
-						$meta[$meta_index] = array('titre' => $values['titre'], 'description' => $values['description'], 'url' => $values['url']);
-					}
-					f::write($metafile, json_encode($meta));
-				}
-				else
+				if(!db::is_table('structure', 'meta'))
 				{
 					update::table('meta');
 					update::table('structure');
 				}
+				
+				$metadata = db::left_join('meta M', 'structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
+				foreach($metadata as $values)
+				{
+					if(empty($values['description'])) $values['description'] = $values['titre'];
+					if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
+					
+					$meta[$values['parent'].'-'.$values['page']] =
+						array('titre' => $values['titre'], 'description' => $values['description'], 'url' => $values['url']);
+				}
+				if(CACHE) f::write($metafile, json_encode($meta));
 			}
 		}
 		

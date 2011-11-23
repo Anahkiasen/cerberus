@@ -11,30 +11,29 @@ require_once('cerberus/class/class.navigation.php');
 $REVISION = 313;
 s::start();
 
-
 /*
 ########################################
 ############# ENVIRONNEMENT ############
 ########################################
 */
-
 // Configuration du site
+timer::save().timer::start('config');
 config::load('cerberus/conf.php');
 config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
 
 if(config::get('local'))
 {
 	config::set(array(
-		'production' => false,
+		'cache' => false,
 		'rewriting' => false,
 		'db.debug' => true));
 }
 
 // Constantes
 define('REWRITING', config::get('rewriting', FALSE));
-define('PRODUCTION', config::get('production', FALSE));
 define('LOCAL', config::get('local', FALSE));
 define('MULTILANGUE', config::get('multilangues', TRUE));
+define('CACHE', config::get('cache', TRUE));
 
 // Affichage et gestion des erreurs
 error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
@@ -47,7 +46,8 @@ set_error_handler('errorHandle');
 */
 
 // Connexion à la base de données
-timer::set('config');
+timer::save('config');
+timer::start('sql');
 if(LOCAL) config::set(array(
 	'db.host' => config::get('local.host'),
 	'db.user' => config::get('local.user'),
@@ -61,7 +61,7 @@ if(LOCAL) config::set(array(
 ########################################
 */
 
-timer::set('sql');
+timer::save('sql').timer::start('logs');
 $ip = server::get('remote_addr');
 if(db::is_table('logs'))
 {
@@ -87,8 +87,8 @@ else update::table('logs');
 $userAgent = browser::css();
 
 // Ajout des balises HTML averc leur selecteur correct
-echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">';
+echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
+echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
 
 /*
 ########################################
@@ -97,7 +97,7 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">';
 */
 
 // Gestion des langues
-timer::set('logs');
+timer::save('logs').timer::start('langue');
 if(MULTILANGUE)
 {
 	$index = new l();
@@ -106,7 +106,7 @@ if(MULTILANGUE)
 }
 
 // Gestion de la navigation
-timer::set('langue');
+timer::save('langue').timer::start('navigation');
 $desired = new navigation();
 
 // Affichage des superglobales pour debug
@@ -130,7 +130,7 @@ if(isset($_GET['cerberus_debug']))
 ########################################
 */
 
-timer::set('navigation');
+timer::save('navigation').timer::start('cerberus');
 $start = content::cache_start($desired->current());
 if(!$start)
 {
@@ -141,7 +141,7 @@ if(!$start)
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
 $dispatch = new dispatch();
-if(db::connection()) backupSQL();
+if(db::connection() and CACHE) backupSQL();
 
 /*
 ########################################
@@ -150,7 +150,7 @@ if(db::connection()) backupSQL();
 */
 
 // Génération du fichier META
-timer::set('cerberus');
+timer::save('cerberus').timer::start('meta');
 $cerberus->meta();
-timer::set('meta');
+timer::save('meta').timer::start('end');
 ?>

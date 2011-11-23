@@ -69,8 +69,7 @@ class content
 			f::write(self::$cachename, $OB);
 			echo $OB;
 		}
-		timer::set('end');
-		timer::get();
+		if(config::get('timer', false)) timer::get();
 	}
 	
 	// Vide le cache

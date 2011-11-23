@@ -3,12 +3,17 @@ class timer
 {
 	public static $timer = array();
 
-	// Enregistre un temps
-	static function set($key = 'start')
+	// Démarre le chronométrage d'un temps
+	static function start($key = 'start')
 	{
 		if(config::get('timer', FALSE) === false) return false;
-		$time = explode(' ', microtime());
-		self::$timer[$key] = (double)$time[1] + (double)$time[0];
+		self::$timer[$key] = microtime(true);
+	}
+	
+	// Sauvegarde un temps
+	static function save($key = 'start')
+	{
+		self::$timer[$key] = round(self::get($key) * 1000, 2).' ms';
 	}
 
 	// Récupère un/l'ensemble des temps enregistrés
@@ -17,29 +22,12 @@ class timer
 		if(config::get('timer', FALSE) === false) return false;
 		if(!$key)
 		{
-			self::set('end');
-			foreach(self::$timer as $key => $value)
-				$benchmark[$key] = self::get($key);
-				$benchmark['total'] = self::loading();
-				echo '<pre style="display:none">' .print_r($benchmark, true). '</pre>';
+			self::save('end');
+			self::$timer['total'] = array_sum(self::$timer);
+			echo '<pre style="display:none">' .print_r(self::$timer, true). '</pre>';
 		}
-		else
-		{
-			$time  = explode(' ', microtime());
-			$time  = (double)$time[1] + (double)$time[0];
-			$timer = a::get(self::$timer, $key);
-			return round(($time - $timer), 5);
-		}
-	}
-	
-	// Calcul le temps de chargement total
-	static function loading()
-	{
-		$total = 0;
-		foreach(self::$timer as $key => $value)
-			$total += self::get($key);
-			return $total;
+		else return microtime(true) - a::get(self::$timer, $key);
 	}
 }
-timer::set();
+timer::start();
 ?>
