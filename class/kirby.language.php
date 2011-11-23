@@ -6,9 +6,20 @@ class l
 	// Chargement du fichier langue
 	function __construct($database = 'langue')
 	{
+		// Langue du site
+		if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
+		if(get('langue')) self::change(get('langue'));
+
+		// Langue de l'administration
+		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
+		if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
+		
+		self::locale();
+	
+		// Chargement du fichier de langue et mise en cache
 		$current = self::current();
 		$filename = 'cerberus/cache/lang-' .$current. '.php';
-	
+
 		$tables = db::row('langue', 'tag');
 		if(!empty($tables))
 		{
@@ -30,16 +41,6 @@ class l
 					f::write($filename, $renderPHP. '?>');
 				}
 			}
-			
-			// Langue du site
-			if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
-			if(get('langue')) self::change(get('langue'));
-
-			// Langue de l'administration
-			if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
-			if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
-			
-			self::locale();
 		}
 	}
 
