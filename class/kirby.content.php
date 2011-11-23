@@ -16,7 +16,7 @@ class content
 		$CORE = $basename;
 		$cache = db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
 
-		if($cache and LOCAL and config::get('cache', TRUE))
+		if($cache and !LOCAL and config::get('cache', TRUE))
 		{			
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
