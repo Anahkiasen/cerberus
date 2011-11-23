@@ -27,6 +27,12 @@ class url
 		}
 		return ($chars) ? str::short($url, $chars, $rep) : $url;
 	}
+	
+	// Vérifie la présence de HTTP:// au début d'une URL
+	static function http($url = NULL)
+	{
+		return 'http://' .str_replace('http://', '', ($url));
+	}
 
 	// Présence de requêtes GET à la fin de l'URL
 	static function has_query($url)

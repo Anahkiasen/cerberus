@@ -34,6 +34,7 @@ class f
 	// Lit un fichier
 	static function read($file, $parse = false)
 	{
+		if(!file_exists($file)) return false;
 		$content = @file_get_contents($file);
 		return ($parse) ? str::parse($content, $parse) : $content;
 	}

@@ -128,15 +128,7 @@ class navigation
 	// Met à jour l'arbre de navigation à la nouvelle version
 	function createStructure($navigation)
 	{
-		mysql_query("DROP TABLE IF EXISTS `structure`;");
-		mysql_query("CREATE TABLE `structure` (
-		  `id` int(11) NOT NULL AUTO_INCREMENT,
-		  `page` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-		  `parent` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-		  `parent_priority` int(11) NOT NULL,
-		  `page_priority` int(11) NOT NULL,
-		  PRIMARY KEY (`id`)
-		) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
+		update::table('structure');
 		
 		$pparent = 1;
 		$ppage = 1;
@@ -293,6 +285,7 @@ class navigation
 	{
 		return $this->renderNavigation;
 	}
+	
 	function getsub()
 	{
 		$subnav = $this->get($this->page);
@@ -306,6 +299,11 @@ class navigation
 		return ($this->pageSub)
 			? $this->page. '-' .$this->pageSub
 			: $this->page;
+	}
+	
+	function getPage()
+	{
+		return $this->page;
 	}
 	
 	// Récupération de la classe CSS

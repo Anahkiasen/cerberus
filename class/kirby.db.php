@@ -255,6 +255,12 @@ class db
 		return self::execute($query);
 	}	
 	
+	// DROP
+	static function drop($table)
+	{
+		return db::execute('DROP TABLE IF EXISTS `' .$table. '`;');
+	}
+	
 	/*
 	########################################
 	########## RESULTATS PARTIELS ##########

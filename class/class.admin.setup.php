@@ -50,8 +50,7 @@ class AdminSetup
 			if(isset($_GET['empty_cache']))
 			{
 				prompt('Le cache a été correctement vidé');
-				foreach(glob('cerberus/cache/*.*') as $file)
-					f::remove($file);
+				content::uncache();
 			}
 			
 			// Vérification de la page

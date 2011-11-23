@@ -1,14 +1,16 @@
 <?php
-// Chargement du moteur
+// Gestion des erreurs
 include('tools/errorHandle.php');
 date_default_timezone_set('Europe/Paris');
 ini_set('error_log', 'cerberus/cache/error.log');
 ini_set('log_errors', 'On');
 
-foreach(glob('cerberus/class/kirby.*.php') as $file) require_once($file);
-require_once('cerberus/class/core.cerberus.php');
+// Chargement du moteur Cerberus
+foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
+$REVISION = 308;
 s::start();
+
 
 /*
 ########################################
@@ -45,6 +47,7 @@ set_error_handler('errorHandle');
 */
 
 // Connexion à la base de données
+timer::set('config');
 if(LOCAL) config::set(array(
 	'db.host' => config::get('local.host'),
 	'db.user' => config::get('local.user'),
@@ -58,10 +61,11 @@ if(LOCAL) config::set(array(
 ########################################
 */
 
+timer::set('sql');
 $ip = server::get('remote_addr');
 if(db::is_table('logs'))
 {
-	if(!db::row('logs', 'ip', array('ip' => $ip)) and ($ip))
+	if(!db::field('logs', 'ip', array('ip' => $ip)) and ($ip))
 	{
 		$ua = browser::detect();
 		$domaine = a::get(explode('/', url::short()), 0);
@@ -79,6 +83,7 @@ if(db::is_table('logs'))
 				'domaine' => $domaine));
 	}
 }
+else update::table('logs');
 $userAgent = browser::css();
 
 // Ajout des balises HTML averc leur selecteur correct
@@ -87,23 +92,45 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">';
 
 /*
 ########################################
+##### PARAMETRES CURRENT DU SITE #######
+########################################
+*/
+
+// Gestion des langues
+timer::set('logs');
+if(MULTILANGUE)
+{
+	$index = new l();
+	$index->load('cerberus/cache/lang-{langue}.php');
+	$index = l::get();
+}
+
+// Gestion de la navigation
+timer::set('langue');
+$desired = new navigation();
+
+// Affichage des superglobales pour debug
+if(isset($_GET['cerberus_debug']))
+{
+	$debug  = "[<strong>URL</strong>] " .url::current().PHP_EOL;
+	$debug .= "[<strong>PAGE</strong>] " .$desired->current().PHP_EOL;
+	$debug .= "[<strong>LANGUE</strong>] " .l::current().PHP_EOL;
+	if($_GET) $debug .= "[<strong>GET</strong>]\n\n<div>" .print_r($_GET, true). '</div>'.PHP_EOL;
+	if($_POST) $debug .= "[<strong>POST</strong>]\n\n<div>" .print_r($_POST,true). '</div>'.PHP_EOL;
+	if($_SESSION) $debug .= "[<strong>SESSION</strong>]\n\n<div>" .print_r($_SESSION, true). '</div>';
+	
+	echo LOCAL
+		? '<div class="cerberus_debug">' .nl2br($debug). '</div>'
+		: '<p style="display:none">' .$debug. '</p>';
+}
+
+/*
+########################################
 ############# MISE EN CACHE ############
 ########################################
 */
 
-// Affichage des superglobales pour debug
-if(isset($_GET['debug']))
-{
-	$debug  = "[<strong>URL</strong>] " .url::current().PHP_EOL;
-	$debug .= "[<strong>LANGUE</strong>] " .l::current().PHP_EOL;
-	$debug .= "[<strong>GET</strong>]\n" .print_r($_GET, true).PHP_EOL;
-	$debug .= "[<strong>POST</strong>]\n" .print_r($_POST,true).PHP_EOL;
-	$debug .= "[<strong>SESSION</strong>]\n" .print_r($_SESSION, true).PHP_EOL;
-	
-	echo LOCAL ? nl2br($debug) : '<p style="display:none">' .$debug. '</p>';
-}
-
-$desired = new navigation();
+timer::set('navigation');
 $start = content::cache_start($desired->current());
 if(!$start)
 {
@@ -121,14 +148,8 @@ if(db::connection()) backupSQL();
 ########################################
 */
 
-// Fichier multilingue
-if(MULTILANGUE)
-{
-	$index = new l();
-	$index->load('cerberus/cache/lang-{langue}.php');
-	$index = l::get();
-}
-
 // Génération du fichier META
+timer::set('cerberus');
 $cerberus->meta();
+timer::set('meta');
 ?>

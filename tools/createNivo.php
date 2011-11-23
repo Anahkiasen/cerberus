@@ -20,7 +20,7 @@
 */
 function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 {
-	global $nivoSlider;
+	global $dispatch;
 	
 	// Pourcentages
 	if(findString('%', array($largeur, $hauteur)))
@@ -49,6 +49,6 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 	}
 	echo '</div>';
 	
-	$nivoSlider[$path] = $options;
+	$dispatch->addJS('$("#' .$path. '").nivoSlider(' .$options. ');');
 }
 ?>

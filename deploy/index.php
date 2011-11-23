@@ -99,7 +99,8 @@ h1
 <?php
 if(!file_exists('../../index.php'))
 {	
-	foreach(glob('cerberus/class/kirby.*.php') as $file) require_once($file);
+	foreach(glob('{cerberus/class/kirby.*.php,cerberus/class/core.*.php}', GLOB_BRACE) as $file)
+		require_once($file);
 
 	if(isset($_POST['submit']))
 	{
@@ -141,82 +142,24 @@ if(!file_exists('../../index.php'))
 				$MYSQL_MDP = "";
 				$MYSQL_DB = "";
 			}
-			
-			mkdir('../cache/');
-			mkdir('../cache/sql/');
-			
+						
 			db::connect($MYSQL_HOST, $MYSQL_USER, $MYSQL_MDP, $MYSQL_DB);
 		}
 		
-		// Table langue
-		if($_POST['site-multi'])
-		{
-			mysql_query('DROP TABLE IF EXISTS `langue`;');
-			db::execute('CREATE TABLE IF NOT EXISTS `langue` (
-			  `tag` varchar(40) NOT NULL,
-			  `fr` varchar(255) NOT NULL,
-			  PRIMARY KEY (`tag`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci;');	
-			db::execute('INSERT INTO langue VALUES ("menu-home", "Accueil")');
-		}
-		
-		// Table ADMIN
-		mysql_query('DROP TABLE IF EXISTS `admin`;');
-		db::execute('CREATE TABLE IF NOT EXISTS `admin` (
-		  `user` varchar(32) collate utf8_unicode_ci NOT NULL,
-		  `password` varchar(32) collate utf8_unicode_ci NOT NULL,
-		  `droits` varchar(255) collate utf8_unicode_ci NOT NULL,
-		  PRIMARY KEY  (`user`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci');
-		
-		// Table LOGS
-		mysql_query('DROP TABLE IF EXISTS `logs`;');
-		db::execute('CREATE TABLE IF NOT EXISTS `logs` (
-		  `id` smallint(4) NOT NULL auto_increment,
-		  `ip` varchar(20) collate utf8_unicode_ci NOT NULL,
-		  `date` datetime NOT NULL,
-		  `platform` varchar(10) collate utf8_unicode_ci NOT NULL,
-		  `browser` varchar(10) collate utf8_unicode_ci NOT NULL,
-		  `version` varchar(10) collate utf8_unicode_ci NOT NULL,
-		  `engine` varchar(10) collate utf8_unicode_ci NOT NULL,
-		  `mobile` enum('0','1') collate utf8_unicode_ci NOT NULL,
-		  `domaine` varchar(255) collate utf8_unicode_ci NOT NULL,
-		  PRIMARY KEY  (`id`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci;');
-		
-		// Table META
-		mysql_query('DROP TABLE IF EXISTS `meta`;');
-		db::execute('CREATE TABLE IF NOT EXISTS `meta` (
-		  `id` tinyint(4) NOT NULL auto_increment,
-		  `page` tinyint(4) NOT NULL,
-		  `titre` text collate utf8_unicode_ci NOT NULL,
-		  `description` text collate utf8_unicode_ci NOT NULL,
-		  `url` varchar(50) collate utf8_unicode_ci NOT NULL,
-		  `langue` enum('fr') collate utf8_unicode_ci NOT NULL,
-		  PRIMARY KEY  (`id`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8_unicode_ci;');
-		
-		// Table Structure
-		mysql_query('DROP TABLE IF EXISTS `structure`;');
-		db::execute('CREATE TABLE IF NOT EXISTS `structure` (
-		  `id` tinyint(3) NOT NULL auto_increment,
-		  `page` varchar(20) collate utf8_unicode_ci NOT NULL,
-		  `parent` varchar(20) collate utf8_unicode_ci NOT NULL,
-		  `parent_priority` tinyint(3) NOT NULL,
-		  `page_priority` tinyint(3) NOT NULL,
-		  `cache` enum('0','1') collate utf8_unicode_ci NOT NULL,
-		  PRIMARY KEY  (`id`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8;');
+		// Création des tables
+		$tables = array('langue', 'admin', 'logs', 'meta', 'structure');
+		foreach($tables as $table) update::table($table);
+		db::insert('admin', array('user' => '21232f297a57a5a743894a0e4a801fc3', 'password' => '21232f297a57a5a743894a0e4a801fc3'));
 		
 		// Création des dossiers
 		mkdir('../../assets/css/');
 		if(isset($_POST['site-tree']))
 		{
 			mkdir('../../pages/');
-			f::write('../../pages/home-home.html', '');
+			f::write('../../pages/home-home.html', NULL);
 		}
-		if(isset($_POST['file-js'])) mkdir('../../js/');
-		if(isset($_POST['file-file'])) mkdir('../../file/');
+		if(isset($_POST['file-js'])) mkdir('../../assets/js/');
+		if(isset($_POST['file-file'])) mkdir('../../assets/file/');
 		copydir('min', '../../min');
 			
 		// Déplacement des fichiers CSS et PHP

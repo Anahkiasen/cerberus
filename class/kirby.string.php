@@ -376,9 +376,9 @@ class str
 	static function short($string, $chars, $rep = '…')
 	{
 		if(str::length($string) <= $chars) return $string;
-		$string = self::substr($string,0,($chars-str::length($rep)));
+		$string = self::substr($string, 0, ($chars - str::length($rep)));
 		$punctuation = '.!?:;,-';
-		$string = (strspn(strrev($string), $punctuation)!=0) ? substr($string, 0, -strspn(strrev($string),	$punctuation)) : $string;
+		$string = (strspn(strrev($string), $punctuation) != 0) ? substr($string, 0, -strspn(strrev($string), $punctuation)) : $string;
 		return $string . $rep;
 	}
 

@@ -3,27 +3,11 @@ class content
 {
 	static private $cachename = NULL;
 
-	// Démarre la récupération du contenu
-	static function start()
-	{
-		//ob_start("ob_gzhandler");
-		ob_start();
-	}
-
-	// Retourne le contenu récupéré
-	static function end($return = FALSE)
-	{
-		if($return)
-		{
-			$content = ob_get_contents();
-			ob_end_clean();
-			$content = str::accents($content);
-			$content = trim(preg_replace('/\s+/', ' ', $content));
-			$content = preg_replace('/(\/\/|<!--|\/\*)([a-zA-Z0-9&; #]+)(-->|\*\/)/', ' ', $content);
-			return $content;
-		}
-		ob_end_flush();
-	}
+	/*
+	########################################
+	########## FONCTIONS CACHE #############
+	########################################
+	*/
 			
 	// Mise en cache de la page
 	static function cache_start($basename)
@@ -37,7 +21,7 @@ class content
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
-			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid'));
+			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
 			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base
@@ -76,7 +60,7 @@ class content
 		else return true;
 	}
 
-	// Affichage de la page
+	// Affiche et sauvegarde le cache
 	static function cache_end()
 	{
 		if(self::$cachename)
@@ -85,6 +69,48 @@ class content
 			f::write(self::$cachename, $OB);
 			echo $OB;
 		}
+		timer::set('end');
+		timer::get();
+	}
+	
+	// Vide le cache
+	static function uncache($page = NULL)
+	{
+		if($page == 'meta') $captcha ='{meta-*,lang-*}';
+		else $captcha = ($page)
+			? '*-' .$page. '-*.html'
+			: '*.*';
+
+		foreach(glob('cerberus/cache/' .$captcha, GLOB_BRACE) as $file)
+			f::remove($file);	
+	}
+	
+	/*
+	########################################
+	############ MOTEUER CACHE #############
+	########################################
+	*/
+	
+	// Démarre la récupération du contenu
+	static function start()
+	{
+		//ob_start("ob_gzhandler");
+		ob_start();
+	}
+
+	// Retourne le contenu récupéré
+	static function end($return = FALSE)
+	{
+		if($return)
+		{
+			$content = ob_get_contents();
+			ob_end_clean();
+			$content = str::accents($content);
+			$content = trim(preg_replace('/\s+/', ' ', $content));
+			$content = preg_replace('/(\/\/|<!--|\/\*)([a-zA-Z0-9&; #]+)(-->|\*\/)/', ' ', $content);
+			return $content;
+		}
+		ob_end_flush();
 	}
 		
 	// Détermine le type du fichier
@@ -108,6 +134,5 @@ class content
 		$charset = a::get($args, 1, c::get('charset', 'utf-8'));
 		header('Content-type: ' . $ctype . '; ' . $charset);
 	}
-
 }
 ?>

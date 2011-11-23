@@ -54,7 +54,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'display', 'timthumb', 'findString'),
+				'display', 'timthumb', 'findString', 'swf'),
 				$modules);
 		}
 				
@@ -159,52 +159,52 @@ class Cerberus
 	// Fonction META 
 	function meta($mode = 'meta')
 	{
-		global $meta, $pageVoulue, $sousPageVoulue;
+		global $meta, $desired;
 		
-		// Récupération des informations
+		// Tableau des informations META
 		if($mode == 'meta')
 		{
-			if(db::is_table('structure', 'meta'))
+			$metafile = 'cerberus/cache/meta-' .l::current(). '.php';
+			$meta = f::read($metafile, 'json');
+			
+			if(!$meta)
 			{
-				$metadata = db::left_join('meta M', 'structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
-				foreach($metadata as $values)
-					$meta[$values['parent'].'-'.$values['page']] = $values;
-				//s::set('metadata', $meta);
+				if(db::is_table('structure', 'meta'))
+				{
+					$metadata = db::left_join('meta M', 'structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
+					foreach($metadata as $values)
+					{
+						if(empty($values['description'])) $values['description'] = $values['titre'];
+						if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
+						
+						$meta_index = $values['parent'].'-'.$values['page'];
+						$meta[$meta_index] = array('titre' => $values['titre'], 'description' => $values['description'], 'url' => $values['url']);
+					}
+					f::write($metafile, json_encode($meta));
+				}
+				else
+				{
+					update::table('meta');
+					update::table('structure');
+				}
 			}
 		}
+		
+		// META d'une page seule
 		else
 		{
-			$pagenow = $pageVoulue. '-' .$sousPageVoulue;
-			$default_title = ($pageVoulue == 'admin' and get('admin'))
+			$pageVoulue = $desired->getPage();
+			$current = $desired->current();
+			$title_prefix = ($pageVoulue == 'admin' and get('admin'))
 				? 'Gestion ' .ucfirst(get('admin'))
-				: l::get('menu-' .$pageVoulue);
+				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, NULL));
 				
-			if(isset($meta[$pagenow]))
+			if(isset($meta[$current]))
 			{
-				// titre
-				$meta[$pagenow]['titre'] = $default_title. ' - ' .$meta[$pagenow]['titre'];
-				
-				// keywords
-				$meta[$pagenow]['keywords'] = NULL;
-				/* $keywords = explode(' ', $meta[$pagenow]['description']);
-				shuffle($keywords);
-				for($i = 0; $i <= 20; $i++) $meta[$pagenow]['keywords'] .= str::slugify($keywords[$i]). ' '; */
-								
-				return $meta[$pagenow][$mode];
+				if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
+				return $meta[$current][$mode];
 			}
-			else return $default_title;
-		}
-	}
-		
-	// Temps de calcul
-	function timer($event = NULL)
-	{
-		if(!isset($this->timer)) $this->timer['start'] = microtime(true);
-		if($event) $this->timer[$event] = microtime(true) - $this->timer['start'];
-		if($event == 'end' and LOCAL)
-		{
-			$this->timer['start'] = 0.0;
-			print_r($this->timer);
+			else return $title_prefix;
 		}
 	}
 }
@@ -329,9 +329,9 @@ class dispatch extends Cerberus
 			$scripts['*'][] = $path.$defaultJS;
 		}
 		
-		$scripts = $this->dispatchArray($scripts);
+		$this->scripts = $scripts = $this->dispatchArray($scripts);
 		if($scripts)
-		{					
+		{
 			foreach($scripts as $value) 
 			{
 				if(!empty($value))
@@ -368,19 +368,29 @@ class dispatch extends Cerberus
 		}	
 	}
 	
+	// Script activé ou non
+	function isScript($script)
+	{
+		return (isset($this->scripts) and in_array($script, $this->scripts));
+	}
+	
 	// Affichage des scripts
 	function getCSS()
 	{
-		$this->CSS['url'][] = 'min/?f=' .implode(',', array_filter($this->CSS['min']));
+		$minify = array_filter($this->CSS['min']);
+		if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
 		echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		
 		if(isset($this->CSS['inline'])) echo '<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>' . "\n";
 	}
 	function getJS()
 	{
-		$this->JS['url'][] = 'min/?f=' .implode(',', array_filter($this->JS['min']));
+		$minify = array_filter($this->JS['min']);
+		if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
 		echo '<script type="text/javascript" src="' .implode('"></script>' . "\n". '<script type="text/javascript" src="', $this->JS['url']). '"></script>' . "\n";		
 		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .implode("\n", $this->JS['inline']). '</script>' . "\n";
 	}
+	
+	// Ajout de scripts à la volée
 	function addJS()
 	{
 		$args = func_get_args();

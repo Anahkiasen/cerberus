@@ -12,15 +12,18 @@ if(get('meta_structure'))
 // Sinon
 if(isset($_POST['titre']))
 {
+	content::uncache('meta');
+	content::uncache($_POST['parent'].'-'.$_POST['page']);
+
 	// Page actuelle
 	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
-	$already = db::field('langue', $_SESSION['admin']['langue'], array('tag' => $index));
+	$already = db::field('langue', 'tag', array('tag' => $index));
 	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['titre']), array('tag' => $index));
 	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['titre']));
 	
 	// Page parente
 	$index = 'menu-'.$_POST['parent'];
-	$already = db::field('langue', $_SESSION['admin']['langue'], array('tag' => $index));
+	$already = db::field('langue', 'tag', array('tag' => $index));
 	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['parent_titre']), array('tag' => $index));
 	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['parent_titre']));
 }
@@ -77,12 +80,6 @@ if(isset($_GET['meta_structure']))
 $strucAdmin->addOrEdit($diff, $diffText, $urlAction);
 if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 {				
-	global $navigation;
-	
-	// Liste des pages
-	foreach($navigation as $key => $value)
-		foreach($value as $page) $availablePages[] = $key. '-' .$page;
-
 	// Formulaire
 	$form = new form(false, array('action' => rewrite('admin-structure', $urlAction)));
 	$select = new select();
