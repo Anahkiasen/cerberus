@@ -8,7 +8,7 @@ ini_set('log_errors', 'On');
 // Chargement du moteur Cerberus
 foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
-$REVISION = 308;
+$REVISION = 309;
 s::start();
 
 
@@ -140,6 +140,7 @@ if(!$start)
 
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
+$dispatch = new dispatch();
 if(db::connection()) backupSQL();
 
 /*
