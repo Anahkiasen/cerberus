@@ -185,7 +185,7 @@ class navigation
 	}
 	
 	// Rendu HTML des arbres de navigation
-	function render(&$renderPage = NULL, &$renderSousPage = NULL, &$renderNavigation = NULL, &$renderSubnav = NULL, $glue = NULL)
+	function render($glue = NULL, &$renderPage = NULL, &$renderSousPage = NULL, &$renderNavigation = NULL, &$renderSubnav = NULL)
 	{		
 		$this->createTree();
 		if(!LOCAL) unset($this->treeNavigation['admin']);
