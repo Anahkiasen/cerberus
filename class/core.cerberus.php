@@ -54,7 +54,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'display', 'timthumb', 'findString', 'swf'),
+				'timthumb', 'findString', 'swf'),
 				$modules);
 		}
 				
@@ -110,7 +110,7 @@ class Cerberus
 			$fichierModule = $this->getFile($module);
 			if($fichierModule)
 			{
-				if(CACHE)
+				if(true == true)
 				{
 					$thisModule = trim($this->file_get_contents_utf8($fichierModule));
 					$thisModule = substr($thisModule, 5, -2);

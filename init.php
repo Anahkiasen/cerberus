@@ -8,6 +8,7 @@ ini_set('log_errors', 'On');
 // Chargement du moteur Cerberus
 foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
+require_once('cerberus/tools/display.php');
 $REVISION = 313;
 s::start();
 
@@ -63,7 +64,7 @@ if(LOCAL) config::set(array(
 
 timer::save('sql').timer::start('logs');
 $ip = server::get('remote_addr');
-if(db::is_table('logs'))
+if(config::get('logs', TRUE)) if(db::is_table('logs'))
 {
 	if(!db::field('logs', 'ip', array('ip' => $ip)) and ($ip))
 	{
@@ -131,11 +132,14 @@ if(isset($_GET['cerberus_debug']))
 */
 
 timer::save('navigation').timer::start('cerberus');
-$start = content::cache_start($desired->current());
-if(!$start)
+if(CACHE)
 {
-	content::cache_end();
-	exit();
+	$start = content::cache_start($desired->current());
+	if(!$start)
+	{
+		content::cache_end();
+		exit();
+	}
 }
 
 // Chargement des modules Cerberus

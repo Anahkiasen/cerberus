@@ -102,8 +102,9 @@ class navigation
 		$this->navigation = $navigation;
 		$this->page = $page;
 		$this->sousPage = $sousPage;
-		$this->pageDATA = db::row('structure', 'id,cache', array('parent' => $this->page, 'page' => $this->sousPage));
 		$this->allowedPages = $allowed_pages;
+		if(db::is_table('structure'))
+			$this->pageDATA = db::row('structure', 'id,cache', array('parent' => $this->page, 'page' => $this->sousPage));
 	}
 	
 	// Vérification de l'existence d'une page

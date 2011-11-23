@@ -469,11 +469,11 @@ class db
 	{
 		$connection = self::connection();
 		$error = (mysql_error()) ? @mysql_error($connection) : false;
-		
-		if(self::$last_query and !PRODUCTION) prompt(htmlentities(self::$last_query));
+
+		if(self::$last_query and LOCAL) prompt(htmlentities(self::$last_query));
 		if($error) errorHandle('SQL', $error, __FILE__, __LINE__);
 		
-		if($exit or PRODUCTION) die($message);
+		if($exit or !LOCAL) die($message);
 	}
 
 

@@ -6,6 +6,10 @@ class l
 	// Chargement du fichier langue
 	function __construct($database = 'langue')
 	{
+		if(!config::get('multilangue', FALSE)) return false;
+		
+		if(!db::is_table('langue')) update::table('langue');
+		
 		// Langue du site
 		if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
 		if(get('langue')) self::change(get('langue'));
