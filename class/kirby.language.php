@@ -7,7 +7,6 @@ class l
 	function __construct($database = 'langue')
 	{
 		if(!config::get('multilangue', FALSE)) return false;
-		
 		if(!db::is_table('langue')) update::table('langue');
 		
 		// Langue du site
