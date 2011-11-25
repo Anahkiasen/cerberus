@@ -32,19 +32,13 @@ class l
 				// Récupération de la base de langues
 				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
 				$index = a::simple(a::rearrange($index, 'tag', true));
-				
-				if($index)
+
+				if(isset($index) and !empty($index))
 				{
-					if(CACHE)
-					{
-						$renderPHP = "<?php \n";
-						foreach($index as $tag => $traduction)
-							$renderPHP .= '$lang[\'' .$tag. '\'] = \'' .addslashes($traduction). "';\n";
-						
-						f::write($filename, $renderPHP. '?>');
-					}
-					else self::$lang = $index;
+					self::$lang = $index;
+					if(CACHE) f::write($filename, json_encode($index));
 				}
+				else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 			}
 		}
 	}
@@ -142,15 +136,13 @@ class l
 	static function load($fileraw)
 	{
 		$file = str_replace('{langue}', l::current(), $fileraw);
-		if(!file_exists($file))
-			$file = str_replace('{langue}', config::get('langue_default', 'fr'), $fileraw);
-		
-		if(file_exists($file))
+		$index = f::read($file, 'json');
+		if(!empty($index))
 		{
-			include($file);
-			self::$lang = $lang;
+			self::$lang = $index;
 			return l::get();
 		}
+		else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 	}
 	
 	// Traduction d'un jour

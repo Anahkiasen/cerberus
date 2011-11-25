@@ -216,7 +216,7 @@ class navigation
 		{
 			foreach($this->treeSubnav as $key => $value)
 			{
-				$texte = l::get('menu-' .$this->page. '-' .$key);
+				$texte = l::get('menu-' .$this->page. '-' .$key, ucfirst($key));
 				$parametres = array('class' => 'menu-' .$this->page. '-'.$key);
 				if($key == $this->sousPage) $parametres['class'] .= ' hover';
 				

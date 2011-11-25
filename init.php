@@ -34,7 +34,8 @@ if(config::get('local'))
 define('REWRITING', config::get('rewriting', FALSE));
 define('LOCAL', config::get('local', FALSE));
 define('MULTILANGUE', config::get('multilangues', TRUE));
-define('CACHE', config::get('cache', TRUE));
+if(LOCAL)	define('CACHE', FALSE);
+else		define('CACHE', config::get('cache', TRUE));
 
 // Affichage et gestion des erreurs
 error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
@@ -99,12 +100,7 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_
 
 // Gestion des langues
 timer::save('logs').timer::start('langue');
-if(MULTILANGUE)
-{
-	$index = new l();
-	$index->load('cerberus/cache/lang-{langue}.php');
-	$index = l::get();
-}
+if(MULTILANGUE) $index = new l();
 
 // Gestion de la navigation
 timer::save('langue').timer::start('navigation');

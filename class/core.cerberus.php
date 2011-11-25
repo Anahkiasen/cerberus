@@ -110,7 +110,7 @@ class Cerberus
 			$fichierModule = $this->getFile($module);
 			if($fichierModule)
 			{
-				if(true == true)
+				if(CACHE)
 				{
 					$thisModule = trim($this->file_get_contents_utf8($fichierModule));
 					$thisModule = substr($thisModule, 5, -2);
