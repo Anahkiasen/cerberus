@@ -23,14 +23,10 @@ class Cerberus
 	
 	function __construct($modules, $mode = 'core')
 	{
-		// Modules coeur
-		$this->mode = 
-			($mode == 'core')
-			? 'core'
-			: get('page', 'home');
-
+		$this->mode = $mode;
+		
 		// Création ou non du fichier
-		if(!LOCAL or !file_exists('cerberus/cache/' .$this->mode. '.php'))
+		if(!file_exists('cerberus/cache/' .$this->mode. '.php'))
 		{
 			$this->unpackModules($modules);
 			$this->generate();
@@ -289,7 +285,7 @@ class dispatch extends Cerberus
 	function getPHP($modules)
 	{
 		$modules = $this->dispatchArray($modules);
-		if($modules) new Cerberus($modules, 'include');
+		if($modules) new Cerberus($modules, get('page', 'home'));
 	}
 	
 	// Modules JS/CSS

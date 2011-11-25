@@ -246,9 +246,6 @@ class navigation
 	// Génération du contenu
 	function content()
 	{
-		global $switcher;
-		$page = FALSE;
-		
 		// Chargement de l'admin ou d'une page
 		switch($this->page)
 		{
@@ -257,6 +254,8 @@ class navigation
 				break;
 				
 			case 'admin':
+				global $cerberus;
+				$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form');
 				new AdminSetup();
 				break;
 				
