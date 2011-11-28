@@ -25,6 +25,21 @@ class str
 		}
 	}
 	
+	// Trouve une chaîne dans une autre
+	static function find($needle, $haystack, $case_sensitive = FALSE)
+	{
+		if(!$case_sensitive)
+		{
+			$haystack = strtolower($haystack);
+			$needle = strtolower($needle);
+		}
+		
+		// Simple strpos
+		$pos = strpos($haystack, $needle);
+		if($pos === false) return FALSE;
+		else return TRUE;
+	}
+	
 	// Trim une string
 	static function trim($string)
 	{

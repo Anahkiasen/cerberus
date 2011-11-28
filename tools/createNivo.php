@@ -39,15 +39,15 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 		$hauteur = floor($largeur * ($hauteur / 100));
 	}
 
-	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">';
+	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">'.PHP_EOL;
 	$arrayImages = glob('assets/file/' .$path. '/*.jpg');
 	if($shuffle) shuffle($arrayImages);
 	foreach($arrayImages as $file)
 	{
 		$file = str_replace('assets/file/', '', $file);
-		echo str::img(timthumb($file, $largeur, $hauteur));
+		echo str::img(timthumb($file, $largeur, $hauteur)).PHP_EOL;
 	}
-	echo '</div>';
+	echo '</div>'.PHP_EOL;
 	
 	$dispatch->addJS('$("#' .$path. '").nivoSlider(' .$options. ');');
 }

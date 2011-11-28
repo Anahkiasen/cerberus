@@ -19,7 +19,8 @@ echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
 	<thead>
 		<tr class="entete">
 			<td>Date</td>
-			<td>Charger</td>
+			<td>Télécharger (format SQL)</td>
+			<td>Charger la sauvegarde</td>
 			<td>Supprimer</td>
 		</tr>
 	</thead>
@@ -31,9 +32,12 @@ foreach(glob('./cerberus/cache/sql/*') as $file)
 	if(is_dir($file))
 	{
 		$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
+		$filesql = a::simple(glob($file. '/*.sql'));
+
 		echo 
 		'<tr>
 		<td>' .$folderDate. '</td>
+		<td>' .str::link($filesql, str::img('assets/css/load.png'), array('load' => $folderDate)). '</td>
 		<td>' .str::slink(NULL, str::img('assets/css/load.png'), array('load' => $folderDate)). '</td>
 		<td>' .str::slink(NULL, str::img('assets/css/delete.png'), array('delete' => $folderDate)). '</td>
 		</tr>';

@@ -19,7 +19,7 @@ function baseref($array = NULL)
 		}
 		if(empty($return)) $return = config::get('http');
 		
-		return '<base href="' .$return. '" />' . "\n";
+		return '<base href="' .$return. '" />'.PHP_EOL;
 	}	
 }
 ?>
