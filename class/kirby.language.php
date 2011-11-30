@@ -146,15 +146,17 @@ class l
 	}
 	
 	// Traduction d'un jour
-	static function day($day)
+	static function day($day = NULL)
 	{
+		if(!$day) $day = date('Y-m-d');
 		$day = strtotime($day);
-		return strftime('%A', $day);
+		return strtolower(strftime('%A', $day));
 	}
 	
 	// Traduction d'un mois
-	static function month($month)
+	static function month($month = NULL)
 	{
+		if(!$month) $month = date('Y-m-d');
 		$month = strtotime($month);
 		return strftime('%B', $month);
 	}

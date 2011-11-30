@@ -150,7 +150,10 @@ class a
 	static function simple($array)
 	{
 		if(count($array) == 1)
+		{
 			$output = self::get(array_values($array), 0);
+			if(is_array($output)) $output = self::simple($output);
+		}
 		else
 		{
 			foreach($array as $key => $value)
