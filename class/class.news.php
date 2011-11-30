@@ -112,6 +112,7 @@ class getNews
 				'id, titre, date, contenu, path',
 				$this->multiWhere,
 				$this->newsOrder. ' DESC',
+				NULL,
 				pager::db(),
 				pager::$limit);
 		}		

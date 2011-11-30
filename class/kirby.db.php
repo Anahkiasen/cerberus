@@ -169,11 +169,12 @@ class db
 	*/
 	
 	// SELECT
-	static function select($table, $select = '*', $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
+	static function select($table, $select = '*', $where = NULL, $order = NULL, $group = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
 	{
-		$sql = 'SELECT ' .$select. ' FROM ' .self::prefix($table);
+		$sql = 'SELECT ' .self::select_clause($select). ' FROM ' .self::prefix($table);
 
 		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
+		if(!empty($group)) $sql .= ' GROUP BY ' .$group;
 		if(!empty($order)) $sql .= ' ORDER BY ' .$order;
 		if($page !== NULL and $limit !== NULL) $sql .= ' LIMIT ' .$page. ',' .$limit;
 
@@ -202,7 +203,7 @@ class db
 	}
 	
 	// JOIN
-	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
+	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $group = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
 	{
 			return self::select(
 				self::prefix($table_1). ' ' .$type. ' ' .
@@ -211,6 +212,7 @@ class db
 				$select,
 				self::where($where),
 				$order,
+				$group,
 				$page,
 				$limit
 			);
@@ -270,7 +272,7 @@ class db
 	// Ne renvoit que le premier résultat
 	static function row($table, $select = '*', $where = NULL, $order = NULL)
 	{
-		$result = self::select($table, $select, $where, $order, 0, 1, false);
+		$result = self::select($table, $select, $where, $order, NULL, 0, 1, false);
 		return self::fetch($result);
 	}
 		
@@ -285,7 +287,7 @@ class db
 	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
 	{
 
-		$result = self::select($table, $column, $where, $order, $page, $limit, false);
+		$result = self::select($table, $column, $where, $order, NULL, $page, $limit, false);
 
 		$array = array();
 		while($r = self::fetch($result)) array_push($array, a::get($r, $column));
@@ -390,6 +392,12 @@ class db
 		else return @mysql_fetch_assoc($result);
 	}
 	
+	// Champs à sélectionner
+	static function select_clause($fields)
+	{
+		return is_array($fields) ? implode(', ', $fields) : $fields;
+	}
+	
 	// Transforme un array en syntaxe WHERE
 	static function where($array, $method = 'AND')
 	{
@@ -408,6 +416,26 @@ class db
 				$operand2 = 'NOT IN';
 				$field = substr($field, 0, -1);
 			}
+			elseif(substr($field, -1) == '>')
+			{
+				$operand = '>';
+				$field = substr($field, 0, -1);
+			}
+			elseif(substr($field, -1) == '<')
+			{
+				$operand = '<';
+				$field = substr($field, 0, -1);
+			}
+			elseif(substr($field, -2) == '>=')
+			{
+				$operand = '>=';
+				$field = substr($field, 0, -2);
+			}
+			elseif(substr($field, -2) == '<=')
+			{
+				$operand = '<=';
+				$field = substr($field, 0, -2);
+			}
 			elseif(substr($field, -2) == '??')
 			{
 				$regex = TRUE;
@@ -425,7 +453,7 @@ class db
 				if(!isset($regex)) $value = self::escape($value);
 			
 			// Construction
-			$field = (strpos($field, '.') === false) ? '`' .$field. '`' : $field;
+			$field = (str::find('.', $field) or str::find('(', $field)) ? $field :  '`' .$field. '`';
 			
 			if(is_string($value)) $output[] = $field. ' ' .$operand. ' \'' .$value. '\'';
 			else if(is_array($value)) $output[] = $field. ' ' .$operand2. ' ("' .implode('","', $value). '")';
@@ -557,11 +585,6 @@ class db
 		$arr = array();
 		foreach($fields as $f) array_push($arr, $f. ' LIKE \'%' .$search. '%\'');
 		return '(' .implode(' ' .trim($mode). ' ', $arr). ')';
-	}
-
-	static function select_clause($fields)
-	{
-		return implode(', ', $fields);
 	}
 
 	static function in($array)

@@ -56,7 +56,7 @@ class switcher
 }
 
 // Raccourci
-function __($page)
+function _s($page)
 {
 	global $switcher;
 	return $switcher->content($page);

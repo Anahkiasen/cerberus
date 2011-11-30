@@ -375,14 +375,14 @@ class dispatch extends Cerberus
 	{
 		$minify = array_filter($this->CSS['min']);
 		if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
-		echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		
+		if(!empty($this->CSS['url'])) echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		
 		if(isset($this->CSS['inline'])) echo '<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>' . "\n";
 	}
 	function getJS()
 	{
 		$minify = array_filter($this->JS['min']);
 		if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
-		echo '<script type="text/javascript" src="' .implode('"></script>' . "\n". '<script type="text/javascript" src="', $this->JS['url']). '"></script>' . "\n";		
+		if(!empty($this->JS['url'])) echo '<script type="text/javascript" src="' .implode('"></script>' . "\n". '<script type="text/javascript" src="', $this->JS['url']). '"></script>' . "\n";		
 		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .implode("\n", $this->JS['inline']). '</script>' . "\n";
 	}
 	
