@@ -1,17 +1,32 @@
 <? restore_error_handler() ?>
-<p>Depuis cette page vous pouvez générer un sitemap ou vider le cache. La regénération du cache peut prendre un peu de temps, les pages visitées par le spider s'afficheront une à une ci-dessous jusqu'à l'affichage du panneau de résumé quand tout sera terminé.</p>
+<p>Depuis cette page vous pouvez générer un sitemap ou vider le cache.
+La regénération du cache peut prendre un peu de temps, les pages visitées par le crawler s'afficheront une à une ci-dessous jusqu'à l'affichage du panneau de résumé quand tout sera terminé.<br />
+Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du crawler et les pages qu'il pourra visiter.</p>
+<p><em><strong>Note :</strong> Un crawler est un robot qui visite les pages une à une, comme par exemple le robot Google</em></p>
 
-<?= 
-str::slink(NULL, '<p id="left" class="infoblock" style="text-align:center; background-color:#8A976A">Régénérer le cache</p>', array('crawl' => true)).
-str::slink(NULL, '<p id="left" class="infoblock" style="text-align:center; background-color:#8A976A">Créer un sitemap</p>', array('crawl' => 'sitemap'))
-?>
-<p class="clear"></p>
+<?php
+$select = new select();
+$form = new form(false, array('action' => rewrite('#results')));
+$form->openFieldset('Paramètres');
+	$form->addText('domain', 'Domaine à explorer', url::domain());
+	$form->addText('nofollow', 'Ignorer les extensions suivantes', 'jpg,gif,png');
+	$form->addText('pagelimit', 'Limite de pages à renvoyer (0 = illimité)', "0");
+	$form->addText('trafficlimit', 'Limite de traffic (0 = illimité)', "0");
+		$select->newSelect('exploration', 'Portée du crawler');
+		$select->appendList(array('0 - Suivre tous les liens (externes compris)', '1 - Ne suivre que les liens du même domaine' ,'2 - Ne suivre que les liens du même site', '3 - Ne suivre que les liens du même dossier'));
+		$select->setValue(2);
+		$form->insertText($select);
+		
+		$select->newSelect('type', 'Mode d\'exploration');
+		$select->appendList(array('cache' => 'Régénérer le cache', 'sitemap' => 'Créer un sitemap'), false);
+		$form->insertText($select);
+	$form->addSubmit('Lancer le crawler');
+$form->closeFieldset();
+echo $form. '<p id="results"></p>';
 
-<?php 
-
-if(get('crawl'))
+if(isset($_POST['nofollow']))
 {
-	if(get('crawl') == 'sitemap') content::start();
+	if($_POST['type'] == 'sitemap') content::start();
 	else
 	{
 		content::uncache();
@@ -45,21 +60,25 @@ if(get('crawl'))
 	} 
 	
 	$crawler = new MyCrawler(); 
-	$domain = get('domain', url::domain());
-	$trafficLimit = get('traffic', 0); // 2MB
+	$domain = a::get($_POST, 'domain', 0);
+	$pageLimit = a::get($_POST, 'pagelimit', 0);
+	$trafficLimit = a::get($_POST, 'trafficlimit', 0);
+	$extensions = str_replace(',', '|', $_POST['nofollow']);
+	if(empty($extensions)) $extensions = 'jpg|gif|png';
 	
 	$crawler->setURL($domain); 
 	$crawler->addReceiveContentType("/text\/html/"); 
-	$crawler->addNonFollowMatch("/.(jpg|gif|png)|class.timthumb.php/i"); 
+	$crawler->addNonFollowMatch("/.(" .$extensions. ")|class.timthumb.php/i"); 
 	
 	$crawler->setCookieHandling(true); 
 	$crawler->setTrafficLimit($trafficLimit * 1000);
+	$crawler->setPageLimit($pageLimit);
 	
 	$crawler->go(); 
 	$report = $crawler->getReport(); 
 	
 	// Résumé du crawler
-	if(get('crawl') == 'sitemap')
+	if($_POST['type'] == 'sitemap')
 	{
 		$summary = content::end(true);
 		echo '<div class="cerberus_debug" style="width: 100%">';
@@ -75,6 +94,7 @@ if(get('crawl'))
 		if($report['traffic_limit_reached']) echo '<br />Limite de traffic atteinte';
 	}
 	
+	// Sitemap
 	echo '<h2>Sitemap généré</h2><ul style="list-style-type:square">';
 	foreach($report['crawled'] as $page) echo '<li>' .$page. '</li>';
 	echo '</ul></div>';

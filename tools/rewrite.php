@@ -15,6 +15,11 @@ function rewrite($page = NULL, $params = NULL)
 	// Importation des variables
 	global $meta, $desired;
 	
+	// Détermination de la page/sous-page
+	$hashless = url::strip_hash($page);
+	$hash = str_replace($hashless, '', $page);
+	$page = $hashless;
+	
 	// Page actuelle
 	if(!$page)
 	{
@@ -22,11 +27,6 @@ function rewrite($page = NULL, $params = NULL)
 		$page = $desired->current();
 	}
 		
-	// Détermination de la page/sous-page
-	$hashless = url::strip_hash($page);
-	$hash = str_replace($hashless, '', $page);
-	$page = $hashless;
-
 	if(!is_array($page)) $page = explode('-', $page);
 	$page0 = a::get($page, 0);
 	

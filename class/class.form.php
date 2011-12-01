@@ -171,7 +171,7 @@ class form
 		$type = $params['type'];
 		$name_unsan = $params['name'];
 		list($params['name'], $label) = $this->defineNameLabel($params['name'], $params['label']);
-		if(empty($params['value'])) $params['value'] = $this->defineValue($name_unsan);
+		if(empty($params['value']) and $params['value'] !== '0') $params['value'] = $this->defineValue($name_unsan);
 		
 		// State Fieldset
 		$stateField = (self::$openedManual == false 
