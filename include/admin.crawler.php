@@ -6,10 +6,10 @@ Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du cr
 
 <?php
 $select = new select();
-$form = new form(false, array('action' => rewrite('#results')));
+$form = new form(false, array('action' => rewrite('admin-crawler#results')));
 $form->openFieldset('Paramètres');
 	$form->addText('domain', 'Domaine à explorer', url::domain());
-	$form->addText('nofollow', 'Ignorer les extensions suivantes', 'jpg,gif,png');
+	$form->addText('nofollow', 'Ignorer les extensions suivantes', 'jpg,gif,png,pdf');
 	$form->addText('pagelimit', 'Limite de pages à renvoyer (0 = illimité)', "0");
 	$form->addText('trafficlimit', 'Limite de traffic (0 = illimité)', "0");
 		$select->newSelect('exploration', 'Portée du crawler');

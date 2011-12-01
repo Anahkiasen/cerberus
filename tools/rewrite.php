@@ -26,7 +26,7 @@ function rewrite($page = NULL, $params = NULL)
 		global $desired;
 		$page = $desired->current();
 	}
-		
+			
 	if(!is_array($page)) $page = explode('-', $page);
 	$page0 = a::get($page, 0);
 	
