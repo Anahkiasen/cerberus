@@ -40,6 +40,12 @@ class str
 		else return TRUE;
 	}
 	
+	// Remplace une chaîne par une autre
+	static function toggle($string, $foo, $bar)
+	{
+		return ($string == $foo) ? $bar : $foo;
+	}
+	
 	// Trim une string
 	static function trim($string)
 	{
