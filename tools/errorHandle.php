@@ -39,6 +39,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		break;
 	}
 		
+	f::append('cerberus/cache/error.log', f::filename($errorFile). '::' .$errorLine. ' - ' .$DEBUG['error']. ': ' .$error.PHP_EOL);
 	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>
 	<h3>' .f::filename($errorFile). ':' .$errorLine. '</h3>';
 	

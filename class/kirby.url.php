@@ -10,6 +10,15 @@ class url
 		
 		return $http.server::get('http_host').server::get('request_uri');
 	}
+	
+	// Renvoit le domaine du site actuel
+	static function domain()
+	{
+		$base = explode('/', url::short());
+		$url = a::get($base, 0);
+		if(LOCAL) $url .= '/' .a::get($base, 1);
+		return $url.'/';
+	}
 
 	// Raccourcit l'URL
 	static function short($url = NULL, $chars = false, $base = false, $rep = '…')

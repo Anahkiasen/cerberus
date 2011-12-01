@@ -36,11 +36,7 @@ function rewrite($page = NULL, $params = NULL)
 	if(is_array($params))
 	{
 		// Pas de sous-navigation
-		if(isset($params['subnav']))
-		{
-			if($params['subnav'] != true) $page1 = NULL;
-			unset($params['subnav']);
-		}
+		if(isset($params['subnav'])) unset($params['subnav']);
 	
 		// Si le nom HTML de la page est fourni
 		if(isset($params['html']))
@@ -49,7 +45,7 @@ function rewrite($page = NULL, $params = NULL)
 			unset($params['html']);
 		}	
 	}
-	
+
 	if(!REWRITING or $page0 == 'admin')
 	{
 		// Mode local

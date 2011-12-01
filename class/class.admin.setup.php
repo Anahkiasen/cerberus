@@ -29,7 +29,7 @@ class AdminSetup
 		if($this->granted)
 		{
 			// Ajout des pages par défaut
-			$systemPages = array('images', 'backup');
+			$systemPages = array('images', 'backup', 'crawler');
 			if(db::is_table('structure')) array_unshift($systemPages, 'structure');
 			if(MULTILANGUE) array_unshift($systemPages, 'langue');
 			if(db::is_table('news')) array_unshift($systemPages, 'news');
@@ -44,13 +44,6 @@ class AdminSetup
 				foreach($droits as $page)
 					if(in_array($page, $thisNavigation)) $sanitizedNavigation[] = $page;
 				$thisNavigation = $sanitizedNavigation;
-			}
-			
-			// Vidage du cache
-			if(isset($_GET['empty_cache']))
-			{
-				prompt('Le cache a été correctement vidé');
-				content::uncache();
 			}
 			
 			// Vérification de la page
@@ -191,7 +184,7 @@ class AdminSetup
 				echo str::slink('admin-' .$value, $textLien, NULL, $thisActive);
 			}	
 		}
-		echo str::slink(NULL, 'Vider le cache', 'empty_cache').str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
+		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
 	}
 }
 ?>

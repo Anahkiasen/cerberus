@@ -61,7 +61,7 @@ class f
 	}
 	
 	// Supprime un dossier
-	static function remove_folder($file)
+	static function remove_folder($file, $empty = false)
 	{
 		if(substr($file, -1) == "/") $file = substr($file, 0, -1);
 		

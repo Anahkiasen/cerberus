@@ -70,7 +70,7 @@ if(config::get('logs', TRUE)) if(db::is_table('logs'))
 	if(!db::field('logs', 'ip', array('ip' => $ip)) and ($ip))
 	{
 		$ua = browser::detect();
-		$domaine = a::get(explode('/', url::short()), 0);
+		$domaine = url::domain();
 		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
 		
 		if(!empty($ua['browser']) and !empty($ua['platform']))
@@ -126,6 +126,7 @@ if(isset($_GET['cerberus_debug']))
 ############# MISE EN CACHE ############
 ########################################
 */
+
 
 timer::save('navigation').timer::start('cerberus');
 if(CACHE)
