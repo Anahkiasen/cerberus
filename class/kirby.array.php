@@ -29,6 +29,23 @@ class a
 		return $array;
 	}
 	
+	// Supprime une entrée d'un tableau par valeur
+	static function splice($array, $values)
+	{
+		if(!is_array($values)) $values = array($values);
+		foreach($values as $value)
+		{
+			if(!in_array($value, $array)) continue;
+			else
+			{
+				$index = array_search($value, $array);
+				unset($array[$index]);
+			}
+		}
+		
+		return $array;
+	}
+	
 	// Affiche un array
 	static function show($array, $echo = true)
 	{

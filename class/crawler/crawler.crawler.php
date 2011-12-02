@@ -67,36 +67,28 @@ class PHPCrawler
 	var $base_port; // http://www.foo.com:443/stuff/ -> 443
 	
 	var $CRAWLED = array();
-	var $urls_to_crawl = array(); // Walking array, will contain 
-																// all links that should be followed
-																// its build like that (an example):
-																// $urls_to_crawl[6][2]["urlrebuild"]
-																// This is the second url in the
-																// priority_array number 6
-																// Each element is an array again that contains
-																// the elements ["link_raw"], ["url_rebuild"], ["refering_url"],
-																// ["linktext"] ans ["linkcode"] later on
-																// IMPORTANT: All URLs in here WILL BE CRAWLED,
-																// all "operations" like filtering and manipulating a.s.o. will be
-																// done BEFORE the links/urls will be put in here !!
+	var $urls_to_crawl = array(); 	// Walking array, will contain 
+									// all links that should be followed
+									// its build like that (an example):
+									// $urls_to_crawl[6][2]["urlrebuild"]
+									// This is the second url in the
+									// priority_array number 6
+									// Each element is an array again that contains
+									// the elements ["link_raw"], ["url_rebuild"], ["refering_url"],
+									// ["linktext"] ans ["linkcode"] later on
+									// IMPORTANT: All URLs in here WILL BE CRAWLED,
+									// all "operations" like filtering and manipulating a.s.o. will be
+									// done BEFORE the links/urls will be put in here !!
 
-	var $url_map = array(); // This array will contain all md5-hashes of URLS that were
-												// put into the array $urls_to_crawl, BUT AS KEYS, like
-												// $url_map["http://www.foo.com/bar.html"]=true (md5, not the url itself)
-												// This is for checking if a found URL is already in there
-												// or not, this improves performance A LOT. 
-		
-	// KICKED OUT
-	// now its all in $urls_to_crawl													 
-	// var $referers_to_urls_to_crawl = array(); // The referers to the pathes to crawl
-	// var $linktexts_of_urls_to_crawl = array();
-	
+	var $url_map = array(); 	// This array will contain all md5-hashes of URLS that were
+								// put into the array $urls_to_crawl, BUT AS KEYS, like
+								// $url_map["http://www.foo.com/bar.html"]=true (md5, not the url itself)
+								// This is for checking if a found URL is already in there
+								// or not, this improves performance A LOT. 
+			
 	var $content_found = false; // Just a flag that switches to TRUE if ANY content was found
-	
 	var $status_return = array(); // Status-array to return after process finished
-	
 	var $max_priority_level = 0; // Will contain the highest priority_level set by the user
-	
 	var $benchmark = false; // internal
 	
 	// Constructor
@@ -191,6 +183,7 @@ class PHPCrawler
 					$all_start = $this->getmicrotime();
 				
 					$tempurl = url::strip_query($this->urls_to_crawl[$pri_level][$key]["url_rebuild"]);
+					
 					if(in_array($tempurl, $this->CRAWLED)) continue;
 					else $this->CRAWLED[] = url::strip_query($tempurl);
 									
@@ -228,7 +221,8 @@ class PHPCrawler
 					else $actual_url = $base_url;
 					
 					// Set flag "content_found" if..content was found
-					if(isset($page_data["http_status_code"]) && $page_data["http_status_code"]==200) $content_found = true;
+					if(isset($page_data["http_status_code"]) && $page_data["http_status_code"] == 200) $content_found = true;
+					else $this->CRAWLED = a::splice($this->CRAWLED, url::strip_query($tempurl));
 					
 					// Check for a REDIRECT-header and if wanted, put it into the array of found links
 					$redirect = PHPCrawlerUtils::getRedirectLocation($page_data["header"]);

@@ -5,20 +5,31 @@ Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du cr
 <p><em><strong>Note :</strong> Un crawler est un robot qui visite les pages une à une, comme par exemple le robot Google</em></p>
 
 <?php
+// Valeurs par défaut
+$domain = a::get($_POST, 'domain', url::domain());
+$pageLimit = a::get($_POST, 'pagelimit', 0);
+$trafficLimit = a::get($_POST, 'trafficlimit', 0);
+$extensions = a::get($_POST, 'nofollow', 'jpg,gif,png,pdf');
+$extensions_crawl = str_replace(',', '|', $extensions);
+$exploration = a::get($_POST, 'exploration', 2);
+$type = a::get($_POST, 'type', 'cache');
+
+// Formulaire de paramètres
 $select = new select();
 $form = new form(false, array('action' => rewrite('admin-crawler#results')));
 $form->openFieldset('Paramètres');
-	$form->addText('domain', 'Domaine à explorer', url::domain());
-	$form->addText('nofollow', 'Ignorer les extensions suivantes', 'jpg,gif,png,pdf');
-	$form->addText('pagelimit', 'Limite de pages à renvoyer (0 = illimité)', "0");
-	$form->addText('trafficlimit', 'Limite de traffic (0 = illimité)', "0");
+	$form->addText('domain', 'Domaine à explorer', $domain);
+	$form->addText('nofollow', 'Ignorer les extensions suivantes', $extensions);
+	$form->addText('pagelimit', 'Limite de pages à renvoyer (0 = illimité)', $pageLimit);
+	$form->addText('trafficlimit', 'Limite de traffic en MB (0 = illimité)', $trafficLimit);
 		$select->newSelect('exploration', 'Portée du crawler');
 		$select->appendList(array('0 - Suivre tous les liens (externes compris)', '1 - Ne suivre que les liens du même domaine' ,'2 - Ne suivre que les liens du même site', '3 - Ne suivre que les liens du même dossier'));
-		$select->setValue(2);
+		$select->setValue($exploration);
 		$form->insertText($select);
 		
 		$select->newSelect('type', 'Mode d\'exploration');
 		$select->appendList(array('cache' => 'Régénérer le cache', 'sitemap' => 'Créer un sitemap'), false);
+		$select->setValue($type);
 		$form->insertText($select);
 	$form->addSubmit('Lancer le crawler');
 $form->closeFieldset();
@@ -60,15 +71,10 @@ if(isset($_POST['nofollow']))
 	} 
 	
 	$crawler = new MyCrawler(); 
-	$domain = a::get($_POST, 'domain', 0);
-	$pageLimit = a::get($_POST, 'pagelimit', 0);
-	$trafficLimit = a::get($_POST, 'trafficlimit', 0);
-	$extensions = str_replace(',', '|', $_POST['nofollow']);
-	if(empty($extensions)) $extensions = 'jpg|gif|png';
-	
+		
 	$crawler->setURL($domain); 
 	$crawler->addReceiveContentType("/text\/html/"); 
-	$crawler->addNonFollowMatch("/.(" .$extensions. ")|class.timthumb.php/i"); 
+	$crawler->addNonFollowMatch("/.(" .$extensions_crawl. ")|class.timthumb.php/i"); 
 	
 	$crawler->setCookieHandling(true); 
 	$crawler->setTrafficLimit($trafficLimit * 1000);
