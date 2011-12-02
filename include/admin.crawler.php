@@ -6,11 +6,15 @@ Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du cr
 
 <?php
 // Valeurs par défaut
+$xml_name = 'cerberus/cache/sitemap_crawler.xml';
 $domain = a::get($_POST, 'domain', url::domain());
 $pageLimit = a::get($_POST, 'pagelimit', 0);
 $trafficLimit = a::get($_POST, 'trafficlimit', 0);
+$nofollow2 = a::get($_POST, 'nofollow2', "");
 $extensions = a::get($_POST, 'nofollow', 'jpg,gif,png,pdf');
-$extensions_crawl = str_replace(',', '|', $extensions);
+$extensions_crawl[] = '.(' .str_replace(',', '|', $extensions). ')';
+$extensions_crawl[] = 'class.timthumb.php';
+if(!empty($nofollow2))	$extensions_crawl = array_merge($extensions_crawl, explode(',', $nofollow2));
 $exploration = a::get($_POST, 'exploration', 2);
 $type = a::get($_POST, 'type', 'cache');
 
@@ -20,6 +24,7 @@ $form = new form(false, array('action' => rewrite('admin-crawler#results')));
 $form->openFieldset('Paramètres');
 	$form->addText('domain', 'Domaine à explorer', $domain);
 	$form->addText('nofollow', 'Ignorer les extensions suivantes', $extensions);
+	$form->addText('nofollow2', 'Ignorer les pages qui contiennent dans leur URL', $nofollow2);
 	$form->addText('pagelimit', 'Limite de pages à renvoyer (0 = illimité)', $pageLimit);
 	$form->addText('trafficlimit', 'Limite de traffic en MB (0 = illimité)', $trafficLimit);
 		$select->newSelect('exploration', 'Portée du crawler');
@@ -74,7 +79,7 @@ if(isset($_POST['nofollow']))
 		
 	$crawler->setURL($domain); 
 	$crawler->addReceiveContentType("/text\/html/"); 
-	$crawler->addNonFollowMatch("/.(" .$extensions_crawl. ")|class.timthumb.php/i"); 
+	$crawler->addNonFollowMatch("/" .implode('|', $extensions_crawl). "/i"); 
 	
 	$crawler->setCookieHandling(true); 
 	$crawler->setTrafficLimit($trafficLimit * 1000);
@@ -101,8 +106,23 @@ if(isset($_POST['nofollow']))
 	}
 	
 	// Sitemap
+	$xml = '<?xml version="1.0" encoding="UTF-8"?>
+	<urlset 
+		xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+		http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+	
 	echo '<h2>Sitemap généré</h2><ul style="list-style-type:square">';
-	foreach($report['crawled'] as $page) echo '<li>' .$page. '</li>';
+	foreach($report['crawled'] as $page) 
+	{
+		echo '<li>' .$page. '</li>';
+		$xml .= "\n<url>\n\t<loc>" .$page. "</loc>\n\t<changefreq>monthly</changefreq>\n</url>";
+	}
 	echo '</ul></div>';
+	$xml .= '</urlset>';
+	
+	f::write($xml_name, $xml);
+	prompt(str::link($xml_name, 'Télécharger le sitemap généré'));
 }
 ?> 
