@@ -22,6 +22,7 @@ class content
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
 			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
+			foreach($getvar as $key => $value) if(str::find('http://', $value)) unset($getvar[$key]); // Sécurité f::write
 			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base
