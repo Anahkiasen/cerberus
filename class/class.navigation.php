@@ -293,9 +293,9 @@ class navigation
 	}
 	
 	// Page en cours
-	function current()
+	function current($getsub = true)
 	{
-		return ($this->sousPage) ? $this->page. '-' .$this->sousPage : $this->page;
+		return ($this->sousPage and $getsub) ? $this->page. '-' .$this->sousPage : $this->page;
 	}
 		
 	// Récupération de la classe CSS

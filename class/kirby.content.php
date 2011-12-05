@@ -12,9 +12,11 @@ class content
 	// Mise en cache de la page
 	static function cache_start($basename)
 	{
-		global $switcher;
+		global $switcher, $desired;
 		$CORE = $basename;
-		$cache = db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
+		$cache = ($desired->current(false) == 'admin')
+			? false
+			: db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
 
 		if($cache and CACHE)
 		{			
