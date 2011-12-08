@@ -7,7 +7,7 @@ class getNews
 	############################ */
 
 	// Paramètres
-	private $table = 'news';
+	private $table = 'cerberus_news';
 	private $page = 'news';
 	
 	// Affichage des news
