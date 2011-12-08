@@ -43,7 +43,7 @@ class AdminPage extends AdminSetup
 
 		// Champs de mise à jour
 		$fieldsUpdate = array();
-		$facultativeFields = a::beArray($facultativeFields);
+		$facultativeFields = a::force_array($facultativeFields);
 		
 		// Récupération du nom des champs
 		$this->fields = db::fields($table);
@@ -233,7 +233,7 @@ class AdminPage extends AdminSetup
 				else echo '<tr id="' .$key. '" class="' .$selected. '">';
 				
 					// Valeurs
-					$value = a::beArray($value);
+					$value = a::force_array($value);
 					foreach($fieldsDisplay as $fieldName)
 					{
 						$fieldIndex = a::get(explode('.', $fieldName), 1, $fieldName);

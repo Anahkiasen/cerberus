@@ -43,13 +43,16 @@ class navigation
 	// Fonctions moteur
 	function __construct($navigation = NULL)
 	{
-		if(!$navigation and db::is_table('cerberus_structure'))
+		if(SQL)
 		{
-			$navbis = db::select('cerberus_structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
-			foreach($navbis as $values) $navigation[$values['parent']][] = $values['page'];
+			if(!$navigation and db::is_table('cerberus_structure'))
+			{
+				$navbis = db::select('cerberus_structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
+				foreach($navbis as $values) $navigation[$values['parent']][] = $values['page'];
+			}
+			elseif($navigation and !db::is_table('cerberus_structure')) $this->createStructure($navigation);
 		}
-		elseif($navigation and !db::is_table('cerberus_structure')) $this->createStructure($navigation);
-	
+			
 		// Navigation par défaut
 		if(!isset($navigation) or empty($navigation))
 			 $navigation = array(
@@ -134,7 +137,7 @@ class navigation
 		foreach($navigation as $parent => $pages)
 		{
 			$ppage = 1;
-			$pages = a::beArray($pages);
+			$pages = a::force_array($pages);
 			foreach($pages as $page)
 			{
 				$last = db::insert('cerberus_structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage));
@@ -156,6 +159,9 @@ class navigation
 	// Création des arrays de liens
 	function createTree()
 	{		
+		global $cerberus;
+		$cerberus->injectModule('rewrite');
+	
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
 				if($key != 'admin' or ($key == 'admin' and LOCAL))

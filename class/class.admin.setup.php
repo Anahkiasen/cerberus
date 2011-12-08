@@ -7,8 +7,8 @@ class AdminSetup
 	
 	// Login
 	private $granted; // État de l'accès
-	private $loginUser; // Utilisateur
-	private $loginPass; // Mot de passe
+	private $login_user; // Utilisateur
+	private $login_password; // Mot de passe
 	
 	/*
 	########################################
@@ -24,21 +24,27 @@ class AdminSetup
 			
 		// Identification	 
  		if(isset($_GET['logoff'])) s::remove('admin');
+		$this->login_user = md5(config::get('admin.login', 'root'));
+		$this->login_password = md5(config::get('admin.password', ''));
 		$this->adminLogin();
 		
 		if($this->granted)
 		{
 			// Ajout des pages par défaut
-			$systemPages = array('images', 'Sauvegardes' => 'backup', 'Cache' => 'crawler', 'Configuration' => 'config');
-			if(db::is_table('cerberus_structure')) array_unshift($systemPages, 'structure');
-			if(MULTILANGUE) array_unshift($systemPages, 'langue');
-			if(db::is_table('cerberus_news')) array_unshift($systemPages, 'news');
-			
+			$systemPages = array('images', 'Cache' => 'crawler', 'Configuration' => 'config');
+			if(SQL)
+			{
+				$systemPages['Sauvegardes'] = 'backup';
+				if(db::is_table('cerberus_structure')) array_unshift($systemPages, 'structure');
+				if(MULTILANGUE) array_unshift($systemPages, 'langue');
+				if(db::is_table('cerberus_news')) array_unshift($systemPages, 'news');
+			}
+						
 			$adminNavigation = array_diff($desired->get('admin'), array('admin'));
-			$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
+			$thisNavigation = array_merge(a::force_array($customNavigation), $adminNavigation, $systemPages);
 		
 			// Droits de l'utilisateur
-			$droits = str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user']))));
+			$droits = (SQL and db::is_table('cerberus_admin')) ? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user'])))) : NULL;
 			if(!empty($droits))
 			{
 				foreach($droits as $page)
@@ -129,20 +135,12 @@ class AdminSetup
 	// Vérification des identifiants
 	function checkLogin($user, $password)
 	{
-		if(db::connection())
+		if(db::connection() and db::is_table('cerberus_admin'))
 		{
 			$queryQ = db::field('cerberus_admin', 'password', array('user' => md5($user)));
 			return (isset($queryQ) && md5($password) == $queryQ);
 		}
-		elseif(db::connection() and isset($this->loginUser)) return (md5($user) == $this->loginUser and md5($password) == $this->loginPass);
-		else return FALSE;
-	}
-	
-	// Paramétrage d'identifiants manuels
-	function setLogin($user, $password = NULL)
-	{
-		$this->loginUser = $user;
-		$this->loginPass = (!empty($password)) ? $password : $user;
+		else return (md5($user) == $this->login_user and md5($password) == $this->login_password);
 	}
 	
 	// Recupération de l'identification

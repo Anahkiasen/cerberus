@@ -67,7 +67,7 @@ class update
 		db::drop($table);
 		switch($table)
 		{
-			case 'langue':
+			case 'cerberus_langue':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_langue` (
 				  `tag` varchar(40) NOT NULL,
 				  `fr` varchar(255) NOT NULL,
@@ -76,7 +76,7 @@ class update
 				db::execute('INSERT INTO cerberus_langue VALUES ("menu-home", "Accueil")');
 				break;
 		
-			case 'admin':
+			case 'cerberus_admin':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_admin` (
 				  `user` varchar(32) collate utf8_unicode_ci NOT NULL,
 				  `password` varchar(32) collate utf8_unicode_ci NOT NULL,
@@ -85,7 +85,7 @@ class update
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
 
-			case 'logs':
+			case 'cerberus_logs':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_logs` (
 				  `id` smallint(4) NOT NULL auto_increment,
 				  `ip` varchar(20) collate utf8_unicode_ci NOT NULL,
@@ -100,7 +100,7 @@ class update
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
 			
-			case 'meta':
+			case 'cerberus_meta':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_meta` (
 				  `id` tinyint(4) NOT NULL auto_increment,
 				  `page` tinyint(4) NOT NULL,
@@ -112,7 +112,7 @@ class update
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
 				
-			case 'structure':
+			case 'cerberus_structure':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_structure` (
 				  `id` tinyint(3) NOT NULL auto_increment,
 				  `page` varchar(20) collate utf8_unicode_ci NOT NULL,

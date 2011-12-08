@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Déploiement de Cerberus</title>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans|Oswald' rel='stylesheet' type='text/css'>
-<link href="cerberus.css" rel="stylesheet" type="text/css" />
+<link href="assets/css/cerberus.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
 form
 {
@@ -99,7 +99,7 @@ h1
 <?php
 if(!file_exists('../../index.php'))
 {	
-	foreach(glob('{cerberus/class/kirby.*.php,cerberus/class/core.*.php}', GLOB_BRACE) as $file)
+	foreach(glob('../class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file)
 		require_once($file);
 
 	if(isset($_POST['submit']))

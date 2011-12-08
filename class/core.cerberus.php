@@ -45,7 +45,7 @@ class Cerberus
 	// Chargement du moteur Cerberus
 	function unpackModules($modules = '')
 	{	
-		$modules = a::beArray($modules);
+		$modules = a::force_array($modules);
 		if($this->mode == 'core')
 		{
 			// Modules de base
@@ -167,7 +167,7 @@ class Cerberus
 			$metafile = 'cerberus/cache/meta-' .l::current(). '.php';
 			$meta = f::read($metafile, 'json');
 			
-			if(!$meta)
+			if(!$meta and SQL and config::get('meta'))
 			{
 				if(!db::is_table('cerberus_structure', 'cerberus_meta'))
 				{
@@ -195,7 +195,7 @@ class Cerberus
 			$current = $desired->current();
 			$title_prefix = ($pageVoulue == 'admin' and get('admin'))
 				? 'Gestion ' .ucfirst(get('admin'))
-				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, NULL));
+				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
 				
 			if(isset($meta[$current]))
 			{

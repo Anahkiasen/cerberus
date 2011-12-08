@@ -111,7 +111,7 @@ class a
 	*/
 	
 	// Force un élément à être un array
-	static function beArray(&$variable)
+	static function force_array(&$variable)
 	{
 		if(!isset($variable)) $return = array();
 		$return = (!is_array($variable)) ? array($variable) : $variable;

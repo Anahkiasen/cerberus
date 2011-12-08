@@ -304,7 +304,9 @@ class db
 	static function showtables()
 	{
 		$tables = self::query('SHOW TABLES', TRUE);
-		return a::simple($tables);
+		$tables = a::simple($tables);
+		if(!is_array($tables)) $tables = array($tables);
+		return $tables;
 	}
 
 	// Liste les champs d'une table

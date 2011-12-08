@@ -180,6 +180,7 @@ p.readmore:active { background-image:url(overlay/blanc-25.png); }
 	filter:none;
 	text-shadow:none;
 	text-transform:uppercase;
+	text-decoration: none;
 }
 .navbar a:hover { background-image:url(overlay/blanc-25.png); }
 .navbar a.hover { background-image:url(overlay/blanc-50.png); }
@@ -359,7 +360,7 @@ dl.textarea textarea { right:-2px; }
 input[type=submit]
 {
 	border:none;
-	border-bottom:5px solid #6B0609;
+	border-bottom:5px solid #67714F;
 	color:#FFF;
 	cursor:pointer;
 	font-size:12px;

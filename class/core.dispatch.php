@@ -8,6 +8,8 @@
 class dispatch extends Cerberus
 {
 	private $current;
+	private $CSS;
+	private $JS;
 	
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
@@ -36,7 +38,7 @@ class dispatch extends Cerberus
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
-			$value = a::beArray($value);
+			$value = a::force_array($value);
 			if(strpos($key, ',') != FALSE)
 			{
 				$keys = explode(',', $key);
@@ -51,9 +53,9 @@ class dispatch extends Cerberus
 		}
 
 		// Véritifcation de la présence de modules concernés (pagesouspage/page/*)
-		if(isset($modules[$this->current])) $arrayModules = a::beArray($modules[$this->current]);
-		if(isset($modules[$this->global])) $arraySubmodules = a::beArray($modules[$this->global]);
-		if(isset($modules['*'])) $arrayGlobal = a::beArray($modules['*']);
+		if(isset($modules[$this->current])) $arrayModules = a::force_array($modules[$this->current]);
+		if(isset($modules[$this->global])) $arraySubmodules = a::force_array($modules[$this->global]);
+		if(isset($modules['*'])) $arrayGlobal = a::force_array($modules['*']);
 		$arrayModules = array_merge($arrayGlobal, $arrayModules, $arraySubmodules);
 		
 		// Suppressions des fonctions non voulues
@@ -81,7 +83,7 @@ class dispatch extends Cerberus
 	}
 	
 	// Modules JS/CSS
-	function getAPI($scripts)
+	function getAPI($scripts = NULL)
 	{
 		global $switcher, $desired;
 
@@ -99,14 +101,15 @@ class dispatch extends Cerberus
 		$this->JS = $this->CSS = array();
 		
 		// Fichiers par défaut
-		a::beArray($scripts['*']);
+		if(!$scripts) $scripts = array();
+		a::force_array($scripts['*']);
 		$scripts['*'][] = 'assets/css/cerberus.css';
 		$scripts['*'][] = 'assets/'.$defaultCSS;
 		$scripts['*'][] = 'assets/'.$defaultJS;
 		
 		// Fichiers spécifiques aux pages
-		a::beArray($scripts[$this->current]);
-		a::beArray($scripts[$this->global]);
+		a::force_array($scripts[$this->current]);
+		a::force_array($scripts[$this->global]);
 		
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
@@ -165,15 +168,21 @@ class dispatch extends Cerberus
 	// Affichage des scripts
 	function getCSS()
 	{
-		$minify = array_filter($this->CSS['min']);
-		if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
+		if($this->CSS['min']) 
+		{
+			$minify = array_filter($this->CSS['min']);
+			if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
+		}
 		if(!empty($this->CSS['url'])) echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		
 		if(isset($this->CSS['inline'])) echo '<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>' . "\n";
 	}
 	function getJS()
 	{
-		$minify = array_filter($this->JS['min']);
-		if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
+		if($this->JS['min']) 
+		{
+			$minify = array_filter($this->JS['min']);
+			if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
+		}
 		if(!empty($this->JS['url'])) echo '<script type="text/javascript" src="' .implode('"></script>' . "\n". '<script type="text/javascript" src="', $this->JS['url']). '"></script>' . "\n";		
 		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .implode("\n", $this->JS['inline']). '</script>' . "\n";
 	}

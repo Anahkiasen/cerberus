@@ -1,6 +1,7 @@
 <?php
 // Gestion des erreurs
 include('tools/errorHandle.php');
+$config_file = 'cerberus/conf.php';
 date_default_timezone_set('Europe/Paris');
 ini_set('error_log', 'cerberus/cache/error.log');
 ini_set('log_errors', 'On');
@@ -9,7 +10,7 @@ ini_set('log_errors', 'On');
 foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
 require_once('cerberus/tools/display.php');
-$REVISION = 334;
+$REVISION = 337;
 s::start();
 
 /*
@@ -19,7 +20,8 @@ s::start();
 */
 // Configuration du site
 timer::save().timer::start('config');
-config::load('cerberus/conf.php');
+if(!file_exists($config_file)) f::write($config_file, NULL);
+else config::load('cerberus/conf.php');
 config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
 
 if(config::get('local'))
@@ -31,9 +33,10 @@ if(config::get('local'))
 }
 
 // Constantes
+define('SQL', config::get('local.name', FALSE));
 define('REWRITING', config::get('rewriting', FALSE));
 define('LOCAL', config::get('local', FALSE));
-define('MULTILANGUE', config::get('multilangues', TRUE));
+define('MULTILANGUE', config::get('multilangues', FALSE));
 if(LOCAL)	define('CACHE', FALSE);
 else		define('CACHE', config::get('cache', TRUE));
 
@@ -50,13 +53,18 @@ set_error_handler('errorHandle');
 // Connexion à la base de données
 timer::save('config');
 timer::start('sql');
-if(LOCAL) config::set(array(
-	'db.host' => config::get('local.host'),
-	'db.user' => config::get('local.user'),
-	'db.password' => config::get('local.password'),
-	'db.name' => config::get('local.name')));
+if(SQL)
+{
+	if(LOCAL) config::set(array(
+		'db.host' => config::get('local.host'),
+		'db.user' => config::get('local.user'),
+		'db.password' => config::get('local.password'),
+		'db.name' => config::get('local.name')));
 	if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
-	new update($REVISION);
+}
+
+// Mise à jour du moteur
+new update($REVISION);
 
 /*
 ########################################
@@ -66,27 +74,30 @@ if(LOCAL) config::set(array(
 
 timer::save('sql').timer::start('logs');
 $ip = server::get('remote_addr');
-if(config::get('logs', TRUE)) if(db::is_table('cerberus_logs'))
+if(SQL)
 {
-	if(!db::field('cerberus_logs', 'ip', array('ip' => $ip)) and ($ip))
+	if(config::get('logs', FALSE)) if(db::is_table('cerberus_logs'))
 	{
-		$ua = browser::detect();
-		$domaine = url::domain();
-		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
-		
-		if(!empty($ua['browser']) and !empty($ua['platform']))
-			db::insert('cerberus_logs', array(
-				'ip' => $ip,
-				'date' => 'NOW()',
-				'platform' => $ua['platform'],
-				'browser' => $ua['browser'],
-				'version' => $ua['version'],
-				'engine' => $ua['engine'],
-				'mobile' => $mobile,
-				'domaine' => $domaine));
+		if(!db::field('cerberus_logs', 'ip', array('ip' => $ip)) and ($ip))
+		{
+			$ua = browser::detect();
+			$domaine = url::domain();
+			$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
+			
+			if(!empty($ua['browser']) and !empty($ua['platform']))
+				db::insert('cerberus_logs', array(
+					'ip' => $ip,
+					'date' => 'NOW()',
+					'platform' => $ua['platform'],
+					'browser' => $ua['browser'],
+					'version' => $ua['version'],
+					'engine' => $ua['engine'],
+					'mobile' => $mobile,
+					'domaine' => $domaine));
+		}
 	}
+	else update::table('cerberus_logs');
 }
-else update::table('cerberus_logs');
 $userAgent = browser::css();
 
 // Ajout des balises HTML averc leur selecteur correct
@@ -101,7 +112,7 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_
 
 // Gestion des langues
 timer::save('logs').timer::start('langue');
-if(MULTILANGUE) $index = new l();
+if(MULTILANGUE and SQL) $index = new l();
 
 // Gestion de la navigation
 timer::save('langue').timer::start('navigation');
@@ -127,7 +138,6 @@ if(isset($_GET['cerberus_debug']))
 ############# MISE EN CACHE ############
 ########################################
 */
-
 
 timer::save('navigation').timer::start('cerberus');
 if(CACHE)

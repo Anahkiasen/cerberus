@@ -1,8 +1,10 @@
 <?php
 $config_file = 'cerberus/conf.php';
 $arrays = array('cerberus', 'langues');
+$bool = array('rewriting', 'cache', 'logs', 'multilangue');
 
 // Enregistrement des paramètres
+asort($_POST);
 if(isset($_POST['db-host']))
 {
 	$getconf = f::read($config_file);
@@ -13,21 +15,21 @@ if(isset($_POST['db-host']))
 		$key = str_replace('-', '.', $key);
 		if(in_array($key, $arrays))
 		{
-			if(str::find(',', $value)) $value = implode("', '", $value);
-			$value = 'array(\'' .$value. '\')';
+			if(str::find(',', $value)) $formatted_value = implode("', '", $value);
+			$formatted_value = 'array(\'' .$formatted_value. '\')';
 		}
-		elseif(in_array($value, array('TRUE','FALSE'))) $value = $value;
-		else $value = "'" .$value. "'";
+		elseif(in_array($value, array('TRUE','FALSE'))) $formatted_value = $value;
+		else $formatted_value = "'" .$value. "'";
 		
 		// Recherche de sa présence dans le fichier config
 		if(preg_match('#\$config\[\'(' .$key. ')\'\] = (.+);#', $getconf))
 		{
 			$getconf = preg_replace(
 				'#\$config\[\'(' .$key. ')\'\] = (.+);#',
-				'$config[\'$1\'] = ' .$value. ';',
+				'$config[\'$1\'] = ' .$formatted_value. ';',
 				$getconf);
 		}
-		else $getconf = str_replace('?>', '$config[\'' .$key. '\'] = ' .$value. ";\n?>", $getconf); 
+		else if(!empty($value)) $getconf = str_replace('?>', '$config[\'' .$key. '\'] = ' .$formatted_value. ";\n?>", $getconf); 
 	}
 	
 	f::write($config_file, $getconf);
@@ -60,6 +62,7 @@ array(
 );
 
 if(file_exists($config_file)) include($config_file);
+if(!isset($config)) $config = array();
 	
 // Création du formulaire
 $form = new form(false);
@@ -70,7 +73,7 @@ foreach($CONFIGURATION as $FIELDSET => $FIELDS)
 		foreach($FIELDS as $FIELD => $TRADUCTION)
 		{
 			$value = a::get($config, $FIELD, FALSE);
-			if(is_bool($value))
+			if(in_array($FIELD, $bool))
 			{
 				$value = str::boolprint($value);
 				$select->newSelect($FIELD, $TRADUCTION);
