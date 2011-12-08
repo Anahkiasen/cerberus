@@ -1,6 +1,6 @@
 <?php
 $newsAdmin = new AdminPage();
-$newsAdmin->setPage('news');
+$newsAdmin->setPage('cerberus_news');
 $newsAdmin->createList(array('titre', 'date'));
 $newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 

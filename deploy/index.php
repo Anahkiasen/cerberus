@@ -149,7 +149,7 @@ if(!file_exists('../../index.php'))
 		// Création des tables
 		$tables = array('langue', 'admin', 'logs', 'meta', 'structure');
 		foreach($tables as $table) update::table($table);
-		db::insert('admin', array('user' => '21232f297a57a5a743894a0e4a801fc3', 'password' => '21232f297a57a5a743894a0e4a801fc3'));
+		db::insert('cerberus_admin', array('user' => '21232f297a57a5a743894a0e4a801fc3', 'password' => '21232f297a57a5a743894a0e4a801fc3'));
 		
 		// Création des dossiers
 		mkdir('../../assets/css/');

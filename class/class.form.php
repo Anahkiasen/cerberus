@@ -38,10 +38,14 @@ class form
 	// Récupérer les valeurs à partir de la liste des champs
 	function getValues($fieldsTable)
 	{
-		if(isset($fieldsTable[1])) $this->table = $fieldsTable[1];
-		if(isset($_GET['edit_' .$fieldsTable[1]]))
+		if(isset($fieldsTable[1]))
 		{
-			$modif = db::row($fieldsTable[1], implode(',', $fieldsTable[0]), array($fieldsTable[0][0] => $_GET['edit_' .$fieldsTable[1]]));
+			$this->table = $fieldsTable[1];
+			$this->usable = str_replace('cerberus_', NULL, $this->table);
+		}
+		if(isset($_GET['edit_' .$this->usable]))
+		{
+			$modif = db::row($fieldsTable[1], implode(',', $fieldsTable[0]), array($fieldsTable[0][0] => $_GET['edit_' .$this->usable]));
 			foreach($fieldsTable[0] as $value) $post[$value] = stripslashes($modif[$value]); 
 		}
 		else foreach($fieldsTable[0] as $value) $post[$value] = NULL;
@@ -264,7 +268,7 @@ class form
 	// Raccourcis personnels
 	function addEdit()
 	{
-		$diff = isset($_GET['edit_' .$this->table]) ? $_GET['edit_' .$this->table] : 'add';
+		$diff = isset($_GET['edit_' .$this->usable]) ? $_GET['edit_' .$this->usable] : 'add';
 		$this->addHidden('edit', $diff);
 	}
 	function addDate($name = 'Date', $date = NULL)

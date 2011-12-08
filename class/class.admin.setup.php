@@ -29,16 +29,16 @@ class AdminSetup
 		if($this->granted)
 		{
 			// Ajout des pages par défaut
-			$systemPages = array('images', 'backup', 'crawler');
-			if(db::is_table('structure')) array_unshift($systemPages, 'structure');
+			$systemPages = array('images', 'Sauvegardes' => 'backup', 'Cache' => 'crawler', 'Configuration' => 'config');
+			if(db::is_table('cerberus_structure')) array_unshift($systemPages, 'structure');
 			if(MULTILANGUE) array_unshift($systemPages, 'langue');
-			if(db::is_table('news')) array_unshift($systemPages, 'news');
+			if(db::is_table('cerberus_news')) array_unshift($systemPages, 'news');
 			
 			$adminNavigation = array_diff($desired->get('admin'), array('admin'));
 			$thisNavigation = array_merge(a::beArray($customNavigation), $adminNavigation, $systemPages);
 		
 			// Droits de l'utilisateur
-			$droits = str::parse(db::field('admin', 'droits', array('user' => md5($_SESSION['admin']['user']))));
+			$droits = str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user']))));
 			if(!empty($droits))
 			{
 				foreach($droits as $page)
@@ -131,7 +131,7 @@ class AdminSetup
 	{
 		if(db::connection())
 		{
-			$queryQ = db::field('admin', 'password', array('user' => md5($user)));
+			$queryQ = db::field('cerberus_admin', 'password', array('user' => md5($user)));
 			return (isset($queryQ) && md5($password) == $queryQ);
 		}
 		elseif(db::connection() and isset($this->loginUser)) return (md5($user) == $this->loginUser and md5($password) == $this->loginPass);
@@ -179,7 +179,11 @@ class AdminSetup
 			if(!empty($value))
 			{
 				if($value == $cesure) echo '</div><div class="navbar" style="background-image:url(assets/css/overlay/noir-75.png)">';
-				$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : ucfirst($value);
+				
+				// Texte
+				$default_title = (!is_numeric($key)) ? $key : ucfirst($value); 
+				$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : $default_title;
+				
 				$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? array('class' => 'hover') : NULL;
 				echo str::slink('admin-' .$value, $textLien, NULL, $thisActive);
 			}	

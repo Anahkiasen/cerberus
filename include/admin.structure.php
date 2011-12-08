@@ -2,7 +2,7 @@
 if(get('meta_structure'))
 {
 	$metaAdmin = new AdminPage();
-	$metaAdmin->setPage('meta', array('titre', 'url', 'description'));
+	$metaAdmin->setPage('cerberus_meta', array('titre', 'url', 'description'));
 
 	// Si formulaire META
 	if(isset($_POST['url']))
@@ -17,26 +17,26 @@ if(isset($_POST['titre']))
 
 	// Page actuelle
 	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
-	$already = db::field('langue', 'tag', array('tag' => $index));
-	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['titre']), array('tag' => $index));
-	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['titre']));
+	$already = db::field('cerberus_langue', 'tag', array('tag' => $index));
+	if($already) db::update('cerberus_langue', array($_SESSION['admin']['langue'] => $_POST['titre']), array('tag' => $index));
+	else db::insert('cerberus_langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['titre']));
 	
 	// Page parente
 	$index = 'menu-'.$_POST['parent'];
-	$already = db::field('langue', 'tag', array('tag' => $index));
-	if($already) db::update('langue', array($_SESSION['admin']['langue'] => $_POST['parent_titre']), array('tag' => $index));
-	else db::insert('langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['parent_titre']));
+	$already = db::field('cerberus_langue', 'tag', array('tag' => $index));
+	if($already) db::update('cerberus_langue', array($_SESSION['admin']['langue'] => $_POST['parent_titre']), array('tag' => $index));
+	else db::insert('cerberus_langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['parent_titre']));
 }
 
 $strucAdmin = new AdminPage();
-$strucAdmin->setPage('structure');
+$strucAdmin->setPage('cerberus_structure');
 $strucAdmin->addRow('meta', 'META');
 $strucAdmin->createList(
 	array('index' => 'pageid', 'Titre' => $_SESSION['admin']['langue'], 'En cache' => 'cache', 'Ordre' => 'page_priority'),
 	array(
-		'SELECT' => 'S.id AS id, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM langue WHERE tag = CONCAT("menu-", parent)) AS categ',
-		'FROM' => 'meta M',
-		'RIGHT JOIN' => 'structure S ON S.id=M.page LEFT JOIN langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
+		'SELECT' => 'S.id AS id, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+		'FROM' => 'cerberus_meta M',
+		'RIGHT JOIN' => 'cerberus_structure S ON S.id=M.page LEFT JOIN cerberus_langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
 		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
 		'WHERE' => 'S.parent IS NOT NULL',
 		'DIVIDE' => 'categ'));
@@ -46,11 +46,11 @@ if(isset($_GET['meta_structure']))
 {
 	global $navigation;
 
-	$meta = a::simple(db::join('meta M', 'structure S', 'S.id = M.page', 'M.id, M.page AS idx, M.titre, M.description, M.url', array('M.page' => $_GET['meta_structure']), NULL, NULL, NULL, 'RIGHT JOIN'));
-	$availablePages = a::simple(a::rearrange(db::select('structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
+	$meta = a::simple(db::join('cerberus_meta M', 'cerberus_structure S', 'S.id = M.page', 'M.id, M.page AS idx, M.titre, M.description, M.url', array('M.page' => $_GET['meta_structure']), NULL, NULL, NULL, 'RIGHT JOIN'));
+	$availablePages = a::simple(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
 	if(!isset($meta['id']))
 	{
-		$last = db::insert('meta', array('page' => $_GET['meta_structure'], 'langue' => $_SESSION['admin']['langue']));
+		$last = db::insert('cerberus_meta', array('page' => $_GET['meta_structure'], 'langue' => $_SESSION['admin']['langue']));
 		$meta = array('titre' => NULL, 'idx' => NULL, 'url' => NULL, 'description' => NULL);
 		$_GET['edit_meta'] = $last;
 	}

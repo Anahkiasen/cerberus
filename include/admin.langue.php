@@ -16,7 +16,7 @@
 
 <?php
 
-$LANGUES = db::fields('langue');
+$LANGUES = db::fields('cerberus_langue');
 	unset($LANGUES[0]);
 
 if(get('bdd'))
@@ -24,8 +24,8 @@ if(get('bdd'))
 	// EXPORT
 	if(get('bdd') == 'export')
 	{
-		$index = db::select('langue', '*', NULL, 'tag ASC');
-		a::csv($index, 'langues', implode(';', db::fields('langue')));
+		$index = db::select('cerberus_langue', '*', NULL, 'tag ASC');
+		a::csv($index, 'langues', implode(';', db::fields('cerberus_langue')));
 		prompt('Le fichier a bien été crée, pour le télécharger ' .str::link('langues.csv', 'cliquez ici'));
 	}
 	else
@@ -46,8 +46,8 @@ if(get('bdd'))
 								$index_clean[$ligne][$langue] = substr($value, 1, -1);
 							}
 				}
-				db::delete('langue');
-				db::insert_all('langue', NULL, $index_clean);
+				db::delete('cerberus_langue');
+				db::insert_all('cerberus_langue', NULL, $index_clean);
 				db::status('Fichier de langue correctement importé', 'Erreur lors de l\'import du fichier langue');
 			}
 		}
@@ -68,7 +68,7 @@ if(get('bdd'))
 }
 
 $langueAdmin = new AdminPage();
-$langueAdmin->setPage('langue');
+$langueAdmin->setPage('cerberus_langue');
 $langueAdmin->createList(
 	array_merge(array('Identifiant' => 'tag'), $LANGUES),
 	array('WHERE' => 'tag NOT LIKE "menu-%"', 'ORDER BY' => 'tag ASC'));

@@ -169,13 +169,13 @@ class Cerberus
 			
 			if(!$meta)
 			{
-				if(!db::is_table('structure', 'meta'))
+				if(!db::is_table('cerberus_structure', 'cerberus_meta'))
 				{
-					update::table('meta');
-					update::table('structure');
+					update::table('cerberus_meta');
+					update::table('cerberus_structure');
 				}
 				
-				$metadata = db::left_join('meta M', 'structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
+				$metadata = db::left_join('cerberus_meta M', 'cerberus_structure S', 'M.page = S.id', 'S.page, S.parent, M.titre, M.description, M.url', array('langue' => l::current()));
 				foreach($metadata as $values)
 				{
 					if(empty($values['description'])) $values['description'] = $values['titre'];

@@ -16,7 +16,7 @@ class content
 		$CORE = $basename;
 		$cache = ($desired->current(false) == 'admin')
 			? false
-			: db::field('structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
+			: db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
 
 		if($cache and CACHE)
 		{			

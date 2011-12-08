@@ -37,8 +37,9 @@ class AdminPage extends AdminSetup
 	{
 		// Information sur la table
 		$this->table = $table;
-		$this->getEdit = get('edit_' .$this->table, NULL);
-		$this->getAdd = get('add_' .$this->table, NULL);
+		$this->usable = str_replace('cerberus_', NULL, $table);
+		$this->getEdit = get('edit_' .$this->usable, NULL);
+		$this->getAdd = get('add_' .$this->usable, NULL);
 
 		// Champs de mise à jour
 		$fieldsUpdate = array();
@@ -88,34 +89,34 @@ class AdminPage extends AdminSetup
 		}
 		
 		// SUPPRESSION
-		if(isset($_GET['delete_' .$this->table]))
+		if(isset($_GET['delete_' .$this->usable]))
 		{
 			// Images liées
 			if(in_array('path', $this->fields))
 			{
-				$path = db::field($this->table, 'path', array($this->index => $_GET['delete_' .$this->table]));
-				if(isset($path) and !empty($path)) f::remove('assets/file/' .$this->table. '/' .$path);
+				$path = db::field($this->table, 'path', array($this->index => $_GET['delete_' .$this->usable]));
+				if(isset($path) and !empty($path)) f::remove('assets/file/' .$this->usable. '/' .$path);
 			}
 			else
 			{
-				if(file_exists('assets/file/' .$this->table))
+				if(file_exists('assets/file/' .$this->usable))
 				{
 					$picExtension = array('jpg', 'jpeg', 'gif', 'png');
 					foreach($picExtension as $value)
 					{
-						$thisFile = $_GET['delete_' .$this->table]. '.' .$value;
-						f::remove('assets/file/' .$this->table. '/' .$thisFile);
+						$thisFile = $_GET['delete_' .$this->usable]. '.' .$value;
+						f::remove('assets/file/' .$this->usable. '/' .$thisFile);
 					}
 				}
 			}
 						
-			db::delete($this->table, array($this->index => $_GET['delete_' .$this->table]));
+			db::delete($this->table, array($this->index => $_GET['delete_' .$this->usable]));
 			prompt('Objet supprimé');
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
 			$image = $this->getImage($_GET['deleteThumb']);
-			if(f::remove('assets/file/' .$this->table. '/' .$image)) prompt('Miniature supprimée');
+			if(f::remove('assets/file/' .$this->usable. '/' .$image)) prompt('Miniature supprimée');
 			else prompt('Miniature introuvable');
 		}
 	}
@@ -213,7 +214,7 @@ class AdminPage extends AdminSetup
 			$SELECTED = NULL;
 			if(isset($this->tableRows))
 				foreach($this->tableRows as $function => $name)
-					if(isset($_GET[$function. '_' .$this->table])) $SELECTED = $_GET[$function. '_' .$this->table];
+					if(isset($_GET[$function. '_' .$this->usable])) $SELECTED = $_GET[$function. '_' .$this->usable];
 			
 			foreach($items as $key => $value)
 			{
@@ -253,11 +254,11 @@ class AdminPage extends AdminSetup
 							else echo 
 							'<td>'
 								.str::slink(
-									'admin-' .$this->table,
+									'admin-' .$this->usable,
 									str::img(
 										'assets/css/' .$function. '.png',
 										$name),
-									array($function. '_' .$this->table => $key),
+									array($function. '_' .$this->usable => $key),
 									array('title' => $name)).
 							'</td>';
 						}
@@ -269,7 +270,7 @@ class AdminPage extends AdminSetup
 		// Ajouter un élément
 		echo '
 		<tr class="additem"><td colspan="50">'
-			.str::slink(NULL, l::get('admin.add', 'Ajouter un élément'), 'add_'.$this->table).'
+			.str::slink(NULL, l::get('admin.add', 'Ajouter un élément'), 'add_'.$this->usable).'
 		</td></tr>
 		</tbody></table><br /><br />';
 	}
@@ -287,7 +288,7 @@ class AdminPage extends AdminSetup
 		{
 			$typeEdit = $this->getEdit;
 			$editText = 'Modifier';
-			$urlAction = 'edit_' .$this->table. '=' .$this->getEdit;
+			$urlAction = 'edit_' .$this->usable. '=' .$this->getEdit;
 		}
 		else
 		{
@@ -352,7 +353,7 @@ class AdminPage extends AdminSetup
 				break;
 				
 			case 'default':
-				$image = basename(a::simple(glob('assets/file/' .$this->table. '/' .$idpic. '.*')));
+				$image = basename(a::simple(glob('assets/file/' .$this->usable. '/' .$idpic. '.*')));
 				break;
 		}
 		return $image;
@@ -390,7 +391,7 @@ class AdminPage extends AdminSetup
 						$file = $lastID. '-' .str::slugify($_FILES[$field]['name']). '-' .md5(str::random()). '.' .$extension;
 						
 						$path = db::field($this->table, 'path', array($this->index => $lastID));
-						if($path) f::remove('assets/file/' .$this->table. '/' .$path);
+						if($path) f::remove('assets/file/' .$this->usable. '/' .$path);
 						
 						db::update($this->table, array('path' => $file), array('id' => $lastID));
 						break;
@@ -401,7 +402,7 @@ class AdminPage extends AdminSetup
 				}
 				
 				// Sauvegarde de l'image
-				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->table. '/' .$file);
+				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->usable. '/' .$file);
 				if($resultat) prompt('Image ajoutée au serveur');
 				else prompt('Une erreur est survenue lors du transfert.');
 			}

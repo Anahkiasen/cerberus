@@ -43,12 +43,12 @@ class navigation
 	// Fonctions moteur
 	function __construct($navigation = NULL)
 	{
-		if(!$navigation and db::is_table('structure'))
+		if(!$navigation and db::is_table('cerberus_structure'))
 		{
-			$navbis = db::select('structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
+			$navbis = db::select('cerberus_structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
 			foreach($navbis as $values) $navigation[$values['parent']][] = $values['page'];
 		}
-		elseif($navigation and !db::is_table('structure')) $this->createStructure($navigation);
+		elseif($navigation and !db::is_table('cerberus_structure')) $this->createStructure($navigation);
 	
 		// Navigation par défaut
 		if(!isset($navigation) or empty($navigation))
@@ -127,7 +127,7 @@ class navigation
 	// Met à jour l'arbre de navigation à la nouvelle version
 	function createStructure($navigation)
 	{
-		update::table('structure');
+		update::table('cerberus_structure');
 		
 		$pparent = 1;
 		$ppage = 1;
@@ -137,9 +137,9 @@ class navigation
 			$pages = a::beArray($pages);
 			foreach($pages as $page)
 			{
-				$last = db::insert('structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage));
+				$last = db::insert('cerberus_structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage));
 				echo $last. ' - ' .$parent.'-'.$page.'<br/>';
-				db::update('meta', array('page' => $last), array('page' => $parent.'-'.$page));
+				db::update('cerberus_meta', array('page' => $last), array('page' => $parent.'-'.$page));
 				$ppage++;
 			}
 			

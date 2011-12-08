@@ -4,10 +4,10 @@ class l
 	public static $lang = array();
 
 	// Chargement du fichier langue
-	function __construct($database = 'langue')
+	function __construct($database = 'cerberus_langue')
 	{
 		if(!config::get('multilangue', FALSE)) return false;
-		if(!db::is_table('langue')) update::table('langue');
+		if(!db::is_table('cerberus_langue')) update::table('cerberus_langue');
 		
 		// Langue du site
 		if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
@@ -23,7 +23,7 @@ class l
 		$current = self::current();
 		$filename = 'cerberus/cache/lang-' .$current. '.php';
 
-		$tables = db::row('langue', 'tag');
+		$tables = db::row('cerberus_langue', 'tag');
 		if(!empty($tables))
 		{
 			if(file_exists($filename)) self::load($filename);

@@ -9,7 +9,7 @@ ini_set('log_errors', 'On');
 foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
 require_once('cerberus/tools/display.php');
-$REVISION = 332;
+$REVISION = 334;
 s::start();
 
 /*
@@ -56,6 +56,7 @@ if(LOCAL) config::set(array(
 	'db.password' => config::get('local.password'),
 	'db.name' => config::get('local.name')));
 	if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
+	new update($REVISION);
 
 /*
 ########################################
@@ -65,16 +66,16 @@ if(LOCAL) config::set(array(
 
 timer::save('sql').timer::start('logs');
 $ip = server::get('remote_addr');
-if(config::get('logs', TRUE)) if(db::is_table('logs'))
+if(config::get('logs', TRUE)) if(db::is_table('cerberus_logs'))
 {
-	if(!db::field('logs', 'ip', array('ip' => $ip)) and ($ip))
+	if(!db::field('cerberus_logs', 'ip', array('ip' => $ip)) and ($ip))
 	{
 		$ua = browser::detect();
 		$domaine = url::domain();
 		$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
 		
 		if(!empty($ua['browser']) and !empty($ua['platform']))
-			db::insert('logs', array(
+			db::insert('cerberus_logs', array(
 				'ip' => $ip,
 				'date' => 'NOW()',
 				'platform' => $ua['platform'],
@@ -85,7 +86,7 @@ if(config::get('logs', TRUE)) if(db::is_table('logs'))
 				'domaine' => $domaine));
 	}
 }
-else update::table('logs');
+else update::table('cerberus_logs');
 $userAgent = browser::css();
 
 // Ajout des balises HTML averc leur selecteur correct
