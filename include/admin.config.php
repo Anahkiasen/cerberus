@@ -15,7 +15,7 @@ if(isset($_POST['db-host']))
 		$key = str_replace('-', '.', $key);
 		if(in_array($key, $arrays))
 		{
-			if(str::find(',', $value)) $formatted_value = implode("', '", $value);
+			if(str::find(',', $value)) $formatted_value = implode("', '", explode(',', $value));
 			$formatted_value = 'array(\'' .$formatted_value. '\')';
 		}
 		elseif(in_array($value, array('TRUE','FALSE'))) $formatted_value = $value;
