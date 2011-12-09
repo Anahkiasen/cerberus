@@ -10,7 +10,7 @@ ini_set('log_errors', 'On');
 foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
 require_once('cerberus/tools/display.php');
-$REVISION = 337;
+$REVISION = 338;
 s::start();
 
 /*
@@ -21,7 +21,7 @@ s::start();
 // Configuration du site
 timer::save().timer::start('config');
 if(!file_exists($config_file)) f::write($config_file, NULL);
-else config::load('cerberus/conf.php');
+else config::load($config_file);
 config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
 
 if(config::get('local'))
