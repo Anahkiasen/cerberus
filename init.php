@@ -36,10 +36,9 @@ if(config::get('local'))
 define('SQL', config::get('local.name', FALSE));
 define('REWRITING', config::get('rewriting', FALSE));
 define('LOCAL', config::get('local', FALSE));
-define('MULTILANGUE', config::get('multilangues', FALSE));
+define('MULTILANGUE', config::get('multilangue', FALSE));
 if(LOCAL)	define('CACHE', FALSE);
 else		define('CACHE', config::get('cache', TRUE));
-
 // Affichage et gestion des erreurs
 error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
 set_error_handler('errorHandle');
