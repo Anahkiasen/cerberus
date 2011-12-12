@@ -10,7 +10,7 @@ if(get('meta_structure'))
 }
 
 // Sinon
-if(isset($_POST['titre']))
+if(isset($_POST['traduction_titre']))
 {
 	content::uncache('meta');
 	content::uncache($_POST['parent'].'-'.$_POST['page']);
@@ -18,23 +18,23 @@ if(isset($_POST['titre']))
 	// Page actuelle
 	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
 	$already = db::field('cerberus_langue', 'tag', array('tag' => $index));
-	if($already) db::update('cerberus_langue', array($_SESSION['admin']['langue'] => $_POST['titre']), array('tag' => $index));
-	else db::insert('cerberus_langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['titre']));
+	if($already) db::update('cerberus_langue', array(l::admin_current() => $_POST['traduction_titre']), array('tag' => $index));
+	else db::insert('cerberus_langue', array('tag' => $index, l::admin_current() => $_POST['traduction_titre']));
 	
 	// Page parente
 	$index = 'menu-'.$_POST['parent'];
 	$already = db::field('cerberus_langue', 'tag', array('tag' => $index));
-	if($already) db::update('cerberus_langue', array($_SESSION['admin']['langue'] => $_POST['parent_titre']), array('tag' => $index));
-	else db::insert('cerberus_langue', array('tag' => $index, $_SESSION['admin']['langue'] => $_POST['parent_titre']));
+	if($already) db::update('cerberus_langue', array(l::admin_current() => $_POST['traduction_parent_titre']), array('tag' => $index));
+	else db::insert('cerberus_langue', array('tag' => $index, l::admin_current() => $_POST['traduction_parent_titre']));
 }
 
 $strucAdmin = new AdminPage();
 $strucAdmin->setPage('cerberus_structure');
 $strucAdmin->addRow('meta', 'META');
 $strucAdmin->createList(
-	array('index' => 'pageid', 'Titre' => $_SESSION['admin']['langue'], 'En cache' => 'cache', 'Ordre' => 'page_priority'),
+	array('index' => 'pageid', 'Titre' => l::admin_current(), 'En cache' => 'cache', 'Ordre' => 'page_priority'),
 	array(
-		'SELECT' => 'S.id AS id, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .$_SESSION['admin']['langue']. ', (SELECT ' .$_SESSION['admin']['langue']. ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+		'SELECT' => 'S.id AS id, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .l::admin_current(). ', (SELECT ' .l::admin_current(). ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
 		'FROM' => 'cerberus_meta M',
 		'RIGHT JOIN' => 'cerberus_structure S ON S.id=M.page LEFT JOIN cerberus_langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
 		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
@@ -46,11 +46,16 @@ if(isset($_GET['meta_structure']))
 {
 	global $navigation;
 
-	$meta = a::simple(db::join('cerberus_meta M', 'cerberus_structure S', 'S.id = M.page', 'M.id, M.page AS idx, M.titre, M.description, M.url', array('M.page' => $_GET['meta_structure']), NULL, NULL, NULL, 'RIGHT JOIN'));
+	$meta = 
+		a::simple(db::join(
+			'cerberus_meta M',
+			'cerberus_structure S',
+			'S.id = M.page', 'S.page, S.parent, M.id, M.page AS idx, M.titre, M.description, M.url',
+			array('M.page' => $_GET['meta_structure'], 'M.langue' => l::admin_current())));
 	$availablePages = a::simple(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
 	if(!isset($meta['id']))
 	{
-		$last = db::insert('cerberus_meta', array('page' => $_GET['meta_structure'], 'langue' => $_SESSION['admin']['langue']));
+		$last = db::insert('cerberus_meta', array('page' => $_GET['meta_structure'], 'langue' => l::admin_current()));
 		$meta = array('titre' => NULL, 'idx' => NULL, 'url' => NULL, 'description' => NULL);
 		$_GET['edit_meta'] = $last;
 	}
@@ -59,14 +64,22 @@ if(isset($_GET['meta_structure']))
 	// Formulaire
 	$form = new form(false, array('action' => rewrite('admin-structure', array('meta_structure' => get('meta_structure')))));
 	$select = new select();
+	
 	$form->getValues($metaAdmin->getFieldsTable());
+	$titre = get('meta_structure') ? l::getalt('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
+	$parent_titre = l::getalt('menu-'.$meta['parent'], l::admin_current());
+	$form->addValue('traduction_titre', $titre);
+	$form->addValue('traduction_parent_titre', $parent_titre);
 	
 	$form->openFieldset('Modifier des données meta');
 		$select->newSelect('page', 'Identifiant de la page'); 
 			$select->setValue($meta['idx']);
 			$select->appendList($availablePages, false);
 			$form->insertText($select);
-		$form->addText('titre', 'Titre de la page', $meta['titre']);
+			
+		$form->addText('traduction_titre', 'Titre de la page');
+		$form->addtext('traduction_parent_titre', 'Titre de la catégorie');
+		$form->addText('titre', 'Balise &lt;title&gt;', $meta['titre']);
 		$form->addText('url', 'URL de la page', $meta['url']);
 		$form->addTextarea('description', 'Description de la page', $meta['description'], array('underfield' => true));
 		$form->addEdit();
@@ -85,18 +98,11 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 	$select = new select();
 	$form->getValues($strucAdmin->getFieldsTable());
 	
-	$test = $form->passValues();
-	$titre = get('edit_structure') ? l::get('menu-'.$test['parent'].'-'.$test['page'], NULL) : NULL;
-	$parent_titre = l::get('menu-'.$test['parent']);
-	$form->addValue('titre', $titre);
-	$form->addValue('parent_titre', $parent_titre);
-	
+	$test = $form->passValues();	
 	
 	$form->openFieldset($diffText. ' l\'arobrescence');
 		$form->addText('page', 'Identifiant de la page');
 		$form->addText('parent', 'Identifiant de la catégorie');
-		$form->addText('titre', 'Titre de la page');
-		$form->addtext('parent_titre', 'Titre de la catégorie');
 	$form->closeFieldset();
 	
 	$form->openFieldset('Options');

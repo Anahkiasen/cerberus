@@ -66,7 +66,6 @@ class AdminSetup
 			}
 			
 			// Navigation
-			echo '<h1>' .$title. '</h1>';
 			$cesure = ($systemPages[0] == 'news') ? $systemPages[1] : $systemPages[0];
 			$this->admin_navigation($thisNavigation, $cesure);
 			
@@ -179,11 +178,9 @@ class AdminSetup
 				if($value == $cesure) echo '</div><div class="navbar" style="background-image:url(assets/css/overlay/noir-75.png)">';
 				
 				// Texte
-				$default_title = (!is_numeric($key)) ? $key : ucfirst($value); 
-				$textLien = ($this->arrayLangues) ? l::get('admin-' .$value) : $default_title;
-				
+				$texte_lien = (!is_numeric($key)) ? $key : l::getalt('menu-admin-'.$value, $_SESSION['admin']['langue'], $value, TRUE); 
 				$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? array('class' => 'hover') : NULL;
-				echo str::slink('admin-' .$value, $textLien, NULL, $thisActive);
+				echo str::slink('admin-' .$value, $texte_lien, NULL, $thisActive);
 			}	
 		}
 		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';

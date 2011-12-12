@@ -244,7 +244,8 @@ table td.additem
 	text-align:center;
 }
 table .additem:hover { background-image:url(overlay/blanc-50.png); }
-table .additem a { color:#FFF; }/*
+table .additem a { color:#FFF; }
+/*
 ########################################
 ############# FORMULAIRES ##############
 ########################################

@@ -254,6 +254,7 @@ class navigation
 	function content()
 	{
 		// Chargement de l'admin ou d'une page
+		echo '<div class="' .$this->current(). '-content ' .$this->current(false). '-content">';
 		switch($this->page)
 		{
 			case '404';
@@ -274,7 +275,8 @@ class navigation
 					errorHandle('Warning', 'Le fichier ' .$this->filepath. ' est introuvable', __FILE__, __LINE__);
 				}
 				break;
-			}
+		}
+		echo '</div>';
 	}
 	
 	// Vérifie la présence d'une clé dans l'arbre

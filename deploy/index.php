@@ -164,6 +164,7 @@ if(!file_exists('../../index.php'))
 			
 		// Déplacement des fichiers CSS et PHP
 		f::move('assets/css/styles.css', '../../assets/css/styles.css');
+		f::move('assets/css/admin.css', '../../assets/css/admin.css');
 		f::move('assets/css/mail.css', '../../assets/css/mail.css');
 		f::move('assets/img/delete.png', '../../assets/css/delete.png');
 		f::move('assets/img/edit.png', '../../assets/css/edit.png');

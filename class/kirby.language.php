@@ -61,6 +61,16 @@ class l
 		}
 	}
 	
+	// Récupérer une traduction dans une langue en particulier
+	static function getalt($key, $language = NULL, $default = NULL, $fallback = false)
+	{
+		$translate = db::field('cerberus_langue', $language, array('tag' => $key));
+		if(!$translate)
+			$translate = $fallback ? l::get($key, $default) : $default;
+		
+		return stripslashes($translate);
+	}
+	
 	// Affiche un lien vers une ou la totalité des langues
 	static function flags($path, $langue = NULL)
 	{
@@ -99,6 +109,17 @@ class l
 			
 			s::set('langueSite', $langue);
 			return $langue;
+		}
+	}
+	
+	// Langue en cours dans l'administration
+	static function admin_current()
+	{
+		if(isset($_SESSION['admin']['langue'])) return $_SESSION['admin']['langue'];
+		else
+		{
+			$_SESSION['admin']['langue'] = l::current();
+			return l::current();
 		}
 	}
 	
