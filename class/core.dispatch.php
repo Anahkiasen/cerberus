@@ -170,7 +170,7 @@ class dispatch extends Cerberus
 	{
 		if($this->CSS['min']) 
 		{
-			$minify = array_filter($this->CSS['min']);
+			$minify = array_unique(array_filter($this->CSS['min']));
 			if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
 		}
 		if(!empty($this->CSS['url'])) echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		

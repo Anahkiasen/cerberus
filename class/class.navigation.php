@@ -24,6 +24,7 @@ class navigation
 	public $page = 'home';
 	public $sousPage;
 	private $allowedPages;
+	private $system = array('404', 'sitemap');
 
 	// Caches
 	private $navigation;
@@ -61,18 +62,20 @@ class navigation
 		
 		// Options et modes
 		$allowed_pages = array_keys($navigation);
+		foreach($this->system as $include) $allowed_pages[] = $include;
+		
 		$sousPage = NULL;
 		$page = (isset($_GET['404'])) ? '404' : $allowed_pages[0];
 		$this->optionSubnav = (isset($navigation[$page]) and is_array($navigation[$page]));
 		$this->options = str::boolprint(MULTILANGUE).str::boolprint($this->optionSubnav);
-		
+
 		// Page actuelle
 		if(get('page'))
 		{
 			if($this->options == 'TRUEFALSE') $allowed_pages = $navigation; // MULTILINGUE SANS ARBO est un cas où $allowed_pages n'est pas $keys
 			if(in_array(get('page'), $allowed_pages)) $page = get('page');
 		}
-		
+
 		// Sous-navigation
 		if($this->optionSubnav and isset($navigation[$page]) and !empty($navigation[$page]))
 		{
@@ -82,24 +85,27 @@ class navigation
 				: $navigation[$page][0];
 		}
 		else $substring = NULL;
-		
+
 		// Include de la page
-		if($page != 'admin' and $page != '404')
+		if(!in_array($page, $this->system))
 		{
-			$extension = $this->extension($page.$substring.$sousPage);
-			if(!$extension)
+			if($page != 'admin')
 			{
-				$page = $allowed_pages[0];
-				if($this->optionSubnav)
-				{
-					$substring = '-';
-					$sousPage = $navigation[$page][0];
-				}
 				$extension = $this->extension($page.$substring.$sousPage);
+				if(!$extension)
+				{
+					$page = $allowed_pages[0];
+					if($this->optionSubnav)
+					{
+						$substring = '-';
+						$sousPage = $navigation[$page][0];
+					}
+					$extension = $this->extension($page.$substring.$sousPage);
+				}
+				$this->filepath = $page.$substring.$sousPage.$extension;
 			}
-			$this->filepath = $page.$substring.$sousPage.$extension;
+			else if(get('admin')) $sousPage = get('admin');
 		}
-		else if(get('admin')) $sousPage = get('admin');
 		
 		// Enregistrement des variables
 		$this->navigation = $navigation;
@@ -109,7 +115,7 @@ class navigation
 	}
 	
 	// Vérification de l'existence d'une page
-	function extension($page)
+	function extension($page, $cerberus = false)
 	{
 		if(file_exists('pages/' .$page. '.html')) return '.html';
 		elseif(file_exists('pages/' .$page. '.php')) return '.php';
@@ -164,10 +170,10 @@ class navigation
 	
 		if(!isset($this->treeNavigation))
 			foreach($this->allowedPages as $key)
-				if($key != 'admin' or ($key == 'admin' and LOCAL))
+				if(($key != 'admin' and !in_array($key, $this->system)) or ($key == 'admin' and LOCAL))
 					$this->treeNavigation[$key] = rewrite($key, array('subnav' => $this->optionSubnav));			
 		
-		if(!isset($this->treeSubnav) and $this->optionSubnav)
+		if(!isset($this->treeSubnav) and $this->optionSubnav and isset($this->navigation[$this->page]))
 			foreach($this->navigation[$this->page] as $key)
 				$this->treeSubnav[$key] = rewrite($this->page. '-' .$key, array('subnav' => $this->optionSubnav));			
 	}
@@ -261,6 +267,10 @@ class navigation
 				f::inclure('cerberus/include/404.php');
 				break;
 				
+			case 'sitemap':
+				f::inclure('cerberus/include/sitemap.php');
+				break;
+			
 			case 'admin':
 				global $cerberus;
 				$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form');
@@ -298,6 +308,14 @@ class navigation
 		$subnav = $this->get($this->page);
 		if($subnav and count($subnav) != 1 and $this->page != 'admin') return $this->renderSubnav;
 		else return false;
+	}
+	
+	// Fil d'arianne
+	function ariane($home = NULL)
+	{
+		$home = config::get('sitename', $home);
+		$ariane = ($home) ? str::link('index.php', $home). ' > ' : NULL;
+		return $ariane . str::slink($this->page, l::get('menu-' .$this->page)). ' > ' .str::slink($this->sousPage, l::get('menu-' .$this->page. '-' .$this->sousPage));
 	}
 	
 	// Page en cours

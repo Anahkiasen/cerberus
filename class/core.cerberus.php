@@ -191,18 +191,22 @@ class Cerberus
 		// META d'une page seule
 		else
 		{
-			$pageVoulue = $desired->page;
-			$current = $desired->current();
-			$title_prefix = ($pageVoulue == 'admin' and get('admin'))
-				? 'Gestion ' .ucfirst(get('admin'))
-				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
-				
-			if(isset($meta[$current]))
+			if(isset($meta[$mode])) return $meta[$mode];
+			else
 			{
-				if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
-				return $meta[$current][$mode];
+				$pageVoulue = $desired->page;
+				$current = $desired->current();
+				$title_prefix = ($pageVoulue == 'admin' and get('admin'))
+					? 'Gestion ' .ucfirst(get('admin'))
+					: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
+					
+				if(isset($meta[$current]))
+				{
+					if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
+					return $meta[$current][$mode];
+				}
+				else return $title_prefix;
 			}
-			else return $title_prefix;
 		}
 	}
 }

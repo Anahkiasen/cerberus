@@ -31,9 +31,7 @@ function backupSQL()
 	}
 	elseif(!empty($tables_base))
 	{
-	
-		$database_name = explode('_', config::get('db.name'));
-		$filename = a::get($database_name, 1, config::get('db.name'));
+		$filename = str::slugify(config::get('sitename', config::get('db.name')));
 
 		// Définition du nom du dossier
 		$path = 'cerberus/cache/sql/';

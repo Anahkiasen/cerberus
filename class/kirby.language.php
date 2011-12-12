@@ -116,11 +116,7 @@ class l
 	static function admin_current()
 	{
 		if(isset($_SESSION['admin']['langue'])) return $_SESSION['admin']['langue'];
-		else
-		{
-			$_SESSION['admin']['langue'] = l::current();
-			return l::current();
-		}
+		else return NULL;
 	}
 	
 	// Règle l'environnement dans la langue correcte

@@ -14,7 +14,7 @@ class update
 			self::codematch("db::([a-z]+)\(\'(admin|langue|logs|meta|news|structure)\'", "db::$1('cerberus_$2'");
 			self::update('334');
 		}
-		if($revision == 342 and !file_exists('assets/css/admin.css')) f::move('cerberus/deploy/assets/css/admin.css', 'assets/css/admin.css');
+		if(!file_exists('assets/css/admin.css')) f::move('cerberus/deploy/assets/css/admin.css', 'assets/css/admin.css');
 	}
 	
 	// Met à jour le numéro de révision

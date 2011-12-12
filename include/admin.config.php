@@ -59,6 +59,7 @@ array(
 		'db.password' => 'Mot de passe en ligne',
 		'db.name' => 'Base de données en ligne'),
 	'Informations' => array(
+		'sitename' => 'Nom du site',
 		'http' => 'Adresse externe du site',
 		'mail' => 'Adresse de contact')
 );

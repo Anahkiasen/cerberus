@@ -163,7 +163,7 @@ class AdminSetup
 			// Langue de l'admin
 			foreach($this->multilangue as $langue)
 			{
-				$flag_state = (isset($_SESSION['admin']['langue']) and $_SESSION['admin']['langue'] == $langue) ? NULL : '_off';
+				$flag_state = (l::admin_current() == $langue) ? NULL : '_off';
 				echo str::slink(NULL, str::img('assets/css/flag_' .$langue.$flag_state. '.png', $langue), array('adminLangue' => $langue));
 			}
 			echo '</p>';
@@ -178,7 +178,7 @@ class AdminSetup
 				if($value == $cesure) echo '</div><div class="navbar" style="background-image:url(assets/css/overlay/noir-75.png)">';
 				
 				// Texte
-				$texte_lien = (!is_numeric($key)) ? $key : l::getalt('menu-admin-'.$value, $_SESSION['admin']['langue'], $value, TRUE); 
+				$texte_lien = (!is_numeric($key)) ? $key : l::getalt('menu-admin-'.$value, l::admin_current(), $value, TRUE); 
 				$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? array('class' => 'hover') : NULL;
 				echo str::slink('admin-' .$value, $texte_lien, NULL, $thisActive);
 			}	

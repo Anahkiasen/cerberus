@@ -163,17 +163,12 @@ if(!file_exists('../../index.php'))
 		copydir('min', '../../min');
 			
 		// Déplacement des fichiers CSS et PHP
-		f::move('assets/css/styles.css', '../../assets/css/styles.css');
-		f::move('assets/css/admin.css', '../../assets/css/admin.css');
-		f::move('assets/css/mail.css', '../../assets/css/mail.css');
+		copydir('assets/css/', '../../assets/css/');
 		f::move('assets/img/delete.png', '../../assets/css/delete.png');
 		f::move('assets/img/edit.png', '../../assets/css/edit.png');
 		f::move('assets/img/load.png', '../../assets/css/load.png');
 		f::move('assets/img/meta.png', '../../assets/css/meta.png');
-		
-		f::move('assets/css/cerberus.css', '../../assets/css/cerberus.css');
-		copydir('assets/css/overlay', '../../assets/css/overlay');
-		
+				
 		$index = file_get_contents('main.php');
 		$index = str_replace('[BDD]', "'" .$MYSQL_DB. "'", $index);
 		f::write('../../index.php', $index);
