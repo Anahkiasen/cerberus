@@ -43,33 +43,11 @@ class l
 		}
 	}
 
-	// Changer une traduction
-	static function set($key, $value = NULL)
-	{
-		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
-		else self::$lang[$key] = $value;
-	}
-	
-	// Récupérer une traduction
-	static function get($key = NULL, $default = NULL)
-	{
-		if(empty($key)) return self::$lang;
-		else
-		{
-			$translate = a::get(self::$lang, $key, $default);
-			return (empty($translate)) ? $default : stripslashes($translate);
-		}
-	}
-	
-	// Récupérer une traduction dans une langue en particulier
-	static function getalt($key, $language = NULL, $default = NULL, $fallback = false)
-	{
-		$translate = db::field('cerberus_langue', $language, array('tag' => $key));
-		if(!$translate)
-			$translate = $fallback ? l::get($key, $default) : $default;
-		
-		return stripslashes($translate);
-	}
+	/*
+	########################################
+	########## LANGUE EN COURS #############
+	########################################
+	*/
 	
 	// Affiche un lien vers une ou la totalité des langues
 	static function flags($path, $langue = NULL)
@@ -88,7 +66,6 @@ class l
 				array('langue' => $langue));
 		}
 	}
-	
 	
 	// Changer de langue
 	static function change($langue = 'fr')
@@ -138,7 +115,6 @@ class l
 		return setlocale(LC_ALL, 0);
 	}
 
-	
 	// Langue autorisée ou non
 	static function sanitize($langue)
 	{
@@ -161,6 +137,41 @@ class l
 		}
 		else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 	}
+
+	/*
+	########################################
+	###### CONTENU ET TRADUCTIONS ##########
+	########################################
+	*/
+	
+	// Changer une traduction
+	static function set($key, $value = NULL)
+	{
+		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
+		else self::$lang[$key] = $value;
+	}
+	
+	// Récupérer une traduction
+	static function get($key = NULL, $default = NULL)
+	{
+		if(empty($key)) return self::$lang;
+		else
+		{
+			$translate = a::get(self::$lang, $key, $default);
+			return (empty($translate)) ? $default : stripslashes($translate);
+		}
+	}
+	
+	// Récupérer une traduction dans une langue en particulier
+	static function getalt($key, $language = NULL, $default = NULL, $fallback = false)
+	{
+		$translate = db::field('cerberus_langue', $language, array('tag' => $key));
+		if(!$translate)
+			$translate = $fallback ? l::get($key, $default) : $default;
+		
+		return stripslashes($translate);
+	}
+	
 	
 	// Traduction d'un jour
 	static function day($day = NULL)

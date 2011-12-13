@@ -318,6 +318,20 @@ class navigation
 		return $ariane . str::slink($this->page, l::get('menu-' .$this->page)). ' > ' .str::slink($this->sousPage, l::get('menu-' .$this->page. '-' .$this->sousPage));
 	}
 	
+	// Pied de page
+	function footer()
+	{
+		$footer =
+			'&copy;Copyright ' .date('Y'). ' - 
+			' .config::get('sitename'). ' - 
+			' .str::slink('sitemap', l::get('sitemap', 'Plan du site')). ' - 
+			Conception : ' .str::link('http://www.stappler.fr/', 'Le Principe de Stappler');
+		if(in_array('legales', $this->navigation['contact'])) $footer .= ' - ' .str::slink('contact-legales', l::get('menu-contact-legales', 'Contact'));
+		if(in_array('contact', $this->navigation['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact', 'Contact'));
+		return $footer;
+	}
+
+	
 	// Page en cours
 	function current($getsub = true)
 	{
