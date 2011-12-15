@@ -189,10 +189,8 @@ p.readmore:active { background-image:url(overlay/blanc-25.png); }
 .admin #contenu table .additem td a { color:#FFF; }
 .admin fieldset dl.textarea textarea
 {
-	height: 160px;
 	left: 10px;
 }
-.admin dl.textarea { height: auto; }
 .admin dl.textarea dd { width:70%; }
 /*
 ########################################
@@ -272,6 +270,7 @@ legend
 	letter-spacing:-1px;
 	padding: 10px;
 	width:100%;
+	font-size: 1.1em;
 }
 fieldset dl:hover
 {
@@ -304,6 +303,9 @@ textarea
 	-moz-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
 	box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
 }
+form > input[type=text],
+form > input[type=password],
+form > input[type=file] { padding: 5px }
 input[type=button]
 {
 	cursor: pointer;
@@ -312,7 +314,7 @@ input[type=button]
 	position: static;
 }
 input[type=button]:hover { background-color: #999; }
-input[type=button]:active {	background-color:#222; }
+input[type=button]:active { background-color:#222; }
 fieldset div.bbcode { padding: 0 8px 10px; }
 fieldset dl:hover input[type=text],
 fieldset dl:hover input[type=password],
@@ -334,14 +336,15 @@ fieldset input[type=password]
 	right: 3px;
 	top: 3px;
 }
+.chrome fieldset input { top: 0px; }
 fieldset select
 {
 	border:5px solid #666;
 	padding: 10px;
 	right: 3px;
-	top: 1px;
 }
 fieldset dl:hover select { border:5px solid #666; }
+.chrome fieldset select { top: -2px }
 .ie fieldset select,
 .win.chrome fieldset select,
 .opera fieldset select,
@@ -352,21 +355,28 @@ dl.textarea textarea { right:-2px; }
 input[type=submit]
 {
 	border: none;
-	border-bottom:5px solid #999966;
 	color:#FFF;
 	cursor: pointer;
 	font-size: 12px;
 	margin: 10px;
 	padding: 5px;
+	padding-bottom: 10px;
 	text-align: center;
 	width:80%;
+	/* Bordure */
+	-webkit-box-shadow: inset 0px -5px 0px 0px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px -5px 0px 0px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px -5px 0px 0px rgba(0, 0, 0, 0.5);
 }
 input[type=submit]:hover { background-image:url(overlay/blanc-25.png); }
 input[type=submit]:active
 {
 	background-image:url(overlay/blanc-50.png);
-	border: none;
 	margin-top: 15px;
+	padding-bottom: 5px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
 }
 input[type=submit].ok
 {
@@ -410,10 +420,10 @@ fieldset dl.textarea textarea
 {
 	height: 190px;
 	top: 4px;
-	width:97%;
+	width:99%;
 	padding: 20px;
 }
-fieldset dl.textarea { height: 200px; }
+fieldset dl.textarea { height: 210px; }
 fieldset dl.textarea dd { width:60%; }
 #left fieldset dl.textarea dd,
 #right fieldset dl.textarea dd { width:55%; }
