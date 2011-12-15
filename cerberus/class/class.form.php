@@ -494,21 +494,21 @@ class select extends form
 		// Création d'un <select> (sous-fonction de createElement)
 		function createSelect($name, $liste)
 		{
-			$thisValue = (empty($this->value))
+			$thisValue = ($this->value === "")
 				? $this->defineValue($name)
 				: $this->value;
 	
 			$this->render .= '<select name="' .$name. '" ';
 			foreach($this->params as $key => $value) $this->render .= $key. '="' .$value. '"';
 			$this->render .= '>';
-			
+				
 			foreach($liste as $key => $value)
 			{
 				if($key == $value and $thisValue == $value) $selected = 'selected="selected"';
 				elseif($key != $value and $thisValue == $key) $selected = 'selected="selected"';
 				else $selected = NULL;
 				
-				if($key == $value) $this->render .= '<option ' .$selected. '>' .$value. '</option>';
+				if($key === $value) $this->render .= '<option ' .$selected. '>' .$value. '</option>';
 				else $this->render .= '<option value="' .$key. '" ' .$selected. '>' .$value. '</option>';
 			}
 				

@@ -1,7 +1,7 @@
 <?php
 $config_file = 'cerberus/conf.php';
 $arrays = array('cerberus', 'langues');
-$bool = array('rewriting', 'cache', 'logs', 'multilangue');
+$bool = array('rewriting', 'multi_admin', 'cache', 'logs', 'multilangue');
 
 // Enregistrement des paramètres
 asort($_POST);
@@ -44,6 +44,7 @@ array(
 	'Paramètres du site' => array(
 		'rewriting' => 'Activer la réecriture d\'URL',
 		'cache' => 'Mise en cache',
+		'multi_admin' => 'Multiples administrateurs',
 		'logs' => 'Statistiques'),
 	'International' => array(
 		'multilangue' => 'Site multilingue',

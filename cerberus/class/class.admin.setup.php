@@ -10,6 +10,10 @@ class AdminSetup
 	private $login_user; // Utilisateur
 	private $login_password; // Mot de passe
 	
+	// Navigation
+	private static $droits;
+	private $navigation;
+	
 	/*
 	########################################
 	############## CONSTRUCTION ############
@@ -30,47 +34,42 @@ class AdminSetup
 		
 		if($this->granted)
 		{
-			// Ajout des pages par défaut
-			$systemPages = array('images', 'Cache' => 'crawler', 'Configuration' => 'config');
+			// Création de la navigation de l'admin
+			$this->navigation['systeme'] = array('images', 'Cache' => 'crawler', 'Configuration' => 'config');
 			if(SQL)
 			{
-				$systemPages['Sauvegardes'] = 'backup';
-				if(db::is_table('cerberus_structure')) array_unshift($systemPages, 'structure');
-				if(MULTILANGUE) array_unshift($systemPages, 'langue');
-				if(db::is_table('cerberus_news')) array_unshift($systemPages, 'news');
+				if(config::get('multi_admin')) $this->navigation['systeme']['Utilisateurs'] = 'admin';
+				$this->navigation['systeme']['Sauvegardes'] = 'backup';
+				if(db::is_table('cerberus_structure')) array_unshift($this->navigation['systeme'], 'structure');
+				if(MULTILANGUE) array_unshift($this->navigation['systeme'], 'langue');
+				if(db::is_table('cerberus_news')) $this->navigation['website']['Actualités'] = 'news';
 			}
-						
-			$adminNavigation = array_diff($desired->get('admin'), array('admin'));
-			$thisNavigation = array_merge(a::force_array($customNavigation), $adminNavigation, $systemPages);
+			$this->navigation['website'] = array_merge($this->navigation['website'], array_diff($desired->get('admin'), array('admin')));
+			$this->navigation['systeme'] = array_merge($this->navigation['systeme'], a::force_array($customNavigation));
 		
 			// Droits de l'utilisateur
-			$droits = (SQL and db::is_table('cerberus_admin')) ? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user'])))) : NULL;
-			if(!empty($droits))
-			{
-				foreach($droits as $page)
-					if(in_array($page, $thisNavigation)) $sanitizedNavigation[] = $page;
-				$thisNavigation = $sanitizedNavigation;
-			}
-			
+			self::$droits = (SQL and db::is_table('cerberus_admin')) 
+				? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user'])))) 
+				: NULL;
+				if(empty(self::$droits)) 
+					foreach($this->navigation as $section => $pages) 
+						foreach($pages as $page) self::$droits[$page] = TRUE;
+
 			// Vérification de la page
 			$title = 'Administration';
-			if(!empty($thisNavigation))
+			if(!empty($this->navigation))
 			{
 				$admin = get('admin');
 				if(	isset($admin) and
-					in_array($admin, $thisNavigation) and
-					(file_exists('pages/admin-' .$admin. '.php')
-						or in_array($admin, $systemPages)))
+					in_array($admin, self::$droits))
 						
-					$title = ($this->arrayLangues) ? l::get('admin-' .$admin) : ucfirst($admin);
+					$title = ($this->arrayLangues) ? l::get('menu-admin-' .$admin) : ucfirst($admin);
 			}
 			
-			// Navigation
-			$cesure = ($systemPages[0] == 'news') ? $systemPages[1] : $systemPages[0];
-			$this->admin_navigation($thisNavigation, $cesure);
-			
+			// Affichage de la page		
 			echo '<div id="admin">';
-			if($title != 'Administration') $this->content();
+			$this->admin_navigation();
+			$this->content();
 			echo '</div>';
 		}
 	}
@@ -81,7 +80,6 @@ class AdminSetup
 		if(isset($_GET['admin']))
 		{
 			$page = get('admin');
-			
 			$include = f::inclure('cerberus/include/admin.' .$page. '.php');
 			if(!$include) f::inclure('pages/admin-' .$page. '.php');
 		}
@@ -153,14 +151,14 @@ class AdminSetup
 	############## NAVIGATION ##############
 	######################################## 
 	*/
-	function admin_navigation($navigation, $cesure)
+	function admin_navigation()
 	{
 		echo '<div class="navbar" style="position:relative">';
 		
+		// Langue de l'admin
 		if(MULTILANGUE and $this->multilangue)
 		{
 			echo '<p style="position: absolute; right: 5px; top: -7px">';
-			// Langue de l'admin
 			foreach($this->multilangue as $langue)
 			{
 				$flag_state = (l::admin_current() == $langue) ? NULL : '_off';
@@ -170,20 +168,33 @@ class AdminSetup
 		}
 	
 		// Navigation de l'admin
-		if(!empty($navigation))
-		foreach($navigation as $key => $value)
+		asort($this->navigation);
+		if(!empty($this->navigation))
+		foreach($this->navigation as $sections => $pages)
 		{
-			if(!empty($value))
+			if($sections == 'systeme') echo '</div><div class="navbar bottom">';
+			foreach($pages as $titre => $page)
 			{
-				if($value == $cesure) echo '</div><div class="navbar" style="background-image:url(assets/css/overlay/noir-75.png)">';
-				
-				// Texte
-				$texte_lien = (!is_numeric($key)) ? $key : l::getalt('menu-admin-'.$value, l::admin_current(), $value, TRUE); 
-				$thisActive = (isset($_GET['admin']) and $value == $_GET['admin']) ? array('class' => 'hover') : NULL;
-				echo str::slink('admin-' .$value, $texte_lien, NULL, $thisActive);
-			}	
+				if(!empty($page) and self::$droits[$page])
+				{
+					// Texte
+					$texte_lien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE); 
+					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? array('class' => 'hover') : NULL;
+					echo str::slink('admin-' .$page, $texte_lien, NULL, $thisActive);
+				}
+			}
 		}
 		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
+	}
+	
+	function getNavigation()
+	{
+		return $this->navigation;
+	}
+	
+	function get($variable)
+	{
+		return self::${$variable};
 	}
 }
 ?>

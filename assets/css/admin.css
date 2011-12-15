@@ -3,18 +3,25 @@
 	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
 	font-weight: 400;
 }
-.navbar
+.admin .navbar
 {
 	text-align:center;
-	background-image:url(overlay/noir-50.png);
+	background-image: url(overlay/noir-10.png), url(overlay/blancnoir-25.png) !important;
 	width:100%;
 	margin: 0 auto;
 	padding: 4px 0;
+	position: relative;
 	font-size: small;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	-webkit-border-radius: 10px 10px 0px 0px;
+	border-radius: 10px 10px 0px 0px;
 }
-.navbar.bottom
+.admin .navbar.bottom
 {
-	background-color: #444;
+	background-image: url(overlay/noir-50.png), url(overlay/blancnoir-25.png) !important;
 	-moz-border-radius-topleft: 0px;
 	-moz-border-radius-topright: 0px;
 	-moz-border-radius-bottomright: 10px;
@@ -22,15 +29,17 @@
 	-webkit-border-radius: 0px 0px 10px 10px;
 	border-radius: 0px 0px 10px 10px;
 }
-.navbar a
+.admin .navbar a
 {
 	padding:3px 12px;
 	margin-right: 5px;
 	color:#FFF;
 	text-transform: lowercase;
+	text-shadow: 0px 2px 0px rgba(0,0,0,0.25);
+	filter: dropshadow(color=rgba(0,0,0,0.25), offx=0, offy=2);
 }
-.navbar a:hover,
-.navbar a.hover
+.admin .navbar a:hover,
+.admin .navbar a.hover
 {
 	padding: 3px 11px;
 	border: 1px solid #353535;
@@ -44,8 +53,8 @@
 	-moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
 	box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
 }
-.navbar a:active { background-color: #1873b3; position: relative; top: 1px; } 
-.navbar a.hover
+.admin .navbar a:active { background-color: #1873b3; position: relative; top: 1px; } 
+.admin .navbar a.hover
 {
 	background: #55a1d6;
 	background: -moz-linear-gradient(top,  #55a1d6 0%, #1873b3 100%);
@@ -56,3 +65,16 @@
 	background: linear-gradient(top,  #55a1d6 0%,#1873b3 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#55a1d6', endColorstr='#1873b3',GradientType=0 );
  }
+.admin .navbar .section
+{
+	margin: 0;
+	position: relative;
+	top: -4px;
+	padding: 4px;
+	color: white;
+	float: left;
+	background: #333 url(overlay/blancnoir-25.png);
+	text-align:center;
+	text-transform: uppercase;
+	width: 75px;
+}

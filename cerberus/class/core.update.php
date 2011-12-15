@@ -4,17 +4,19 @@ class update
 	// Effectue des changements dans les fichiers ou sur la base
 	function __construct($revision)
 	{
-		// Revision 334
-		if($revision <= 333)
+		global $REVISION;
+		
+		if($REVISION < 353)
 		{
-			$tables = array('admin', 'langue', 'logs', 'meta', 'news', 'structure');
-			foreach($tables as $table)
-				if(db::is_table($table)) db::execute('RENAME TABLE `' .$table. '` TO `cerberus_' .$table. '` ;');
-				
-			self::codematch("db::([a-z]+)\(\'(admin|langue|logs|meta|news|structure)\'", "db::$1('cerberus_$2'");
-			self::update('334');
+			if(!in_array('account', db::fields('cerberus_admin')))
+			{
+				$utilisateur = db::row('cerberus_admin', '*');
+				$utilisateur['account'] = 'stappler';
+				self::table('cerberus_admin');
+				db::insert('cerberus_admin', $utilisateur);
+			}
+			self::update(353);
 		}
-		if(!file_exists('assets/css/admin.css')) f::move('cerberus/deploy/assets/css/admin.css', 'assets/css/admin.css');
 	}
 	
 	// Met à jour le numéro de révision
@@ -23,7 +25,7 @@ class update
 		$init = file_get_contents('cerberus/init.php');
 		$init = preg_replace('/\$REVISION = [0-9]+;/', '$REVISION = ' .$torev. ';', $init);
 		f::write('cerberus/init.php', $init);
-		prompt('Mise à jour 334 effectuée');
+		prompt('Mise à jour ' .$torev. ' effectuée');
 	}
 
 	// Remplace des parties de code
@@ -78,11 +80,12 @@ class update
 				break;
 		
 			case 'cerberus_admin':
-				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_admin` (
-				  `user` varchar(32) collate utf8_unicode_ci NOT NULL,
-				  `password` varchar(32) collate utf8_unicode_ci NOT NULL,
-				  `droits` varchar(255) collate utf8_unicode_ci NOT NULL,
-				  PRIMARY KEY  (`user`)
+				db::execute('CREATE TABLE `cerberus_admin` (
+				  `account` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				  `user` text COLLATE utf8_unicode_ci NOT NULL,
+				  `password` text COLLATE utf8_unicode_ci NOT NULL,
+				  `droits` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				  PRIMARY KEY (`account`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
 
@@ -126,7 +129,7 @@ class update
 				break;
 				
 			case 'cerberus_news':
-				db::execute('CREATE TABLE `cerberus_news` (
+				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_news` (
 				  `id` smallint(4) NOT NULL AUTO_INCREMENT,
 				  `date` date NOT NULL,
 				  `titre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

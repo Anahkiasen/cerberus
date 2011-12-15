@@ -147,6 +147,7 @@ class AdminPage extends AdminSetup
 		/* ######## EN-TÊTE ########## */
 		
 		// Colonnes principales
+		a::force_array($fieldsDisplay);
 		foreach($fieldsDisplay as $key => $value)
 		{
 			$nomColonne = (is_numeric($key))
