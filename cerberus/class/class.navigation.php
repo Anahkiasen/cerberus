@@ -34,6 +34,7 @@ class navigation
 	// Rendus
 	private $renderNavigation;
 	private $renderSubnav;
+	private $data;
 	
 	/*
 	########################################
@@ -48,10 +49,15 @@ class navigation
 		{
 			if(!$navigation and db::is_table('cerberus_structure'))
 			{
-				$navbis = db::select('cerberus_structure', 'page, parent', NULL, 'parent_priority ASC, page_priority ASC');
-				foreach($navbis as $values) $navigation[$values['parent']][] = $values['page'];
+				$this->data = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
+				foreach($this->data as $key => $values)
+				{
+					$navigation[$values['parent']][] = $values['page'];
+					$this->data[$values['parent'].'-'.$values['page']] = array('hidden' =>$values['hidden'], 'external' => $values['external_link']);
+					unset($this->data[$key]);
+				}
 			}
-			elseif($navigation and !db::is_table('cerberus_structure')) $this->createStructure($navigation);
+			elseif(!db::is_table('cerberus_structure')) update::table('cerberus_structure');
 		}
 			
 		// Navigation par défaut
@@ -107,6 +113,19 @@ class navigation
 			else if(get('admin')) $sousPage = get('admin');
 		}
 		
+		// Simplification des alterations
+		foreach($navigation as $parent => $pages)
+		{
+			if(count($pages) == 1)
+			{
+				$data = $this->data[$parent.'-'.$pages[0]];
+				if(!empty($data['external'])) $this->data[$parent]['external'] = $data['external'];
+				if($data['hidden'] == 1) $this->data[$parent]['hidden'] = 1;
+			}
+		}
+		if(!LOCAL) $this->data['admin']['hidden'] = 1;
+		foreach($this->system as $sys) $this->data[$sys]['hidden'] = 1;
+		
 		// Enregistrement des variables
 		$this->navigation = $navigation;
 		$this->page = $page;
@@ -132,30 +151,7 @@ class navigation
 		$this->optionListed = $menu;
 		$this->optionListedSub = $submenu;
 	}
-		
-	// Met à jour l'arbre de navigation à la nouvelle version
-	function createStructure($navigation)
-	{
-		update::table('cerberus_structure');
-		
-		$pparent = 1;
-		$ppage = 1;
-		foreach($navigation as $parent => $pages)
-		{
-			$ppage = 1;
-			$pages = a::force_array($pages);
-			foreach($pages as $page)
-			{
-				$last = db::insert('cerberus_structure', array('parent' => $parent, 'page' => $page, 'parent_priority' => $pparent, 'page_priority' => $ppage));
-				echo $last. ' - ' .$parent.'-'.$page.'<br/>';
-				db::update('cerberus_meta', array('page' => $last), array('page' => $parent.'-'.$page));
-				$ppage++;
-			}
 			
-			$pparent++;
-		}
-	}
-	
 	/*
 	########################################
 	######### ARBRES DE NAVIGATION #########
@@ -167,15 +163,24 @@ class navigation
 	{		
 		global $cerberus;
 		$cerberus->injectModule('rewrite');
-	
-		if(!isset($this->treeNavigation))
-			foreach($this->allowedPages as $key)
-				if(($key != 'admin' and !in_array($key, $this->system)) or ($key == 'admin' and LOCAL))
-					$this->treeNavigation[$key] = rewrite($key, array('subnav' => $this->optionSubnav));			
 		
+		if(!isset($this->treeNavigation))
+		{
+			foreach($this->allowedPages as $key)
+				if(!isset($this->data[$key]['hidden']))
+					$this->treeNavigation[$key] = (isset($this->data[$key]['external']))
+						? $this->data[$key]['external']
+						: rewrite($key, array('subnav' => $this->optionSubnav));
+		}		
+
 		if(!isset($this->treeSubnav) and $this->optionSubnav and isset($this->navigation[$this->page]))
+		{
 			foreach($this->navigation[$this->page] as $key)
-				$this->treeSubnav[$key] = rewrite($this->page. '-' .$key, array('subnav' => $this->optionSubnav));			
+				if($this->data[$this->page.'-'.$key]['hidden'] != 1)
+					$this->treeSubnav[$key] = (!empty($this->data[$this->page.'-'.$key]['external_link']))
+						? $this->data[$this->page.'-'.$key]['external_link']
+						: rewrite($this->page. '-' .$key, array('subnav' => $this->optionSubnav));
+		}
 	}
 	
 	// Altération des liens de la liste
@@ -213,7 +218,7 @@ class navigation
 			$lien = (($this->optionMono or $value == 'mono') and $key != 'admin')
 				? '<a id="mono-' .$key. '" rel="mono" class="' .$parametres['class']. '">' .$texte. '</a>'
 				: $lien = str::link($value, $texte, $parametres);
-			
+
 			$keys[] = ($this->optionListed)
 				? '<li class="' .$parametres['class']. '">' .$lien. '</li>'
 				: $lien;
@@ -252,7 +257,7 @@ class navigation
 	
 	/*
 	########################################
-	############### EXPORTS ################
+	######### FONCTIONS CONTENU ############
 	######################################## 
 	*/
 	
@@ -289,27 +294,6 @@ class navigation
 		echo '</div>';
 	}
 	
-	// Vérifie la présence d'une clé dans l'arbre
-	function get($key = NULL)
-	{
-		if(!$key) return $this->navigation;
-		elseif($key and isset($this->navigation[$key])) return $this->navigation[$key];
-		else return false;
-	}
-	
-	// Récupère le menu rendu
-	function getmenu()
-	{
-		return $this->renderNavigation;
-	}
-	
-	function getsub()
-	{
-		$subnav = $this->get($this->page);
-		if($subnav and count($subnav) != 1 and $this->page != 'admin') return $this->renderSubnav;
-		else return false;
-	}
-	
 	// Fil d'arianne
 	function ariane($home = NULL)
 	{
@@ -330,8 +314,34 @@ class navigation
 		if(in_array('contact', $this->navigation['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact', 'Contact'));
 		return $footer;
 	}
-
 	
+	/*
+	########################################
+	############## EXPORTS #################
+	######################################## 
+	*/
+	
+	// Vérifie la présence d'une clé dans l'arbre
+	function get($key = NULL)
+	{
+		if(!$key) return $this->navigation;
+		elseif($key and isset($this->navigation[$key])) return $this->navigation[$key];
+		else return false;
+	}
+	
+	// Récupère le menu rendu
+	function getmenu()
+	{
+		return $this->renderNavigation;
+	}
+	
+	function getsub()
+	{
+		$subnav = $this->get($this->page);
+		if($subnav and count($subnav) != 1 and $this->page != 'admin') return $this->renderSubnav;
+		else return false;
+	}
+
 	// Page en cours
 	function current($getsub = true)
 	{

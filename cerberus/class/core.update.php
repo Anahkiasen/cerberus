@@ -17,6 +17,12 @@ class update
 			}
 			self::update(353);
 		}
+		if($REVISION < 355)
+		{
+			db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
+			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
+			self::update(355);
+		}
 	}
 	
 	// Met à jour le numéro de révision

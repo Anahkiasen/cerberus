@@ -47,6 +47,7 @@ class AdminPage extends AdminSetup
 		
 		// Récupération du nom des champs
 		$this->fields = db::fields($table);
+		$this->types = a::rearrange(db::query('EXPLAIN ' .$this->table, 'Field', true));
 		$this->index = a::get($this->fields, 0, 'id');
 		
 		// AJOUT ET MODIFICATION
@@ -210,6 +211,9 @@ class AdminPage extends AdminSetup
 
 		$query = a::simplode(' ', ' ', $orderedQuery);
 		$items = a::rearrange(db::query($query));
+		
+		/* ######## AFFICHAGE DU TABLEAU ########## */
+		
 		if($items)
 		{
 			// Fonctions en cours d'utilisation
@@ -239,7 +243,9 @@ class AdminPage extends AdminSetup
 					foreach($fieldsDisplay as $fieldName)
 					{
 						$fieldIndex = a::get(explode('.', $fieldName), 1, $fieldName);
-						echo '<td class="tablerow-data">' .stripslashes(str_replace('<br />', ' ', $value[$fieldIndex])). '</td>'; 
+						$fieldValue = stripslashes(str_replace('<br />', ' ', $value[$fieldIndex]));
+						if(isset($this->types[$fieldIndex]) and $this->types[$fieldIndex]['Type'] == "enum('0','1')") $fieldValue = ($fieldValue == 0) ? 'Non' : 'Oui'; // Booléen
+						echo '<td class="tablerow-data">' .$fieldValue. '</td>'; 
 					}
 					
 					// Gestion
@@ -248,9 +254,7 @@ class AdminPage extends AdminSetup
 						{
 							// Colonne personnalisée
 							if(findString('{key}', $function))
-							{
 								echo '<td>' .str_replace('{key}', $key, $function). '</td>';
-							}
 							
 							// Fonctions
 							else echo 

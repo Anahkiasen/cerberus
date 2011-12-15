@@ -216,6 +216,7 @@ table tr.entete td
 	background-image:url(overlay/noir-25.png);
 	color:#FFF;
 	font-weight: 400;
+	text-align:center;
 }
 table thead th a,
 table tr.entete td a,
@@ -336,6 +337,11 @@ fieldset input[type=password]
 	padding:5px 10px;
 	right: 3px;
 	top: 3px;
+}
+fieldset dl.radio dd
+{
+	right: 15px;
+	top: 15px;
 }
 .chrome fieldset input { top: 0px; }
 fieldset select

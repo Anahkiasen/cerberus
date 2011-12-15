@@ -12,7 +12,7 @@ class AdminSetup
 	
 	// Navigation
 	private static $droits;
-	private $navigation;
+	private $navigation = array('website' => array(), 'systeme' => array());
 	
 	/*
 	########################################

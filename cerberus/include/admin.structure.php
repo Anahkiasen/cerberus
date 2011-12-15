@@ -29,12 +29,12 @@ if(isset($_POST['traduction_titre']))
 }
 
 $strucAdmin = new AdminPage();
-$strucAdmin->setPage('cerberus_structure');
+$strucAdmin->setPage('cerberus_structure', array('external_link'));
 $strucAdmin->addRow('meta', 'META');
 $strucAdmin->createList(
-	array('index' => 'pageid', 'Titre' => l::admin_current(), 'En cache' => 'cache', 'Ordre' => 'page_priority'),
+	array('index' => 'pageid', 'Titre' => l::admin_current(), 'Masqué' => 'hidden', 'En cache' => 'cache', 'Ordre' => 'page_priority'),
 	array(
-		'SELECT' => 'S.id AS id, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .l::admin_current(). ', (SELECT ' .l::admin_current(). ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+		'SELECT' => 'S.id AS id, S.hidden, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .l::admin_current(). ', (SELECT ' .l::admin_current(). ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
 		'FROM' => 'cerberus_meta M',
 		'RIGHT JOIN' => 'cerberus_structure S ON S.id=M.page LEFT JOIN cerberus_langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
 		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
@@ -106,8 +106,10 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 	$form->closeFieldset();
 	
 	$form->openFieldset('Options');
-		$form->addText('page_priority', 'Ordre');
 		$form->addRadio('cache', array('Oui' => 1, 'Non' => 0), 'Autoriser la mise en cache');
+		$form->addRadio('hidden', array('Oui' => 1, 'Non' => 0), 'Masquer dans les menus');
+		$form->addText('page_priority', 'Ordre');
+		$form->addText('external_link', 'Lien externe');
 		
 		$form->addEdit();
 		$form->addSubmit($diffText);
