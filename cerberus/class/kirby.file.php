@@ -49,15 +49,20 @@ class f
 	// Supprimer un fichier
 	static function remove($file)
 	{
-		if(is_dir($file))
-			return (file_exists($file))
-				? self::remove_folder($file)
-				: false;
-				
+		if(is_array($file))
+			foreach($file as $infile) self::remove($infile);
 		else
-			return (file_exists($file) and is_file($file) and !empty($file))
-				? @unlink($file)
-				: false;
+		{
+			if(is_dir($file))
+				return (file_exists($file))
+					? self::remove_folder($file)
+					: false;
+					
+			else
+				return (file_exists($file) and is_file($file) and !empty($file))
+					? @unlink($file)
+					: false;
+		}
 	}
 	
 	// Supprime un dossier

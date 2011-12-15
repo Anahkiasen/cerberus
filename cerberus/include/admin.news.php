@@ -14,12 +14,12 @@ $form->openFieldset($diffText. ' une news');
 	if(isset($_GET['edit_news']))
 	{
 		$path = $newsAdmin->getImage(get('edit_news'));
-		if(file_exists('assets/file/news/' .$path) and !empty($path))
+		if(file_exists($path) and !empty($path))
 		{
 			$form->insertText('
 				<dl class="actualThumb">
 				<dt>Supprimer la miniature actuelle</dt>
-				<dd style="text-align:center"><p><img src="' .timthumb('news/' .$path, 125, 125, 1, false). '" /><br />	' 
+				<dd style="text-align:center"><p><img src="' .timthumb('../../' .$path, 125, 125, 1). '" /><br />	' 
 					.str::slink(
 					'admin-news',
 					'Supprimer',

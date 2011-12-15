@@ -116,8 +116,9 @@ class AdminPage extends AdminSetup
 		if(isset($_GET['deleteThumb']))
 		{
 			$image = $this->getImage($_GET['deleteThumb']);
-			if(f::remove('assets/file/' .$this->usable. '/' .$image)) prompt('Miniature supprimée');
+			if(f::remove($image)) prompt('Miniature supprimée');
 			else prompt('Miniature introuvable');
+			f::remove(glob('assets/file/' .$this->usable. '/' .$lastID. '-*.*'));
 		}
 	}
 	
@@ -345,15 +346,15 @@ class AdminPage extends AdminSetup
 		switch($mode)
 		{
 			case 'table':
-				$image = db::field($this->table, 'path', array('id_' .$this->table => $idpic));
+				$image = 'assets/file/' .$this->usable. '/' .db::field($this->table, 'path', array('id_' .$this->table => $idpic));
 				break;
 				
 			case 'path':
-				$image = db::field($this->table, 'path', array('id' => $idpic));
+				$image = 'assets/file/' .$this->usable. '/' .db::field($this->table, 'path', array($this->index => $idpic));
 				break;
 				
 			case 'default':
-				$image = basename(a::simple(glob('assets/file/' .$this->usable. '/' .$idpic. '.*')));
+				$image = a::simple(glob('assets/file/' .$this->usable. '/' .$idpic. '.*'));
 				break;
 		}
 		return $image;
@@ -378,7 +379,6 @@ class AdminPage extends AdminSetup
 					: $_POST['edit'];
 								
 				$storageMode = $this->imageMode();
-
 				switch($storageMode)
 				{
 					case 'table':
@@ -389,9 +389,10 @@ class AdminPage extends AdminSetup
 						
 					case 'path':
 						$file = $lastID. '-' .str::slugify($_FILES[$field]['name']). '-' .md5(str::random()). '.' .$extension;
-						
+
 						$path = db::field($this->table, 'path', array($this->index => $lastID));
-						if($path) f::remove('assets/file/' .$this->usable. '/' .$path);
+						if($path) f::remove($path);
+						f::remove(glob('assets/file/' .$this->usable. '/' .$lastID. '-*.*'));
 						
 						db::update($this->table, array('path' => $file), array('id' => $lastID));
 						break;
@@ -402,6 +403,7 @@ class AdminPage extends AdminSetup
 				}
 				
 				// Sauvegarde de l'image
+				
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->usable. '/' .$file);
 				if($resultat) prompt('Image ajoutée au serveur');
 				else prompt('Une erreur est survenue lors du transfert.');

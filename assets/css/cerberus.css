@@ -315,6 +315,7 @@ input[type=button]
 }
 input[type=button]:hover { background-color: #999; }
 input[type=button]:active { background-color:#222; }
+dd input[type=radio] { margin-left: 15px; }
 fieldset div.bbcode { padding: 0 8px 10px; }
 fieldset dl:hover input[type=text],
 fieldset dl:hover input[type=password],

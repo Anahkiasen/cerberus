@@ -127,9 +127,10 @@ class getNews
 			$thisDate = ($this->displayDate)
 				? '<br /><p class="date">' .$value['date']. '</p>'
 				: NULL;
-			
+
 			if($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))
 			{
+			
 				// Miniature
 				$thisThumb =
 					str::link(
