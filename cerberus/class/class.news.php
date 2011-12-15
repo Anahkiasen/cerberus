@@ -136,7 +136,7 @@ class getNews
 					str::link(
 						'assets/file/news/' .$value['path'], 
 						str::img(
-							timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1, false),
+							timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1),
 							$value['titre'],
 							array('class' => 'float')),
 						array('class' => 'colorbox'));
