@@ -33,6 +33,7 @@ class getNews
 		
 	function __construct($page = 'news')
 	{	
+		if(!db::is_table('cerberus_news')) update::table('cerberus_news');
 		$this->page = str_replace('&pageSub=', '-', $page);
 		$this->multiWhere = (MULTILANGUE)
 			? array('langue' => l::current())

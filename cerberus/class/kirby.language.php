@@ -23,11 +23,11 @@ class l
 		$current = self::current();
 		$filename = 'cerberus/cache/lang-' .$current. '.php';
 
-		$tables = db::row('cerberus_langue', 'tag');
+		$tables = db::field('cerberus_langue', 'tag');
 		if(!empty($tables))
 		{
-			if(file_exists($filename)) self::load($filename);
-			else
+			$index = self::load($filename);
+			if(!$index)
 			{
 				// Récupération de la base de langues
 				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
@@ -135,7 +135,11 @@ class l
 			self::$lang = $index;
 			return l::get();
 		}
-		else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
+		else
+		{
+			return false;
+			errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
+		}
 	}
 
 	/*

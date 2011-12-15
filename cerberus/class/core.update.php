@@ -124,6 +124,18 @@ class update
 				  PRIMARY KEY  (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
+				
+			case 'cerberus_news':
+				db::execute('CREATE TABLE `cerberus_news` (
+				  `id` smallint(4) NOT NULL AUTO_INCREMENT,
+				  `date` date NOT NULL,
+				  `titre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				  `contenu` text COLLATE utf8_unicode_ci NOT NULL,
+				  `langue` enum(\'fr\',\'en\') COLLATE utf8_unicode_ci NOT NULL,
+				  `path` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
+				break;
 		}
 	}
 }

@@ -1,13 +1,14 @@
 <?php
 // Environnement
-$config['production'] = false;
-$config['rewriting'] = false;
+$config['rewriting'] = FALSE;
+$config['cache'] = FALSE;
+$config['logs'] = FALSE;
 
 // Cerberus
-$config['cerberus'] = array('pack.sql', 'pack.navigation');
+$config['cerberus'] = array();
 
 // Langues
-$config['multilangue'] = true;
+$config['multilangue'] = TRUE;
 $config['langue_default'] = 'fr';
 $config['langues'] = array('fr');
 
@@ -23,6 +24,7 @@ $config['db.password'] = '';
 $config['db.name'] = '';
 
 // Variables
+$config['sitename'] = '';
 $config['http'] = '';
 $config['mail'] = '';
 ?>

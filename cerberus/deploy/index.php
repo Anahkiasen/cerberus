@@ -160,15 +160,7 @@ if(!file_exists('../../index.php'))
 		}
 		if(isset($_POST['file-js'])) mkdir('../../assets/js/');
 		if(isset($_POST['file-file'])) mkdir('../../assets/file/');
-		copydir('min', '../../min');
-			
-		// Déplacement des fichiers CSS et PHP
-		copydir('assets/css/', '../../assets/css/');
-		f::move('assets/img/delete.png', '../../assets/css/delete.png');
-		f::move('assets/img/edit.png', '../../assets/css/edit.png');
-		f::move('assets/img/load.png', '../../assets/css/load.png');
-		f::move('assets/img/meta.png', '../../assets/css/meta.png');
-				
+						
 		$index = file_get_contents('main.php');
 		$index = str_replace('[BDD]', "'" .$MYSQL_DB. "'", $index);
 		f::write('../../index.php', $index);
