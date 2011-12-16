@@ -50,7 +50,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'timthumb', 'findString', 'swf'),
+				'timthumb', 'swf'),
 				$modules);
 		}
 				
@@ -62,7 +62,7 @@ class Cerberus
 			'pack.sql' => array('backupSQL'),
 			'pack.navigation' => array('baseref', 'navigation', 'rewrite'),
 			'class.admin' => array('admin', 'admin.setup'),
-			'class.mail' => array('smail', 'stripHTML'),
+			'class.mail' => array('smail'),
 			'class.form' => array('form', 'checkString'),
 			'class.news' => array('news', 'bbcode', 'truncate'));
 		

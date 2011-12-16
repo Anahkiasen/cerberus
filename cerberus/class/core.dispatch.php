@@ -61,7 +61,7 @@ class dispatch extends Cerberus
 		// Suppressions des fonctions non voulues
 		foreach($arrayModules as $key => $value)
 		{
-			if(findString('!', $value))
+			if(str::find('!', $value))
 			{
 				unset($arrayModules[array_search(substr($value, 1), $arrayModules)]);
 				unset($arrayModules[$key]);
@@ -133,13 +133,13 @@ class dispatch extends Cerberus
 					if(isset($availableAPI[$value]))
 					{
 						$this->CSS['min'][] = f::sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
-						if(findString('http', $availableAPI[$value])) $this->JS['url'][] = $availableAPI[$value];
+						if(str::find('http', $availableAPI[$value])) $this->JS['url'][] = $availableAPI[$value];
 						else $this->JS['min'][] = f::sexist('assets/js/' .$availableAPI[$value]. '.js');
 					}
 					
 					// Si le chemin est spécifié manuellement
-					elseif(findString('.js', $thisScript)) $this->JS['min'][] = f::sexist($thisScript);
-					elseif(findString('.css', $thisScript)) $this->CSS['min'][] = f::sexist($thisScript);
+					elseif(str::find('.js', $thisScript)) $this->JS['min'][] = f::sexist($thisScript);
+					elseif(str::find('.css', $thisScript)) $this->CSS['min'][] = f::sexist($thisScript);
 					
 					// Sinon on vérifie la présence du script dans les fichiers
 					else

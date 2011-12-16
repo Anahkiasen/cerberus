@@ -15,7 +15,7 @@ function baseref($array = NULL)
 		if(!empty($array))
 		{
 			foreach($array as $key => $value)
-				if(findString($key, server::get('HTTP_HOST'))) $return = '/' .$value. '/';
+				if(str::find($key, server::get('HTTP_HOST'))) $return = '/' .$value. '/';
 		}
 		if(empty($return)) $return = config::get('http');
 		

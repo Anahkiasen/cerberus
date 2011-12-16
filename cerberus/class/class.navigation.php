@@ -188,7 +188,7 @@ class navigation
 	{
 		$this->createTree();
 		
-		if(findString('-', $key))
+		if(str::find('-', $key))
 		{
 			$key = a::get(explode('-', $key), 1);
 			$subTree = true;
@@ -283,8 +283,7 @@ class navigation
 				break;
 				
 			default:
-				$inclure = f::inclure('pages/' .$this->filepath);
-				if(!$inclure)
+				if(!f::inclure('pages/' .$this->filepath))
 				{
 					prompt('Le fichier ' .$this->filepath. ' est introuvable');
 					errorHandle('Warning', 'Le fichier ' .$this->filepath. ' est introuvable', __FILE__, __LINE__);

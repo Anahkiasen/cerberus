@@ -86,10 +86,9 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
-	if(!LOCAL)
+	if(!LOCAL and $desired->current(false) != 'admin')
 	{
 		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
-		if(!function_exists('stripHTML')) include('cerberus/tools/stripHTML.php');
 		
 		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
 		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);

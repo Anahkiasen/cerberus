@@ -58,7 +58,7 @@ class AdminPage extends AdminSetup
 			if(MULTILANGUE and in_array('langue', db::fields($this->table))) $fieldsUpdate['langue'] = l::admin_current();
 			foreach($_POST as $key => $value)
 			{
-				if(findString('_annee', $key))
+				if(str::find('_annee', $key))
 				{
 					// Recomposition des champs date
 					$originalField = substr($key, 0, -6); 
@@ -253,7 +253,7 @@ class AdminPage extends AdminSetup
 						foreach($this->tableRows as $function => $name)
 						{
 							// Colonne personnalisée
-							if(findString('{key}', $function))
+							if(str::find('{key}', $function))
 								echo '<td>' .str_replace('{key}', $key, $function). '</td>';
 							
 							// Fonctions

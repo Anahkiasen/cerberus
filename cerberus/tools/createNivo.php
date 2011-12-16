@@ -22,18 +22,12 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 {
 	global $dispatch;
 	
-	// Pourcentages
-	if(findString('%', array($largeur, $hauteur)))
-	{
-		$largeur = str_replace('%', '', $largeur);
-		$hauteur = str_replace('%', '', $hauteur);
-	}
-	elseif(findString('%', $largeur))
+	if(str::find('%', $largeur))
 	{
 		$largeur = str_replace('%', '', $largeur);
 		$largeur = floor($hauteur * ($largeur / 100));
 	}
-	elseif(findString('%', $hauteur))
+	elseif(str::find('%', $hauteur))
 	{
 		$hauteur = str_replace('%', '', $hauteur);
 		$hauteur = floor($largeur * ($hauteur / 100));

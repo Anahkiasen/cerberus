@@ -1,6 +1,12 @@
 <?php
 class str
 {
+	/*
+	########################################
+	####### ACTIONS SUR UNE CHAÎNE #########
+	########################################
+	*/
+	
 	// Explose une string en array
 	static function split($string, $separator = ',', $taille = 1)
 	{
@@ -25,19 +31,12 @@ class str
 		}
 	}
 	
-	// Trouve une chaîne dans une autre
-	static function find($needle, $haystack, $case_sensitive = FALSE)
+	// Met une chaîne au pluriel ou singulier (ou absence de)
+	static function plural($count, $many, $one, $zero = '')
 	{
-		if(!$case_sensitive)
-		{
-			$haystack = strtolower($haystack);
-			$needle = strtolower($needle);
-		}
-		
-		// Simple strpos
-		$pos = strpos($haystack, $needle);
-		if($pos === false) return FALSE;
-		else return TRUE;
+		if($count == 1) return $one;
+		else if($count == 0 && !empty($zero)) return $zero;
+		else return $many;
 	}
 	
 	// Remplace une chaîne par une autre
@@ -53,15 +52,10 @@ class str
 		return trim($string);
 	}
 	
-	// Longueur d'une chaîne
-	static function length($str)
-	{
-		return mb_strlen($str, 'UTF-8');
-	}	
-	
 	// Supprime tout HTML d'une ch$aine
-	static function unhtml($string)
+	static function stripHTML($string)
 	{
+		$string = str_replace('<br />', PHP_EOL, $string);
 		$string = strip_tags($string);
 		return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
@@ -105,32 +99,7 @@ class str
 
 		return $result;
 	}
-	
-	// Génère une chaîne aléatoire
-	static function random($length = false)
-	{
-		$length = ($length) ? $length : rand(10,20);
-		$chars	= range('a','z');
-		$num	= range(0,9);
-		$pool	 = array_merge($chars, $num);
 		
-		$string = '';
-		for($x = 0; $x < $length; $x++)
-		{
-			shuffle($pool);
-			$string .= current($pool);
-		}
-		return $string;
-	}
-	
-	// Met une chaîne au pluriel ou singulier (ou absence de)
-	static function plural($count, $many, $one, $zero = '')
-	{
-		if($count == 1) return $one;
-		else if($count == 0 && !empty($zero)) return $zero;
-		else return $many;
-	}
-
 	// Met une chaîne en minuscule
 	static function lower($str)
 	{
@@ -142,66 +111,7 @@ class str
 	{
 		return mb_strtoupper($str, 'UTF-8');
 	}
-
-	// Créer un lien à partir d'une chaîne
-	static function link($link, $text = NULL, $attr = NULL)
-	{
-		if($attr)
-			$attributes = (is_array($attr))
-				? a::simplode(array('="', '"'), ' ', $attr)
-				: $attr;
-		else $attributes = NULL;
-		
-		$text = ($text) ? $text : $link;
-		return '<a href="' . $link . '" ' .$attributes. '>' . str::html($text) . '</a>';
-	}
 	
-	// Ajout des balises HTML autour d'une chaîne
-	static function wrap($balise, $texte = NULL, $attr = NULL)
-	{
-		if($attr)
-			$attributes = (is_array($attr))
-				? a::simplode(array('="', '"'), ' ', $attr)
-				: $attr;
-		else $attributes = NULL;
-	
-		if(is_array($balise))
-		{
-			foreach($balise as $bal => $balattr)
-			{
-				if(is_numeric($bal))
-				{
-					$bal = $balattr;
-					$balattr = NULL;
-				}
-				$texte = self::wrap($bal, $texte, $balattr);
-			}
-		}		
-		else $texte = '<' .$balise. ' ' .$attributes. '>' .$texte. '</' .$balise. '>';
-		
-		return $texte;
-	}
-	
-	// Utilise la fonction link en combinisaison avec rewrite()
-	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
-	{
-		$link = rewrite($link, $params);
-		return self::link($link, $text, $attr);
-	}
-	
-	// Affiche une image
-	static function img($src, $alt = NULL, $attr = NULL)
-	{
-		if($attr)
-			$attributes = (is_array($attr))
-				? a::simplode(array('="', '"'), ' ', $attr)
-				: $attr;
-		else $attributes = NULL;
-	
-		$alt = ($alt) ? $alt : pathinfo($src, PATHINFO_FILENAME);
-		return '<img src="' .$src. '" alt="' .$alt. '" ' .$attributes. ' />';
-	}
-
 	// Transforme une chaîne en HTML valide
 	static function html($string, $keep_html = true)
 	{
@@ -210,15 +120,6 @@ class str
 
 		else
 			return htmlentities($string, ENT_COMPAT, 'utf-8');
-	}
-
-	// Créer un lien mailto
-	static function email($email, $text = FALSE)
-	{
-		if(empty($email)) return false;
-		$string = (empty($text)) ? $email : $text;
-		$email	= self::encode($email, 3);
-		return '<a title="' .$email. '" class="email" href="mailto:' .$email. '">' .self::encode($string, 3). '</a>';
 	}
 
 	// Normalise une chaîne
@@ -259,11 +160,153 @@ class str
 		return $text;
 	}
 	
+	// Ajout des balises HTML autour d'une chaîne
+	static function wrap($balise, $texte = NULL, $attr = NULL)
+	{
+		if($attr)
+			$attributes = (is_array($attr))
+				? a::simplode(array('="', '"'), ' ', $attr)
+				: $attr;
+		else $attributes = NULL;
+	
+		if(is_array($balise))
+		{
+			foreach($balise as $bal => $balattr)
+			{
+				if(is_numeric($bal))
+				{
+					$bal = $balattr;
+					$balattr = NULL;
+				}
+				$texte = self::wrap($bal, $texte, $balattr);
+			}
+		}		
+		else $texte = '<' .$balise. ' ' .$attributes. '>' .$texte. '</' .$balise. '>';
+		
+		return $texte;
+	}
+	
+	/*
+	########################################
+	######### INFOS SUR UNE CHAÎNE #########
+	########################################
+	*/
+	
+	// Trouve une chaîne dans une autre
+	static function find($needle, $haystack, $absolute = FALSE, $case_sensitive = FALSE)
+	{
+		if(is_array($needle))
+		{
+			$found = 0;
+			foreach($needle as $need) if(self::find($need, $haystack)) $found++;
+			return ($absolute) ? count($needle) == $found : $found > 0;
+		}
+		elseif(is_array($haystack))
+		{
+			$found = 0;
+			foreach($haystack as $hay) if(self::find($needle, $hay)) $found++;
+			return ($absolute) ? count($haystack) == $found : $found > 0;
+		}
+		else
+		{
+			if(!$case_sensitive)
+			{
+				$haystack = strtolower($haystack);
+				$needle = strtolower($needle);
+			}
+			
+			// Simple strpos
+			$pos = strpos($haystack, $needle);
+			if($pos === false) return FALSE;
+			else return TRUE;
+		}
+	}
+
+	// Longueur d'une chaîne
+	static function length($str)
+	{
+		return mb_strlen($str, 'UTF-8');
+	}
+	
 	// Affiche la valeur d'un booléen
 	static function boolprint($boolean)
 	{
 		return ($boolean) ? 'TRUE' : 'FALSE';
 	}
+	
+	/*
+	########################################
+	########### CREER UNE CHAÎNE ###########
+	########################################
+	*/
+	
+	// Affiche une image
+	static function img($src, $alt = NULL, $attr = NULL)
+	{
+		if($attr)
+			$attributes = (is_array($attr))
+				? a::simplode(array('="', '"'), ' ', $attr)
+				: $attr;
+		else $attributes = NULL;
+	
+		$alt = ($alt) ? $alt : pathinfo($src, PATHINFO_FILENAME);
+		return '<img src="' .$src. '" alt="' .$alt. '" ' .$attributes. ' />';
+	}
+	
+	// Créer un lien à partir d'une chaîne
+	static function link($link, $text = NULL, $attr = NULL)
+	{
+		if($attr)
+			$attributes = (is_array($attr))
+				? a::simplode(array('="', '"'), ' ', $attr)
+				: $attr;
+		else $attributes = NULL;
+		
+		$text = ($text) ? $text : $link;
+		return '<a href="' . $link . '" ' .$attributes. '>' . str::html($text) . '</a>';
+	}
+	
+	// Utilise la fonction link en combinisaison avec rewrite()
+	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
+	{
+		$link = rewrite($link, $params);
+		return self::link($link, $text, $attr);
+	}
+	
+	// Génère une chaîne aléatoire
+	static function random($length = false)
+	{
+		$length = ($length) ? $length : rand(10,20);
+		$chars	= range('a','z');
+		$num	= range(0,9);
+		$pool	 = array_merge($chars, $num);
+		
+		$string = '';
+		for($x = 0; $x < $length; $x++)
+		{
+			shuffle($pool);
+			$string .= current($pool);
+		}
+		return $string;
+	}
+		
+	// Créer un lien mailto
+	static function email($email, $text = FALSE)
+	{
+		if(empty($email)) return false;
+		$string = (empty($text)) ? $email : $text;
+		$email	= self::encode($email, 3);
+		return '<a title="' .$email. '" class="email" href="mailto:' .$email. '">' .self::encode($string, 3). '</a>';
+	}
+
+
+
+
+		
+	
+
+
+
 
 	// Encode des accents en HTML sans toucher aux tags
 	static function accents($string)
@@ -321,12 +364,25 @@ class str
 		
 		return strtr($string, $table);
 	}
-	
-		////// PAS TRIE
-	
 
-	static function entities() {
 
+
+
+
+
+
+
+
+
+	
+	/*
+	########################################
+	############### NON TRIE ###############
+	########################################
+	*/
+
+	static function entities()
+	{
 		return array(
 			'&nbsp;' => '&#160;', '&iexcl;' => '&#161;', '&cent;' => '&#162;', '&pound;' => '&#163;', '&curren;' => '&#164;', '&yen;' => '&#165;', '&brvbar;' => '&#166;', '&sect;' => '&#167;',
 			'&uml;' => '&#168;', '&copy;' => '&#169;', '&ordf;' => '&#170;', '&laquo;' => '&#171;', '&not;' => '&#172;', '&shy;' => '&#173;', '&reg;' => '&#174;', '&macr;' => '&#175;',
@@ -361,30 +417,28 @@ class str
 			'&rsquo;' => '&#8217;', '&sbquo;' => '&#8218;', '&ldquo;' => '&#8220;', '&rdquo;' => '&#8221;', '&bdquo;' => '&#8222;', '&dagger;' => '&#8224;', '&Dagger;' => '&#8225;', '&permil;' => '&#8240;',
 			'&lsaquo;' => '&#8249;', '&rsaquo;' => '&#8250;', '&euro;' => '&#8364;'
 		);
-
 	}
 
-	static function xml($text, $html = true) {
-
+	static function xml($text, $html = true)
+	{
 		// convert raw text to html safe text
 		if($html) $text = self::html($text);
-
+		
 		// convert html entities to xml entities
 		return strtr($text, self::entities());
-
 	}
 
-	static function unxml($string) {
-
+	static function unxml($string)
+	{
 		// flip the conversion table
 		$table = array_flip(self::entities());
 
 		// convert html entities to xml entities
 		return strip_tags(strtr($string, $table));
-
 	}
 	
-	static function encode($string) {
+	static function encode($string)
+	{
 		$encoded = '';
 		$length	= str::length($string);
 		for($i = 0; $i<$length; $i++) {
@@ -392,7 +446,6 @@ class str
 		}
 		return $encoded;
 	}
-
 
 	static function short($string, $chars, $rep = '…')
 	{
@@ -403,12 +456,13 @@ class str
 		return $string . $rep;
 	}
 
-	static function shorturl($url, $chars = false, $base = false, $rep = '…') {
+	static function shorturl($url, $chars = false, $base = false, $rep = '…')
+	{
 		return url::short($url, $chars, $base, $rep);
 	}
 
-	static function cutout($str, $length, $rep = '…') {
-
+	static function cutout($str, $length, $rep = '…')
+	{
 		$strlength = str::length($str);
 		if($length >= $strlength) return $str;
 
@@ -429,16 +483,15 @@ class str
 
 		// cut and glue
 		return str::substr($str, 0, $strlcenter) . $rep . str::substr($str, $strrcenter);
-
 	}
 
-	static function substr($str, $start, $end = null)
+	static function substr($str, $start, $end = NULL)
 	{
 		return mb_substr($str, $start, ($end == null) ? mb_strlen($str, 'UTF-8') : $end, 'UTF-8');
 	}
 
-
-	static function contains($str, $needle) {
+	static function contains($str, $needle)
+	{
 		return strstr($str, $needle);
 	}
 
@@ -448,7 +501,6 @@ class str
 		if(!$get) return $array;
 		return a::get($array, $get, $placeholder);
 	}
-
 
 	static function sanitize($string, $type = 'str', $default = NULL)
 	{
@@ -543,7 +595,5 @@ class str
 		if(is_array($string)) return $string;
 		return (get_magic_quotes_gpc()) ? stripslashes(stripslashes($string)) : $string;
 	}
-
 }
-
 ?>

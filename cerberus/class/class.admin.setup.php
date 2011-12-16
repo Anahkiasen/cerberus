@@ -80,8 +80,8 @@ class AdminSetup
 		if(isset($_GET['admin']))
 		{
 			$page = get('admin');
-			$include = f::inclure('cerberus/include/admin.' .$page. '.php');
-			if(!$include) f::inclure('pages/admin-' .$page. '.php');
+			if(f::inclure('cerberus/include/admin.' .$page. '.php')) true;
+			elseif(f::inclure('pages/admin-' .$page. '.php')) true;
 		}
 	}
 	

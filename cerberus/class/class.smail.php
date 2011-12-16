@@ -39,7 +39,7 @@ class smail
 			}	
 		}
 		else $this->contenu = $contenu;
-		$this->messageText = stripHTML($this->contenu);
+		$this->messageText = str::stripHTML($this->contenu);
 		
 		if(!is_array($destinataire) and strpos($destinataire, ',') !== FALSE)
 			$this->destinaire = explode(', ', $destinataire);

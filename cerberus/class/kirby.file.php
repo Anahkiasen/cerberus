@@ -1,6 +1,12 @@
 <?php
 class f
 {
+	/*
+	########################################
+	###### ACTIONS SUR UN FICHIER ##########
+	########################################
+	*/
+
 	// Écrit dans un fichier
 	static function write($file, $content, $append = false)
 	{
@@ -97,6 +103,12 @@ class f
 		}	
 	}
 
+	/*
+	########################################
+	###### INFORMATIONS SUR FICHIER ########
+	########################################
+	*/
+
 	// Récupère l'extension d'un fichier
 	static function extension($filename)
 	{
@@ -150,12 +162,6 @@ class f
 	static function convert($name, $type = 'jpg')
 	{
 		return self::name($name) . $type;
-	}
-
-	// Retourne un nom de fichier sûr
-	static function safe_name($string)
-	{
-		return str::slugify($string);
 	}
 	
 	// Inclure un fichier

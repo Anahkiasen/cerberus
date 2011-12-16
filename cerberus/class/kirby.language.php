@@ -198,9 +198,9 @@ class l
 	{
 		$file = 'pages/text/' .self::current(). '-' .$file;
 		
-		$page = f::inclure($file.'.html');
-		if(!$page) $page = f::inclure($file.'.php');
-		if(!$page) echo '<span style="color:red">[' .$file. '(' .self::current(). ')]</span>';
+		if(f::inclure($file.'.html')) true;
+		elseif(f::inclure($file.'.php')) true;
+		else echo '<span style="color:red">[' .$file. '(' .self::current(). ')]</span>';
 	}
 }
 ?>

@@ -1,12 +1,15 @@
 <?php
 class update
 {
+	private static $revision;
+
 	// Effectue des changements dans les fichiers ou sur la base
 	function __construct($revision)
 	{
-		global $REVISION;
+		global $REVISION, $REVISION_LOCAL;
+		self::$revision = (LOCAL) ? $REVISION_LOCAL : $REVISION;
 		
-		if($REVISION < 353)
+		if(self::$revision < 353)
 		{
 			if(!in_array('account', db::fields('cerberus_admin')))
 			{
@@ -17,21 +20,26 @@ class update
 			}
 			self::update(353);
 		}
-		if($REVISION < 355)
+		if(self::$revision < 355)
 		{
 			db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
 			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 			self::update(355);
 		}
+		self::update(357);
 	}
 	
 	// Met à jour le numéro de révision
 	static function update($torev)
 	{
-		$init = file_get_contents('cerberus/init.php');
-		$init = preg_replace('/\$REVISION = [0-9]+;/', '$REVISION = ' .$torev. ';', $init);
-		f::write('cerberus/init.php', $init);
-		prompt('Mise à jour ' .$torev. ' effectuée');
+		if(self::$revision < $torev)
+		{
+			$rev = (LOCAL) ? 'REVISION_LOCAL' : 'REVISION';
+			$init = file_get_contents('cerberus/init.php');
+			$init = preg_replace('/\$' .$rev. ' = [0-9]+;/', '$' .$rev. ' = ' .$torev. ';', $init);
+			f::write('cerberus/init.php', $init);
+			prompt('Mise à jour ' .$torev. ' effectuée');
+		}
 	}
 
 	// Remplace des parties de code
