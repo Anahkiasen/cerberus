@@ -41,7 +41,7 @@ $strucAdmin->createList(
 		'WHERE' => 'S.parent IS NOT NULL',
 		'DIVIDE' => 'categ'));
 
-// Formulaire
+// Formulaire META
 if(isset($_GET['meta_structure']))
 {
 	global $navigation;
@@ -52,6 +52,7 @@ if(isset($_GET['meta_structure']))
 			'cerberus_structure S',
 			'S.id = M.page', 'S.page, S.parent, M.id, M.page AS idx, M.titre, M.description, M.url',
 			array('M.page' => $_GET['meta_structure'], 'M.langue' => l::admin_current())));
+
 	$availablePages = a::simple(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
 	if(!isset($meta['id']))
 	{
@@ -61,7 +62,7 @@ if(isset($_GET['meta_structure']))
 	}
 	else $_GET['edit_meta'] = $meta['id'];
 
-	// Formulaire
+	// Formulaire META
 	$form = new form(false, array('action' => rewrite('admin-structure', array('meta_structure' => get('meta_structure')))));
 	$select = new select();
 	
@@ -89,7 +90,7 @@ if(isset($_GET['meta_structure']))
 	echo $form;
 }
 
-// Formulaire
+// Formulaire STRUCTURE
 $strucAdmin->addOrEdit($diff, $diffText, $urlAction);
 if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 {				

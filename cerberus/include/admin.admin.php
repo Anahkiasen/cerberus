@@ -11,6 +11,9 @@ $langueAdmin->setPage('cerberus_admin');
 $langueAdmin->createList(array('Identifiant' => 'account'));
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
 
+$return = NULL;
+$return = a::array_flatten($langueAdmin->get('navigation'), $return);
+
 if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 {
 	$form = new form(false, array('action' => rewrite(NULL, $urlAction)));
@@ -23,7 +26,10 @@ if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 		{
 			if(!empty($page))
 			{
-				$select->newSelect($page);
+				$alias = l::get('menu-admin-'.$page, array_search($page, $return));
+				if(is_numeric($alias)) $alias = $page;
+			
+				$select->newSelect($page, $alias);
 				$select->appendList(array(1 => 'Oui', 0 => 'Non'), false);
 				$val = ($state) ? 1 : 0;
 				$select->setValue($val);

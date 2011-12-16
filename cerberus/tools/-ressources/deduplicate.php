@@ -3,7 +3,7 @@ function deduplicate($table, $index, $indexbis = NULL)
 {
 	// Récupération du tableau
 	$t = 0;
-	$indexbis = (isset($indexbis)) ? ', ' .$indexbis. ' DESC' : '';
+	$indexbis = (isset($indexbis)) ? ', ' .$indexbis. ' DESC' : NULL;
 	$query = mysql_query('SELECT * FROM ' .$table. ' ORDER BY ' .$index. ' ASC' .$indexbis) or die(mysql_error());
 	while($original = mysql_fetch_assoc($query))
 	{

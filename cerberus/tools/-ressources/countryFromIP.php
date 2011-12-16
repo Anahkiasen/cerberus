@@ -7,7 +7,7 @@ function countryFromIP($possible = array('fr', 'de'), $default = 'fr')
 	if($ipAddr == "::1") $ipDetail['country_code'] = $default;
 	else
 	{
-		ip2long($ipAddr) == -1 || ip2long($ipAddr) === false ? trigger_error('[ERREUR IP]', E_USER_ERROR) : '';
+		ip2long($ipAddr) == -1 || ip2long($ipAddr) === false ? trigger_error('[ERREUR IP]', E_USER_ERROR) : NULL;
 		$xml = file_get_contents('http://api.hostip.info/?ip=' .$ipAddr);
 		preg_match("@<Hostip>(\s)*<gml:name>(.*?)</gml:name>@si", $xml, $match);
 		preg_match("@<countryName>(.*?)</countryName>@si", $xml, $matches);

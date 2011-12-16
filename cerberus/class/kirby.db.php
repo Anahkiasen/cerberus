@@ -184,7 +184,7 @@ class db
 	// INSERT
 	static function insert($table, $input, $ignore = false)
 	{
-		$ignore = ($ignore) ? ' IGNORE' : '';
+		$ignore = ($ignore) ? ' IGNORE' : NULL;
 		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 	

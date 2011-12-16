@@ -482,10 +482,10 @@ class str
 				$string = ($string == 'on') ? 'y' : 'n';
 				break;
 			case 'url':
-				$string = (v::url($string)) ? $string : '';
+				$string = (v::url($string)) ? $string : NULL;
 				break;
 			case 'email':
-				$string = (v::email($string)) ? $string : '';
+				$string = (v::email($string)) ? $string : NULL;
 				break;
 			case 'plain':
 				$string = str::unxml($string);

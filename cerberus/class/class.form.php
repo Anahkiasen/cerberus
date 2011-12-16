@@ -104,7 +104,7 @@ class form
 		$fieldName = (!self::$multilangue) ? $name : l::get('form-' .$name);
 		$mandatoryStar = (self::$mandatory)
 			? ' <span class="mandatory">*</span>'
-			: '';
+			: NULL;
 		
 		if(self::$formType != 'plain')
 		{
@@ -188,13 +188,13 @@ class form
 			$fieldName = (self::$multilangue == false) ? $label : l::get('form-' .$label);
 			$mandatoryStar = (self::$mandatory)
 				? ' <span class="mandatory">*</span>'
-				: '';
+				: NULL;
 				
 			// Champ sous le label plutôt qu'à droite
-			$underfield = (isset($params['underfield'])) 
-				? 'underfield'
-				: NULL;
+			$underfield = (isset($params['underfield'])) ? 'underfield' 	: NULL;
+			$underfield = (isset($params['underfield'])) ? 'underfield' 	: NULL;
 			unset($params['underfield']);
+			
 	
 			$this->render .= PHP_EOL. "
 				\t<dl class=\"$type $underfield\">" .PHP_EOL;
@@ -473,7 +473,7 @@ class select extends form
 			$fieldName = (!self::$multilangue) ? $label : l::get('form-' .$label);
 			$mandatoryStar = (self::$mandatory)
 				? ' <span class="mandatory">*</span>'
-				: '';
+				: NULL;
 	
 			$this->render .= '<dl class="select">
 			<dt><label for="' .$label. '">' .$fieldName.$mandatoryStar. '</label></dt>

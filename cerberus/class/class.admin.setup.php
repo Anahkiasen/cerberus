@@ -12,7 +12,7 @@ class AdminSetup
 	
 	// Navigation
 	private static $droits;
-	private $navigation = array('website' => array(), 'systeme' => array());
+	private static $navigation = array('website' => array(), 'systeme' => array());
 	
 	/*
 	########################################
@@ -35,29 +35,29 @@ class AdminSetup
 		if($this->granted)
 		{
 			// Création de la navigation de l'admin
-			$this->navigation['systeme'] = array('images', 'Cache' => 'crawler', 'Configuration' => 'config');
+			self::$navigation['systeme'] = array('images', 'Cache' => 'crawler', 'Configuration' => 'config');
 			if(SQL)
 			{
-				if(config::get('multi_admin')) $this->navigation['systeme']['Utilisateurs'] = 'admin';
-				$this->navigation['systeme']['Sauvegardes'] = 'backup';
-				if(db::is_table('cerberus_structure')) array_unshift($this->navigation['systeme'], 'structure');
-				if(MULTILANGUE) array_unshift($this->navigation['systeme'], 'langue');
-				if(db::is_table('cerberus_news')) $this->navigation['website']['Actualités'] = 'news';
+				if(config::get('multi_admin')) self::$navigation['systeme']['Utilisateurs'] = 'admin';
+				self::$navigation['systeme']['Sauvegardes'] = 'backup';
+				if(db::is_table('cerberus_structure')) array_unshift(self::$navigation['systeme'], 'structure');
+				if(MULTILANGUE) array_unshift(self::$navigation['systeme'], 'langue');
+				if(db::is_table('cerberus_news')) self::$navigation['website']['Actualités'] = 'news';
 			}
-			$this->navigation['website'] = array_merge($this->navigation['website'], array_diff($desired->get('admin'), array('admin')));
-			$this->navigation['systeme'] = array_merge($this->navigation['systeme'], a::force_array($customNavigation));
+			self::$navigation['website'] = array_merge(self::$navigation['website'], array_diff($desired->get('admin'), array('admin')));
+			self::$navigation['systeme'] = array_merge(self::$navigation['systeme'], a::force_array($customNavigation));
 		
 			// Droits de l'utilisateur
 			self::$droits = (SQL and db::is_table('cerberus_admin')) 
 				? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user'])))) 
 				: NULL;
 				if(empty(self::$droits)) 
-					foreach($this->navigation as $section => $pages) 
+					foreach(self::$navigation as $section => $pages) 
 						foreach($pages as $page) self::$droits[$page] = TRUE;
 
 			// Vérification de la page
 			$title = 'Administration';
-			if(!empty($this->navigation))
+			if(!empty(self::$navigation))
 			{
 				$admin = get('admin');
 				if(	isset($admin) and
@@ -168,9 +168,9 @@ class AdminSetup
 		}
 	
 		// Navigation de l'admin
-		asort($this->navigation);
-		if(!empty($this->navigation))
-		foreach($this->navigation as $sections => $pages)
+		asort(self::$navigation);
+		if(!empty(self::$navigation))
+		foreach(self::$navigation as $sections => $pages)
 		{
 			if($sections == 'systeme') echo '</div><div class="navbar bottom">';
 			foreach($pages as $titre => $page)
@@ -185,11 +185,6 @@ class AdminSetup
 			}
 		}
 		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
-	}
-	
-	function getNavigation()
-	{
-		return $this->navigation;
 	}
 	
 	function get($variable)

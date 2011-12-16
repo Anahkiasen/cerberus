@@ -1,4 +1,4 @@
-<h1>Dossiers d'images</h1>
+<p>Depuis cette page vous pouvez décider de renommer toutes les images d'un dossier selon un format précis. En cliquant sur "Voir les images" vous pouvez aussi renommer/supprimer des images individuellement.</p>
 
 <?php
 // Préfixe
@@ -57,18 +57,18 @@ if(isset($_GET['rename']))
 ?>
 
 <form method="post" action="<?= rewrite('admin-images') ?>">
-<p>Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
-<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" />
+<p class="infoblock" style="background:url(assets/css/overlay/noir-50.png)">Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
+<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" /></p>
 </form>
 
 <table>
 <thead>
 	<tr>
-		<td>Dossier</td>
-		<td>Nombre d'images</td>
-		<td>Renommer les images automatiquement</td>
-		<td>Voir les images</td>
-		<td>Supprimer</td>
+		<th>Dossier</th>
+		<th>Nombre d'images</th>
+		<th>Renommer les images automatiquement</th>
+		<th>Voir les images</th>
+		<th>Supprimer</th>
 	</tr>
 </thead>
 <tbody>
