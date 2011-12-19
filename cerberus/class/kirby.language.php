@@ -176,7 +176,6 @@ class l
 		return stripslashes($translate);
 	}
 	
-	
 	// Traduction d'un jour
 	static function day($day = NULL)
 	{

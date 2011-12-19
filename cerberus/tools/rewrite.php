@@ -13,7 +13,7 @@
 function rewrite($page = NULL, $params = NULL)
 {
 	// Importation des variables
-	global $meta, $desired;
+	global $cerberus, $desired;
 	
 	// Détermination de la page/sous-page
 	$hashless = url::strip_hash($page);
@@ -78,11 +78,12 @@ function rewrite($page = NULL, $params = NULL)
 				
 		// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
 		$thisPage = $page0. '-' .$page1;
+		$meta = $cerberus->meta($thisPage);
 		
-		if(isset($meta[$thisPage]) and !isset($pageHTML))
+		if(isset($meta) and !isset($pageHTML))
 		{
-			$meta_url = trim($meta[$thisPage]['url']);
-			$pageHTML = (!empty($meta_url)) ? $meta_url : $meta[$thisPage]['titre'];
+			$meta_url = trim($meta['url']);
+			$pageHTML = (!empty($meta_url)) ? $meta_url : $meta['titre'];
 		}
 		if(isset($pageHTML) and !empty($pageHTML))
 			$lien .= str::slugify($pageHTML, true). '.html';

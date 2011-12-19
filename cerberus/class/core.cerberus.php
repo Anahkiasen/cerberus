@@ -167,7 +167,7 @@ class Cerberus
 			$metafile = 'cerberus/cache/meta-' .l::current(). '.php';
 			$meta = f::read($metafile, 'json');
 			
-			if(!$meta and SQL and config::get('meta'))
+			if(!$meta and SQL and config::get('meta', TRUE))
 			{
 				if(!db::is_table('cerberus_structure', 'cerberus_meta'))
 				{
@@ -200,7 +200,7 @@ class Cerberus
 					? 'Gestion ' .ucfirst(get('admin'))
 					: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
 					
-				if(isset($meta[$current]))
+				if(isset($meta[$current]) and isset($meta[$current][$mode]))
 				{
 					if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
 					return $meta[$current][$mode];
