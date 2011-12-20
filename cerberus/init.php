@@ -164,5 +164,17 @@ if(db::connection() and CACHE) backupSQL();
 // Génération du fichier META
 timer::save('cerberus').timer::start('meta');
 $cerberus->meta();
+echo '
+<head>
+	<title>' .$cerberus->meta('titre'). '</title>
+	<meta name="description" content="' .$cerberus->meta('description'). '" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+
+// Balise base
+if(REWRITING)
+{
+	$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
+	echo '<base href="' .config::get('http').$baseref. '" />';
+}
 timer::save('meta').timer::start('end');
 ?>

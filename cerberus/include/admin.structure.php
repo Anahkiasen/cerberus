@@ -80,9 +80,9 @@ if(isset($_GET['meta_structure']))
 			
 		$form->addText('traduction_titre', 'Titre de la page');
 		$form->addtext('traduction_parent_titre', 'Titre de la catégorie');
-		$form->addText('titre', 'Balise &lt;title&gt;', $meta['titre']);
-		$form->addText('url', 'URL de la page', $meta['url']);
-		$form->addTextarea('description', 'Description de la page', $meta['description'], array('underfield' => true));
+		$form->addText('titre', 'Balise &lt;title&gt; (7 à 10 mots, 100 caractères)', $meta['titre']);
+		$form->addText('url', 'URL de la page (20 à 70 caractères)', $meta['url']);
+		$form->addTextarea('description', 'Balise &lt;description&gt; (150 à 200 caractères)', $meta['description'], array('underfield' => true));
 		$form->addEdit();
 		$form->addSubmit('Modifier');
 	$form->closeFieldset();

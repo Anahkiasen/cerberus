@@ -60,7 +60,7 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL'),
-			'pack.navigation' => array('baseref', 'navigation', 'rewrite'),
+			'pack.navigation' => array('navigation', 'rewrite'),
 			'class.admin' => array('admin', 'admin.setup'),
 			'class.mail' => array('smail'),
 			'class.form' => array('form', 'checkString'),
@@ -188,26 +188,31 @@ class Cerberus
 			}
 		}
 		
-		// META d'une page seule
+		// Affichage du titre
 		else
 		{
-			if(isset($meta[$mode])) return $meta[$mode];
-			else
+			$pageVoulue = $desired->page;
+			$current = $desired->current();
+			$title_prefix = ($pageVoulue == 'admin' and get('admin'))
+				? 'Gestion ' .ucfirst(get('admin'))
+				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
+				
+			if(isset($meta[$current][$mode]) and !empty($meta[$current][$mode]))
 			{
-				$pageVoulue = $desired->page;
-				$current = $desired->current();
-				$title_prefix = ($pageVoulue == 'admin' and get('admin'))
-					? 'Gestion ' .ucfirst(get('admin'))
-					: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
-					
-				if(isset($meta[$current]) and isset($meta[$current][$mode]))
-				{
-					if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
-					return $meta[$current][$mode];
-				}
-				else return $title_prefix;
+				if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
+				return str::accents($meta[$current][$mode]);
 			}
+			else return $title_prefix;
 		}
+	}
+	
+	// META d'une page
+	function metadata($page)
+	{
+		global $meta;
+		
+		if(isset($meta[$page]) and !empty($meta[$page])) return $meta[$page];
+		else return array();
 	}
 }
 ?>

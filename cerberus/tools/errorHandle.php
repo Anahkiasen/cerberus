@@ -89,10 +89,12 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	if(!LOCAL and $desired->current(false) != 'admin')
 	{
 		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
+		$titre_email = config::get('sitename');
+		$titre_email = $titre_site ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
 		
 		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
 		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
-		$mail->setExpediteur('CerberusDebug', config::get('mail'));
+		$mail->setExpediteur($titre_email, config::get('mail'));
 		$mail->messageHTML();
 		$mail->send();
 	}

@@ -43,7 +43,7 @@ function rewrite($page = NULL, $params = NULL)
 		{
 			$pageHTML = $params['html'];
 			unset($params['html']);
-		}	
+		}
 	}
 
 	if(!REWRITING or $page0 == 'admin')
@@ -78,14 +78,12 @@ function rewrite($page = NULL, $params = NULL)
 				
 		// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
 		$thisPage = $page0. '-' .$page1;
-		$meta = $cerberus->meta($thisPage);
+		$meta = $cerberus->metadata($thisPage);
 		
-		if(isset($meta) and !isset($pageHTML))
-		{
-			$meta_url = trim($meta['url']);
-			$pageHTML = (!empty($meta_url)) ? $meta_url : $meta['titre'];
-		}
-		if(isset($pageHTML) and !empty($pageHTML))
+		if(!isset($pageHTML))
+			$pageHTML = a::get($meta, 'url', a::get($meta, 'titre', l::get('menu-'.$thisPage, NULL)));
+		
+		if($pageHTML)
 			$lien .= str::slugify($pageHTML, true). '.html';
 	}
 	
