@@ -1,10 +1,4 @@
 <?php
-/* 
-########################################
-########## CLASSE DISPATCH #############
-########################################
-*/
-
 class dispatch extends Cerberus
 {
 	private $current;
@@ -17,29 +11,24 @@ class dispatch extends Cerberus
 		global $desired;
 		
 		// Page en cours
-		if(!empty($current)) $this->current = $current;
-		else
-		{
-			if($desired->page == 'admin' and isset($_GET['admin'])) $this->current = $desired->page. '-' .get('admin');
-			else $this->current = $desired->current();
-		}
-		
-		$explode = explode('-', $this->current);
-		$this->global = $explode[0];
+		$this->current = (!empty($current)) ? $current : $desired->current();
+		$this->global = $desired->current(false);
 	}
+		
+	/* 
+	########################################
+	###### TRI DES DIFFERENTS ARRAYS #######
+	########################################
+	*/
 	
 	// Tri et répartition des modules demandés
 	function dispatchArray($modules)
 	{
-		$arrayGlobal =
-		$arrayModules =
-		$arraySubmodules = array();
-			
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
-			$value = a::force_array($value);
-			if(strpos($key, ',') != FALSE)
+			$modules[$key] = $value = a::force_array($value);
+			if(str::find(',', $key))
 			{
 				$keys = explode(',', $key);
 				foreach($keys as $pages)
@@ -51,12 +40,12 @@ class dispatch extends Cerberus
 				unset($modules[$key]);
 			}
 		}
-
-		// Véritifcation de la présence de modules concernés (pagesouspage/page/*)
-		if(isset($modules[$this->current])) $arrayModules = a::force_array($modules[$this->current]);
-		if(isset($modules[$this->global])) $arraySubmodules = a::force_array($modules[$this->global]);
-		if(isset($modules['*'])) $arrayGlobal = a::force_array($modules['*']);
-		$arrayModules = array_merge($arrayGlobal, $arrayModules, $arraySubmodules);
+		
+		// Récupération des scripts concernés
+		a::force_array($modules['*']);
+		a::force_array($modules[$this->global]);
+		a::force_array($modules[$this->current]);
+		$arrayModules = array_merge($modules['*'], $modules[$this->global], $modules[$this->current]);
 		
 		// Suppressions des fonctions non voulues
 		foreach($arrayModules as $key => $value)
@@ -70,7 +59,7 @@ class dispatch extends Cerberus
 		
 		// Distinction avec les modules coeur
 		if(isset($this->cacheCore)) $arrayModules = array_values(array_diff($arrayModules, $this->cacheCore));
-		
+
 		if(!empty($arrayModules)) return $arrayModules;
 		else return FALSE;
 	}
@@ -83,81 +72,75 @@ class dispatch extends Cerberus
 	}
 	
 	// Modules JS/CSS
-	function getAPI($scripts = NULL)
+	function getAPI($scripts = array())
 	{
 		global $switcher, $desired;
 
 		// API
-		$availableAPI = array(
+		$this->availableAPI = array(
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+		'lesscss' => 'http://lesscss.googlecode.com/files/less-1.1.5.min.js',
 		'colorbox' => 'jquery.colorbox-min',
 		'nivoslider' => 'jquery.nivo.slider.pack');
 		
-		if(isset($switcher)) $path = $switcher->path();
-		$defaultCSS = 'css/styles.css';
-		$defaultJS = 'js/core.js';
-		$this->JS = $this->CSS = array();
-		
-		// Fichiers par défaut
-		if(!$scripts) $scripts = array();
+		$this->JS = $this->CSS = $this->LESS = array('min' => array());
+		$path = (isset($switcher)) ? $switcher->path() : NULL;
+				
+		// Mise en array des différents scripts
 		a::force_array($scripts['*']);
-		$scripts['*'][] = 'assets/css/cerberus.css';
-		$scripts['*'][] = 'assets/'.$defaultCSS;
-		$scripts['*'][] = 'assets/'.$defaultJS;
-		
-		// Fichiers spécifiques aux pages
 		a::force_array($scripts[$this->current]);
 		a::force_array($scripts[$this->global]);
-		
+				
+		// Fichiers par défaut
+		array_push($scripts['*'], 'cerberus', 'styles', 'core');
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
 		
-		// Fichiers switch
-		if(isset($path))
+		// Préparation de l'array des scripts disponibles
+		$files = glob('assets/{css/*.{css,less},switch/'.$path.'/css/*.{css,less},js/*.js,switch/'.$path.'/js/*.js}', GLOB_BRACE);
+		foreach($files as $path)
 		{
-			$scripts['*'][] = $path.$defaultCSS;
-			$scripts['*'][] = $path.$defaultJS;
+			$basename = f::name($path, true);
+			if(!isset($dispath[$basename])) $dispath[$basename] = array();
+			array_push($dispath[$basename], $path);
 		}
-		$this->scripts = $scripts = $this->dispatchArray($scripts);
-		if($scripts)
-		{
-			foreach($scripts as $value) 
-			{
-				if(!empty($value))
-				{
-					$thisScript = $value;
+		$this->scripts = $this->dispatchArray($scripts);
 
-					// Si le script est présent dans les prédéfinis
-					if(isset($availableAPI[$value]))
-					{
-						$this->CSS['min'][] = f::sexist('assets/css/' .$thisScript. '.css'); // CSS annexe
-						if(str::find('http', $availableAPI[$value])) $this->JS['url'][] = $availableAPI[$value];
-						else $this->JS['min'][] = f::sexist('assets/js/' .$availableAPI[$value]. '.js');
-					}
-					
-					// Si le chemin est spécifié manuellement
-					elseif(str::find('.js', $thisScript)) $this->JS['min'][] = f::sexist($thisScript);
-					elseif(str::find('.css', $thisScript)) $this->CSS['min'][] = f::sexist($thisScript);
-					
-					// Sinon on vérifie la présence du script dans les fichiers
-					else
-					{
-						$this->JS['min'][] = f::sexist('assets/js/' .$thisScript. '.js');
-						$this->CSS['min'][] = f::sexist('assets/css/' .$thisScript. '.css');
-						if(isset($path))
+		// Récupération des différents scripts
+		if($this->scripts) foreach($this->scripts as $key => $value)
+		{
+			if(!empty($value))
+			{
+				// API
+				if(isset($this->availableAPI[$value]))
+				{
+					$API = $this->availableAPI[$value];
+					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
+					if(str::find('http', $API)) $this->JS['url'][] = $API;
+					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js');
+				}
+				else
+				{
+					if(isset($dispath[$value]))
+						foreach($dispath[$value] as $script)
 						{
-							$this->JS['min'][] = f::sexist($path.'js/' .$thisScript. '.js');
-							$this->CSS['min'][] = f::sexist($path.'css/' .$thisScript. '.css');
+							$extension = strtoupper(f::extension($script));
+							$this->{$extension}['min'][] = $script;
 						}
-					}
 				}
 			}
-			
-			return $scripts;
-		}	
+			else unset($this->scripts[$key]);
+		}
+		return $this->scripts;
 	}
+	
+	/* 
+	########################################
+	########## EXPORT DES SCRIPTS ##########
+	########################################
+	*/
 	
 	// Script activé ou non
 	function isScript($script)
@@ -168,24 +151,39 @@ class dispatch extends Cerberus
 	// Affichage des scripts
 	function getCSS()
 	{
-		if($this->CSS['min']) 
+		// LESS
+		if(!empty($this->LESS['min']) and LOCAL)
 		{
-			$minify = array_unique(array_filter($this->CSS['min']));
-			if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
+			foreach($this->LESS['min'] as $thisfile)
+			{
+				echo '<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />';
+				$this->CSS['min'] = a::splice($this->CSS['min'], str_replace('.less', '.css', $thisfile));
+			}
+			echo '
+			<script>var less = {env: "development"};</script>
+			<script src="' .$this->availableAPI['lesscss']. '" type="text/javascript"></script>' . "\n";
 		}
-		if(!empty($this->CSS['url'])) echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";		
+		
+		// CSS
+		$minify = array_unique(array_filter($this->CSS['min']));
+		if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
+		if(!empty($this->CSS['url'])) echo '<link rel="stylesheet" type="text/css" href="' .implode('" /><link rel="stylesheet" type="text/css" href="', $this->CSS['url']). '" />' . "\n";	
 		if(isset($this->CSS['inline'])) echo '<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>' . "\n";
 	}
 	function getJS()
 	{
-		if($this->JS['min']) 
-		{
-			$minify = array_filter($this->JS['min']);
-			if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
-		}
+		$minify = array_unique(array_filter($this->JS['min']));
+		if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
+
 		if(!empty($this->JS['url'])) echo '<script type="text/javascript" src="' .implode('"></script>' . "\n". '<script type="text/javascript" src="', $this->JS['url']). '"></script>' . "\n";		
 		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .implode("\n", $this->JS['inline']). '</script>' . "\n";
 	}
+	
+	/* 
+	########################################
+	########## RAJOUT GLOBAL ###############
+	########################################
+	*/
 	
 	// Ajout de scripts à la volée
 	function addJS()

@@ -124,13 +124,12 @@ class f
 	// Retourne le nom d'un fichier sans l'extension ni le chemin
 	static function name($name, $remove_path = false)
 	{
-		if($remove_path == true) $name = self::filename($name);
-		else
-		{
-			$dot = strrpos($name,'.');
-			if($dot) $name = substr($name, 0, $dot);
-			return $name;
-		}
+		if($remove_path == true)
+			$name = self::filename($name);
+		
+		$dot = strrpos($name,'.');
+		if($dot) $name = substr($name, 0, $dot);
+		return $name;
 	}
 
 	// Retourne le nom du dossier courant

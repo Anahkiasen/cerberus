@@ -62,7 +62,10 @@ array(
 	'Informations' => array(
 		'sitename' => 'Nom du site',
 		'http' => 'Adresse externe du site',
-		'mail' => 'Adresse de contact')
+		'mail' => 'Adresse de contact'),
+	'Hébergement' => array(
+		'base.local' => 'Sous-dossier local (facultatif)',
+		'base.online' => 'Sous-dossier en ligne (facultatif)')
 );
 
 if(file_exists($config_file)) include($config_file);

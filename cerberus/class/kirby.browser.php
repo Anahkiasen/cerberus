@@ -68,7 +68,7 @@ class browser
 	// FONCTION COEUR
 	static function detect($ua = null)
 	{
-		$ua = ($ua) ? strtolower($ua) : strtolower(server::get('http_user_agent'));
+		$ua = ($ua) ? str::lower($ua) : str::lower(server::get('http_user_agent'));
 
 		// On ne fait la détection qu'une seule fois
 		if(self::$ua == $ua) 

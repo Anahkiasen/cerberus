@@ -1,0 +1,541 @@
+/*
+########################################
+######### MIXINS ET VAR ################
+########################################
+*/
+
+.border-box()
+{
+	-moz-box-sizing:border-box;
+	-ms-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+.opacity(@opacity: 100)
+{
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@opacity)";
+	filter: alpha(opacity=@opacity);
+	-moz-opacity: @opacity/100;
+	-khtml-opacity: @opacity/100;
+	opacity: @opacity/100;
+}
+.round(@border-radius: 10px)
+{
+	-webkit-border-radius: @border-radius;
+	-moz-border-radius: @border-radius;
+	border-radius: @border-radius;
+}
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0)
+{
+	-webkit-border-top-right-radius: @topright;
+	-webkit-border-bottom-right-radius: @bottomright;
+	-webkit-border-bottom-left-radius: @bottomleft;
+	-webkit-border-top-left-radius: @topleft;
+	-moz-border-radius-topright: @topright;
+	-moz-border-radius-bottomright: @bottomright;
+	-moz-border-radius-bottomleft: @bottomleft;
+	-moz-border-radius-topleft: @topleft;
+	border-top-right-radius: @topright;
+	border-bottom-right-radius: @bottomright;
+	border-bottom-left-radius: @bottomleft;
+	border-top-left-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box; 
+}
+.text-shadow(@x: 0, @y: 0, @blur: 1px, @color: #000)
+{
+	text-shadow: @arguments;
+	filter: ~'dropshadow(color=@color, offx=@x, offy=@y)';
+}
+.text-shadow-none()
+{
+	filter: none;
+	text-shadow: none;
+}
+.box-shadow(@x: 0, @y: 0, @blur: 1px, @spread: 0, @color: #000)
+{
+	box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	-webkit-box-shadow: @arguments;
+}
+.box-shadow-inset(@x: 0, @y: 0, @blur: 1px, @spread: 0, @color: #000)
+{
+	box-shadow: inset @arguments;
+	-moz-box-shadow: inset @arguments;
+	-webkit-box-shadow: inset @arguments;
+}
+.lighten(@light: 50)
+{
+	background-image: url("assets/css/overlay/blanc-@{light}.png");
+}
+.darken(@dark: 50)
+{
+	background-image: url("assets/css/overlay/noir-@{dark}.png");
+}
+
+/* Variables */
+@main: #807148;
+@cerberus: #069;
+
+/*
+########################################
+######### GLOBALES ET VARS #############
+########################################
+*/
+
+body
+{
+	font-family: 'Open Sans', Helvetica, Verdana, sans-serif;
+	font-size: small;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+}
+*
+{
+	.border-box;
+}
+.ie img { -ms-interpolation-mode: bicubic }
+
+.admin #navbar,
+.navbar,
+.block,
+form input[type=submit],
+fieldset legend,
+table thead th,
+table tr.entete td,
+table .additem,
+.readmore,
+.mosaique { background-color: @main }
+p.infoblock,
+div.cerberus_debug { background-color:@cerberus }
+
+/*
+########################################
+######### BALISES COMMUNES #############
+########################################
+*/
+
+a img { border: none }
+p.clear { clear: both }
+p.infoblock,
+p.readmore,
+div.cerberus_debug
+{
+	.darken(50);
+	margin: 0;
+	margin-bottom: 10px;
+	width:100%;
+	color:#FFF;
+	text-align: center;
+	padding: 5px;
+	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
+}
+div.cerberus_debug
+{
+	width: 75%;
+	margin:0 auto 15px;
+	padding: 10px;
+	text-align: left;
+	
+	div
+	{
+		background-color:darken(@cerberus, 10%);
+		padding: 5px;
+		margin: 0;
+	}
+	h2, h3
+	{
+		margin: 5px 0 0;
+		color: white;
+	}
+	h3 { margin-bottom: 15px }
+	pre
+	{
+		background-color:darken(@cerberus, 10%);
+		margin: 10px 0 0 0;
+		padding: 15px;
+	}
+}
+p.infoblock a
+{
+	color: #FFF;
+	text-decoration: underline;
+}
+a:hover p.infoblock { background-color:lighten(@cerberus, 10%); }
+p.readmore
+{
+	clear: both;
+	width: 100%;
+	margin: 10px auto 0;
+	
+	a { color: white }
+	&:hover	{ background-color:darken(@cerberus, 10%); }
+	&:active { background-color:lighten(@cerberus, 10%); }
+}
+.navbar
+{
+	text-align: center;
+	padding: 5px 0;
+	width: 100%;
+	margin: 0 auto;
+	
+	a
+	{
+		padding: 5px 10px;
+		color: white;
+		
+		&:hover { .darken(25) }
+		&:active { .darken(50) }
+	}
+}
+.block
+{
+	color: white;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+.float-left
+{
+	float: left;
+	margin-right: 20px;
+}
+.float-right
+{
+	float: right;
+	margin-left: 20px;
+}
+#left,
+#right
+{
+	margin:10px 0;
+	width:50%;
+	float: left;
+	text-align: justify;
+	.border-box;
+	
+	p:first-child,
+	h1:first-child { margin-top: 0 }
+	fieldset dl.textarea dd { width: 55% }
+	input[type=text],
+	input[type=password],
+	select { width: 230px }
+}
+#left { padding-right: 30px }
+
+/*
+########################################
+############ ADMIN #####################
+########################################
+*/
+
+.admin table
+{
+	.selected { background-color: #D6DBBD }
+	.additem
+	{
+		td
+		{
+			.lighten(25);
+			text-align: center;
+			a:hover { color: #FFF }
+		}
+		&:hover { .lighten(50) }
+	}
+} 
+.admin #contenu table .additem td a { color:#FFF }
+.admin fieldset dl.textarea textarea
+{
+	left: 10px;
+}
+.admin dl.textarea dd { width:70%; }
+
+/*
+########################################
+############# TABLEAUX #################
+########################################
+*/
+
+table
+{
+	width:100%;
+	background:#EEE;
+	
+	td
+	{
+		padding: 3px;
+		text-align: center;
+		
+		&:first-child { text-align: left }
+	}
+	tr:hover { .darken(10); }
+	thead th,
+	td.entete,
+	tr.entete td
+	{
+		.darken(25);
+		color:#FFF;
+		font-weight: 400;
+		text-align:center;
+		
+		a
+		{
+			color:#FFF;
+			text-decoration: underline;
+		}
+	}
+	td.opener
+	{
+		cursor: pointer;
+		&:hover { .lighten(10) }
+	}
+	td.additem
+	{
+		.lighten(25);
+		text-transform: uppercase;
+		padding: 3px;
+		text-align: center;
+		
+		a { color: #FFF }
+		&:hover { .lighten(50) }
+	}
+}
+
+/*
+########################################
+############# FORMULAIRES ##############
+########################################
+*/
+
+form { width:99%; }
+fieldset
+{
+	background:#F7F7F7 url("background-45.png");
+	border: none;
+	margin: auto;
+	padding: 0;
+	
+	legend
+	{
+		background-color: #900;
+		.darken(25);
+		color:#FFF;
+		font-weight: 400;
+		letter-spacing:-1px;
+		padding: 10px;
+		width:100%;
+		font-size: 1.1em;
+	}
+	label span.mandatory { color: red }
+	
+	dt { margin-left: 5px }
+	dd
+	{
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		z-index: 50;
+	}
+	dl
+	{
+		color:#666;
+		margin: 0;
+		padding:13px 5px;
+		position: relative;
+		width:100%;
+		
+		&:hover
+		{
+			.darken(10);
+			background-repeat: repeat;
+			
+			input[type=text],
+			input[type=password],
+			input[type=file],
+			select,
+			textarea
+			{
+				background-color:#444;
+				border: none;
+				
+				&:focus {background-color: #222 }
+			}
+			select { border:5px solid #666 }
+		}
+		
+		/* Cas particuliers */
+		&.submit
+		{
+			dd,
+			&.submit,
+			&.submit p
+			{
+				margin: 0;
+				padding:0 5px;
+				position: static;
+			}
+			&.submit.submit:hover { background:#EEE }
+		}
+		&.radio dd
+		{
+			right: 15px;
+			top: 15px;
+		}
+		&.textarea
+		{
+			height: 210px;		
+			
+			dd { width: 60% }
+			textarea
+			{
+				height: 190px;
+				top: 4px;
+				width:99%;
+				padding: 20px;
+				right: -2px;
+			}
+		}
+		&.actualThumb
+		{
+			border:0 solid red;
+			height: 210px;
+			
+			a
+			{
+				.darken(25);
+				color:#FFF;
+				padding:5px 30px;
+			
+				&:hover { .darken(50); }
+				&:active { .darken(75); }
+			}
+			img { margin-bottom: 10px }
+			p
+			{
+				.darken(10);
+				margin: 10px;
+				padding:10px 10px 15px;
+			}
+		}
+	}
+	
+	div.bbcode { padding: 0 8px 10px }
+	dd input[type=radio] { margin-left: 15px }
+
+	input[type=text],
+	input[type=file],
+	input[type=password]
+	{
+		padding:5px 10px;
+		right: 3px;
+		top: 3px;
+	}
+	select
+	{
+		border:5px solid #666;
+		padding: 10px;
+		right: 3px;
+	}
+}
+
+/* Champs */
+
+input[type=button],
+input[type=text],
+input[type=password],
+input[type=file],
+select,
+textarea
+{
+	border: none;
+	background-color: #666;
+	background:#666 url("background-45.png");
+	color:#FFF;
+	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
+	font-size: 1em;
+	font-weight: 600;
+	padding: 20px;
+	position: relative;
+	bottom: 2px;
+	width: 250px;
+	.box-shadow-inset(0, 0, 5px, 2px, rgba(0, 0, 0, 0.5));
+}
+form > input[type=text],
+form > input[type=password],
+form > input[type=file] { padding: 5px }
+input[type=button]
+{
+	cursor: pointer;
+	padding: 5px;
+	width: auto;
+	position: static;
+	
+	&:hover { background-color: #999 }
+	&:active { background-color:#222 }
+}
+
+/* Compatibilité */
+.chrome fieldset input { top: 0px }
+.chrome fieldset select { top: -2px }
+.ie fieldset select,
+.win.chrome fieldset select,
+.opera fieldset select,
+.fx fieldset select { padding: 2px }
+.win.chrome fieldset select { background: #666 !important }
+.ie7
+{
+	#left,
+	#right { width: 48%; }
+	#left { padding-right: 10px }
+}
+
+/* Bouton valider */
+input[type=submit]
+{
+	border: none;
+	color:#FFF;
+	cursor: pointer;
+	font-size: 12px;
+	margin: 10px;
+	padding: 5px;
+	padding-bottom: 10px;
+	text-align: center;
+	width:80%;
+	.box-shadow-inset(0, -5px, 0, 0, rgba(0, 0, 0, 0.5));
+	
+	&:hover { .lighten(25); }
+	&:active
+	{
+		.lighten(50);
+		margin-top: 15px;
+		padding-bottom: 5px;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		box-shadow: none;
+	}
+	&.ok
+	{
+		width: 30px;
+		position: relative;
+		left:-10px;
+		top: -5px
+	}
+}
+/* Underfield et Twocols */
+dl.textarea.underfield { height: auto }
+fieldset dl.underfield dd,
+#left fieldset dl.underfield dd,
+#right fieldset dl.underfield dd,
+.admin fieldset dl.underfield dd
+{
+	width: 100%;
+	position: static;
+	margin: 5px;
+}
+select.dateForm,
+#left select.dateForm,
+#right select.dateForm
+{
+	min-width: 0;
+	width: auto;
+}

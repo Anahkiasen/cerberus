@@ -42,7 +42,6 @@ class a
 				unset($array[$index]);
 			}
 		}
-		
 		return $array;
 	}
 	
