@@ -152,7 +152,7 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if(!empty($this->LESS['min']) and LOCAL)
+		if((!empty($this->LESS['min']) and LOCAL) or empty($this->CSS['min']))
 		{
 			foreach($this->LESS['min'] as $thisfile)
 			{

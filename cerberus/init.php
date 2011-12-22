@@ -10,8 +10,6 @@ ini_set('log_errors', 'On');
 foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
 require_once('cerberus/class/class.navigation.php');
 require_once('cerberus/tools/display.php');
-$REVISION_LOCAL = 360;
-$REVISION = 355;
 s::start();
 
 /*

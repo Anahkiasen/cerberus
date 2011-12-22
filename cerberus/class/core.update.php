@@ -6,8 +6,7 @@ class update
 	// Effectue des changements dans les fichiers ou sur la base
 	function __construct($revision)
 	{
-		global $REVISION, $REVISION_LOCAL;
-		self::$revision = (LOCAL) ? $REVISION_LOCAL : $REVISION;
+		self::$revision = (LOCAL) ? config::get('revision.local') : config::get('revision.online');
 		
 		if(self::$revision < 353)
 		{
@@ -26,7 +25,7 @@ class update
 			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 			self::update(355);
 		}
-		self::update(360);
+		self::update(361);
 	}
 	
 	// Met à jour le numéro de révision
@@ -34,10 +33,8 @@ class update
 	{
 		if(self::$revision < $torev)
 		{
-			$rev = (LOCAL) ? 'REVISION_LOCAL' : 'REVISION';
-			$init = file_get_contents('cerberus/init.php');
-			$init = preg_replace('/\$' .$rev. ' = [0-9]+;/', '$' .$rev. ' = ' .$torev. ';', $init);
-			f::write('cerberus/init.php', $init);
+			$rev = LOCAL ? 'revision.local' : 'revision.online';
+			config::set($rev, $torev);
 			prompt('Mise à jour ' .$torev. ' effectuée');
 		}
 	}

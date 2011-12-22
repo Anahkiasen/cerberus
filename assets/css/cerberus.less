@@ -3,7 +3,8 @@
 ######### MIXINS ET VAR ################
 ########################################
 */
-
+.font-serif() { font-family: "Droid Serif", Georgia, "Times New Roman", Times, serif; }
+.font-noserif() { font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif; }
 .border-box()
 {
 	-moz-box-sizing:border-box;
@@ -86,7 +87,7 @@
 
 body
 {
-	font-family: 'Open Sans', Helvetica, Verdana, sans-serif;
+	.font-noserif;
 	font-size: small;
 	-webkit-font-smoothing: antialiased;
 	-moz-font-smoothing: antialiased;
@@ -129,7 +130,7 @@ div.cerberus_debug
 	color:#FFF;
 	text-align: center;
 	padding: 5px;
-	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
+	.font-noserif;
 }
 div.cerberus_debug
 {
@@ -451,7 +452,7 @@ textarea
 	background-color: #666;
 	background:#666 url("background-45.png");
 	color:#FFF;
-	font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif;
+	.font-noserif;
 	font-size: 1em;
 	font-weight: 600;
 	padding: 20px;
