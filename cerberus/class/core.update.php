@@ -25,7 +25,7 @@ class update
 			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 			self::update(355);
 		}
-		self::update(362);
+		self::update(363);
 	}
 	
 	// Met à jour le numéro de révision
@@ -34,7 +34,12 @@ class update
 		if(self::$revision < $torev)
 		{
 			$rev = LOCAL ? 'revision.local' : 'revision.online';
-			config::set($rev, $torev);
+			$confphp = f::read('cerberus/conf.php');
+			$confphp = preg_replace(
+				'#\$config\[\'(' .$rev. ')\'\] = (.+);#',
+				'$config[\'$1\'] = ' .$torev. ';',
+				$confphp);
+			f::write('cerberus/conf.php', $confphp);
 			prompt('Mise à jour ' .$torev. ' effectuée');
 		}
 	}
