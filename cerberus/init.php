@@ -62,7 +62,7 @@ if(SQL)
 }
 
 // Mise à jour du moteur
-new update($REVISION);
+new update();
 
 /*
 ########################################

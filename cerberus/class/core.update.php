@@ -4,7 +4,7 @@ class update
 	private static $revision;
 
 	// Effectue des changements dans les fichiers ou sur la base
-	function __construct($revision)
+	function __construct()
 	{
 		self::$revision = (LOCAL) ? config::get('revision.local') : config::get('revision.online');
 		
@@ -25,7 +25,7 @@ class update
 			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 			self::update(355);
 		}
-		self::update(361);
+		self::update(362);
 	}
 	
 	// Met à jour le numéro de révision

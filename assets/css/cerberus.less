@@ -394,6 +394,8 @@ fieldset
 				width:99%;
 				padding: 20px;
 				right: -2px;
+				
+				&.underfield { height: auto }
 			}
 		}
 		&.actualThumb
@@ -418,6 +420,12 @@ fieldset
 				padding:10px 10px 15px;
 			}
 		}
+		&.underfield dd
+		{
+			width: 100%;
+			position: static;
+			margin: 5px;
+		}
 	}
 	
 	div.bbcode { padding: 0 8px 10px }
@@ -436,6 +444,12 @@ fieldset
 		border:5px solid #666;
 		padding: 10px;
 		right: 3px;
+		
+		&.dateForm
+		{
+			min-width: 0;
+			width: auto;
+		}
 	}
 }
 
@@ -475,21 +489,6 @@ input[type=button]
 	&:active { background-color:#222 }
 }
 
-/* Compatibilité */
-.chrome fieldset input { top: 0px }
-.chrome fieldset select { top: -2px }
-.ie fieldset select,
-.win.chrome fieldset select,
-.opera fieldset select,
-.fx fieldset select { padding: 2px }
-.win.chrome fieldset select { background: #666 !important }
-.ie7
-{
-	#left,
-	#right { width: 48%; }
-	#left { padding-right: 10px }
-}
-
 /* Bouton valider */
 input[type=submit]
 {
@@ -522,21 +521,21 @@ input[type=submit]
 		top: -5px
 	}
 }
-/* Underfield et Twocols */
-dl.textarea.underfield { height: auto }
-fieldset dl.underfield dd,
-#left fieldset dl.underfield dd,
-#right fieldset dl.underfield dd,
-.admin fieldset dl.underfield dd
+
+/* Compatibilité */
+.chrome
 {
-	width: 100%;
-	position: static;
-	margin: 5px;
+	fieldset input { top: 0px }
+	fieldset select { top: -2px }
+	&.win fieldset select { background-color: #666 !important; }
 }
-select.dateForm,
-#left select.dateForm,
-#right select.dateForm
+.ie fieldset select,
+.win.chrome fieldset select,
+.opera fieldset select,
+.fx fieldset select { padding: 2px }
+.ie7
 {
-	min-width: 0;
-	width: auto;
+	#left,
+	#right { width: 48%; }
+	#left { padding-right: 10px }
 }
