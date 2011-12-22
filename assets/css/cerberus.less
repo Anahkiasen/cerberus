@@ -13,11 +13,7 @@ body
 	-webkit-font-smoothing: antialiased;
 	-moz-font-smoothing: antialiased;
 }
-*
-{
-	.border-box;
-}
-.ie img { -ms-interpolation-mode: bicubic }
+* { .border-box }
 
 .admin #navbar,
 .navbar,
@@ -38,7 +34,6 @@ div.cerberus_debug { background-color:@cerberus }
 ########################################
 */
 
-a img { border: none }
 p.clear { clear: both }
 p.infoblock,
 p.readmore,
@@ -84,7 +79,12 @@ p.infoblock a
 	color: #FFF;
 	text-decoration: underline;
 }
-a:hover p.infoblock { background-color:lighten(@cerberus, 10%); }
+a
+{
+	img { border: none }
+	&:hover p.infoblock { background-color:lighten(@cerberus, 10%); }
+	&:active p.infoblock { background-color:lighten(@cerberus, 20%); }
+}
 p.readmore
 {
 	clear: both;
@@ -239,7 +239,6 @@ fieldset
 	
 	legend
 	{
-		background-color: #900;
 		.darken(25);
 		color:#FFF;
 		font-weight: 400;
@@ -450,13 +449,17 @@ input[type=submit]
 	fieldset select { top: -2px }
 	&.win fieldset select { background-color: #666 !important; }
 }
+.ie
+{
+	img { -ms-interpolation-mode: bicubic }
+	&.ie7
+	{
+		#left,
+		#right { width: 48%; }
+		#left { padding-right: 10px }
+	}
+}
 .ie fieldset select,
 .win.chrome fieldset select,
 .opera fieldset select,
 .fx fieldset select { padding: 2px }
-.ie7
-{
-	#left,
-	#right { width: 48%; }
-	#left { padding-right: 10px }
-}
