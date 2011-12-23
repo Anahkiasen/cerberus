@@ -81,13 +81,12 @@ if(SQL)
 			$ua = browser::detect();
 			$domaine = url::domain();
 			$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
-			
-			if(!empty($ua['browser']) and !empty($ua['platform']))
+			if(!empty($ua['name']) and !empty($ua['platform']))
 				db::insert('cerberus_logs', array(
 					'ip' => $ip,
 					'date' => 'NOW()',
 					'platform' => $ua['platform'],
-					'browser' => $ua['browser'],
+					'browser' => $ua['name'],
 					'version' => $ua['version'],
 					'engine' => $ua['engine'],
 					'mobile' => $mobile,

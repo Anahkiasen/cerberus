@@ -8,29 +8,24 @@ class str
 	*/
 	
 	// Explose une string en array
-	static function split($string, $separator = ',', $taille = 1)
+	static function split($string, $separator = ',', $length = 1)
 	{
 		if(is_array($string)) return $string;
-		else
+		
+		$string = ltrim($string, $separator);
+		$string = rtrim($string, $separator);
+		$parts  = explode($separator, $string);
+		$out    = array();
+		
+		foreach($parts as $p)
 		{
-			// 
-			$psep	= preg_quote($separator);
-			$string = preg_replace('!^' . $psep . '!', '', $string);
-			$string = preg_replace('!' . $psep . '$!', '', $string);
-	
-			$parts 	= explode($separator, $string);
-			$out 	= array();
-	
-			foreach($parts as $p)
-			{
-				$p = self::trim($p);
-				if(!empty($p) && str::length($p) >= $taille) $out[] = $p;
-			}
-	
-			return $out;
+			$p = self::trim($p);
+			if(!empty($p) && str::length($p) >= $length) $out[] = $p;
 		}
-	}
-	
+		
+		return $out;
+	}	
+		
 	// Met une chaîne au pluriel ou singulier (ou absence de)
 	static function plural($count, $many, $one, $zero = '')
 	{

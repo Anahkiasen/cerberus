@@ -1,3 +1,4 @@
+@import 'main.less';
 @import 'mixins.less';
 
 /*
@@ -39,7 +40,6 @@ p.infoblock,
 p.readmore,
 div.cerberus_debug
 {
-	.darken(50);
 	margin: 0;
 	margin-bottom: 10px;
 	width:100%;
@@ -92,8 +92,8 @@ p.readmore
 	margin: 10px auto 0;
 	
 	a { color: white }
-	&:hover	{ background-color:darken(@cerberus, 10%); }
-	&:active { background-color:lighten(@cerberus, 10%); }
+	&:hover	{ background-color:darken(@main, 10%); }
+	&:active { background-color:lighten(@main, 10%); }
 }
 .navbar
 {
@@ -107,8 +107,8 @@ p.readmore
 		padding: 5px 10px;
 		color: white;
 		
-		&:hover { .darken(25) }
-		&:active { .darken(50) }
+		&:hover { background-color: lighten(@main, 10%) }
+		&:active { background-color: lighten(@main, 20%) }
 	}
 }
 .block

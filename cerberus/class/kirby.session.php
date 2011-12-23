@@ -2,22 +2,25 @@
 class s
 {
 	// Fonctions d'intéractions
-	static function set($key, $value = FALSE)
+	static function set($key, $value = false)
 	{
+		if(!isset($_SESSION)) return false;
 		if(is_array($key)) $_SESSION = array_merge($_SESSION, $key);
 		else $_SESSION[$key] = $value;
 	}
 
-	static function get($key = FALSE, $default = NULL)
+	static function get($key = false, $default = NULL)
 	{
+		if(!isset($_SESSION)) return false;
 		if(empty($key)) return $_SESSION;
-		else return a::get($_SESSION, $key, $default);
+		return a::get($_SESSION, $key, $default);
 	}
 
 	static function remove($key)
 	{
-		unset($_SESSION[$key]);
-		//return a::remove(&$_SESSION, $key, true);
+		if(!isset($_SESSION)) return false;
+		$_SESSION = a::remove($_SESSION, $key, true);
+		return $_SESSION;
 	}
 
 	// Gestion de la session
@@ -29,6 +32,12 @@ class s
 	static function destroy()
 	{
 		@session_destroy();
+	}
+	
+	static function restart()
+	{
+		self::destroy();
+		self::start();
 	}
 
 	// Fonctions utilitaires

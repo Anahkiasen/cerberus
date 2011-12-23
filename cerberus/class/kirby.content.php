@@ -134,7 +134,7 @@ class content
 		$ctype	 = a::get($ctypes, $ctype, $ctype);
 
 		$charset = a::get($args, 1, c::get('charset', 'utf-8'));
-		header('Content-type: ' . $ctype . '; ' . $charset);
+		header('Content-type: ' . $ctype . '; charset=' . $charset);
 	}
 }
 ?>

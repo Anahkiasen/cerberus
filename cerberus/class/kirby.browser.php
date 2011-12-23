@@ -1,22 +1,20 @@
 <?php
-/*
-	Fonction browserSelector
-	# Crée une chaine contenant la définition exacte de l'user-agent de l'internaute
-	# Source : http://getkirby.com/
-*/
 class browser
 {
 	static public $ua = false;
-	static public $browser = false;
+	static public $name = false;
 	static public $engine = false;
 	static public $version = false;
 	static public $platform = false;
-
+	static public $mobile = false;
+	static public $ios = false;
+	static public $iphone = false;
+	
 	// Fonctions de détection
 	static function name($ua = NULL)
 	{
 		self::detect($ua);
-		return self::$browser;
+		return self::$name;
 	}
 
 	static function engine($ua = NULL)
@@ -40,48 +38,53 @@ class browser
 	static function mobile($ua = NULL)
 	{
 		self::detect($ua);
-		return (self::$platform == 'mobile') ? true : false;
+		return self::$mobile;
 	}
 
 	static function iphone($ua = NULL)
 	{
 		self::detect($ua);
-		return (in_array(self::$platform, array('ipod', 'iphone'))) ? true : false;
+		return self::$iphone;
 	}
 
 	static function ios($ua = NULL)
 	{
 		self::detect($ua);
-		return (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
+		return self::$ios;
 	}
 
 	static function css($ua = NULL, $array = false)
 	{
 		self::detect($ua);
 		$css[] = self::$engine;
-		$css[] = self::$browser;
-		if(self::$version) $css[] = self::$browser . str_replace('.', '_', self::$version);
+		$css[] = self::$name;
+		if(self::$version) $css[] = self::$name . str_replace('.', '_', self::$version);
 		$css[] = self::$platform;
 		return ($array) ? $css : implode(' ', $css);
 	}
 
 	// FONCTION COEUR
-	static function detect($ua = null)
+	static function detect($ua = NULL)
 	{
 		$ua = ($ua) ? str::lower($ua) : str::lower(server::get('http_user_agent'));
 
 		// On ne fait la détection qu'une seule fois
-		if(self::$ua == $ua) 
-			return array(
-				'browser'	=> self::$browser,
+		if(self::$ua == $ua)
+			return array
+			(
+				'name'		 => self::$name,
 				'engine'	 => self::$engine,
 				'version'	=> self::$version,
-				'platform' => self::$platform
+				'platform' => self::$platform,
+				'agent'		=> self::$ua,
+				'mobile'	 => self::$mobile,
+				'iphone'	 => self::$iphone,
+				'ios'			=> self::$ios,
 			);
 
-		self::$ua		 = $ua;
-		self::$browser	= false;
-		self::$engine	 = false;
+		self::$ua		= $ua;
+		self::$name		= false;
+		self::$engine	= false;
 		self::$version	= false;
 		self::$platform = false;
 
@@ -89,59 +92,59 @@ class browser
 		if(!preg_match('/opera|webtv/i', self::$ua) && preg_match('/msie\s(\d)/', self::$ua, $array))
 		{
 			self::$version = $array[1];
-			self::$browser = 'ie';
+			self::$name = 'ie';
 			self::$engine	= 'trident';
 		}
 		else if(strstr(self::$ua, 'firefox/3.6'))
 		{
 			self::$version = 3.6;
-			self::$browser = 'fx';
+			self::$name = 'fx';
 			self::$engine	= 'gecko';
 		}	
 		else if (strstr(self::$ua, 'firefox/3.5'))
 		{
 			self::$version = 3.5;
-			self::$browser = 'fx';
+			self::$name = 'fx';
 			self::$engine	= 'gecko';
 		}	
 		else if(preg_match('/firefox\/(\d+)/i', self::$ua, $array))
 		{
 			self::$version = $array[1];
-			self::$browser = 'fx';
+			self::$name = 'fx';
 			self::$engine	= 'gecko';
 		}
 		else if(preg_match('/opera(\s|\/)(\d+)/', self::$ua, $array))
 		{
 			self::$engine	= 'presto';
-			self::$browser = 'opera';
+			self::$name = 'opera';
 			self::$version = $array[2];
 		}
 		else if(strstr(self::$ua, 'konqueror'))
 		{
-			self::$browser = 'konqueror';
+			self::$name = 'konqueror';
 			self::$engine	= 'webkit';
 		}
 		else if(strstr(self::$ua, 'iron'))
 		{
-			self::$browser = 'iron';
+			self::$name = 'iron';
 			self::$engine	= 'webkit';
 		}
 		else if(strstr(self::$ua, 'chrome'))
 		{
-			self::$browser = 'chrome';
+			self::$name = 'chrome';
 			self::$engine	= 'webkit';
 			if(preg_match('/chrome\/(\d+)/i', self::$ua, $array)) self::$version = $array[1];
 		}
 		else if(strstr(self::$ua, 'applewebkit/'))
 		{
-			self::$browser = 'safari';
+			self::$name = 'safari';
 			self::$engine	= 'webkit';
 			if(preg_match('/version\/(\d+)/i', self::$ua, $array)) self::$version = $array[1];
 		}
 		else if(strstr(self::$ua, 'mozilla/'))
 		{
 			self::$engine	= 'gecko';
-			self::$browser = 'mozilla';
+			self::$name = 'fx';
 		}
 
 		// PLATEFORME
@@ -156,12 +159,20 @@ class browser
 		else if(strstr(self::$ua, 'freebsd')) self::$platform = 'freebsd';
 		else if(strstr(self::$ua, 'x11') || strstr(self::$ua, 'linux')) self::$platform = 'linux';
 
+		self::$mobile = (self::$platform == 'mobile') ? true : false;
+		self::$iphone = (in_array(self::$platform, array('ipod', 'iphone'))) ? true : false;
+		self::$ios		= (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
+
 		return array
 		(
-			'browser' => self::$browser,
-			'engine' => self::$engine,
-			'version' => self::$version,
-			'platform' => self::$platform
+			'name'		 => self::$name,
+			'engine'	 => self::$engine,
+			'version'	=> self::$version,
+			'platform' => self::$platform,
+			'agent'		=> self::$ua,
+			'mobile'	 => self::$mobile,
+			'iphone'	 => self::$iphone,
+			'ios'			=> self::$ios,
 		);
 	}
 }

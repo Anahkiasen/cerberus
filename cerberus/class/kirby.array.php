@@ -139,18 +139,11 @@ class a
 	// Shuffle un array en conservant les paires key/value
 	static function shuffle($array)
 	{
-		$aux	= array();
-		$keys 	= array_keys($array);
-		
-		shuffle($keys);
-		foreach($keys as $key)
-		{
-			$return[$key] = $array[$key];
-			unset($array[$key]);
-		}
-		return $return;
-	}
-	
+		$keys = array_keys($array); 
+		shuffle($keys); 
+		return array_merge(array_flip($keys), $array); 
+	} 
+  	
 	// Remplit un array avec le placeholder X
 	static function fill($array, $limit, $fill = 'placeholder')
 	{
