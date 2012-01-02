@@ -498,7 +498,7 @@ class db
 	static function error($message = NULL, $exit = FALSE)
 	{
 		$connection = self::connection();
-		$error = (mysql_error()) ? @mysql_error($connection) : false;
+		$error = (mysql_error() and $connection) ? @mysql_error($connection) : false;
 
 		if(self::$last_query and LOCAL) prompt(htmlentities(self::$last_query));
 		if($error) errorHandle('SQL', $error, __FILE__, __LINE__);
