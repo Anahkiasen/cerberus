@@ -27,7 +27,7 @@ table .additem,
 .readmore,
 .mosaique { background-color: @main }
 p.infoblock,
-div.cerberus_debug { background-color:@cerberus }
+div.cerberus_debug { background-color: @cerberus }
 
 /*
 ########################################
@@ -42,8 +42,8 @@ div.cerberus_debug
 {
 	margin: 0;
 	margin-bottom: 10px;
-	width:100%;
-	color:#FFF;
+	width: 100%;
+	color: #FFF;
 	text-align: center;
 	padding: 5px;
 	.font-noserif;
@@ -51,26 +51,26 @@ div.cerberus_debug
 div.cerberus_debug
 {
 	width: 75%;
-	margin:0 auto 15px;
+	margin: 0 auto 15px;
 	padding: 10px;
 	text-align: left;
 	
 	div
 	{
-		background-color:darken(@cerberus, 10%);
+		background-color: darken(@cerberus, 10%);
 		padding: 5px;
 		margin: 0;
 	}
 	h2, h3
 	{
 		margin: 5px 0 0;
-		color: white;
+		color: #FFF;
 	}
 	h3 { margin-bottom: 15px }
 	pre
 	{
-		background-color:darken(@cerberus, 10%);
-		margin: 10px 0 0 0;
+		background-color: darken(@cerberus, 10%);
+		margin: 10px 0 0;
 		padding: 15px;
 	}
 }
@@ -82,8 +82,8 @@ p.infoblock a
 a
 {
 	img { border: none }
-	&:hover p.infoblock { background-color:lighten(@cerberus, 10%); }
-	&:active p.infoblock { background-color:lighten(@cerberus, 20%); }
+	&:hover p.infoblock { background-color: lighten(@cerberus, 10%); }
+	&:active p.infoblock { background-color: lighten(@cerberus, 20%); }
 }
 p.readmore
 {
@@ -91,9 +91,9 @@ p.readmore
 	width: 100%;
 	margin: 10px auto 0;
 	
-	a { color: white }
-	&:hover	{ background-color:darken(@main, 10%); }
-	&:active { background-color:lighten(@main, 10%); }
+	a { color: #FFF }
+	&:hover	{ background-color: darken(@main, 10%); }
+	&:active { background-color: lighten(@main, 10%); }
 }
 .navbar
 {
@@ -105,7 +105,7 @@ p.readmore
 	a
 	{
 		padding: 5px 10px;
-		color: white;
+		color: #FFF;
 		
 		&:hover { background-color: lighten(@main, 10%) }
 		&:active { background-color: lighten(@main, 20%) }
@@ -113,7 +113,7 @@ p.readmore
 }
 .block
 {
-	color: white;
+	color: #FFF;
 	padding: 10px;
 	margin-bottom: 10px;
 }
@@ -130,9 +130,9 @@ p.readmore
 #left,
 #right
 {
-	margin:10px 0;
-	width:50%;
-	float: left;
+	margin: 10px 0;
+	width: 50%;
+	float: right;
 	text-align: justify;
 	.border-box;
 	
@@ -143,7 +143,11 @@ p.readmore
 	input[type=password],
 	select { width: 230px }
 }
-#left { padding-right: 30px }
+#left
+{
+	padding-right: 30px;
+	float: left;
+}
 
 /*
 ########################################
@@ -163,13 +167,13 @@ p.readmore
 			a:hover { color: #FFF }
 		}
 	}
-} 
-.admin #contenu table .additem td a { color:#FFF }
+}
+.admin #contenu table .additem td a { color: #FFF }
 .admin fieldset dl.textarea textarea
 {
 	left: 10px;
 }
-.admin dl.textarea dd { width:70%; }
+.admin dl.textarea dd { width: 70%; }
 
 /*
 ########################################
@@ -179,8 +183,8 @@ p.readmore
 
 table
 {
-	width:100%;
-	background:#EEE;
+	width: 100%;
+	background-color: #EEE;
 	
 	td
 	{
@@ -195,13 +199,13 @@ table
 	tr.entete td
 	{
 		.darken(25);
-		color:#FFF;
+		color: #FFF;
 		font-weight: 400;
-		text-align:center;
+		text-align: center;
 		
 		a
 		{
-			color:#FFF;
+			color: #FFF;
 			text-decoration: underline;
 		}
 	}
@@ -228,9 +232,11 @@ table
 ########################################
 */
 
+@formcolor: #666;
+
 form
 {
-	width:99%;
+	width: 99%;
 	& > input { padding: 5px }
 	
 	input[type=button],
@@ -241,9 +247,9 @@ form
 	textarea
 	{
 		border: none;
-		background-color: #666;
-		background:#666 url("@{path}background-45.png");
-		color:#FFF;
+		background-color: @formcolor;
+		background: @formcolor url("@{path}background-45.png");
+		color: #FFF;
 		.font-noserif;
 		font-size: 1em;
 		font-weight: 600;
@@ -260,21 +266,21 @@ form
 		width: auto;
 		position: static;
 		
-		&:hover { background-color: #999 }
-		&:active { background-color:#222 }
+		&:hover { background-color: lighten(@formcolor, 20%) }
+		&:active { background-color: darken(@formcolor, 20%) }
 	}
 	
 	/* Bouton valider */
 	input[type=submit]
 	{
 		border: none;
-		color:#FFF;
+		color: #FFF;
 		font-size: 12px;
 		margin: 10px;
 		padding: 5px;
 		padding-bottom: 10px;
 		text-align: center;
-		width:80%;
+		width: 80%;
 		.bouton();
 		
 		&:active
@@ -286,26 +292,26 @@ form
 		{
 			width: 30px;
 			position: relative;
-			left:-10px;
+			left: -10px;
 			top: -5px
 		}
 	}
 }
 fieldset
 {
-	background:#F7F7F7 url("@{path}background-45.png");
+	background: #F7F7F7 url("@{path}background-45.png");
 	border: none;
 	margin: auto;
 	padding: 0;
 	
 	legend
 	{
-		.darken(25);
-		color:#FFF;
+		background: darken(@main, 5%);
+		color: #FFF;
 		font-weight: 400;
-		letter-spacing:-1px;
+		letter-spacing: -1px;
 		padding: 10px;
-		width:100%;
+		width: 100%;
 		font-size: 1.1em;
 	}
 	label span.mandatory { color: red }
@@ -320,11 +326,11 @@ fieldset
 	}
 	dl
 	{
-		color:#666;
+		color: @formcolor;
 		margin: 0;
-		padding:13px 5px;
+		padding: 13px 5px;
 		position: relative;
-		width:100%;
+		width: 100%;
 		
 		&:hover
 		{
@@ -337,12 +343,10 @@ fieldset
 			select,
 			textarea
 			{
-				background-color:#444;
-				border: none;
+				background: darken(@formcolor, 10%) !important;
 				
-				&:focus {background-color: #222 }
+				&:focus {background-color: darken(@formcolor, 30%) }
 			}
-			select { border:5px solid #666 }
 		}
 		
 		/* Cas particuliers */
@@ -353,10 +357,10 @@ fieldset
 			&.submit p
 			{
 				margin: 0;
-				padding:0 5px;
+				padding: 0 5px;
 				position: static;
 			}
-			&.submit.submit:hover { background:#EEE }
+			&.submit.submit:hover { background: lighten(@formcolor, 50%) }
 		}
 		&.radio dd
 		{
@@ -372,7 +376,7 @@ fieldset
 			{
 				height: 190px;
 				top: 4px;
-				width:99%;
+				width: 99%;
 				padding: 20px;
 				right: -2px;
 				
@@ -381,14 +385,14 @@ fieldset
 		}
 		&.actualThumb
 		{
-			border:0 solid red;
+			border: 0 solid red;
 			height: 210px;
 			
 			a
 			{
 				.darken(25);
-				color:#FFF;
-				padding:5px 30px;
+				color: #FFF;
+				padding: 5px 30px;
 			
 				&:hover { .darken(50); }
 				&:active { .darken(75); }
@@ -398,7 +402,7 @@ fieldset
 			{
 				.darken(10);
 				margin: 10px;
-				padding:10px 10px 15px;
+				padding: 10px 10px 15px;
 			}
 		}
 		&.underfield dd
@@ -416,13 +420,13 @@ fieldset
 	input[type=file],
 	input[type=password]
 	{
-		padding:5px 10px;
+		padding: 5px 10px;
 		right: 3px;
 		top: 3px;
 	}
 	select
 	{
-		border:5px solid #666;
+		border: 5px solid @formcolor;
 		padding: 10px;
 		right: 3px;
 		
@@ -442,9 +446,12 @@ fieldset
 
 .chrome
 {
-	fieldset input { top: 0px }
-	fieldset select { top: -2px }
-	&.win fieldset select { background-color: #666 !important; }
+	fieldset
+	{
+		input { top: 0 }
+		select { top: -2px; }
+	}
+	&.win fieldset select { background-color: @formcolor !important; }
 }
 .ie
 {
