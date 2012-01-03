@@ -27,15 +27,15 @@ class dispatch extends Cerberus
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
-			$modules[$key] = $value = a::force_array($value);
+			$modules[$key] = $value = a::force_array($modules[$key]);
 			if(str::find(',', $key))
 			{
 				$keys = explode(',', $key);
 				foreach($keys as $pages)
 				{
 					$modules[$pages] = (isset($modules[$pages]))
-					? array_merge($value, $modules[$pages])
-					: $value;
+						? array_merge($value, $modules[$pages])
+						: $value;
 				}
 				unset($modules[$key]);
 			}
@@ -106,6 +106,7 @@ class dispatch extends Cerberus
 			if(!isset($dispath[$basename])) $dispath[$basename] = array();
 			array_push($dispath[$basename], $path);
 		}
+
 		$this->scripts = $this->dispatchArray($scripts);
 
 		// Récupération des différents scripts
