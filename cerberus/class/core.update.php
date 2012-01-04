@@ -25,7 +25,7 @@ class update
 			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 			self::update(355);
 		}
-		self::update(372);
+		self::update(373);
 	}
 	
 	// Met à jour le numéro de révision

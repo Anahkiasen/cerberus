@@ -141,7 +141,11 @@ p.readmore
 	fieldset dl.textarea dd { width: 55% }
 	input[type=text],
 	input[type=password],
-	select { width: 230px }
+	select
+	{
+		width: 230px;
+		&.dateForm { width: auto; }
+	}
 }
 #left
 {
