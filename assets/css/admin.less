@@ -1,4 +1,5 @@
 @import 'mixins.less';
+
 .admin
 {
 	.navbar
@@ -21,26 +22,27 @@
 		{
 			padding:3px 12px;
 			margin-right: 5px;
-			color:#FFF;
+			color: #FFF;
 			text-transform: lowercase;
 			.text-shadow(0, 2px, 0, rgba(0,0,0,0.25));
 			
+			@button: #338ccc; 
 			&:hover,
 			&.hover
 			{
 				padding: 3px 11px;
-				border: solid #353535;
+				border: solid hsl(0, 0, 20%);
 				border-width: 0 1px;
-				.lighten(10);
+				background-color: lighten(@main, 5%);
 				.box-shadow-inset(0, 2px, 5px, 0, rgba(0, 0, 0, 0.5));
 			}
 			&:active
 			{
-				background-color: #1873b3;
+				background-color: @button;
 				position: relative;
 				top: 1px;
 			} 
-			&.hover { .gradient-basic-vertical(#55a1d6, #1873b3) }
+			&.hover { .gradient-basic-vertical(desaturate(@button, 15%), saturate(@button, 15%)) }
 		}
 		.section
 		{

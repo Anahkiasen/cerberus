@@ -4,6 +4,9 @@ $newsAdmin->setPage('cerberus_news');
 $newsAdmin->createList(array('titre', 'date'));
 $newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 
+// Vidage du cache
+content::uncache('{news,actualite}');
+
 // Formulaire
 $form = new form(false, array('action' => rewrite(NULL, $urlAction)));
 $form->getValues($newsAdmin->getFieldsTable());

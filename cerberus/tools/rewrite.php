@@ -82,9 +82,9 @@ function rewrite($page = NULL, $params = NULL)
 		
 		if(!isset($pageHTML))
 			$pageHTML = a::get($meta, 'url', a::get($meta, 'titre', l::get('menu-'.$thisPage, NULL)));
-		
+
 		if($pageHTML)
-			$lien .= str::slugify($pageHTML, true). '.html';
+			$lien .= str::slugify($pageHTML). '.html';
 	}
 	
 	return $lien.$hash;

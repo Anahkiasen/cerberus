@@ -1,3 +1,8 @@
+/* Variables */
+@cerberus: #069;
+@path: "assets/css/";
+@import "main.less";
+
 .font-serif() { font-family: "Droid Serif", Georgia, "Times New Roman", Times, serif; }
 .font-noserif() { font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif; }
 .border-box()
@@ -111,6 +116,24 @@
 
 /* Dégradés */
 
+.gradient-auto-horizontal(@color: #333, @difference: 10%)
+{
+	@start: lighten(@color, @difference);
+	@end: darken(@color, @difference);
+	.gradient-basic-horizontal(@start, @end);
+}
+.gradient-auto-vertical(@color: #333, @difference: 10%)
+{
+	@start: lighten(@color, @difference);
+	@end: darken(@color, @difference);
+	.gradient-basic-vertical(@start, @end);
+}
+.gradient-auto-radial(@color: #333, @difference: 10%)
+{
+	@start: lighten(@color, @difference);
+	@end: darken(@color, @difference);
+	.gradient-radial(@start, @end);
+}
 .gradient-basic-horizontal(@start: #000, @end: #FFFFFF)
 {
 	background: @start;
@@ -144,7 +167,3 @@
 	background: radial-gradient(center, ellipse cover, @start 0%,@end 40%,@end 100%);
 	filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='@start', endColorstr='@end',GradientType=1 )";
 }
-
-/* Variables */
-@cerberus: #069;
-@path: "assets/css/";
