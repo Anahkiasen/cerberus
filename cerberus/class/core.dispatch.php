@@ -81,7 +81,7 @@ class dispatch extends Cerberus
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'lesscss' => 'http://lesscss.googlecode.com/files/less-1.1.5.min.js',
+		'lesscss' => 'http://lesscss.googlecode.com/files/less-1.2.0.min.js',
 		'colorbox' => 'jquery.colorbox-min',
 		'nivoslider' => 'jquery.nivo.slider.pack');
 		
@@ -153,7 +153,7 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if((!empty($this->LESS['min']) and LOCAL) or empty($this->CSS['min']))
+		if(empty($this->CSS['min']))
 		{
 			foreach($this->LESS['min'] as $thisfile)
 			{

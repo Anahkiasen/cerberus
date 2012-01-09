@@ -297,6 +297,7 @@ class str
 	static function email($email, $text = FALSE)
 	{
 		if(empty($email)) return false;
+		$email = (string)$email;
 		$string = (empty($text)) ? $email : $text;
 		$email	= self::encode($email, 3);
 		return '<a title="' .$email. '" class="email" href="mailto:' .$email. '">' .self::encode($string, 3). '</a>';

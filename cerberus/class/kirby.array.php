@@ -128,14 +128,6 @@ class a
 		return array_merge($start, (array)$element, $end);
 	}
 
-	// Extraire un champ d'un array multidimensionnel
-	static function extract($array, $key)
-	{
-		$output = array();
-		foreach($array as $a) if(isset($a[$key])) $output[] = $a[$key];
-		return $output;
-	}
-
 	// Shuffle un array en conservant les paires key/value
 	static function shuffle($array)
 	{
@@ -196,6 +188,71 @@ class a
 		}
 		return $output;
 	}
+		
+	// Implose un array via différentes glues (glue 1 autour de la valeur, glue 2 entre les entrées)
+	static function simplode($glue1, $glue2, $array, $escape = FALSE)
+	{
+		if(is_array($array))
+		{
+			if(empty($glue2))
+			{
+				// WIP
+			}
+			else
+			{
+				$plainedArray = array();
+				foreach($array as $key => $value)
+				{	
+					$value = ($escape) ? db::escape($value) : $value;
+					if(is_array($glue1)) $plainedArray[] = $key.$glue1[0].$value.$glue1[1];
+					else $plainedArray[] = $key.$glue1.$value;
+				}
+				return implode($glue2, $plainedArray);
+			}
+		}
+	}
+				
+	/*
+	########################################
+	###### ARRAYS MULTIDIMENSIONNELS #######
+	########################################
+	*/
+	
+	// Extraire un champ d'un array multidimensionnel
+	static function extract($array, $key)
+	{
+		$output = array();
+		foreach($array as $a) if(isset($a[$key])) $output[] = $a[$key];
+		return $output;
+	}
+	
+	// Récupère un chemin précis dans un array multidimensionnel
+	static function get_path($array, $path, $default = NULL)
+	{
+		if(!is_array($path)) $path = explode(' ', $path);
+		foreach($path as $pat)
+		{
+			if(isset($array[$pat])) $array = $array[$pat];
+			
+		}
+		
+		return $array;
+	}
+	
+	// Supprime un chemin precis dans un array
+	static function remove_path($array, $path)
+	{
+		$path = explode(' ', $path);
+		
+		$array_start = $array;
+		$array = self::get_path($array, $path);
+		
+		asort($path);
+		foreach($path as $pat)
+			$array = array($pat => $array);
+		
+		return a::get(self::array_diff_assoc_multi($array_start, $array), 0);
+	}
 	
 	// Trie un array multidimensionnel par une sous-clé
 	static function subsort($array, $index, $order = 'ASC', $natsort = TRUE, $case_sensitive = FALSE) 
@@ -231,29 +288,6 @@ class a
 		return $array;
 	}
 	
-	// Implose un array via différentes glues (glue 1 autour de la valeur, glue 2 entre les entrées)
-	static function simplode($glue1, $glue2, $array, $escape = FALSE)
-	{
-		if(is_array($array))
-		{
-			if(empty($glue2))
-			{
-				// WIP
-			}
-			else
-			{
-				$plainedArray = array();
-				foreach($array as $key => $value)
-				{	
-					$value = ($escape) ? db::escape($value) : $value;
-					if(is_array($glue1)) $plainedArray[] = $key.$glue1[0].$value.$glue1[1];
-					else $plainedArray[] = $key.$glue1.$value;
-				}
-				return implode($glue2, $plainedArray);
-			}
-		}
-	}
-	
 	// Applatit un array multidimensionnel
 	static function array_flatten($array, $return)
 	{
@@ -265,6 +299,46 @@ class a
 		return $return;
 	}
 	
+	// Extension de la fonction array_diff_assoc pour fonctionner avec les arays multidimensionnels
+	static function array_diff_assoc_multi($array1, $array2)
+	{ 
+		$diff = false; 
+		// Left-to-right 
+		foreach($array1 as $key => $value)
+		{ 
+			if(!array_key_exists($key, $array2)) $diff[0][$key] = $value; 
+			elseif(is_array($value))
+			{ 
+				if(!is_array($array2[$key]))
+				{ 
+					$diff[0][$key] = $value; 
+					$diff[1][$key] = $array2[$key]; 
+				}
+				else
+				{ 
+					$new = self::array_diff_assoc_multi($value, $array2[$key]); 
+					if($new !== false)
+					{ 
+						if (isset($new[0])) $diff[0][$key] = $new[0]; 
+						if (isset($new[1])) $diff[1][$key] = $new[1]; 
+					}
+				}
+			}
+			elseif($array2[$key] !== $value)
+			{ 
+				$diff[0][$key] = $value; 
+				$diff[1][$key] = $array2[$key]; 
+			}
+		} 
+		
+		// Right-to-left 
+		foreach($array2 as $key => $value)
+		{ 
+			if(!array_key_exists($key, $array1)) $diff[1][$key] = $value; 
+		}
+		return $diff;
+	} 	
+		
 	/*
 	########################################
 	########## EXPORTER UN ARRAY ###########
