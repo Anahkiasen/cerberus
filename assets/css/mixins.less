@@ -61,9 +61,7 @@
 	&:active
 	{
 		.gradient-basic-vertical(darken(@baselight, 10%), darken(@basedark, 10%));
-		-webkit-box-shadow: none;
-		-moz-box-shadow: none;
-		box-shadow: none;
+		.box-shadow-none;
 	}
 }
 
@@ -75,7 +73,25 @@
 	-moz-border-radius: @border-radius;
 	border-radius: @border-radius;
 }
-.round(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0)
+.round(@top: 10px, @bottom: 10px)
+{
+	-webkit-border-top-right-radius: @top;
+	-webkit-border-bottom-right-radius: @bottom;
+	-webkit-border-bottom-left-radius: @bottom;
+	-webkit-border-top-left-radius: @top;
+	-moz-border-radius-topright: @top;
+	-moz-border-radius-bottomright: @bottom;
+	-moz-border-radius-bottomleft: @bottom;
+	-moz-border-radius-topleft: @top;
+	border-top-right-radius: @top;
+	border-bottom-right-radius: @bottom;
+	border-bottom-left-radius: @bottom;
+	border-top-left-radius: @top;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box; 
+}
+.round(@topright: 10px, @bottomright: 10px, @bottomleft: 10px, @topleft: 10px)
 {
 	-webkit-border-top-right-radius: @topright;
 	-webkit-border-bottom-right-radius: @bottomright;
