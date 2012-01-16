@@ -86,7 +86,7 @@ class dispatch extends Cerberus
 		'nivoslider' => 'jquery.nivo.slider.pack');
 		
 		$this->JS = $this->CSS = $this->LESS = array('min' => array());
-		$path = (isset($switcher)) ? $switcher->path() : NULL;
+		$path = (isset($switcher)) ? $switcher->current() : NULL;
 				
 		// Mise en array des différents scripts
 		a::force_array($scripts['*']);
