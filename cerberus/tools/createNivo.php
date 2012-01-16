@@ -8,7 +8,7 @@
 	@ timthumb
 	
 	$path
-		Chemin vers le dossier contenant les images
+		Chemin vers le dossier contenant les images et ID du block
 	$largeur
 		Largeur de la galerie
 	$hauteur
@@ -18,10 +18,10 @@
 	$shuffle
 		Mélange ou non l'ordre des images trouvées dans le dossier
 */
-function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
+function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 {
 	global $dispatch;
-	
+		
 	if(str::find('%', $largeur))
 	{
 		$largeur = str_replace('%', '', $largeur);
@@ -32,8 +32,10 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 		$hauteur = str_replace('%', '', $hauteur);
 		$hauteur = floor($largeur * ($hauteur / 100));
 	}
+	
+	$idblock = str::slugify($path);
 
-	echo '<div id="' .$path. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">'.PHP_EOL;
+	echo '<div id="' .$idblock. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">'.PHP_EOL;
 	$arrayImages = glob('assets/file/' .$path. '/*.jpg');
 	if($shuffle) shuffle($arrayImages);
 	foreach($arrayImages as $file)
@@ -43,6 +45,6 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = true)
 	}
 	echo '</div>'.PHP_EOL;
 	
-	$dispatch->addJS('$("#' .$path. '").nivoSlider(' .$options. ');');
+	$dispatch->addJS('$("#' .$idblock. '").nivoSlider(' .$options. ');');
 }
 ?>

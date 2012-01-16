@@ -134,6 +134,8 @@ class dispatch extends Cerberus
 			}
 			else unset($this->scripts[$key]);
 		}
+		
+		if(isset($this->JS['url'])) $this->JS['url'] = array_unique($this->JS['url']);
 		return $this->scripts;
 	}
 	
