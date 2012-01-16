@@ -148,9 +148,9 @@ class a
 	}
 	
 	// Simplifie un array
-	static function simple($array)
+	static function simple($array, $disarray = true)
 	{
-		if(count($array) == 1)
+		if(count($array) == 1 and $disarray)
 		{
 			$output = self::get(array_values($array), 0);
 			if(is_array($output)) $output = self::simple($output);
@@ -377,9 +377,7 @@ class a
 					}
 					$mtags = true;
 				}
-				if(!$mtags && count($value) > 0) {
-					$result .= self::xml($value, $key, $head, $charset, $tab, $nlevel);
-				}
+				if(!$mtags && count($value) > 0) $result .= self::xml($value, $key, $head, $charset, $tab, $nlevel);
 			} 
 			else if(trim($value) != '')
 			{

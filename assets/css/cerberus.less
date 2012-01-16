@@ -156,25 +156,28 @@ p.readmore
 ########################################
 */
 
-.admin table
+.admin
 {
-	.selected { background-color: #D6DBBD }
-	.additem
+	table
 	{
-		.bouton();
-		td
+		.selected { background-color: #D6DBBD }
+		.additem
 		{
-			text-align: center;
-			a:hover { color: #FFF }
+			.bouton();
+			td
+			{
+				text-align: center;
+				a:hover { color: #FFF }
+			}
 		}
 	}
+	#contenu table .additem td a { color: #FFF }
+	fieldset dl.textarea
+	{
+		textarea { left: 10px }
+		dd { width: 70% }
+	}
 }
-.admin #contenu table .additem td a { color: #FFF }
-.admin fieldset dl.textarea textarea
-{
-	left: 10px;
-}
-.admin dl.textarea dd { width: 70% }
 
 /*
 ########################################

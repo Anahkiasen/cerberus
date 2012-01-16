@@ -1,24 +1,14 @@
-// VARIABLES //
+//////////////////// COULEURS //////////////////// 
+
 @cerberus: #069;
 @import "main";
 
-// Polices //
+//////////////////// POLICES //////////////////// 
 
-.font-serif() { font-family: "Droid Serif", Georgia, "Times New Roman", Times, serif; }
-.font-noserif() { font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif; }
+.font-serif() { font-family: "Droid Serif", Georgia, "Times New Roman", Times, serif }
+.font-noserif() { font-family: "Open Sans", Helvetica, Geneva, Arial, sans-serif }
 
-// Couleurs //
-
-.rgba-white(@opacity: 0.5)
-{
-	background-color: rgba(255, 255, 255, @opacity/100);
-}
-.rgba-black(@opacity: 0.5)
-{
-	background-color: rgba(0, 0, 0, @opacity/100);
-}
-
-// Propriétés //
+//////////////////// PROPRIETES //////////////////// 
 
 .border-box()
 {
@@ -44,36 +34,39 @@
 }
 .bouton(@color: @main)
 {
-	@baselight: lighten(@color, 10%);
-	@basedark: 	darken(@color, 10%);
+	@baselight: lighten(@color, 10);
+	@basedark: 	darken(@color, 10);
+	@bordure: 5px;
 	
 	cursor: pointer;
 	.gradient-basic-vertical(@baselight, @basedark);
-	.text-shadow(0, 2px, 0, darken(@color, 10%));
-	.box-shadow-inset(0, -5px, 0, 0, darken(@color, 20%));
-	border: 1px solid darken(@color, 10%);
+	.text-shadow(0, 2px, 0, darken(@color, 25));
+	.box-shadow(0, @bordure, 0, 0, darken(@color, 20));
+	border: 1px solid darken(@color, 10);
 	
 	&:hover
 	{
-		.gradient-basic-vertical(saturate(@baselight, 10%), saturate(@basedark, 10%));
-		.box-shadow-inset(0, -5px, 0, 0, saturate(darken(@color, 20%), 10%));
+		.gradient-basic-vertical(lighten(@baselight, 10%), lighten(@basedark, 10));
+		.box-shadow(0, @bordure, 0, 0, lighten(darken(@color, 20%), 10));
 	}
 	&:active
 	{
-		.gradient-basic-vertical(darken(@baselight, 10%), darken(@basedark, 10%));
+		position: relative;
+		top: @bordure;
+		.gradient-basic-vertical(darken(@baselight, 10%), darken(@basedark, 10));
 		.box-shadow-none;
 	}
 }
 
-// Arrondis //
+//////////////////// ARRONDIS //////////////////// 
 
-.round(@border-radius: 10px)
+.round(@border-radius)
 {
 	-webkit-border-radius: @border-radius;
 	-moz-border-radius: @border-radius;
 	border-radius: @border-radius;
 }
-.round(@top: 10px, @bottom: 10px)
+.round(@top, @bottom)
 {
 	-webkit-border-top-right-radius: @top;
 	-webkit-border-bottom-right-radius: @bottom;
@@ -91,7 +84,7 @@
 	-webkit-background-clip: padding-box;
 	background-clip: padding-box; 
 }
-.round(@topright: 10px, @bottomright: 10px, @bottomleft: 10px, @topleft: 10px)
+.round(@topright, @bottomright, @bottomleft, @topleft)
 {
 	-webkit-border-top-right-radius: @topright;
 	-webkit-border-bottom-right-radius: @bottomright;
@@ -114,7 +107,39 @@
 	.round(0px);
 }
 
-// Ombres //
+//////////////////// OMBRES //////////////////// 
+
+// Ombres automatiques
+@default_size: 2px;
+@default_opacity: 75;
+
+.text-drop (@color, @size: @default_size) when (lightness(@color) >= 50%)
+{
+	color: @color;
+	.text-shadow(@size, @size, 0, fadeout(black, @default_opacity));
+}
+.text-drop (@color, @size: @default_size) when (lightness(@color) < 50%)
+{
+	color: @color;
+	.text-shadow(@size, @size, 0, fadeout(black, @default_opacity));
+}
+.text-drop (@color, @sizex, @sizey) when (lightness(@color) >= 50%)
+{
+	color: @color;
+	.text-shadow(@sizex, @sizey, 0, fadeout(black, @default_opacity));
+}
+.text-drop (@color, @sizex, @sizey) when (lightness(@color) < 50%)
+{
+	color: @color;
+	.text-shadow(@sizex, @sizey, 0, fadeout(black, @default_opacity));
+}
+
+// Ombre manuelle
+.text-drop(@color, @shadow, @size) when (iscolor(@shadow))
+{
+	color: @color;
+	.text-shadow(@size, @size, 0, fadeout(@shadow, @default_opacity));
+}
 
 .text-shadow(@x: 0, @y: 0, @blur: 1px, @color: #000)
 {
@@ -125,6 +150,10 @@
 {
 	filter: none;
 	text-shadow: none;
+}
+.box-shadow(@blur, @color)
+{
+	.box-shadow(0, 0, @blur, 0, @color);
 }
 .box-shadow(@x: 0, @y: 0, @blur: 1px, @spread: 0, @color: #000)
 {
@@ -145,7 +174,7 @@
 	box-shadow: none;
 }
 
-// Transformations //
+//////////////////// TRANSFORMATIONS //////////////////// 
 
 .rotate(@deg: 9deg)
 {	
@@ -155,25 +184,91 @@
 	-o-transform: rotate(@deg);
 	transform: rotate(@deg);
 }
+.translate(@move_x: 10px, @move_y: 10px)
+{
+    -webkit-transform: translate(@move_x, @move_y);
+    -moz-transform: translate(@move_x, @move_y);
+    -o-transform: translate(@move_x, @move_y);
+    -ms-transform:translate(@move_x, @move_y);
+    transform: translate(@move_x, @move_y);
+}
+.skew(@angle_x: 35, @angle_y: 0)
+{
+    -webkit-transform: skew(formatstring("{0}deg", @angle_x), formatstring("{0}deg", @angle_y));
+    -moz-transform: skew(formatstring("{0}deg", @angle_x), formatstring("{0}deg", @angle_y));
+    -o-transform: skew(formatstring("{0}deg", @angle_x), formatstring("{0}deg", @angle_y));
+    -ms-transform: skew(formatstring("{0}deg", @angle_x), formatstring("{0}deg", @angle_y));
+    transform: skew(formatstring("{0}deg", @angle_x), formatstring("{0}deg", @angle_y));
+}
+.scale(@scale_x: 1)
+{
+    -webkit-transform: scale(@scale_x);
+    -moz-transform: scale(@scale_x);
+    -o-transform: scale(@scale_x);
+    -ms-transform: scale(@scale_x);
+    transform: scale(@scale_x);
+}
+.flipX()
+{
+	-moz-transform: scaleX(-1);
+	-o-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+	filter: FlipH;
+}
+.flipY()
+{
+	-moz-transform: scaleY(-1);
+	-o-transform: scaleY(-1);
+	-webkit-transform: scaleY(-1);
+	transform: scaleY(-1);
+	filter: FlipV;
+}
+.flip180()
+{
+	-moz-transform: scaleX(-1) scaleY(-1);
+	-o-transform: scaleX(-1) scaleY(-1);
+	-webkit-transform: scaleX(-1) scaleY(-1);
+	transform: scaleX(-1) scaleY(-1);
+	filter: FlipH FlipV;
+}
+.transition(@range: all, @time: 1s, @ease: ease-in-out)
+{
+    -moz-transition: @range @time @ease;
+    -webkit-transition: @range @time @ease;
+    -o-transition: @range @time @ease;
+    transition: @range @time @ease;
+}
+.transition(@time)
+{
+	.transition(all, @time);
+}
+@transition: 0.3s;
 
-// Dégradés //
+//////////////////// GRADIENTS //////////////////// 
 
 .gradient-auto-horizontal(@color: @main, @difference: 10%)
 {
 	@start: lighten(@color, @difference);
 	@end: darken(@color, @difference);
 	.gradient-basic-horizontal(@start, @end);
+	border-top: 1px solid lighten(@color, @difference+10);
+	border-bottom: 1px solid darken(@color, @difference+10);
 }
 .gradient-auto-vertical(@color: @main, @difference: 10%)
 {
 	@start: lighten(@color, @difference);
 	@end: darken(@color, @difference);
 	.gradient-basic-vertical(@start, @end);
+	border-top: 1px solid lighten(@color, @difference+10);
+	border-bottom: 1px solid darken(@color, @difference+10);
 }
 .gradient-auto-radial(@color: @main, @difference: 10%)
 {
 	@start: lighten(@color, @difference);
 	.gradient-radial(@color, @start);
+	border-top: 1px solid lighten(@color, @difference+10);
+	border-bottom: 1px solid darken(@color, @difference+10);
 }
 .gradient-basic-horizontal(@start: #000, @end: #FFF)
 {
@@ -208,6 +303,8 @@
 	background: radial-gradient(center, ellipse cover,  @start 0%,@end 100%);
 	filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start}', endColorstr='@{end}',GradientType=1)";
 }
+
+//////////////////// CUSTOM //////////////////// 
 
 .lighten(@light: 50)
 {

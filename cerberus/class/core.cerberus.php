@@ -196,7 +196,7 @@ class Cerberus
 			$title_prefix = ($pageVoulue == 'admin' and get('admin'))
 				? 'Gestion ' .ucfirst(get('admin'))
 				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
-				
+
 			if(isset($meta[$current][$mode]) and !empty($meta[$current][$mode]))
 			{
 				if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre']) $meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];

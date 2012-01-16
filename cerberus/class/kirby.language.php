@@ -31,8 +31,8 @@ class l
 			{
 				// Récupération de la base de langues
 				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
-				$index = a::simple(a::rearrange($index, 'tag', true));
-
+				$index = a::simple(a::rearrange($index, 'tag', true), false);
+				
 				if(isset($index) and !empty($index))
 				{
 					self::$lang = $index;

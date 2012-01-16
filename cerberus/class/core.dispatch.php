@@ -81,7 +81,7 @@ class dispatch extends Cerberus
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'lesscss' => 'http://lesscss.googlecode.com/files/less-1.2.0.min.js',
+		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.1.min.js',
 		'colorbox' => 'jquery.colorbox-min',
 		'nivoslider' => 'jquery.nivo.slider.pack');
 		
@@ -153,7 +153,7 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if(empty($this->CSS['min']))
+		if(LOCAL and !empty($this->LESS['min']))
 		{
 			foreach($this->LESS['min'] as $thisfile)
 			{
@@ -161,8 +161,8 @@ class dispatch extends Cerberus
 				$this->CSS['min'] = a::splice($this->CSS['min'], str_replace('.less', '.css', $thisfile));
 			}
 			echo '
-			<script>var less = {env: "development"};</script>
-			<script src="' .$this->availableAPI['lesscss']. '" type="text/javascript"></script>' . "\n";
+			<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>
+			<script type="text/javascript">less.watch();</script>' . "\n";
 		}
 		
 		// CSS

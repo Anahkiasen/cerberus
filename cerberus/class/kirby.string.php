@@ -12,8 +12,7 @@ class str
 	{
 		if(is_array($string)) return $string;
 		
-		$string = ltrim($string, $separator);
-		$string = rtrim($string, $separator);
+		$string = trim($string, $separator);
 		$parts  = explode($separator, $string);
 		$out    = array();
 		
@@ -407,9 +406,9 @@ class str
 	{
 		$encoded = '';
 		$length	= str::length($string);
-		for($i = 0; $i<$length; $i++) {
+		for($i = 0; $i < $length; $i++)
 			$encoded .= (rand(1,2)==1) ? '&#' . ord($string[$i]) . ';' : '&#x' . dechex(ord($string[$i])) . ';';
-		}
+
 		return $encoded;
 	}
 
@@ -461,7 +460,8 @@ class str
 		return strstr($str, $needle);
 	}
 
-	static function match($string, $preg, $get = false, $placeholder = false) {
+	static function match($string, $preg, $get = false, $placeholder = false)
+	{
 		$match = preg_match($preg, $string, $array);
 		if(!$match) return false;
 		if(!$get) return $array;
@@ -470,7 +470,6 @@ class str
 
 	static function sanitize($string, $type = 'str', $default = NULL)
 	{
-
 		$string = stripslashes((string)$string);
 		$string = urldecode($string);
 		$string = str::utf8($string);
