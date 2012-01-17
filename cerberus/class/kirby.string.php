@@ -106,6 +106,12 @@ class str
 		return mb_strtoupper($str, 'UTF-8');
 	}
 	
+	// Met un chiffre à deux numéros
+	static function twonum($number)
+	{
+		return str_pad($number, 2, "0", STR_PAD_LEFT);
+	}
+	
 	// Transforme une chaîne en HTML valide
 	static function html($string, $keep_html = true)
 	{

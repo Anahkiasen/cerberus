@@ -94,8 +94,12 @@ class dispatch extends Cerberus
 		a::force_array($scripts[$this->global]);
 				
 		// Fichiers par défaut
-		$bootstrap = config::get('bootstrap', TRUE) ? 'bootstrap' : 'styles';
-		array_push($scripts['*'], $bootstrap, 'core');
+		$scripts['*'][] = 'core';
+		$scripts['*'] += config::get('bootstrap', TRUE)
+			? array(99 => 'bootstrap')
+			: array(99 => 'cerberus', 98 => 'styles');
+		a::show($scripts);
+		
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
 
