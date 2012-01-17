@@ -30,3 +30,4 @@ $dispatch->getAPI(array());
 	<? $dispatch->getJS() ?>
 </body>
 </html>
+<? content::cache_end() ?>

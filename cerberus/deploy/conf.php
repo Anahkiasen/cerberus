@@ -8,7 +8,7 @@ $config['logs'] = FALSE;
 $config['cerberus'] = array();
 
 // Langues
-$config['multilangue'] = TRUE;
+$config['multilangue'] = FALSE;
 $config['langue_default'] = 'fr';
 $config['langues'] = array('fr');
 
@@ -16,15 +16,15 @@ $config['langues'] = array('fr');
 $config['local.host'] = 'localhost';
 $config['local.user'] = 'root';
 $config['local.password'] = 'root';
-$config['local.name'] = '';
+$config['local.name'] = NULL;
 
-$config['db.host'] = '';
-$config['db.user'] = '';
-$config['db.password'] = '';
-$config['db.name'] = '';
+$config['db.host'] = NULL;
+$config['db.user'] = NULL;
+$config['db.password'] = NULL;
+$config['db.name'] = NULL;
 
 // Variables
-$config['sitename'] = '';
-$config['http'] = '';
-$config['mail'] = '';
+$config['sitename'] = NULL;
+$config['http'] = NULL;
+$config['mail'] = NULL;
 ?>

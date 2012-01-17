@@ -106,7 +106,6 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_
 ##### PARAMETRES CURRENT DU SITE #######
 ########################################
 */
-
 // Gestion des langues
 timer::save('logs').timer::start('langue');
 if(MULTILANGUE and SQL) $index = new l();

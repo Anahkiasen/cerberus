@@ -7,25 +7,34 @@ class update
 	function __construct()
 	{
 		self::$revision = (LOCAL) ? config::get('revision.local') : config::get('revision.online');
-		
-		if(self::$revision < 353)
+
+		if(SQL)
 		{
-			if(!in_array('account', db::fields('cerberus_admin')))
+			// Mises à jour de la base
+			if(self::$revision < 353)
 			{
-				$utilisateur = db::row('cerberus_admin', '*');
-				$utilisateur['account'] = 'stappler';
-				self::table('cerberus_admin');
-				db::insert('cerberus_admin', $utilisateur);
+				if(!in_array('account', db::fields('cerberus_admin')))
+				{
+					$utilisateur = db::row('cerberus_admin', '*');
+					$utilisateur['account'] = 'stappler';
+					self::table('cerberus_admin');
+					db::insert('cerberus_admin', $utilisateur);
+				}
+				self::update(353);
 			}
-			self::update(353);
+			if(self::$revision < 355)
+			{
+				db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
+				db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
+				self::update(355);
+			}
 		}
-		if(self::$revision < 355)
+		else
 		{
-			db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
-			db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
-			self::update(355);
+			// Mises à jour sans SQL
 		}
-		self::update(381);
+		
+		self::update(383);
 	}
 	
 	// Met à jour le numéro de révision
@@ -33,14 +42,25 @@ class update
 	{
 		if(self::$revision < $torev)
 		{
+			$config_file = 'cerberus/conf.php';
 			$rev = LOCAL ? 'revision.local' : 'revision.online';
-			$confphp = f::read('cerberus/conf.php');
-			$confphp = preg_replace(
-				'#\$config\[\'(' .$rev. ')\'\] = (.+);#',
-				'$config[\'$1\'] = ' .$torev. ';',
-				$confphp);
-			f::write('cerberus/conf.php', $confphp);
-			prompt('Mise à jour ' .$torev. ' effectuée');
+			
+			// Fichier config
+			$confphp = f::read($config_file);
+			if(!empty($confphp)) $confphp = trim(substr($confphp, 5, -2));
+			
+			$confphp = 
+				(!str::find($rev, $confphp))
+					? $confphp . '$config[\'' .$rev. '\'] = ' .$torev. ';'
+					
+					: preg_replace(
+						'#\$config\[\'(' .$rev. ')\'\] = (.+);#',
+						'$config[\'$1\'] = ' .$torev. ';',
+						$confphp);
+			$confphp = '<?php' .PHP_EOL.$confphp.PHP_EOL. '?>';
+			
+			if(f::write($config_file, $confphp)) prompt('Mise à jour ' .$torev. ' effectuée');
+			else prompt('Erreur lors de la mise-à-jour vers ' .$torev);
 		}
 	}
 

@@ -1,0 +1,81 @@
+/*
+########################################
+######### CERBERUS BLOCKS ##############
+########################################
+*/
+
+p.infoblock,
+p.readmore,
+div.cerberus_debug
+{
+	background-color: @cerberus;
+	margin: 0;
+	margin-bottom: 10px;
+	width: 100%;
+	color: #FFF;
+	text-align: center;
+	padding: 5px;
+	.font-noserif;
+}
+div.cerberus_debug
+{
+	width: 75%;
+	margin: 0 auto 15px;
+	padding: 10px;
+	text-align: left;
+	
+	div
+	{
+		background-color: darken(@cerberus, 10%);
+		padding: 5px;
+		margin: 0;
+	}
+	h2, h3
+	{
+		margin: 5px 0 0;
+		color: #FFF;
+	}
+	h3 { margin-bottom: 15px }
+	pre
+	{
+		background-color: darken(@cerberus, 10%);
+		margin: 10px 0 0;
+		padding: 15px;
+	}
+}
+p.infoblock
+{
+	background-color: @main;
+	
+	a
+	{
+		color: #FFF;
+		text-decoration: underline;
+	}
+}
+p.readmore
+{
+	clear: both;
+	width: 100%;
+	margin: 10px auto 0;
+	
+	a { color: #FFF }
+	&:hover	{ background-color: darken(@main, 10%) }
+	&:active { background-color: lighten(@main, 10%) }
+}
+.navbar
+{
+	text-align: center;
+	padding: 5px 0;
+	width: 100%;
+	margin: 0 auto;
+	
+	a
+	{
+		padding: 5px 10px;
+		color: #FFF;
+		
+		&:hover { background-color: lighten(@main, 10%) }
+		&:active { background-color: lighten(@main, 20%) }
+	}
+}
