@@ -84,6 +84,10 @@ class dispatch extends Cerberus
 		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.1.min.js',
 		'colorbox' => 'jquery.colorbox-min',
 		'nivoslider' => 'jquery.nivo.slider.pack');
+	
+		// Boostrap
+		$boostrap = glob('assets/js/bootstrap-*.js');
+		foreach($boostrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
 		$this->JS = $this->CSS = $this->LESS = array('min' => array());
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
@@ -98,7 +102,6 @@ class dispatch extends Cerberus
 		$scripts['*'] += config::get('bootstrap', TRUE)
 			? array(99 => 'bootstrap')
 			: array(99 => 'cerberus', 98 => 'styles');
-		a::show($scripts);
 		
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
@@ -124,7 +127,7 @@ class dispatch extends Cerberus
 				{
 					$API = $this->availableAPI[$value];
 					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
-					if(str::find('http', $API)) $this->JS['url'][] = $API;
+					if(str::find(array('http', 'bootstrap'), $API)) $this->JS['url'][] = $API;
 					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js');
 				}
 				else

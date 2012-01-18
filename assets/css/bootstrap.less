@@ -1,7 +1,7 @@
 /*!
  * Bootstrap @VERSION
  *
- * Copyright 2011 Twitter, Inc
+ * Copyright 2012 Twitter, Inc
  * Licensed under the Apache License v2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -13,18 +13,54 @@
 @import '../lib/reset';
 
 // Core variables and mixins
-@import '../lib/variables';
+@import '../lib/variables'; // Modify this for custom colors, font-sizes, etc
 @import '../lib/variables_custom';
 @import '../lib/mixins';
 
 // Grid system and page structure
 @import '../lib/scaffolding';
 
-// Styled patterns and elements
+// Base CSS
 @import '../lib/type';
 @import '../lib/forms';
 @import '../lib/tables';
-@import '../lib/patterns';
+
+// Components: common
+@import '../lib/sprites';
+@import '../lib/dropdowns';
+@import '../lib/wells';
+@import '../lib/component-animations';
+@import '../lib/close';
+
+// Components: Nav
+@import '../lib/navbar';
+@import '../lib/navs';
+@import '../lib/breadcrumbs';
+@import '../lib/pagination';
+@import '../lib/pager';
+
+// Components: Popovers
+@import '../lib/modals';
+@import '../lib/tooltip';
+@import '../lib/popovers';
+
+// Components: Buttons & Alerts
+@import '../lib/buttons';
+@import '../lib/button-groups';
+@import '../lib/alerts'; // Note: alerts share common CSS with buttons and thus have styles in buttons.less
+
+// Components: Misc
+@import '../lib/thumbnails';
+@import '../lib/labels';
+@import '../lib/progress-bars';
+@import '../lib/accordion';
+@import '../lib/carousel';
+
+// Utility classes
+@import '../lib/utilities'; // Has to be last to override when necessary
+
+// Responsive
+@import '../lib/responsive';
 
 // Cerberus
 @import '../lib/cerberus';
