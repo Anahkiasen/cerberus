@@ -66,10 +66,7 @@
 
 .border-box()
 {
-  -moz-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+  .box-sizing: border-box;
 }
 
 // IE7 inline-block
@@ -176,6 +173,7 @@
 {
   -webkit-box-sizing: @boxmodel;
      -moz-box-sizing: @boxmodel;
+      -ms-box-sizing: @boxmodel;
           box-sizing: @boxmodel;
 }
 
@@ -376,8 +374,33 @@
 }
 
 // Gradients
+@diff: 5%;
 #gradient
 {
+  #auto
+  {    
+    .vertical(@color, @difference: @diff)
+    {
+      #gradient .vertical(lighten(@color, @difference), darken(@color, @difference));
+      border-top: 1px solid lighten(@color, @difference+20);
+      border-bottom: 1px solid darken(@color, @difference+20);    
+    }
+    
+    .horizontal(@color, @difference: @diff)
+    {
+      #gradient .horizontal(lighten(@color, @difference), darken(@color, @difference));
+      border-top: 1px solid lighten(@color, @difference+20);
+      border-bottom: 1px solid darken(@color, @difference+20);    
+    }
+     
+    .radial(@color, @difference: @diff)
+    {
+      #gradient .radial(lighten(@color, @difference), darken(@color, @difference));
+      border-top: 1px solid lighten(@color, @difference+20);
+      border-bottom: 1px solid darken(@color, @difference+20);    
+    }  
+  }
+  
   .horizontal(@startColor: #555, @endColor: #333)
   {
     background-color: @endColor;

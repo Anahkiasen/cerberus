@@ -17,6 +17,7 @@ s::start();
 ############# ENVIRONNEMENT ############
 ########################################
 */
+
 // Configuration du site
 timer::save().timer::start('config');
 if(!file_exists($config_file)) f::write($config_file, NULL);
