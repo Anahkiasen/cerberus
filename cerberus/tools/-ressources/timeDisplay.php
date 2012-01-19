@@ -13,7 +13,7 @@ function timeDisplay($time, $input = 'S', $displayHour = true)
 	$time -= $minutes * 60;
 	$seconds = $time;
 	
-	if($displayHour) return numPad($hour). ':' .numPad($minutes). ':' .numPad($seconds);
-	else return numPad($minutes). ':' .numPad($seconds);
+	if($displayHour) return str::twonum($hour). ':' .str::twonum($minutes). ':' .str::twonum($seconds);
+	else return str::twonum($minutes). ':' .str::twonum($seconds);
 }
 ?>

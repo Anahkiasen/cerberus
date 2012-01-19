@@ -101,6 +101,7 @@ $userAgent = browser::css();
 // Ajout des balises HTML averc leur selecteur correct
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
+if(!file_exists('assets/lib/variables_custom.less')) f::write('assets/lib/variables_custom.less', '@main: #069');
 
 /*
 ########################################
