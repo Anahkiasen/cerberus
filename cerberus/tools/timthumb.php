@@ -4,7 +4,7 @@
 	# Recadre et redimensionne une image
 	
 	$file
-		Image de base, placée dans le dossier assets/file/
+		Image de base, placÃ©e dans le dossier assets/file/
 	$width
 		Largeur voulue
 	$height
@@ -12,9 +12,9 @@
 	$crop
 		Recadrer ou non
 	$quality
-		Qualité de l'image
+		QualitÃ© de l'image
 	$sharpen
-		Renforcer la netteté ou non
+		Renforcer la nettetÃ© ou non
 */
 function timthumb($file, $width = NULL, $height = NULL, $crop = NULL, $quality = NULL, $sharpen = NULL)
 {
@@ -29,6 +29,6 @@ function timthumb($file, $width = NULL, $height = NULL, $crop = NULL, $quality =
 		? realpath('assets/file/' .$file)
 		: 'assets/file/' .$file;
 
-	return 'cerberus/class/class.timthumb.php?src=' .$file. '&' .a::simplode('=', '&', $params);
+	return 'cerberus/class/svn.timthumb.php?src=' .$file. '&' .a::simplode('=', '&', $params);
 }
 ?>

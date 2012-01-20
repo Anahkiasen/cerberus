@@ -34,7 +34,7 @@ class update
 			// Mises à jour sans SQL
 		}
 		
-		self::update(391);
+		self::update(392);
 	}
 	
 	// Met à jour le numéro de révision

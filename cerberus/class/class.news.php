@@ -126,7 +126,7 @@ class getNews
 		
 			// Display
 			$thisDate = ($this->displayDate)
-				? '<br /><p class="date">' .$value['date']. '</p>'
+				? '<br />' .str::wrap('p.date', $value['date'])
 				: NULL;
 
 			if($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))

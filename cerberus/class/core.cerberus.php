@@ -50,7 +50,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'timthumb', 'swf'),
+				'timthumb', 'zencode', 'swf'),
 				$modules);
 		}
 				
@@ -94,6 +94,7 @@ class Cerberus
 		{
 			if(file_exists($chemin.$module.'.php')) return $chemin.$module.'.php';
 			elseif(file_exists($chemin.'class.'.$module.'.php')) return $chemin.'class.'.$module.'.php';
+			elseif(file_exists($chemin.'svn.'.$module.'.php')) return $chemin.'svn.'.$module.'.php';
 		}
 		return false;
 	}		

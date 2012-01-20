@@ -169,29 +169,10 @@ class str
 	}
 	
 	// Ajout des balises HTML autour d'une chaîne
-	static function wrap($balise, $texte = NULL, $attr = NULL)
+	static function wrap($balise, $texte = NULL)
 	{
-		if($attr)
-			$attributes = (is_array($attr))
-				? a::simplode(array('="', '"'), ' ', $attr)
-				: $attr;
-		else $attributes = NULL;
-	
-		if(is_array($balise))
-		{
-			foreach($balise as $bal => $balattr)
-			{
-				if(is_numeric($bal))
-				{
-					$bal = $balattr;
-					$balattr = NULL;
-				}
-				$texte = self::wrap($bal, $texte, $balattr);
-			}
-		}		
-		else $texte = '<' .$balise. ' ' .$attributes. '>' .$texte. '</' .$balise. '>';
-		
-		return $texte;
+		$var = array('content' => $texte);
+		return zenPHP($balise.'["{content}"]', $var);
 	}
 	
 	/*
