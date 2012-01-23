@@ -150,7 +150,7 @@ class getNews
 			
 			// News
 			$contenu = $value['contenu'];
-			if($this->truncateNews != FALSE and empty($id)) $contenu = truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
+			if($this->truncateNews != FALSE and empty($id)) $contenu = str::truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
 			$contenu = nl2br(bbcode(stripslashes($contenu)));
 			if($this->displayLink and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">' .l::get('news-more'). '</p></a>';
 			
