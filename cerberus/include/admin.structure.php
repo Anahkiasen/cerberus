@@ -63,7 +63,7 @@ if(isset($_GET['meta_structure']))
 	else $_GET['edit_meta'] = $meta['id'];
 
 	// Formulaire META
-	$form = new form(false, array('action' => rewrite('admin-structure', array('meta_structure' => get('meta_structure')))));
+	$form = new form(false, array('action' => url::rewrite('admin-structure', array('meta_structure' => get('meta_structure')))));
 	$select = new select();
 	
 	$form->getValues($metaAdmin->getFieldsTable());
@@ -95,7 +95,7 @@ $strucAdmin->addOrEdit($diff, $diffText, $urlAction);
 if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 {				
 	// Formulaire
-	$form = new form(false, array('action' => rewrite('admin-structure', $urlAction)));
+	$form = new form(false, array('action' => url::rewrite('admin-structure', $urlAction)));
 	$select = new select();
 	$form->getValues($strucAdmin->getFieldsTable());
 	

@@ -1,10 +1,10 @@
 <?php
 /*
 	Fonction bbcode
-	# Formate une chaîne selon des REGEX de mise en forme
+	# Formate une chaÃ®ne selon des REGEX de mise en forme
 	
 	$contenu
-		La chaine à formater
+		La chaine Ã  formater
 	$css
 		Utilisation ou non de classes CSS pour la mise en forme
 */

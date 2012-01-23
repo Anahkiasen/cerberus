@@ -10,8 +10,10 @@
 {
 	#family
 	{
-		.serif() { font-family: "Droid Serif", "Georgia", "Times New Roman", Times, serif }
-		.sans-serif() { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif }
+		.custom-serif(@font) { font-family: @font, @serif; }
+		.custom-sans-serif(@font) { font-family: @font, @sansserif; }
+		.serif() { font-family: @serif }
+		.sans-serif() { font-family: @sansserif }
 		.monospace() { font-family: Menlo, Monaco, "Courier New", monospace }
 	}
 	.shorthand(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight)

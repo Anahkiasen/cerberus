@@ -10,7 +10,7 @@ class browser
 	static public $ios = false;
 	static public $iphone = false;
 	
-	// Fonctions de détection
+	// Fonctions de dÃ©tection
 	static function name($ua = NULL)
 	{
 		self::detect($ua);
@@ -68,7 +68,7 @@ class browser
 	{
 		$ua = ($ua) ? str::lower($ua) : str::lower(server::get('http_user_agent'));
 
-		// On ne fait la détection qu'une seule fois
+		// On ne fait la dÃ©tection qu'une seule fois
 		if(self::$ua == $ua)
 			return array
 			(

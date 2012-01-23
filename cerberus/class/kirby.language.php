@@ -41,6 +41,9 @@ class l
 				else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 			}
 		}
+		
+		// Préréglages
+		self::set('menu-404', 'Erreur 404');
 	}
 
 	/*

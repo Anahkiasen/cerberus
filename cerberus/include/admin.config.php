@@ -35,7 +35,7 @@ if(isset($_POST['db-host']))
 	}
 	
 	f::write($config_file, $getconf);
-	prompt('La configuration du site a été changée avec succès');
+	prompt('La configuration du site a été changée avec succès', 'success');
 }
 
 // Paramètres de Cerberus

@@ -9,8 +9,8 @@ $PREFIXE = a::get($_SESSION, 'prefix', NULL);
 // Supprimer un dossier
 if(isset($_GET['deleteFolder']))
 {
-	if(f::remove('assets/file/' .$_GET['deleteFolder']. '/')) prompt('Le dossier a bien été supprimé');
-	else prompt('Une erreur est survenue durant la suppression du dossier');
+	if(f::remove('assets/file/' .$_GET['deleteFolder']. '/')) prompt('Le dossier a bien été supprimé', 'success');
+	else prompt('Une erreur est survenue durant la suppression du dossier', 'error');
 }
 
 // Supprimer une image
@@ -26,7 +26,7 @@ if(isset($_POST['oldfile']))
 	$dossier = a::get(explode('/', $_POST['oldfile']), 2);
 	$extension = f::extension($_POST['oldfile']);
 	rename($_POST['oldfile'], 'assets/file/' .$dossier. '/' .str::slugify($_POST['renommer']). '.jpg');
-	prompt('Le fichier a bien été renommé');
+	prompt('Le fichier a bien été renommé', 'success');
 }
 
 // Renommer les images en masse
@@ -56,7 +56,7 @@ if(isset($_GET['rename']))
 }
 ?>
 
-<form method="post" action="<?= rewrite('admin-images') ?>">
+<form method="post" action="<?= url::rewrite('admin-images') ?>">
 <p class="infoblock" style="background:url(assets/css/overlay/noir-50.png)">Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
 <input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" /></p>
 </form>
@@ -146,7 +146,7 @@ if(isset($_GET['pictures']) and file_exists('assets/file/' .$_GET['pictures']))
 		$editImage->closeFieldset();
 	}
 	// Ajouter une image
-	$upload = new form(false, array('action' => rewrite('admin-images', array('pictures' => $_GET['pictures']))));
+	$upload = new form(false, array('action' => url::rewrite('admin-images', array('pictures' => $_GET['pictures']))));
 	$upload->openFieldset('Ajouter une image');
 		$upload->addText('caption', 'Description');
 		$upload->addFile('path', 'Chemin vers l\'image');

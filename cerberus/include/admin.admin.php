@@ -16,7 +16,7 @@ $return = a::array_flatten($langueAdmin->get('navigation'), $return);
 
 if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 {
-	$form = new form(false, array('action' => rewrite(NULL, $urlAction)));
+	$form = new form(false, array('action' => url::rewrite(NULL, $urlAction)));
 	$form->getValues($langueAdmin->getFieldsTable());
 	$select = new select();
 	

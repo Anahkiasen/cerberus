@@ -1,13 +1,13 @@
 <?php
 /*
 	Fonction cssFont
-	# Permet l'intégration aisée de polices via la propriété @font-face
+	# Permet l'intÃ©gration aisÃ©e de polices via la propriÃ©tÃ© @font-face
 	
 	$fonts
-		Liste des polices voulues ; peut être un array [ array('police1' => 'light,medium', 'police2' => '200,400') ou array('police1', 'police2') ] ou une simple requête [ 'police' ]
+		Liste des polices voulues ; peut Ãªtre un array [ array('police1' => 'light,medium', 'police2' => '200,400') ou array('police1', 'police2') ] ou une simple requÃªte [ 'police' ]
 	$googleFont
-		Précise l'utilisation ou non du répertoire Google Fonts.
-		TRUE	Aucune autre démarche n'est requise, mais les polices doivent être présentes dans le répertoire Google Fonts
+		PrÃ©cise l'utilisation ou non du rÃ©pertoire Google Fonts.
+		TRUE	Aucune autre dÃ©marche n'est requise, mais les polices doivent Ãªtre prÃ©sentes dans le rÃ©pertoire Google Fonts
 		FALSE	Les polices, aux formats eot, woff et ttf, doivent se trouver dans le sous-dossier font du dossier css
 */
 function cssFont($fonts, $googleFont = true)

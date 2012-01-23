@@ -8,7 +8,7 @@ $newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 content::uncache('{news,actualite}');
 
 // Formulaire
-$form = new form(false, array('action' => rewrite(NULL, $urlAction)));
+$form = new form(false, array('action' => url::rewrite(NULL, $urlAction)));
 $form->getValues($newsAdmin->getFieldsTable());
 
 $form->openFieldset($diffText. ' une news');

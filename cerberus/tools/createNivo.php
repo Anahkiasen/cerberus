@@ -1,10 +1,10 @@
 <?php
 /*
 	Fonction createNivo
-	# Créer une galerie nivoSlider à partir d'un fichier et
-	# prépare le code JS correspondant
+	# CrÃ©er une galerie nivoSlider Ã  partir d'un fichier et
+	# prÃ©pare le code JS correspondant
 	
-	@ Dépendances
+	@ DÃ©pendances
 	@ timthumb
 	
 	$path
@@ -14,9 +14,9 @@
 	$hauteur
 		Hauteur de la galerie
 	$options
-		Options nivoSlider à appliquer à la galerie
+		Options nivoSlider Ã  appliquer Ã  la galerie
 	$shuffle
-		Mélange ou non l'ordre des images trouvées dans le dossier
+		MÃ©lange ou non l'ordre des images trouvÃ©es dans le dossier
 */
 function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 {

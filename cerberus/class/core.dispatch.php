@@ -83,7 +83,8 @@ class dispatch extends Cerberus
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.1.min.js',
 		'colorbox' => 'jquery.colorbox-min',
-		'nivoslider' => 'jquery.nivo.slider.pack');
+		'nivoslider' => 'jquery.nivo.slider.pack',
+		'tablesorter' => 'jquery.tablesorter.min');
 	
 		// Boostrap
 		$boostrap = glob('assets/js/bootstrap-*.js');
@@ -113,6 +114,7 @@ class dispatch extends Cerberus
 			$basename = f::name($path, true);
 			if(!isset($dispath[$basename])) $dispath[$basename] = array();
 			array_push($dispath[$basename], $path);
+			$bootstrap[] = $path;
 		}
 
 		$this->scripts = array_filter($this->dispatchArray($scripts));
@@ -122,6 +124,10 @@ class dispatch extends Cerberus
 		{
 			if(!empty($value))
 			{
+				// Bootstrap
+				if($value == 'bootstrap')
+					$this->JS['url'] = array_merge($this->JS['url'], $bootstrap);
+				
 				// API
 				if(isset($this->availableAPI[$value]))
 				{

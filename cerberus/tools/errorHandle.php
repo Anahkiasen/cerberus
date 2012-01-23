@@ -1,7 +1,7 @@
 <?php
 function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue', $errorFile = __FILE__, $errorLine = __LINE__)
 {	
-	// Récupération du chemin du fichier
+	// RÃ©cupÃ©ration du chemin du fichier
 	global $desired;
 	$path = array_reverse(debug_backtrace());
 	$indentation = 0;
@@ -34,14 +34,18 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		$DEBUG['error'] = 'Fatal Error';
 		break;
 		
+		case 'SQL':
+		$DEBUG['error'] = 'MySQL';
+		break;
+		
 		default:
 		$DEBUG['error'] = 'Unknown';
 		break;
 	}
 		
 	f::append('cerberus/cache/error.log', f::filename($errorFile). '::' .$errorLine. ' - ' .$DEBUG['error']. ': ' .$error.PHP_EOL);
-	$DEBUG['error'] = '<h2>' .$DEBUG['error']. ' : ' .$error. '</h2>
-	<h3>' .f::filename($errorFile). ':' .$errorLine. '</h3>';
+	$DEBUG['error'] = '<h3>[' .$DEBUG['error']. '] ' .$error. '</h3>
+	<h4>' .f::filename($errorFile). ':' .$errorLine. '</h4>';
 	
 	foreach($path as $id_file => $info)
 	{
@@ -54,7 +58,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			if(isset($info['class'])) $thisPath[] = 'La classe appel&eacute;e &eacute;tait <strong>' .$info['class']. '</strong>';
 		}
 		
-		// Arguments utilisés
+		// Arguments utilisÃ©s
 		if(isset($info['args']) and !empty($info['args']) and $info['function'] != 'errorHandle')
 		{
 			foreach($info['args'] as $key => $value)

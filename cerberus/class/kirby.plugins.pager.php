@@ -6,7 +6,7 @@ class pager
 	static public $limit;
 	static public $pages;
 
-	// Définit les variables environnement
+	// DÃ©finit les variables environnement
 	static function set($entries, $page, $limit)
 	{
 		self::$entries = $entries;
@@ -27,31 +27,31 @@ class pager
 		return (self::$page+1 <= self::$pages) ? self::$page+1 : self::$page;
 	}
 
-	// Page précédente
+	// Page prÃ©cÃ©dente
 	static function previous()
 	{
 		return (self::$page-1 >= 1) ? self::$page-1 : self::$page;
 	}
 	
-	// Première page
+	// PremiÃ¨re page
 	static function first()
 	{
 		return 1;
 	}
 
-	// Dernière page
+	// DerniÃ¨re page
 	static function last()
 	{
 		return self::$pages;
 	}
 
-	// Page en cours est la première
+	// Page en cours est la premiÃ¨re
 	static function is_first()
 	{
 		return (self::$page == 1) ? true : false;
 	}
 
-	// Page en cours est la dernière
+	// Page en cours est la derniÃ©re
 	static function is_last()
 	{
 		return (self::$page == self::$pages) ? true : false;
@@ -63,7 +63,7 @@ class pager
 		return self::$pages;
 	}
 
-	// Valide la page demandée
+	// Valide la page demandÃ©e
 	static function sanitize($page, $pages)
 	{
 		if(!$pages) $pages = self::$pages;
@@ -74,7 +74,7 @@ class pager
 		return $page;
 	}
 
-	// Retourne l'entrée de début pour une requête
+	// Retourne l'entrÃ©e de dÃ©but pour une requÃªte
 	static function db()
 	{
 		return (self::$page-1) * self::$limit;

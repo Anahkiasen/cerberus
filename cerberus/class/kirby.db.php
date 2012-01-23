@@ -68,6 +68,8 @@ class db
 			$password	= a::get($args, 2, config::get('db.password', $dbmdp));
 			$database	= a::get($args, 3, config::get('db.name', $dbname));
 			
+			if(LOCAL) $password = $dbmdp;
+			
 			$connection = @mysql_connect($host, $user, $password);
 			self::$connection = $connection;
 			if($connection)
@@ -500,7 +502,7 @@ class db
 		$connection = self::connection();
 		$error = (mysql_error() and $connection) ? @mysql_error($connection) : false;
 
-		if(self::$last_query and LOCAL) prompt(htmlentities(self::$last_query));
+		if(self::$last_query and LOCAL) prompt(htmlentities(self::$last_query), 'error');
 		if($error) errorHandle('SQL', $error, __FILE__, __LINE__);
 		
 		if($exit or !LOCAL) die($message);

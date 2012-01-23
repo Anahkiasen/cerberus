@@ -20,7 +20,7 @@ $type = a::get($_POST, 'type', 'empty');
 
 // Formulaire de paramètres
 $select = new select();
-$form = new form(false, array('action' => rewrite('admin-crawler#results')));
+$form = new form(false, array('action' => url::rewrite('admin-crawler#results')));
 $form->openFieldset('Paramètres');
 	$form->addText('domain', 'Domaine à explorer', $domain);
 	$form->addText('nofollow', 'Ignorer les extensions suivantes', $extensions);

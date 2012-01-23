@@ -35,7 +35,7 @@ class form
 		return $this->render;
 	}
 	
-	// Récupérer les valeurs à partir de la liste des champs
+	// RÃ©cupÃ©rer les valeurs Ã  partir de la liste des champs
 	function getValues($fieldsTable)
 	{
 		if(isset($fieldsTable[1]))
@@ -56,7 +56,7 @@ class form
 		self::$valuesArray = $post;
 	}
 	
-	// Passer les valeurs à autrui
+	// Passer les valeurs Ã  autrui
 	function passValues()
 	{
 		return self::$valuesArray;
@@ -145,7 +145,7 @@ class form
 			
 		$this->attachElement($params);
 	}
-	// Définitions
+	// DÃ©finitions
 	function defineNameLabel($name, $label)
 	{
 		$thisLabel = (empty($label))
@@ -171,7 +171,7 @@ class form
 	// -------------
 	function attachElement($params)
 	{
-		// Définitions	
+		// DÃ©finitions	
 		$type = $params['type'];
 		$name_unsan = $params['name'];
 		list($params['name'], $label) = $this->defineNameLabel($params['name'], $params['label']);
@@ -190,7 +190,7 @@ class form
 				? ' <span class="mandatory">*</span>'
 				: NULL;
 				
-			// Champ sous le label plutôt qu'à droite
+			// Champ sous le label plutÃ´t qu'Ã  droite
 			$underfield = (isset($params['underfield'])) ? 'underfield' 	: NULL;
 			$underfield = (isset($params['underfield'])) ? 'underfield' 	: NULL;
 			unset($params['underfield']);
@@ -202,7 +202,7 @@ class form
 			$this->render .= "\t\t<dd>";
 		}
 		
-		// Suppression des paramètres inutiles		
+		// Suppression des paramÃ¨tres inutiles		
 		unset($params['label'], $params['type']);
 		
 		// LISTE DES CHAMPS
@@ -286,7 +286,7 @@ class form
 		$this->render .= $select;
 	}
 	
-	// Raccourcis généraux
+	// Raccourcis gÃ©nÃ©raux
 	function addRadio($name, $number, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['number'] = $number;
@@ -386,13 +386,13 @@ class select extends form
 	Options 
 	*/
 	
-	// Ajout de paramètres
+	// Ajout de paramÃ¨tres
 	function addParams($params = NULL)
 	{
 		$this->params += $params;
 	}
 	
-	// Régler la valeur du select sur
+	// RÃ©gler la valeur du select sur
 	function setValue($value)
 	{
 		$this->value = $value;
@@ -404,7 +404,7 @@ class select extends form
 	########################################
 	*/
 
-	// Liste à chiffres
+	// Liste Ã  chiffres
 	function liste_number($end, $start = 0, $step = 1)
 	{
 		return range($start, $end, $step);
@@ -419,19 +419,19 @@ class select extends form
 	// Champ date
 	function liste_date($date = NULL, $startingYear = 2010)
 	{
-		// Date dans les valeurs données ou manuelle, sinon date actuelle
+		// Date dans les valeurs donnÃ©es ou manuelle, sinon date actuelle
 		if(isset(self::$valuesArray[strtolower($this->name)])) $date = self::$valuesArray[strtolower($this->name)];
 		if(empty($date)) $date = date('Y-m-d');
 		$valueDate = explode('-', $date);
 		$this->params['class'] = 'dateForm';
 		
-		// On inscrit la date décomposée dans les valeurs
+		// On inscrit la date dÃ©composÃ©e dans les valeurs
 		self::$valuesArray = array(
 		$this->name. '_jour' => $valueDate[2],
 		$this->name. '_mois' => $valueDate[1],
 		$this->name. '_annee' => $valueDate[0]);
 		
-		// Création des trois listes correspondantes
+		// CrÃ©ation des trois listes correspondantes
 		return array(
 		$this->name. '_jour' => $this->liste_array($this->liste_number(31, 1)),
 		$this->name. '_mois' => $this->liste_array($this->liste_number(12, 1)),
@@ -460,7 +460,7 @@ class select extends form
 	########################################
 	*/
 	
-	// Création du champ
+	// CrÃ©ation du champ
 	function createElement()
 	{			
 		$label = $this->label;
@@ -491,7 +491,7 @@ class select extends form
 				
 		if($stateField) $this->render .= '</dd></dl>';	
 	}	
-		// Création d'un <select> (sous-fonction de createElement)
+		// CrÃ©ation d'un <select> (sous-fonction de createElement)
 		function createSelect($name, $liste)
 		{
 			$thisValue = ($this->value === "")

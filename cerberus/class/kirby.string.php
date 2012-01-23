@@ -46,7 +46,30 @@ class str
 		return trim($string);
 	}
 	
-	// Supprime tout HTML d'une ch$aine
+	// Tronque une chaîne $string après $count $mode (word/sentence/default:characters) et ajoute $trailing à la fin
+	function truncate($string, $count = 255, $mode = NULL, $trailing = NULL)
+	{
+		switch($mode)
+		{			
+			case 'word':
+				preg_match('/^([^.!?\s]*[\.!?\s]+){0,'. $count .'}/', strip_tags($string), $excerpt);
+				return $excerpt[0].$trailing;
+				break;
+				
+			case 'sentence':
+				preg_match('/^([^.!?]*[\.!?]+){0,'. $count .'}/', strip_tags($string), $excerpt);
+				return $excerpt[0].$trailing;
+				break;
+				
+			default:
+				$count -= str::length($trailing);
+				if(str::length($string) > $count) return mb_substr($string, 0, $count).$trailing;
+				else return $string;
+				break;
+		}
+	}
+	
+	// Supprime tout HTML d'une chaîne
 	static function stripHTML($string)
 	{
 		$string = str_replace('<br />', PHP_EOL, $string);
@@ -116,7 +139,10 @@ class str
 	static function html($string, $keep_html = true)
 	{
 		if($keep_html)
-			return stripslashes(implode('', preg_replace('/^([^<].+[^>])$/e', "htmlentities('\\1', ENT_COMPAT, 'utf-8')", preg_split('/(<.+?>)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE))));
+			return
+			stripslashes(
+				implode('',
+					preg_replace('/^([^<].+[^>])$/e', "htmlentities('\\1', ENT_COMPAT, 'utf-8')", preg_split('/(<.+?>)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE))));
 
 		else
 			return htmlentities($string, ENT_COMPAT, 'utf-8');
@@ -255,10 +281,10 @@ class str
 		return '<a href="' . $link . '" ' .$attributes. '>' . str::html($text) . '</a>';
 	}
 	
-	// Utilise la fonction link en combinisaison avec rewrite()
+	// Utilise la fonction link en combinisaison avec url::rewrite()
 	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
 	{
-		$link = rewrite($link, $params);
+		$link = url::rewrite($link, $params);
 		return self::link($link, $text, $attr);
 	}
 	
@@ -280,15 +306,18 @@ class str
 	}
 		
 	// Créer un lien mailto
-	static function email($email, $text = FALSE)
+	static function email($email, $text = false, $title = false, $class = false)
 	{
 		if(empty($email)) return false;
-		$email = (string)$email;
-		$string = (empty($text)) ? $email : $text;
-		$email	= self::encode($email, 3);
-		return '<a title="' .$email. '" class="email" href="mailto:' .$email. '">' .self::encode($string, 3). '</a>';
-	}
+		$email = 	(string)$email;
+		$string = 	(empty($text)) ? $email : $text;
+		$email = 	self::encode($email, 3);
 
+		if(!empty($class)) $class = ' class="'.$class.'"';
+		if(!empty($title)) $title = ' title="'.html($title).'"';
+
+		return '<a'.$title.$class.' href="mailto:'.$email.'">'.self::encode($string, 3).'</a>';
+	}
 	// Encode des accents en HTML sans toucher aux tags
 	static function accents($string, $reverse = false)
 	{

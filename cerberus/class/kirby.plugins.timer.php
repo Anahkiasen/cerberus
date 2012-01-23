@@ -3,7 +3,7 @@ class timer
 {
 	public static $timer = array();
 
-	// Démarre le chronométrage d'un temps
+	// DÃ©marre le chronomÃ©trage d'un temps
 	static function start($key = 'start')
 	{
 		if(config::get('timer', FALSE) === false) return false;
@@ -16,7 +16,7 @@ class timer
 		self::$timer[$key] = round(self::get($key) * 1000, 2).' ms';
 	}
 
-	// Récupère un/l'ensemble des temps enregistrés
+	// RÃ©cupÃ¨re un/l'ensemble des temps enregistrÃ©s
 	static function get($key = NULL)
 	{
 		if(config::get('timer', FALSE) === false) return false;

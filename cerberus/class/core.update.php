@@ -59,8 +59,8 @@ class update
 						$confphp);
 			$confphp = '<?php' .PHP_EOL.$confphp.PHP_EOL. '?>';
 			
-			if(f::write($config_file, $confphp)) prompt('Mise à jour ' .$torev. ' effectuée');
-			else prompt('Erreur lors de la mise-à-jour vers ' .$torev);
+			if(f::write($config_file, $confphp)) prompt('Mise à jour ' .$torev. ' effectuée', 'success');
+			else prompt('Erreur lors de la mise-à-jour vers ' .$torev, 'error');
 		}
 	}
 

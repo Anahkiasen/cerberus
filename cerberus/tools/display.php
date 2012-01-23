@@ -4,31 +4,31 @@
 	# Retourne un message d'information/erreur
 	
 	Fonction prompt
-	# Affiche un message formaté avec display
+	# Affiche un message formatÃ© avec display
 	
 	Fonction promptm
 	# Version multilingue de prompt
 	
 	$message
-		Message à afficher
+		Message Ã  afficher
 		
 	Fonction debug
 	# Affiche une variable uniquement dans le code
 	
 	$message
-		La variable/array à afficher dans le code
+		La variable/array Ã  afficher dans le code
 */
-function display($message)
+function display($message, $type = 'info')
 {
-	return '<p class="infoblock">' .$message. '</p>';
+	return '<p class="alert alert-' .$type. '">' .$message. '</p>';
 }
-function prompt($message)
+function prompt($message, $type = 'info')
 {
-	echo display($message);
+	echo display($message, $type);
 }
-function promptm($message, $default = NULL)
+function promptm($message, $default = NULL, $type = 'info')
 {
-	echo display(l::get($message, $default));
+	echo display(l::get($message, $default), $type);
 }
 function debug($variable)
 {

@@ -7,8 +7,11 @@
 // GLOBAL VALUES
 // --------------------------------------------------
 
+// Cerberus
 @cerberus: #069;
 @main: @cerberus;
+@serif: "Droid Serif", "Georgia", "Times New Roman", Times, serif;
+@sansserif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;		
 
 // Links
 @linkColor:             #08c;
@@ -16,6 +19,7 @@
 
 // Grays
 @black:                 #000;
+@grayDarker:            #222;
 @grayDark:              #333;
 @gray:                  #555;
 @grayLight:             #999;
@@ -43,7 +47,7 @@
 
 // Typography
 @baseFontSize:          13px;
-@baseFontFamily:        "Helvetica Neue", Helvetica, Arial, sans-serif;
+@baseFontFamily:        @sansserif;
 @baseLineHeight:        18px;
 
 // Buttons
@@ -68,7 +72,7 @@
 
 // Navbar
 @navBarHeight:                    40px;
-@navbarBackground:                #222;
-@navbarBackgroundHighlight:       #333;
+@navbarBackground:                @grayDarker;
+@navbarBackgroundHighlight:       @grayDark;
 
 

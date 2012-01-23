@@ -1,14 +1,14 @@
 <?php
 /*
 	Fonction checkString
-	# Vérifie l'authenticité d'une chaîne donnée
+	# VÃ©rifie l'authenticitÃ© d'une chaÃ®ne donnÃ©e
 	
 	$string
-		Chaîne à vérifier
+		ChaÃ®ne Ã  vÃ©rifier
 	$type
-		Type de chaîne, peut être une adresse email, un numéro
-		de téléphone, un nom ou un chiffre.
-		Dans tous les cas vérifie si la chaîne n'est pas vide.
+		Type de chaÃ®ne, peut Ãªtre une adresse email, un numÃ©ro
+		de tÃ©lÃ©phone, un nom ou un chiffre.
+		Dans tous les cas vÃ©rifie si la chaÃ®ne n'est pas vide.
 */
 function checkString($string, $type = NULL)
 {
@@ -47,11 +47,11 @@ function checkString($string, $type = NULL)
 }
 /*
 	Fonction checkFields
-	# Vérifie si un formulaire a été correctement rempli
+	# VÃ©rifie si un formulaire a Ã©tÃ© correctement rempli
 	
 	$fields
 		Liste des champs obligatoires
-		Peut préciser le type d'un champ pour qu'il
+		Peut prÃ©ciser le type d'un champ pour qu'il
 		soit reconnu sous la syntaxe CHAMP => TYPE
 */
 function checkFields()
@@ -69,7 +69,7 @@ function checkFields()
 	$misfilled = array();
 	$erreurs = array();
 
-	// Lecture des données
+	// Lecture des donnÃ©es
 	foreach($fields as $key => $type)
 	{
 		$POST = $_POST[$key];
@@ -87,7 +87,7 @@ function checkFields()
 		}
 	}
 	
-	// On vérifie que les champs sont remplis
+	// On vÃ©rifie que les champs sont remplis
 	$isUnfilled = l::get('form-erreur-incomplete', 'Un ou plusieurs champs sont incomplets');
 	$isMisfilled = l::get('form-erreur-incorrect', 'Un ou plusieurs champs sont incorrects');
 		
@@ -111,7 +111,7 @@ function checkFields()
 	// Affiche des possibles erreurs, sinon validation	
 	if(!empty($erreurs))
 	{
-		prompt(implode('<br />', $erreurs));
+		prompt(implode('<br />', $erreurs), 'error');
 		return false;
 	}
 	else return (MULTILANGUE) ? $mailbody : true;

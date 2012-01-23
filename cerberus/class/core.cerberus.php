@@ -60,7 +60,7 @@ class Cerberus
 			// Packs
 			$packages = array(
 			'pack.sql' => array('backupSQL'),
-			'pack.navigation' => array('navigation', 'rewrite'),
+			'pack.navigation' => array('navigation'),
 			'class.admin' => array('admin', 'admin.setup'),
 			'class.mail' => array('smail'),
 			'class.form' => array('form', 'checkString'),

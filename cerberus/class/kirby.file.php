@@ -14,7 +14,7 @@ class f
 		if(!file_exists($dossier))
 		{
 			if(!mkdir($dossier, 0700, true))
-				prompt('Impossible de créer le dossier');
+				prompt('Impossible de créer le dossier', 'error');
 			else self::write($file, $content);
 		}
 		else

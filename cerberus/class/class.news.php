@@ -145,7 +145,7 @@ class getNews
 			else $thisThumb = NULL;
 				
 			$thisLink = ($this->displayLink)
-				? rewrite($this->page, array('actualite' => $value['id'], 'html' => $value['titre']))
+				? url::rewrite($this->page, array('actualite' => $value['id'], 'html' => $value['titre']))
 				: '#' .$key;
 			
 			// News
