@@ -26,7 +26,7 @@ class str
 	}	
 		
 	// Met une chaîne au pluriel ou singulier (ou absence de)
-	static function plural($count, $many, $one, $zero = '')
+	static function plural($count, $many, $one, $zero = NULL)
 	{
 		if($count == 1) return $one;
 		else if($count == 0 && !empty($zero)) return $zero;

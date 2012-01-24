@@ -368,12 +368,31 @@ class db
 	// Affiche un message selon le status de la dernière requête
 	static function status($true, $false, $format = TRUE)
 	{
-		$return = (self::$affected)
+		$return = self::$affected
 			? $true
 			: $false;
+		$type = self::$affected
+			? 'success'
+			: 'error';
 		
-		if($format) prompt($return);
+		if($format) prompt($return, $type);
 		else return $return;
+	}
+	
+	// Construit deux statuts en se basant sur self::$affected et str::plural
+	static function status_this($many, $one, $zero = NULL, $action, $action_plural = NULL)
+	{
+		if(!$action_plural) $action_plural = $action;
+		if(self::$affected > 1) $action = $action_plural;
+		
+		$terme = str::plural(
+			self::$affected, 
+			self::$affected. ' ' .$many. ' ont',
+			$one. ' a',
+			$zero. ' n\'a');
+			
+		if(self::$affected) prompt($terme. ' bien été ' .$action, 'success');
+		else prompt($terme. ' pu être ' .$action, 'error');
 	}
 
 	// Retour le prochain ID
