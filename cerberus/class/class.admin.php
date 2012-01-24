@@ -410,7 +410,7 @@ class AdminPage extends AdminSetup
 				// Sauvegarde de l'image
 				
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->usable. '/' .$file);
-				if($resultat) prompt('Image ajoutée au serveur', 'success';
+				if($resultat) prompt('Image ajoutée au serveur', 'success');
 				else prompt('Une erreur est survenue lors du transfert.', 'error');
 			}
 			else prompt($errorDisplay, 'error');
