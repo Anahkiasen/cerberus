@@ -161,7 +161,7 @@ class getNews
 				<p class="clear">&nbsp;</p>
 			</div>';
 		}
-		else promptm('news-none', 'Aucune news à afficher');
+		else str::translate('news-none', 'Aucune news à afficher');
 		echo '<p class="clear"></p>';
 	}
 		
@@ -200,7 +200,7 @@ class getNews
 			}
 			echo '</ul></div><p class="clear"></p></div>';
 		}
-		else promptm('news-none', 'Aucune news à afficher');
+		else str::translate('news-none', 'Aucune news à afficher');
 	}
 	
 	// Pagination

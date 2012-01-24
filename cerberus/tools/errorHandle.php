@@ -94,7 +94,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	{
 		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
 		$titre_email = config::get('sitename');
-		$titre_email = $titre_site ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
+		$titre_email = $titre_email ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
 		
 		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
 		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);

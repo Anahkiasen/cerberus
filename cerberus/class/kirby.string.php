@@ -47,7 +47,7 @@ class str
 	}
 	
 	// Tronque une chaîne $string après $count $mode (word/sentence/default:characters) et ajoute $trailing à la fin
-	function truncate($string, $count = 255, $mode = NULL, $trailing = NULL)
+	static function truncate($string, $count = 255, $mode = NULL, $trailing = NULL)
 	{
 		switch($mode)
 		{			
@@ -384,10 +384,30 @@ class str
 		}
 	}
 
+	/*
+	########################################
+	######## AFFICHAGE D'UNE CHAINE ########
+	########################################
+	*/
 
-
-
-
+	static function alert($message, $type = 'info')
+	{
+		return '<p class="infoblock alert alert-' .$type. '">' .$message. '</p>';
+	}
+		static function display($message, $type)
+		{
+			echo self::alert($message, $type);
+		}
+		static function translate($message, $default = NULL, $type = 'info')
+		{
+			echo self::alert(l::get($message, $default), $type);
+		}
+		static function status($bool, $message_success, $message_error)
+		{
+			$message = $bool ? $message_success : $message_error;
+			$type = $bool ? 'success' : 'error';
+			echo self::alert($message, $type);
+		}
 
 
 

@@ -9,15 +9,15 @@ $PREFIXE = a::get($_SESSION, 'prefix', NULL);
 // Supprimer un dossier
 if(isset($_GET['deleteFolder']))
 {
-	if(f::remove('assets/file/' .$_GET['deleteFolder']. '/')) prompt('Le dossier a bien été supprimé', 'success');
-	else prompt('Une erreur est survenue durant la suppression du dossier', 'error');
+	if(f::remove('assets/file/' .$_GET['deleteFolder']. '/')) str::display('Le dossier a bien été supprimé', 'success');
+	else str::display('Une erreur est survenue durant la suppression du dossier', 'error');
 }
 
 // Supprimer une image
 if(isset($_GET['delete_image']))
 {
 	if(f::remove('assets/file/' .$_GET['pictures']. '/' .$_GET['delete_image']))
-		prompt('Image ' .$_GET['delete_image']. ' supprimée');
+		str::display('Image ' .$_GET['delete_image']. ' supprimée');
 }
 
 // Renommer une image
@@ -26,7 +26,7 @@ if(isset($_POST['oldfile']))
 	$dossier = a::get(explode('/', $_POST['oldfile']), 2);
 	$extension = f::extension($_POST['oldfile']);
 	rename($_POST['oldfile'], 'assets/file/' .$dossier. '/' .str::slugify($_POST['renommer']). '.jpg');
-	prompt('Le fichier a bien été renommé', 'success');
+	str::display('Le fichier a bien été renommé', 'success');
 }
 
 // Renommer les images en masse
@@ -52,7 +52,7 @@ if(isset($_GET['rename']))
 		$i++;
 	}
 	
-	prompt('Les images ont bien été renommées au format ' .$PREFIXE.$basename. '-XX');
+	str::display('Les images ont bien été renommées au format ' .$PREFIXE.$basename. '-XX');
 }
 ?>
 

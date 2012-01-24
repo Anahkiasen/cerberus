@@ -26,7 +26,7 @@ if(get('bdd'))
 	{
 		$index = db::select('cerberus_langue', '*', NULL, 'tag ASC');
 		a::csv($index, 'langues', implode(';', db::fields('cerberus_langue')));
-		prompt('Le fichier a bien été crée, pour le télécharger ' .str::link('langues.csv', 'cliquez ici'));
+		str::display('Le fichier a bien été crée, pour le télécharger ' .str::link('langues.csv', 'cliquez ici'));
 	}
 	else
 	{

@@ -51,7 +51,7 @@ if(isset($_POST['nofollow']))
 	
 	if($_POST['type'] != 'empty')
 	{
-		prompt('Le cache vient d\'être vidé, il va être régénéré page par page, veuillez patienter');
+		str::display('Le cache vient d\'être vidé, il va être régénéré page par page, veuillez patienter');
 	
 		set_time_limit(10000); 
 		include("cerberus/class/crawler/crawler.crawler.php"); 
@@ -126,8 +126,8 @@ if(isset($_POST['nofollow']))
 		$xml .= '</urlset>';
 		
 		f::write($xml_name, $xml);
-		prompt(str::link($xml_name, 'Télécharger le sitemap généré'));
+		str::display(str::link($xml_name, 'Télécharger le sitemap généré'));
 	}
-	else prompt('Le cache vient d\'être vidé');
+	else str::display('Le cache vient d\'être vidé');
 }
 ?> 

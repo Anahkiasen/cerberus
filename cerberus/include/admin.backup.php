@@ -2,8 +2,8 @@
 // Suppression et chargement
 if(isset($_GET['delete']))
 {
-	if(f::remove('cerberus/cache/sql/' .$_GET['delete']. '/')) prompt('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
-	else prompt('Sauvegarde introuvable', 'error');
+	if(f::remove('cerberus/cache/sql/' .$_GET['delete']. '/')) str::display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
+	else str::display('Sauvegarde introuvable', 'error');
 }
 if(isset($_GET['load']))
 {
@@ -11,7 +11,7 @@ if(isset($_GET['load']))
 		$fichier = $file;
 		
 	multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.password'), config::get('db.name')));
-	prompt('La sauvegarde du ' .$_GET['load']. ' a bien été chargée', 'success');
+	str::display('La sauvegarde du ' .$_GET['load']. ' a bien été chargée', 'success');
 }
 
 echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>

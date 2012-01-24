@@ -135,8 +135,8 @@ class smail
 	
 	function __toString()
 	{
-		if($this->send()) prompt('Votre message a bien été envoyé', 'success');
-		else prompt('Une erreur est survenue durant l\'envoi du message', 'error');
+		if($this->send()) str::display('Votre message a bien été envoyé', 'success');
+		else str::display('Une erreur est survenue durant l\'envoi du message', 'error');
 	}
 }
 ?>

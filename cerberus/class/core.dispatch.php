@@ -86,9 +86,9 @@ class dispatch extends Cerberus
 		'nivoslider' => 'jquery.nivo.slider.pack',
 		'tablesorter' => 'jquery.tablesorter.min');
 	
-		// Boostrap
-		$boostrap = glob('assets/js/bootstrap-*.js');
-		foreach($boostrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
+		// bootstrap
+		$bootstrap = glob('assets/js/bootstrap-*.js');
+		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
 		$this->JS = $this->CSS = $this->LESS = array('min' => array());
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
@@ -114,7 +114,6 @@ class dispatch extends Cerberus
 			$basename = f::name($path, true);
 			if(!isset($dispath[$basename])) $dispath[$basename] = array();
 			array_push($dispath[$basename], $path);
-			$bootstrap[] = $path;
 		}
 
 		$this->scripts = array_filter($this->dispatchArray($scripts));
@@ -133,7 +132,7 @@ class dispatch extends Cerberus
 				{
 					$API = $this->availableAPI[$value];
 					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
-					if(str::find(array('http', 'bootstrap'), $API)) $this->JS['url'][] = $API;
+					if(str::find(array('http'), $API)) $this->JS['url'][] = $API;
 					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js');
 				}
 				else

@@ -123,10 +123,18 @@ class AdminSetup
 				$_SESSION['admin']['password'] = $_POST['password'];
 				$this->granted = TRUE;
 			}
-			else echo display('Les identifiants entrés sont incorrects.').$admin_form;
+			else
+			{
+				str::display('Les identifiants entrés sont incorrects.');
+				echo $admin_form;
+			}
 		}
 		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = TRUE;
-		else echo display('Veuillez entrer votre identifiant et mot de passe.').$admin_form;
+		else
+		{
+			str::display('Veuillez entrer votre identifiant et mot de passe.');
+			echo $admin_form;
+		}
 	}
 	
 	// Vérification des identifiants

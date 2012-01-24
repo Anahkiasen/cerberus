@@ -34,7 +34,7 @@ class update
 			// Mises à jour sans SQL
 		}
 		
-		self::update(397);
+		self::update(399);
 	}
 	
 	// Met à jour le numéro de révision
@@ -59,8 +59,8 @@ class update
 						$confphp);
 			$confphp = '<?php' .PHP_EOL.$confphp.PHP_EOL. '?>';
 			
-			if(f::write($config_file, $confphp)) prompt('Mise à jour ' .$torev. ' effectuée', 'success');
-			else prompt('Erreur lors de la mise-à-jour vers ' .$torev, 'error');
+			if(f::write($config_file, $confphp)) str::display('Mise à jour ' .$torev. ' effectuée', 'success');
+			else str::display('Erreur lors de la mise-à-jour vers ' .$torev, 'error');
 		}
 	}
 

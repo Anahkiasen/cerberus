@@ -362,20 +362,13 @@ class db
 	// Retourne la dernière requête
 	static function last_sql()
 	{
-		prompt(end(self::$trace));
+		str::display(end(self::$trace));
 	}
 	
 	// Affiche un message selon le status de la dernière requête
 	static function status($true, $false, $format = TRUE)
 	{
-		$return = self::$affected
-			? $true
-			: $false;
-		$type = self::$affected
-			? 'success'
-			: 'error';
-		
-		if($format) prompt($return, $type);
+		if($format) str::display(self::$affected, $true, $false);
 		else return $return;
 	}
 	
@@ -387,12 +380,12 @@ class db
 		
 		$terme = str::plural(
 			self::$affected, 
-			self::$affected. ' ' .$many. ' ont',
-			$one. ' a',
-			$zero. ' n\'a');
+			self::$affected. ' ' .$many,
+			$one,
+			$zero);
 			
-		if(self::$affected) prompt($terme. ' bien été ' .$action, 'success');
-		else prompt($terme. ' pu être ' .$action, 'error');
+		if(self::$affected) str::display($terme. ' ' .$action, 'success');
+		else str::display($terme. ' ' .$action, 'error');
 	}
 
 	// Retour le prochain ID
@@ -521,7 +514,7 @@ class db
 		$connection = self::connection();
 		$error = (mysql_error() and $connection) ? @mysql_error($connection) : false;
 
-		if(self::$last_query and LOCAL) prompt(htmlentities(self::$last_query), 'error');
+		if(self::$last_query and LOCAL) str::display(htmlentities(self::$last_query), 'error');
 		if($error) errorHandle('SQL', $error, __FILE__, __LINE__);
 		
 		if($exit or !LOCAL) die($message);

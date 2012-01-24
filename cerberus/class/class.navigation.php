@@ -268,7 +268,7 @@ class navigation
 			default:
 				if(!f::inclure('pages/' .$this->filepath))
 				{
-					prompt('Le fichier ' .$this->filepath. ' est introuvable', 'error');
+					str::display('Le fichier ' .$this->filepath. ' est introuvable', 'error');
 					errorHandle('Warning', 'Le fichier ' .$this->filepath. ' est introuvable', __FILE__, __LINE__);
 				}
 				break;
@@ -290,7 +290,7 @@ class navigation
 		$footer =
 			'&copy;Copyright ' .date('Y'). ' - 
 			' .config::get('sitename'). ' - 
-			' .str::slink('sitemap', l::get('sitemap', 'Plan du site')). ' - 
+			' .str::slink('sitemap', l::get('sitemap')). ' - 
 			Conception : ' .str::link('http://www.stappler.fr/', 'Le Principe de Stappler');
 		if(isset($this->data['contact']['submenu']['legales'])) $footer .= ' - ' .str::slink('contact-legales', l::get('menu-contact-legales', 'Contact'));
 		if(isset($this->data['contact']['submenu']['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact', 'Contact'));

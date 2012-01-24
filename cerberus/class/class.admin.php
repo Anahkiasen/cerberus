@@ -77,16 +77,16 @@ class AdminPage extends AdminSetup
 				if($_POST['edit'] == 'add')
 				{
 					db::insert($this->table, $fieldsUpdate);
-					prompt('Objet ajouté', 'success');
+					str::display('Objet ajouté', 'success');
 				}
 				else
 				{
 					db::update($this->table, $fieldsUpdate, array($this->index => $_POST['edit']));
-					prompt('Objet modifié', 'success');
+					str::display('Objet modifié', 'success');
 				}
 				$uploadImage = $this->uploadImage();
 			}
-			else prompt('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields), 'error');
+			else str::display('Un ou plusieurs champs sont incomplets : ' .implode(', ', $emptyFields), 'error');
 		}
 		
 		// SUPPRESSION
@@ -112,13 +112,13 @@ class AdminPage extends AdminSetup
 			}
 						
 			db::delete($this->table, array($this->index => $_GET['delete_' .$this->usable]));
-			prompt('Objet supprimé');
+			str::display('Objet supprimé');
 		}	
 		if(isset($_GET['deleteThumb']))
 		{
 			$image = $this->getImage($_GET['deleteThumb']);
-			if(f::remove($image)) prompt('Miniature supprimée', 'success');
-			else prompt('Miniature introuvable', 'error');
+			if(f::remove($image)) str::display('Miniature supprimée', 'success');
+			else str::display('Miniature introuvable', 'error');
 			f::remove(glob('assets/file/' .$this->usable. '/' .$lastID. '-*.*'));
 		}
 	}
@@ -271,12 +271,12 @@ class AdminPage extends AdminSetup
 				echo '</tr>';
 			}
 		}
-		else echo '<tr><td colspan="50">' .l::get('admin.no_results', 'Aucun élément à afficher'). '</td></tr>';
+		else echo '<tr><td colspan="50">' .l::get('admin.no_results'). '</td></tr>';
 		
 		// Ajouter un élément
 		echo '
 		<tr class="additem"><td colspan="50">'
-			.str::slink(NULL, l::get('admin.add', 'Ajouter un élément'), 'add_'.$this->usable).'
+			.str::slink(NULL, l::get('admin.add'), 'add_'.$this->usable).'
 		</td></tr>
 		</tbody></table><br /><br />';
 	}
@@ -410,10 +410,10 @@ class AdminPage extends AdminSetup
 				// Sauvegarde de l'image
 				
 				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->usable. '/' .$file);
-				if($resultat) prompt('Image ajoutée au serveur', 'success');
-				else prompt('Une erreur est survenue lors du transfert.', 'error');
+				if($resultat) str::display(l::get('admin.upload.success'), 'success');
+				else str::display(l::get('admin.upload.error'), 'error');
 			}
-			else prompt($errorDisplay, 'error');
+			else str::display($errorDisplay, 'error');
 		}
 	}
 }

@@ -111,7 +111,7 @@ function checkFields()
 	// Affiche des possibles erreurs, sinon validation	
 	if(!empty($erreurs))
 	{
-		prompt(implode('<br />', $erreurs), 'error');
+		str::display(implode('<br />', $erreurs), 'error');
 		return false;
 	}
 	else return (MULTILANGUE) ? $mailbody : true;

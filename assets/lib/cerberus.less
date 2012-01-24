@@ -1,12 +1,7 @@
-/*
-########################################
-######### CERBERUS BLOCKS ##############
-########################################
-*/
+// Sprites
+i { background-image: url(../css/glyphicons-halflings-sprite.png); }
 
-@cerberus: #069;
-
-p.infoblock,
+// Blocks
 p.readmore,
 div.cerberus_debug
 {
@@ -45,16 +40,6 @@ div.cerberus_debug
 		padding: 15px;
 	}
 }
-p.infoblock
-{
-	background-color: @main;
-	
-	a
-	{
-		color: #FFF;
-		text-decoration: underline;
-	}
-}
 p.readmore
 {
 	clear: both;
@@ -65,6 +50,22 @@ p.readmore
 	&:hover	{ background-color: darken(@main, 10%) }
 	&:active { background-color: lighten(@main, 10%) }
 }
+
+// Buttons 
+.btn.cerberus
+{
+	color: white;
+	.text-shadow(0, 1px, 1px, fadeout(black, 25));
+	.gradientBar(@main, darken(@main, 15));
+}
+.btn.wide
+{
+	.border-box;
+	width: 100%;
+	text-align: center;
+}
+
+// Old navbar
 /*.navbar
 {
 	text-align: center;
