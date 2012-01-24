@@ -46,14 +46,12 @@
 // Clearfix for clearing floats like a boss h5bp.com/q
 .clearfix()
 {
-	zoom: 1;
+	*zoom: 1;
 	&:before,
 	&:after
 	{
 		display: table;
-		*display: inline;
 		content: "";
-		zoom: 1;
 	}
 	&:after { clear: both }
 }
@@ -90,7 +88,7 @@
 }
 
 // Input placeholder text
-.placeholder(@color: @grayLight)
+.placeholder(@color: @placeHolderText)
 {
 	:-moz-placeholder { color: @color }
 	::-webkit-input-placeholder { color: @color }
@@ -191,13 +189,13 @@
 ///////////////// ARRONDIS //////////////////// 
 ///////////////////////////////////////////////
 
-.border-radius(@radius)
+.border-radius(@radius: 5px)
 {
 	-webkit-border-radius: @radius;
 	   -moz-border-radius: @radius;
 			border-radius: @radius;
 }
-.border-radius-custom(@topLeft, @topRight, @bottomRight, @bottomLeft)
+.border-radius-custom(@topLeft: 0, @topRight: 0, @bottomRight: 0, @bottomLeft: 0)
 {
 	-webkit-border-top-left-radius: @topLeft;
 		-moz-border-radius-topleft: @topLeft;
