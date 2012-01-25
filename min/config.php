@@ -144,7 +144,7 @@ $min_serveOptions['minApp']['groupsOnly'] = false;
  * algorithm can fail. To prevent this, provide an array of link paths to
  * target paths, where the link paths are within the document root.
  * 
- * Because paths need to be slugifyd for this to work, use "//" to substitute 
+ * Because paths need to be normalized for this to work, use "//" to substitute 
  * the doc root in the link paths (the array keys). E.g.:
  * <code>
  * array('//symlink' => '/real/target/path') // unix

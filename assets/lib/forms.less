@@ -107,7 +107,6 @@ input[type=file] {
 // Chrome on Linux and Mobile Safari need background-color
 select {
   width: 220px; // default input width + 10px of padding that doesn't get applied
-  padding: 0;
   vertical-align: middle;
   background-color: @white;
 }
@@ -296,17 +295,17 @@ textarea[readonly] {
     border-color: @textColor;
   }
 }
-// Error
-.control-group.error {
-  .formFieldState(#b94a48, #ee5f5b, lighten(#ee5f5b, 30%));
-}
 // Warning
 .control-group.warning {
-  .formFieldState(#c09853, #ccae64, lighten(#CCAE64, 5%));
+  .formFieldState(@warningText, @warningText, @warningBackground);
+}
+// Error
+.control-group.error {
+  .formFieldState(@errorText, @errorText, @errorBackground);
 }
 // Success
 .control-group.success {
-  .formFieldState(#468847, #57a957, lighten(#57a957, 30%));
+  .formFieldState(@successText, @successText, @successBackground);
 }
 
 // HTML5 invalid states

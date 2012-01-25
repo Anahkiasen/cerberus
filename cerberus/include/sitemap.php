@@ -16,14 +16,18 @@ foreach($sitemap as $categorie => $pages)
 		echo '<ul>';
 		echo str::slink(
 			$categorie,
-			'<h2>' .l::get('menu-'.$categorie). '</h2>');
+			'<h2>' .l::get('menu-'.$categorie, ucfirst($categorie)). '</h2>');
 		
-		foreach($desired->get($categorie) as $pages)
+		if(isset($pages['submenu']))
 		{
-			echo str::slink(
-				$categorie.'-'.$pages,
-				'<li>' .l::get('menu-'.$categorie.'-'.$pages, ucfirst($pages)). '</li>');
+			foreach($pages['submenu'] as $pageSub => $subvalues)
+			{
+				echo str::slink(
+					$categorie.'-'.$pageSub,
+					'<li>' .l::get('menu-'.$categorie.'-'.$pageSub). '</li>');
+			}
 		}
+			
 		echo '</ul>';
 		
 		// Colonnes

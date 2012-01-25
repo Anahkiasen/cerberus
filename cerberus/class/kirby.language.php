@@ -51,11 +51,15 @@ class l
 				"form.incomplete":[		"Un ou plusieurs champs sont incomplets",	"One or more fields are incomplete"],
 				"admin.add":[			"Ajouter un",								"Add a"],
 				"admin.no_results":[	"Aucun résultat à afficher",				"No results to display"],
-				"sitemap":[				"Plan du site",								"Sitemap"],
+				"menu-sitemap":[			"Plan du site",							"Sitemap"],
 				"menu-contact-legales":[	"Mentions légales",						"Imprint"],
 				"admin.upload.success":[	"Image envoyée avec succès",			"Picture uploaded with success"],
 				"admin.upload.error":[		"Erreur lors de l\'envoi de l\'image",	"Error during the upload of the picture"],
 			}';
+			foreach(json_encode($cerberus_index) as $tag => $langues)
+			{
+				db::insert('cerberus_langue', array('tag' => $tag, 'fr' => $langues[0], 'en' => $langues[1]));
+			}
 			//echo json_encode($cerberus_index);	
 		}
 	}
