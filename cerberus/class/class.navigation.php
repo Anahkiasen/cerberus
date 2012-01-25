@@ -268,7 +268,8 @@ class navigation
 			default:
 				if(!f::inclure('pages/' .$this->filepath))
 				{
-					str::display('Le fichier ' .$this->filepath. ' est introuvable', 'error');
+					$error = str_replace('{filepath}', $this->filepath, l::get('error.filepath'));
+					str::display($error, 'error');
 					errorHandle('Warning', 'Le fichier ' .$this->filepath. ' est introuvable', __FILE__, __LINE__);
 				}
 				break;

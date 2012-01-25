@@ -8,7 +8,6 @@ class getNews
 
 	// Paramètres
 	private $table = 'cerberus_news';
-	private $page = 'news';
 	
 	// Affichage des news
 	private $newsNumber = 5;
@@ -31,13 +30,33 @@ class getNews
 	FONCTIONS DE DEFINITION
 	############################ */
 		
-	function __construct($page = 'news')
-	{	
+	function __construct()
+	{
 		if(!db::is_table('cerberus_news')) update::table('cerberus_news');
-		$this->page = str_replace('&pageSub=', '-', $page);
 		$this->multiWhere = (MULTILANGUE)
 			? array('langue' => l::current())
 			: NULL;
+	}
+	
+	// Réglages des principaux paramètres : actualité par page
+	// Pagination ou non, et ordre des actualités
+	function setNews($limit, $newsPaginate, $newsOrder)
+	{
+		$this->newsPaginate = $newsPaginate;
+		$this->newsOrder = $newsOrder;
+		
+		if($this->newsPaginate)
+		{
+			$entries = db::count($this->table, $this->multiWhere);
+			if($entries != 0)
+			{
+				pager::set($entries, 1, $limit);
+				
+				if(isset($_GET['pagenews']))
+					pager::set($entries, $_GET['pagenews'], $limit);
+			}
+			else $this->newsPaginate = FALSE;
+		}
 	}
 	
 	function setTable($table)
@@ -59,24 +78,6 @@ class getNews
 		$this->thumbCrop = $crop;
 	}
 	
-	function setNews($limit, $newsPaginate, $newsOrder)
-	{
-		$this->newsPaginate = $newsPaginate;
-		$this->newsOrder = $newsOrder;
-		
-		if($this->newsPaginate)
-		{
-			$entries = db::count($this->table, $this->multiWhere);
-			if($entries != 0)
-			{
-				pager::set($entries, 1, $limit);
-				
-				if(isset($_GET['pagenews']))
-					pager::set($entries, $_GET['pagenews'], $limit);
-			}
-			else $this->newsPaginate = FALSE;
-		}
-	}
 	function setTruncate($truncate, $mode)
 	{
 		if($truncate)
@@ -119,16 +120,9 @@ class getNews
 		}		
 		
 		// Récupération des news
-		if($news) foreach($news as $key => $value)
+		if($news) 
+		foreach($news as $key => $value)
 		{
-			if(!empty($id)) $alt = 'wide';
-			else $alt = (isset($alt) and $alt == 'alt') ? '' : 'alt';
-		
-			// Display
-			$thisDate = ($this->displayDate)
-				? '<br />' .str::wrap('p.date', $value['date'])
-				: NULL;
-
 			if($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))
 			{
 			
@@ -145,23 +139,30 @@ class getNews
 			else $thisThumb = NULL;
 				
 			$thisLink = ($this->displayLink)
-				? url::rewrite($this->page, array('actualite' => $value['id'], 'html' => $value['titre']))
+				? url::reload(array('actualite' => $value['id'], 'html' => $value['titre']))
 				: '#' .$key;
 			
 			// News
 			$contenu = $value['contenu'];
 			if($this->truncateNews != FALSE and empty($id)) $contenu = str::truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
 			$contenu = nl2br(bbcode(stripslashes($contenu)));
-			if($this->displayLink and empty($id)) $contenu .= '<a href="' .$thisLink. '"><p class="readmore">' .l::get('news-more'). '</p></a>';
+			if($this->displayLink and empty($id)) $contenu .= '<p><a href="' .$thisLink. '" class="btn wide">' .l::get('news.readmore'). '</a></p>';
+			
+			 if(!empty($id)) $alt = 'wide';
+			else $alt = (isset($alt) and $alt == 'alt') ? NULL : 'alt';
+			
+			$thisDate = ($this->displayDate)
+				? '<small class="date">' .$value['date']. '</small>'
+				: NULL;
 			
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
-				<h2>' .str::link($thisLink, stripslashes($value['titre'])).$thisDate. '</h2>
+				<h2>' .str::link($thisLink, stripslashes($value['titre'])). ' ' .$thisDate. '</h2>
 				<div class="contenu">' .$thisThumb.$contenu. '</div>
 				<p class="clear">&nbsp;</p>
 			</div>';
 		}
-		else str::translate('news-none', 'Aucune news à afficher');
+		else str::translate('news.none');
 		echo '<p class="clear"></p>';
 	}
 		
@@ -181,10 +182,11 @@ class getNews
 		
 		$actualDate = NULL;
 
-		echo '<h1>' .l::get('news-archives'). '</h1>';
+		echo '<h1>' .l::get('news.archives'). '</h1>';
 		if($news)
 		{
 			echo '<div class="news-archives">';
+			
 			foreach($news as $key => $value)
 			{
 				// Date actuelle
@@ -196,11 +198,14 @@ class getNews
 				}
 				
 				$titre = stripslashes($value['titre']);
-				echo '<li>' .str::slink($this->page, $titre, array('actualite' => $value['id'], 'html' => $titre)). '</li>';
+				echo '<li>' .str::slink(NULL, $titre, array('actualite' => $value['id'], 'html' => $titre)). '</li>';
 			}
-			echo '</ul></div><p class="clear"></p></div>';
+			echo '</ul></div>
+			<p class="clear"></p>
+			
+			</div>';
 		}
-		else str::translate('news-none', 'Aucune news à afficher');
+		else str::translate('news.none');
 	}
 	
 	// Pagination
@@ -209,16 +214,18 @@ class getNews
 		if($this->newsPaginate)
 		{
 			// Pagination
-			echo '<div id="news-pagination">Pages - ';
+			echo '<div class="pagination pagination-centered"><ul>';
+			echo '<li>' .str::slink(NULL, '←', array('pagenews' => pager::previous())). '</li>';
+				
 			for($i = 1; $i <= pager::$pages; $i++)
 			{
-				$attributes = (!isset($_GET['actualite']) and $i == pager::get())
-					? array('class' => 'hover')
-					: NULL;
-					
-				echo str::slink($this->page, $i, array('pagenews' => $i), $attributes);
+				$class = (!isset($_GET['actualite']) and $i == pager::get())
+					? 'class="active"' : NULL;
+				echo '<li ' .$class. '>' .str::slink(NULL, $i, array('pagenews' => $i)). '</li>';
 			}
-			echo '</div>';
+			
+			echo '<li>' .str::slink(NULL, '→', array('pagenews' => pager::next())). '</li>';
+			echo '</ul></div>';
 		}
 	}
 }

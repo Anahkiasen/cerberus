@@ -45,22 +45,40 @@ class l
 		// Préréglages
 		if(!self::get('menu-404'))
 		{
-			$cerberus_index = '
+			$cerberus_index = str::parse('
 			{
-				"menu-404":[			"Erreur 404",								"Error 404"],
-				"form.incomplete":[		"Un ou plusieurs champs sont incomplets",	"One or more fields are incomplete"],
-				"admin.add":[			"Ajouter un",								"Add a"],
-				"admin.no_results":[	"Aucun résultat à afficher",				"No results to display"],
-				"menu-sitemap":[			"Plan du site",							"Sitemap"],
-				"menu-contact-legales":[	"Mentions légales",						"Imprint"],
-				"admin.upload.success":[	"Image envoyée avec succès",			"Picture uploaded with success"],
-				"admin.upload.error":[		"Erreur lors de l\'envoi de l\'image",	"Error during the upload of the picture"],
-			}';
-			foreach(json_encode($cerberus_index) as $tag => $langues)
+				"menu-404":[				"Erreur 404",								"Error 404"],
+				"menu-sitemap":[			"Plan du site",								"Sitemap"],
+				"menu-contact-legales":[	"Mentions légales",							"Imprint"],
+				
+				"form.incomplete":[			"Un ou plusieurs champs sont incomplets",	"One or more fields are incomplete"],
+				
+				"error.filepath":[			"Le fichier {filepath} est introuvable",	"The file {filepath} couldn\'t be found"],
+				
+				"news.none":[				"Aucune news à afficher",					"No news to display"],
+				"news.readmore":[			"Lire la suite",							"Read more"],
+				"news.archives":[			"Archives",									"Archives"],
+				
+				"mail.sent":[				"Votre message a bien été envoyé",			"Your message was correctly sent"],
+				"mail.error":[				"Une erreur est survenue durant l\'envoi du message",	"An error occured during the sending of the message"],
+				
+				"admin.add":[				"Ajouter un",								"Add a"],
+				"admin.no_results":[		"Aucun résultat à afficher",				"No results to display"],
+				"admin.upload.success":[	"Image envoyée avec succès",				"Picture uploaded with success"],
+				"admin.upload.error":[		"Erreur lors de l\'envoi de l\'image",		"Error during the upload of the picture"]
+			}', 'json');
+			
+			$LANGUES = db::fields('cerberus_langue');
+			$FR = in_array('fr', $LANGUES);
+			$EN = in_array('en', $LANGUES);
+			
+			foreach($cerberus_index as $tag => $langues)
 			{
-				db::insert('cerberus_langue', array('tag' => $tag, 'fr' => $langues[0], 'en' => $langues[1]));
+				$values['tag'] = db::escape($tag);
+				if($FR) $values['fr'] = db::escape($langues[0]);
+				if($EN) $values['en'] = db::escape($langues[1]);			
+				db::insert('cerberus_langue', $values);
 			}
-			//echo json_encode($cerberus_index);	
 		}
 	}
 
@@ -182,6 +200,7 @@ class l
 		if(empty($key)) return self::$lang;
 		else
 		{
+			if(!$default) $default = ucfirst($key);
 			$translate = a::get(self::$lang, $key, $default);
 			return (empty($translate)) ? $default : stripslashes($translate);
 		}

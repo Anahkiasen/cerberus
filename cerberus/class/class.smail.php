@@ -135,8 +135,7 @@ class smail
 	
 	function __toString()
 	{
-		if($this->send()) str::display('Votre message a bien été envoyé', 'success');
-		else str::display('Une erreur est survenue durant l\'envoi du message', 'error');
+		str::status($this->send(), l::get('mail.sent'), l::get('mail.error'));
 	}
 }
 ?>

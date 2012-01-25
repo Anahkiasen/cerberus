@@ -64,7 +64,7 @@ class Cerberus
 			'class.admin' => array('admin', 'admin.setup'),
 			'class.mail' => array('smail'),
 			'class.form' => array('form', 'checkString'),
-			'class.news' => array('news', 'bbcode', 'truncate'));
+			'class.news' => array('news', 'bbcode'));
 		
 			foreach($modules as $value)
 			{
