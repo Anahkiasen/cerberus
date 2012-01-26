@@ -20,6 +20,12 @@
     .transition(.6s ease-in-out left);
   }
 
+  // Account for jankitude on images
+  .item > img {
+    display: block;
+    line-height: 1;
+  }
+
   .active, 
   .next, 
   .prev { display: block; }
@@ -68,10 +74,10 @@
   font-size: 60px;
   font-weight: 100;
   line-height: 30px;
-  color: #fff;
+  color: @white;
   text-align: center;
   background: @grayDarker;
-  border: 3px solid #fff;
+  border: 3px solid @white;
   .border-radius(23px);
   .opacity(50);
   .transition(all .2s linear);

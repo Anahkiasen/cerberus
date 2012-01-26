@@ -167,8 +167,10 @@ class Cerberus
 		{
 			$metafile = 'cerberus/cache/meta-' .l::current(). '.php';
 			$meta = f::read($metafile, 'json');
+			$db_exist = SQL ? db::is_table('cerberus_meta', 'cerberus_structure') : FALSE;
+
 			
-			if(!$meta and SQL and config::get('meta', TRUE))
+			if(!$meta and SQL and (config::get('meta', FALSE) or $db_exist))
 			{
 				if(!db::is_table('cerberus_structure', 'cerberus_meta'))
 				{

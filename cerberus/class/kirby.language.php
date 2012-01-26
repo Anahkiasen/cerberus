@@ -200,7 +200,7 @@ class l
 		if(empty($key)) return self::$lang;
 		else
 		{
-			if(!$default) $default = ucfirst($key);
+			if($default === NULL) $default = ucfirst($key);
 			$translate = a::get(self::$lang, $key, $default);
 			return (empty($translate)) ? $default : stripslashes($translate);
 		}

@@ -56,74 +56,76 @@ class navigation
 				'hidden' => 0,
 				'external_link' => NULL);
 		}
-		
-		// Pages système
-		foreach($this->system as $sys)
+		if($this->data)
 		{
-			$this->data[] = array(
-				'page' => $sys,
-				'parent' => NULL,
-				'cache' => 1,
-				'hidden' => 1,
-				'external_link' => NULL);
-		}
-
-		// CERBERUS_STRUCTURE
-		foreach($this->data as $key => $values)
-		{
-			// MENU
-			$index = !empty($values['parent']) ? $values['parent'] : $values['page']; // Cas d'une arborescence simple
-			if(!isset($this->data[$index]))
+			// Pages système
+			foreach($this->system as $sys)
 			{
-				$lien = NULL;
-				$subcount = db::count('cerberus_structure', array('parent' => $index));
-				if($subcount == 1)
+				$this->data[] = array(
+					'page' => $sys,
+					'parent' => NULL,
+					'cache' => 1,
+					'hidden' => 1,
+					'external_link' => NULL);
+			}
+	
+			// CERBERUS_STRUCTURE
+			foreach($this->data as $key => $values)
+			{
+				// MENU
+				$index = !empty($values['parent']) ? $values['parent'] : $values['page']; // Cas d'une arborescence simple
+				if(!isset($this->data[$index]))
 				{
-					$hidden = $values['hidden'];
-					if(!empty($values['external_link'])) $lien = $values['external_link'];
+					$lien = NULL;
+					$subcount = db::count('cerberus_structure', array('parent' => $index));
+					if($subcount == 1)
+					{
+						$hidden = $values['hidden'];
+						if(!empty($values['external_link'])) $lien = $values['external_link'];
+					}
+					else $hidden = $subcount > 1 ? 0 : 1;
+						
+					$this->data[$index] = array(
+						'text' => l::get('menu-' .$index, ucfirst($index)),
+						'hidden' => $hidden,
+						'link' => $lien);
 				}
-				else $hidden = $subcount > 1 ? 0 : 1;
+				
+				// SOUS-MENU					
+				if(!empty($values['parent']))
+				{
+					$index = $values['parent'].'-'.$values['page'];
+					$lien = (!empty($values['external_link'])) 
+						? $values['external_link']
+						: NULL;
+						
+					$this->data[$values['parent']]['submenu'][$values['page']] = array(
+						'hidden' => $values['hidden'],
+						'text' => l::get('menu-' .$index, ucfirst($values['page'])),
+						'link' => $lien);						
+				}
 					
-				$this->data[$index] = array(
-					'text' => l::get('menu-' .$index, ucfirst($index)),
-					'hidden' => $hidden,
-					'link' => $lien);
+				unset($this->data[$key]);
+			}
+			if(!LOCAL) $this->data['admin']['hidden'] = 1;
+	
+			// Page en cours
+			$page = isset($this->data[get('page')]) ? get('page') : 'home';
+			$sousMenu = isset($this->data[$page]) ? a::get($this->data[$page], 'submenu', a::get($this->data['home'], 'submenu', NULL)) : NULL;
+			if($sousMenu) $sousPage = isset($sousMenu[get('pageSub')]) ? get('pageSub') : key($sousMenu);
+			else $sousPage = NULL;
+	
+			// Détection du chemin vers le fichier à inclure
+			if(!in_array($page, $this->system))
+			{
+				if($page != 'admin') $this->filepath = $this->extension($page, $sousPage);
+				else if(get('admin')) $sousPage = get('admin');
 			}
 			
-			// SOUS-MENU					
-			if(!empty($values['parent']))
-			{
-				$index = $values['parent'].'-'.$values['page'];
-				$lien = (!empty($values['external_link'])) 
-					? $values['external_link']
-					: NULL;
-					
-				$this->data[$values['parent']]['submenu'][$values['page']] = array(
-					'hidden' => $values['hidden'],
-					'text' => l::get('menu-' .$index, ucfirst($values['page'])),
-					'link' => $lien);						
-			}
-				
-			unset($this->data[$key]);
+			// Enregistrement des variables
+			$this->page = $page;
+			$this->sousPage = $sousPage;
 		}
-		if(!LOCAL) $this->data['admin']['hidden'] = 1;
-
-		// Page en cours
-		$page = isset($this->data[get('page')]) ? get('page') : 'home';
-		$sousMenu = isset($this->data[$page]) ? a::get($this->data[$page], 'submenu', a::get($this->data['home'], 'submenu', NULL)) : NULL;
-		if($sousMenu) $sousPage = isset($sousMenu[get('pageSub')]) ? get('pageSub') : key($sousMenu);
-		else $sousPage = NULL;
-
-		// Détection du chemin vers le fichier à inclure
-		if(!in_array($page, $this->system))
-		{
-			if($page != 'admin') $this->filepath = $this->extension($page, $sousPage);
-			else if(get('admin')) $sousPage = get('admin');
-		}
-		
-		// Enregistrement des variables
-		$this->page = $page;
-		$this->sousPage = $sousPage;
 	}
 	
 	// Vérification de l'existence d'une page

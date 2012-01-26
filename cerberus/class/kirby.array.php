@@ -203,7 +203,7 @@ class a
 				$plainedArray = array();
 				foreach($array as $key => $value)
 				{	
-					$value = ($escape) ? db::escape($value) : $value;
+					if($escape) $value = db::escape($value);
 					if(is_array($glue1)) $plainedArray[] = $key.$glue1[0].$value.$glue1[1];
 					else $plainedArray[] = $key.$glue1.$value;
 				}
