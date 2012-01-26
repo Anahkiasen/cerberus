@@ -52,6 +52,7 @@ class l
 				"menu-contact-legales":[	"Mentions légales",							"Imprint"],
 				
 				"form.incomplete":[			"Un ou plusieurs champs sont incomplets",	"One or more fields are incomplete"],
+				"form.cancel":[				"Annuler",									"Cancel"],
 				
 				"error.filepath":[			"Le fichier {filepath} est introuvable",	"The file {filepath} couldn\'t be found"],
 				

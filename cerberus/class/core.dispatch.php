@@ -167,9 +167,10 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if(LOCAL and empty($this->CSS['min']))
+		if(LOCAL and empty($this->CSS['min']) and isset($this->LESS['min']))
 		{
-			foreach($this->LESS['min'] as $thisfile)
+			$minify = array_unique(array_filter($this->LESS['min'])); 
+			foreach($minify as $thisfile)
 			{
 				echo '<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
 				$this->CSS['min'] = a::splice($this->CSS['min'], str_replace('.less', '.css', $thisfile));
