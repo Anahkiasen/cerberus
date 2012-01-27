@@ -295,8 +295,8 @@ class navigation
 			' .config::get('sitename'). ' - 
 			' .str::slink('sitemap', l::get('menu-sitemap')). ' - 
 			Conception : ' .str::link('http://www.stappler.fr/', 'Le Principe de Stappler');
-		if(isset($this->data['contact']['submenu']['legales'])) $footer .= ' - ' .str::slink('contact-legales', l::get('menu-contact-legales', 'Contact'));
-		if(isset($this->data['contact']['submenu']['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact', 'Contact'));
+		if(isset($this->data['contact']['submenu']['legales'])) $footer .= ' - ' .str::slink('contact-legales', l::get('menu-contact-legales'));
+		if(isset($this->data['contact']['submenu']['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact'));
 		return $footer;
 	}
 	

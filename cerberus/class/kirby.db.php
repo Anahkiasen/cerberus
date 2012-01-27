@@ -51,8 +51,8 @@ class db
 				// Stappler
 				$dbhost = 'hostingmysql51';
 				$dbuser = '859841_maxime';
-				$dbmdp = NULL;
-				$dbname = 'MAXSTA001';
+				$dbmdp = 'MAXSTA001';
+				$dbname = NULL;
 			}
 			else
 			{
@@ -77,25 +77,25 @@ class db
 				$database = self::database($database);
 				mysql_query("SET NAMES 'utf8'");
 			}
-			else return self::error(l::get('db.errors.connect', 'Erreur de connexion à MySQL'), true);
+			else return self::error(l::get('db.errors.connect'), true);
 		}
 
 		// Affichage des erreurs
-		if(!$connection) return self::error(l::get('db.errors.connect', 'Erreur de connexion à MySQL'), true);
+		if(!$connection) return self::error(l::get('db.errors.connect'), true);
 		else return $connection;
 	}
 	
 	// Connexion à la base de données
 	static function database($database)
 	{
-		if(!$database) return self::error(l::get('db.errors.missing_db_name', 'Pas de base séléctionnée'), true);
+		if(!$database) return self::error(l::get('db.errors.missing_db_name'), true);
 		else
 		{
 			if(self::$database == $database) return true;
 			else
 			{
 				$select = @mysql_select_db($database, self::connection());
-				if(!$select) return self::error(l::get('db.errors.missing_db', 'Erreur de connexion &agrave; la base'), true);
+				if(!$select) return self::error(l::get('db.errors.missing_db'), true);
 				self::$database = $database;
 				return $database;
 			}
@@ -140,7 +140,7 @@ class db
 		self::$affected = @mysql_affected_rows();
 		self::$trace[] = $sql;
 
-		if(!$result) self::error(l::get('db.errors.query', 'Requête incorrecte'));
+		if(!$result) self::error(l::get('db.errors.query'));
 		if(!$fetch)	return $result;
 
 		$array = array();
@@ -158,7 +158,7 @@ class db
 		self::$affected = @mysql_affected_rows();
 		self::$trace[] = $sql;
 
-		if(!$execute) self::error(l::get('db.errors.execute', 'Requête incorrecte'));
+		if(!$execute) self::error(l::get('db.errors.execute'));
 		
 		$last_id = self::last_id();
 		return ($last_id === false) ? self::$affected : self::last_id();
@@ -317,7 +317,7 @@ class db
 		$connection = self::connect();
 
 		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
-		if(!$fields) return self::error(l::get('db.errors.fields', 'Impossible de lister les champs'));
+		if(!$fields) return self::error(l::get('db.errors.fields'));
 
 		$count	= @mysql_num_fields($fields);
 		for($x = 0; $x < $count; $x++)
@@ -335,7 +335,6 @@ class db
 		foreach($tables as $table)
 			if(in_array($table, self::showtables()))
 				$found++;
-
 
 		return ($found == count($tables));
 	}
@@ -537,7 +536,7 @@ class db
 		$disconnect = @mysql_close($connection);
 		self::$connection = false;
 
-		if(!$disconnect) return self::error(l::get('db.errors.disconnect', 'Disconnecting database failed'));
+		if(!$disconnect) return self::error(l::get('db.errors.disconnect'));
 		return true;
 	}
 

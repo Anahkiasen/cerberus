@@ -14,10 +14,9 @@ class content
 	{
 		global $switcher, $desired;
 		$CORE = $basename;
-		$cache = ($desired->current(false) == 'admin')
-			? false
-			: db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"');
-
+		$cache = SQL ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : FALSE;
+		if($desired->current(false) == 'admin') $cache = FALSE;
+		
 		if($cache and CACHE)
 		{			
 			// Variables en cache

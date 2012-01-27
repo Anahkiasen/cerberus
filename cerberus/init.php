@@ -109,7 +109,7 @@ if(!file_exists('assets/lib/variables_custom.less')) f::write('assets/lib/variab
 */
 // Gestion des langues
 timer::save('logs').timer::start('langue');
-if(MULTILANGUE and SQL) $index = new l();
+$index = new l();
 
 // Gestion de la navigation
 timer::save('langue').timer::start('navigation');
@@ -161,11 +161,13 @@ if(db::connection() and CACHE) backupSQL();
 // Génération du fichier META
 timer::save('cerberus').timer::start('meta');
 $cerberus->meta();
-echo '
-<head>
-	<title>' .$cerberus->meta('titre'). '</title>
-	<meta name="description" content="' .$cerberus->meta('description'). '" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+$title = $cerberus->meta('titre');
+$description = $cerberus->meta('description');
+
+echo PHP_EOL.'<head>'.PHP_EOL;
+if(!empty($title)) echo "\t".'<title>' .$title. '</title>'.PHP_EOL;
+if(!empty($description)) echo "\t".'<meta name="description" content="' .$description. '" />'.PHP_EOL;
+echo "\t".'<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'.PHP_EOL;
 
 // Balise base
 if(REWRITING)

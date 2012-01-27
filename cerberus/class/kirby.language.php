@@ -6,8 +6,9 @@ class l
 	// Chargement du fichier langue
 	function __construct($database = 'cerberus_langue')
 	{
-		if(!config::get('multilangue', FALSE)) return false;
-		if(!db::is_table('cerberus_langue')) update::table('cerberus_langue');
+		if(SQL)
+			if(!db::is_table('cerberus_langue'))
+				update::table('cerberus_langue');		
 		
 		// Langue du site
 		if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
@@ -21,13 +22,15 @@ class l
 	
 		// Chargement du fichier de langue et mise en cache
 		$current = self::current();
-		$filename = 'cerberus/cache/lang-' .$current. '.php';
+		$filename = 'cerberus/cache/lang-{langue}.json';
+		self::load('cerberus/include/cerberus.{langue}.json');
 
-		$tables = db::field('cerberus_langue', 'tag');
+		// Chargement et création dynamique du fichier langue
+		$tables = SQL ? db::field('cerberus_langue', 'tag') : FALSE;
 		if(!empty($tables))
 		{
 			$index = self::load($filename);
-			if(!$index)
+			if(!$index and SQL)
 			{
 				// Récupération de la base de langues
 				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
@@ -41,45 +44,22 @@ class l
 				else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 			}
 		}
-		
-		// Préréglages
-		if(!self::get('menu-404'))
+	}
+
+	// Charger un fichier langue
+	static function load($fileraw)
+	{
+		$file = str_replace('{langue}', l::current(), $fileraw);
+		$index = f::read($file, 'json');
+		if(!empty($index))
 		{
-			$cerberus_index = str::parse('
-			{
-				"menu-404":[				"Erreur 404",								"Error 404"],
-				"menu-sitemap":[			"Plan du site",								"Sitemap"],
-				"menu-contact-legales":[	"Mentions légales",							"Imprint"],
-				
-				"form.incomplete":[			"Un ou plusieurs champs sont incomplets",	"One or more fields are incomplete"],
-				"form.cancel":[				"Annuler",									"Cancel"],
-				
-				"error.filepath":[			"Le fichier {filepath} est introuvable",	"The file {filepath} couldn\'t be found"],
-				
-				"news.none":[				"Aucune news à afficher",					"No news to display"],
-				"news.readmore":[			"Lire la suite",							"Read more"],
-				"news.archives":[			"Archives",									"Archives"],
-				
-				"mail.sent":[				"Votre message a bien été envoyé",			"Your message was correctly sent"],
-				"mail.error":[				"Une erreur est survenue durant l\'envoi du message",	"An error occured during the sending of the message"],
-				
-				"admin.add":[				"Ajouter un",								"Add a"],
-				"admin.no_results":[		"Aucun résultat à afficher",				"No results to display"],
-				"admin.upload.success":[	"Image envoyée avec succès",				"Picture uploaded with success"],
-				"admin.upload.error":[		"Erreur lors de l\'envoi de l\'image",		"Error during the upload of the picture"]
-			}', 'json');
-			
-			$LANGUES = db::fields('cerberus_langue');
-			$FR = in_array('fr', $LANGUES);
-			$EN = in_array('en', $LANGUES);
-			
-			foreach($cerberus_index as $tag => $langues)
-			{
-				$values['tag'] = db::escape($tag);
-				if($FR) $values['fr'] = db::escape($langues[0]);
-				if($EN) $values['en'] = db::escape($langues[1]);			
-				db::insert('cerberus_langue', $values);
-			}
+			self::$lang = array_merge(self::$lang, $index);
+			return l::get();
+		}
+		else
+		{
+			return false;
+			errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 		}
 	}
 
@@ -163,23 +143,6 @@ class l
 		
 		if(!in_array($langue, $array_langues)) $langue = $default;
 		return $langue;
-	}
-
-	// Charger un fichier langue
-	static function load($fileraw)
-	{
-		$file = str_replace('{langue}', l::current(), $fileraw);
-		$index = f::read($file, 'json');
-		if(!empty($index))
-		{
-			self::$lang = $index;
-			return l::get();
-		}
-		else
-		{
-			return false;
-			errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
-		}
 	}
 
 	/*

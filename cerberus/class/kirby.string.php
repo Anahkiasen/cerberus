@@ -394,20 +394,24 @@ class str
 	{
 		return '<p class="infoblock alert alert-' .$type. '">' .$message. '</p>';
 	}
-		static function display($message, $type)
-		{
-			echo self::alert($message, $type);
-		}
-		static function translate($message, $default = NULL, $type = 'info')
-		{
-			echo self::alert(l::get($message, $default), $type);
-		}
-		static function status($bool, $message_success, $message_error)
-		{
-			$message = $bool ? $message_success : $message_error;
-			$type = $bool ? 'success' : 'error';
-			echo self::alert($message, $type);
-		}
+	
+	// Raccourcis d'alertes
+	static function display($message, $type = 'info')
+	{
+		echo self::alert($message, $type);
+	}
+	static function translate($message, $default = NULL, $type = 'info')
+	{
+		echo self::alert(l::get($message, $default), $type);
+	}
+	
+	// Affiche un status
+	static function status($bool, $message_success, $message_error)
+	{
+		$message = $bool ? $message_success : $message_error;
+		$type = $bool ? 'success' : 'error';
+		echo self::alert($message, $type);
+	}
 
 
 

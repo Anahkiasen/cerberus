@@ -124,7 +124,7 @@ class dispatch extends Cerberus
 			if(!empty($value))
 			{
 				// Bootstrap
-				if($value == 'bootstrap')
+				if($value == 'bootstrapjs')
 					$this->JS['url'] = array_merge($this->JS['url'], $bootstrap);
 				
 				// API
@@ -167,17 +167,16 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if(LOCAL and empty($this->CSS['min']) and isset($this->LESS['min']))
+		if(isset($this->LESS['min']) and (LOCAL or empty($this->CSS['min'])))
 		{
 			$minify = array_unique(array_filter($this->LESS['min'])); 
 			foreach($minify as $thisfile)
 			{
-				echo '<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
+				echo "\t".'<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
 				$this->CSS['min'] = a::splice($this->CSS['min'], str_replace('.less', '.css', $thisfile));
 			}
-			echo '
-			<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>
-			<script type="text/javascript"> less.watch() </script>' . "\n";
+			echo "\t".'<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>'.PHP_EOL;
+			echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
 		}
 		
 		// CSS
