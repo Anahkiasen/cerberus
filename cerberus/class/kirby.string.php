@@ -544,6 +544,9 @@ class str
 			case 'email':
 				$string = (v::email($string)) ? $string : NULL;
 				break;
+			case 'phone':
+				$string = (v::phone($string)) ? $string : NULL;
+				break;
 			case 'plain':
 				$string = str::unxml($string);
 				$string = str::unhtml($string);
@@ -567,7 +570,7 @@ class str
 				$string = str_replace('\r','',$string);
 				$string = str_replace('\t','',$string);
 				break;
-			case 'url':
+			case 'urlify':
 				$string = self::slugify($string);
 				break;
 			case 'filename':
