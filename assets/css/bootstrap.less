@@ -10,58 +10,59 @@
  */
 
 // CSS Reset
-@import '../lib/reset';
+@import '../lib/reset.less';
 
 // Core variables and mixins
-@import '../lib/variables_custom'; // Import custom first to allow variable precalling
-@import '../lib/variables'; // Modify this for custom colors, font-sizes, etc
-@import '../lib/mixins';
+@import '../lib/variables_custom.less'; // Import custom first to allow variable precalling
+@import '../lib/variables.less'; // Modify this for custom colors, font-sizes, etc
+@import '../lib/mixins.less';
 
 // Grid system and page structure
-@import '../lib/scaffolding';
+@import '../lib/scaffolding.less';
+@import '../lib/grid.less';
+@import '../lib/layouts.less';
 
 // Base CSS
-@import '../lib/type';
-@import '../lib/forms';
-@import '../lib/tables';
+@import '../lib/type.less';
+@import '../lib/code.less';
+@import '../lib/forms.less';
+@import '../lib/tables.less';
 
 // Components: common
-@import '../lib/sprites';
-@import '../lib/dropdowns';
-@import '../lib/wells';
-@import '../lib/component-animations';
-@import '../lib/close';
+@import '../lib/sprites.less';
+@import '../lib/dropdowns.less';
+@import '../lib/wells.less';
+@import '../lib/component-animations.less';
+@import '../lib/close.less';
 
 // Components: Nav
-@import '../lib/navs';
-@import '../lib/navbar';
-@import '../lib/breadcrumbs';
-@import '../lib/pagination';
-@import '../lib/pager';
+@import '../lib/navs.less';
+@import '../lib/navbar.less';
+@import '../lib/breadcrumbs.less';
+@import '../lib/pagination.less';
+@import '../lib/pager.less';
 
 // Components: Popovers
-@import '../lib/modals';
-@import '../lib/tooltip';
-@import '../lib/popovers';
+@import '../lib/modals.less';
+@import '../lib/tooltip.less';
+@import '../lib/popovers.less';
 
 // Components: Buttons & Alerts
-@import '../lib/buttons';
-@import '../lib/button-groups';
-@import '../lib/alerts'; // Note: alerts share common CSS with buttons and thus have styles in buttons.less
+@import '../lib/buttons.less';
+@import '../lib/button-groups.less';
+@import '../lib/alerts.less'; // Note: alerts share common CSS with buttons and thus have styles in buttons.less
 
 // Components: Misc
-@import '../lib/thumbnails';
-@import '../lib/labels';
-@import '../lib/progress-bars';
-@import '../lib/accordion';
-@import '../lib/carousel';
+@import '../lib/thumbnails.less';
+@import '../lib/labels.less';
+@import '../lib/progress-bars.less';
+@import '../lib/accordion.less';
+@import '../lib/carousel.less';
+@import '../lib/hero-unit.less';
 
 // Utility classes
-@import '../lib/utilities'; // Has to be last to override when necessary
-
-// Responsive
-@import '../lib/responsive';
+@import '../lib/utilities.less'; // Has to be last to override when necessary
 
 // Cerberus
-@import '../lib/cerberus';
-@import 'styles';
+@import '../lib/cerberus.less';
+@import 'styles.less';

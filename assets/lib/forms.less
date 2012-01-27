@@ -28,7 +28,6 @@ legend {
   color: @grayDark;
   border: 0;
   border-bottom: 1px solid #eee;
-  -webkit-margin-collapse: separate;
 }
 
 // Set font for forms
@@ -87,6 +86,7 @@ input[type=radio] {
   line-height: normal;
   border: none;
   cursor: pointer;
+  .border-radius(0);
 }
 
 // Reset the file input to browser defaults
@@ -118,7 +118,6 @@ input[type=file] {
 // Chrome on Linux and Mobile Safari need background-color
 select {
   width: 220px; // default input width + 10px of padding that doesn't get applied
-  vertical-align: baseline;
   background-color: @white;
 }
 
@@ -133,8 +132,14 @@ input[type=image] {
   .box-shadow(none);
 }
 
+// Make textarea height behave
 textarea {
   height: auto;
+}
+
+// Hidden inputs
+input[type=hidden] {
+  display: none;
 }
 
 
@@ -156,7 +161,7 @@ textarea {
 // Move the options list down to align with labels
 .controls > .radio:first-child,
 .controls > .checkbox:first-child {
-  padding-top: 6px; // has to be padding because margin collaspes
+  padding-top: 5px; // has to be padding because margin collaspes
 }
 
 // Radios and checkboxes on same line
@@ -370,9 +375,9 @@ select:focus:required:invalid {
 }
 
 .help-inline {
-  *position: relative; /* IE6-7 */
-  *top: -5px; /* IE6-7 */
-  display: inline;
+  display: inline-block;
+  margin-bottom: 9px;
+  vertical-align: middle;
   padding-left: 5px;
 }
 
@@ -462,6 +467,7 @@ select:focus:required:invalid {
   input,
   textarea,
   select,
+  .help-inline,
   .uneditable-input {
     display: inline-block;
     margin-bottom: 0;
@@ -483,7 +489,8 @@ select:focus:required:invalid {
 .form-horizontal {
   // Legend collapses margin, so we're relegated to padding
   legend + .control-group {
-    padding-top: @baseLineHeight * 1.5;
+    margin-top: @baseLineHeight;
+    -webkit-margin-top-collapse: separate;
   }
   // Increase spacing between groups
   .control-group {
