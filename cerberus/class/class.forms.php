@@ -5,6 +5,7 @@ class forms
 	private $tabs = 0;
 	private $infieldset = FALSE;
 	private $values;
+	private $status = array();
 	
 	// Options
 	private $optionMultilangue;
@@ -34,12 +35,23 @@ class forms
 		else $this->optionFormType = 'vertical';		
 	}
 	
+	// Si le formulaire est envoyé, on analyse les champs et on les retourne nettoyés
 	function validate()
 	{
-		$validate = r::parse(func_get_args());
-		
-		echo r::method();
-		a::show(r::data());
+		$parser = func_get_args();
+		if(isset($_POST) and !empty($_POST))
+		{
+			if($parser)
+			{
+				$validate = r::parse($parser);
+				foreach($validate as $fieldname => $fieldvalue)
+					$this->status[$fieldname] =
+						(empty($fieldvalue) or (is_array($fieldvalue) and $fieldvalue['error'] != 0)) ? 'error' : 'success';	
+				return $validate;
+			}
+			else return $_POST;
+		}
+		else return NULL;
 	}
 	
 	/*
@@ -107,6 +119,7 @@ class forms
 		$classes[] = $deploy['type'];
 		if($mandatory) $classes[] = 'mandatory';
 		if($status) $classes[] = $status;
+		$classes[] = a::get($this->status, $deploy['name']);
 		
 		////////////////////
 		/////// RENDU //////

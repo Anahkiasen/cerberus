@@ -10,6 +10,24 @@ class r
 		return self::$_ = self::sanitize($_REQUEST);
 	}
 
+	// Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT
+	static function parse($keep = NULL)
+	{
+		if(!is_array($keep)) $keep = func_get_args();
+		$result = array();
+		foreach($keep as $k)
+		{
+			$params			= explode(':', $k);
+			$key			= a::get($params, 0);
+			$type			= a::get($params, 1, $key);
+			$default		= a::get($params, 2, NULL);
+			$value 			= $type == 'file' ? a::get($_FILES, $key) : self::get($key, $default); // Si champ $_FILES, on récupère cette valeur plutôt
+			$result[$key] 	= str::sanitize($value, $type);
+		}
+		return $result;
+	}
+
+	// Nettoie un array de données avec trim/stripslashes
 	static function sanitize($data)
 	{
 		foreach($data as $key => $value)
@@ -21,6 +39,12 @@ class r
 		}			
 		return $data;	
 	}
+	
+	/*
+	########################################
+	######### FONCTIONS MOTEUR #############
+	######################################## 
+	*/
 	
 	static function method()
 	{
@@ -47,24 +71,9 @@ class r
 		return self::sanitize((array)$body);
 	}
 
-	static function parse()
-	{
-		$keep	= func_get_args();
-		$result = array();
-		foreach($keep as $k)
-		{
-			$params			= explode(':', $k);
-			$key			= a::get($params, 0);
-			$type			= a::get($params, 1, 'str');
-			$default		= a::get($params, 2, '');
-			$result[$key] 	= str::sanitize( get($key, $default), $type );
-		}
-		return $result;
-	}
-
 	static function is_ajax()
 	{
-		return (strtolower(server::get('http_x_requested_with')) == 'xmlhttprequest') ? true : false;
+		return (strtolower(server::get('http_x_requested_with')) == 'xmlhttprequest');
 	}
 	
 	static function is_get()

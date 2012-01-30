@@ -545,6 +545,7 @@ class str
 				$string = (v::email($string)) ? $string : NULL;
 				break;
 			case 'phone':
+			case 'telephone':
 				$string = (v::phone($string)) ? $string : NULL;
 				break;
 			case 'plain':
@@ -559,6 +560,9 @@ class str
 				$string = str::upper($string);
 				break;
 			case 'words':
+			case 'name':
+			case 'nom':
+			case 'prenom':
 				$string = str::sanitize($string, 'plain');
 				$string = preg_replace('/[^\pL]/u', ' ', $string);
 			case 'tags':
@@ -579,7 +583,6 @@ class str
 		}
 
 		return trim($string);
-
 	}
 
 	static function ucwords($str)
