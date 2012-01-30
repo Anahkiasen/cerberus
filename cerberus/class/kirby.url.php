@@ -115,8 +115,9 @@ class url
 		if(!is_array($page)) $page = explode('-', $page);
 		$page0 = a::get($page, 0);
 		
+		$submenu = a::get($desired->get($page0), 'submenu');	
 		if(isset($page[1])) $page1 = $page[1];
-		else $page1 = a::get($desired->get($page0), 0, NULL);
+		else $page1 = $submenu ? key($submenu) : NULL;
 		
 		if(is_array($params))
 		{		
@@ -128,7 +129,7 @@ class url
 			}
 		}
 	
-		if(!REWRITING or $page0 == 'admin')
+		if(REWRITING or $page0 == 'admin')
 		{
 			// Mode local
 			$lien = 'index.php?page=' .$page0;
@@ -164,7 +165,7 @@ class url
 			
 			if(!isset($pageHTML))
 				$pageHTML = a::get($meta, 'url', a::get($meta, 'titre', l::get('menu-'.$thisPage, NULL)));
-	
+			
 			if($pageHTML)
 				$lien .= str::slugify($pageHTML). '.html';
 		}
