@@ -22,7 +22,7 @@ class l
 	
 		// Chargement du fichier de langue et mise en cache
 		$current = self::current();
-		$filename = 'cerberus/cache/lang-{langue}.json';
+		$filename = 'cerberus/cache/lang-' .$current. '.json';
 		self::load('cerberus/include/cerberus.{langue}.json');
 
 		// Chargement et création dynamique du fichier langue

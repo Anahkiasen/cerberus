@@ -324,7 +324,7 @@ class navigation
 	{
 		$submenu = a::get($this->data[$this->page], 'submenu');
 		if($render)
-			return ($submenu and count($submenu) > 1) ? $this->renderSubnav[$this->page] : NULL;
+			return ($submenu and $this->page != 'admin' and count($submenu) > 1) ? $this->renderSubnav[$this->page] : NULL;
 		
 		else
 			return $submenu;

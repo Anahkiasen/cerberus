@@ -188,7 +188,7 @@ class AdminSetup
 				{
 					// Texte
 					$texte_lien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE); 
-					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? array('class' => 'hover') : NULL;
+					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? array('class' => 'active') : NULL;
 					echo str::slink('admin-' .$page, $texte_lien, NULL, $thisActive);
 				}
 			}
