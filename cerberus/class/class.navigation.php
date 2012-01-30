@@ -199,7 +199,7 @@ class navigation
 			$key = explode('-', $key);
 			$this->data[$key[0]]['submenu'][$key[1]]['link'] = $newLink;
 		}
-		else $this->data[$key[0]]['link'] = $newLink;
+		else $this->data[$key]['link'] = $newLink;
 	}
 	
 	// Rendu HTML des arbres de navigation
@@ -210,7 +210,7 @@ class navigation
 
 		foreach($this->data as $key => $value)
 		{
-			if($value['hidden'] != 1)
+			if(isset($value['hidden']) and $value['hidden'] != 1)
 			{
 				$class = a::get($value, 'class');
 				$classList = $class ? ' class="' .$class. '"' : NULL;
