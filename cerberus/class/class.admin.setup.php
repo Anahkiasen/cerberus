@@ -44,9 +44,10 @@ class AdminSetup
 				if(MULTILANGUE) array_unshift(self::$navigation['systeme'], 'langue');
 				if(db::is_table('cerberus_news')) self::$navigation['website']['Actualités'] = 'news';
 			}
-			self::$navigation['website'] = array_merge(self::$navigation['website'], array_diff($desired->get('admin'), array('admin')));
+			
+			foreach($desired->getSubmenu(FALSE) as $index => $name) if($index != 'admin') self::$navigation['website'][$name['text']] = $index;
 			self::$navigation['systeme'] = array_merge(self::$navigation['systeme'], a::force_array($customNavigation));
-		
+			
 			// Droits de l'utilisateur
 			self::$droits = (SQL and db::is_table('cerberus_admin')) 
 				? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user'])))) 
@@ -174,7 +175,7 @@ class AdminSetup
 			}
 			echo '</p>';
 		}
-	
+		
 		// Navigation de l'admin
 		asort(self::$navigation);
 		if(!empty(self::$navigation))
