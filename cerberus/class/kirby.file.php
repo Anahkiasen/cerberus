@@ -8,7 +8,7 @@ class f
 	*/
 
 	// Écrit dans un fichier
-	static function write($file, $content, $append = false)
+	static function write($file, $content = NULL, $append = false)
 	{
 		$dossier = dirname($file);
 		if(!file_exists($dossier))
