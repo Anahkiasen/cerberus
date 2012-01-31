@@ -100,33 +100,49 @@ class forms
 		}
 		else $params = str::parse('{'.$params.'}', 'json');
 		
-		// PARAMÈTRES DU CHAMP
-		$deploy['type'] = a::get($params, 'type', 'text');
-		$label = a::get($params, 'label', $deploy['type']); // Si aucun label, on utilise le nom slugifié
-		$status = a::get($params, 'status');
-		$deploy['name'] = a::get($params, 'name', str::slugify($label));
-		$deploy['name'] = l::get($deploy['name'], $deploy['name']);
-		$deploy['value'] = a::get($_POST, $deploy['name'], a::get($this->values, $deploy['name']));
-		$deploy['class'] = a::get($params, 'class');
-		$deploy['placeholder'] = a::get($params, 'placeholder');
-		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']);
+		/////////////////////////
+		// PARAMÈTRES DU CHAMP //
+		/////////////////////////
+				
+		// Type du champ
+		$deploy['type'] = 	a::get($params, 'type', 
+							'text');
+							
+		// Label du champ
+		$label = 	a::get($params, 'label', 
+					ucfirst(a::get($params, 'name', 
+					$deploy['type'])));
+		
+		// Attribut name
+		$deploy['name'] = 	a::get($params, 'name', 
+							str::slugify($label));
+		$deploy['name'] = 	l::get($deploy['name'], 
+							$deploy['name']);
+		
+		// Valeur du champ
+		$deploy['value'] = 	a::get($params, 'value',
+							a::get($_POST, $deploy['name'], 
+							a::get($this->values, $deploy['name'])));
 		
 		// Paramètres auxiliaires
+		$deploy['placeholder'] = a::get($params, 'placeholder');
 		$mandatory = a::get($params, 'mandatory');
 		
 		// Classe du champ
-		$classes = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
-		$classes[] = $deploy['type'];
-		if($mandatory) $classes[] = 'mandatory';
-		if($status) $classes[] = $status;
-		$classes[] = a::get($this->status, $deploy['name']);
+		$deploy['class'] = a::get($params, 'class');
+		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']);
+		
+		$div_class = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
+		$div_class[] = $deploy['type'];
+		$div_class[] = a::get($this->status, $deploy['name'], a::get($params, 'status'));
+		if($mandatory) $div_class[] = 'mandatory';
 		
 		////////////////////
 		/////// RENDU //////
 		////////////////////
 		
 		if($this->optionFormType == 'horizontal')
-			$this->rend('<div class="' .implode(' ', $classes). '">', 'TAB');
+			$this->rend('<div class="' .implode(' ', $div_class). '">', 'TAB');
 		
 			// LABEL
 			if(!in_array($deploy['type'], array('submit', 'checkbox', 'hidden')) and $this->optionFormType != 'inline')
@@ -155,7 +171,7 @@ class forms
 					
 				case 'submit':
 					$deploy['class'] .= ' btn';
-					$this->rend('<button ' .$this->paramRender($deploy). '>' .$deploy['name']. '</button>');
+					$this->rend('<button ' .$this->paramRender($deploy). ' data-loading-text="Chargement">' .$deploy['name']. '</button>');
 					if($this->optionFormType != 'inline') $this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
 					break;
 			}
@@ -180,7 +196,7 @@ class forms
 	// Add a field to the main form
 	function addField($name, $label, $type, $value, $additionalParams)
 	{
-		$this->addElement(array('label' => $label, 'name' => $name, 'type' => $type, $params => $additionalParams));
+		$this->addElement(array('label' => $label, 'name' => $name, 'value' => $value, 'type' => $type, 'params' => $additionalParams));
 	}
 	
 	//////////////////
@@ -189,7 +205,7 @@ class forms
 	
 	function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addField($name, $abel, 'text', $value, $additionalParams);
+		$this->addField($name, $label, 'text', $value, $additionalParams);
 	}
 
 	function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
@@ -217,8 +233,8 @@ class forms
 	}	
 	function addSubmit($name = 'Valider', $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
-		if(!$additionalParams) $additionalParams['class'] = 'primary';
-		$this->addField($name, $abel, 'submit', $value, $additionalParams);
+		if(!$additionalParams) $additionalParams['class'] = 'btn-primary';
+		$this->addField($name, $label, 'submit', $value, $additionalParams);
 	}
 	
 	/*
