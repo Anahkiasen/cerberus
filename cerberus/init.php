@@ -101,9 +101,9 @@ $userAgent = browser::css();
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
 
+// Fichiers manquants
 if(!file_exists('assets/less/variables_custom.less')) f::write('assets/less/variables_custom.less', '@main: #069;');
 if(!file_exists('assets/css/styles.less')) f::write('assets/css/styles.less');
-
 
 /*
 ########################################

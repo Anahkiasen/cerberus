@@ -116,10 +116,9 @@ class dispatch extends Cerberus
 			array_push($dispath[$basename], $path);
 		}
 		$dispath['bootstrap'] = array('assets/less/bootstrap.less', 'assets/less/bootstrap.css');
-		
-		$this->scripts = array_filter($this->dispatchArray($scripts));
 
 		// Récupération des différents scripts
+		$this->scripts = array_filter($this->dispatchArray($scripts));
 		if($this->scripts) foreach($this->scripts as $key => $value)
 		{
 			if(!empty($value))

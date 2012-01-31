@@ -177,27 +177,48 @@ class forms
 	######################################## 
 	*/
 	
+	// Add a field to the main form
+	function addField($name, $label, $type, $value, $additionalParams)
+	{
+		$this->addElement(array('label' => $label, 'name' => $name, 'type' => $type, $params => $additionalParams));
+	}
+	
+	//////////////////
+	// CHAMPS TEXTE //
+	//////////////////
+	
 	function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addElement(array('label' => $label, 'name' => $name, 'type' => 'text', 'value' => $value, 'params' => $additionalParams));
+		$this->addField($name, $abel, 'text', $value, $additionalParams);
 	}
+
 	function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addElement(array('label' => $label, 'name' => $name, 'type' => 'checkbox', 'value' => $value, 'params' => $additionalParams));
+		$this->addField($name, $abel, 'checkbox', $value, $additionalParams);
 	}
-	function addCheckboxes()
+	function addCheckboxes($name, $label = NULL, $checkboxes, $value, $additionalParams = NULL)
 	{
-		// TO DEFINE
+		// Checkboxes (name => value)
+		foreach($checkboxes as $check_name => $check_value)
+		{
+			if(in_array($check_name, $value)) $thisValue = 'ON';
+			$this->addCheckbox($check_name, $check_value, $thisValue);
+		}
 	}
+	
+	//////////////////
+	/// FUNCTIONS ////
+	//////////////////
+
 	function addFile($name, $label = NULL, $additionalParams = NULL)
 	{
 		$this->render = str_replace('method="' ,'enctype="multipart/form-data" method="', $this->render);
-		$this->addElement(array('label' => $label, 'name' => $name, 'type' => 'file', 'params' => $additionalParams));
-	}
+		$this->addField($name, $abel, 'file', $value, $additionalParams);
+	}	
 	function addSubmit($name = 'Valider', $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		if(!$additionalParams) $additionalParams['class'] = 'primary';
-		$this->addElement(array('label' => $label, 'name' => $name, 'type' => 'submit', 'value' => $value, 'params' => $additionalParams));
+		$this->addField($name, $abel, 'submit', $value, $additionalParams);
 	}
 	
 	/*

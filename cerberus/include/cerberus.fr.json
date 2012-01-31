@@ -5,14 +5,14 @@
 	"form.incomplete":		"Un ou plusieurs champs sont incomplets",
 	"form.cancel":			"Annuler",
 	
-	"error.filepath":	"Le fichier {filepath} est introuvable",
+	"error.filepath":		"Le fichier {filepath} est introuvable",
 	
-	"news.none":		"Aucune news à afficher",
-	"news.readmore":	"Lire la suite",
-	"news.archives":	"Archives",
+	"news.none":			"Aucune news à afficher",
+	"news.readmore":		"Lire la suite",
+	"news.archives":		"Archives",
 	
-	"mail.sent":	"Votre message a bien été envoyé",
-	"mail.error":	"Une erreur est survenue durant l'envoi du message",
+	"mail.sent":			"Votre message a bien été envoyé",
+	"mail.error":			"Une erreur est survenue durant l'envoi du message",
 	
 	"admin.add":			"Ajouter un",
 	"admin.no_results":		"Aucun résultat à afficher",
@@ -33,5 +33,7 @@
 	"db.errors.query":				"Requête incorrecte",
 	"db.errors.execute":			"Requête incorrecte",
 	"db.errors.fields":				"Impossible de lister les champs",
-	"db.errors.disconnect":			"Erreur lors de la déconnexion de la base"
+	"db.errors.disconnect":			"Erreur lors de la déconnexion de la base",
+	
+	"file.folder.error":			"Impossible de créer le dossier"
 }
