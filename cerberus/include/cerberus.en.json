@@ -3,7 +3,7 @@
 	"menu-sitemap":				"Sitemap",
 	"menu-contact-legales":		"Imprint",
 	
-	"form.incomplete":			"One or more fields are incomplete",
+	"form.incomplete":			"One or more fields are incomplete or incorrect",
 	"form.cancel":				"Cancel",
 	
 	"error.filepath":			"The file {filepath} couldn\'t be found",

@@ -38,20 +38,52 @@ class forms
 	// Si le formulaire est envoyé, on analyse les champs et on les retourne nettoyés
 	function validate()
 	{
+		if(!isset($_POST) or empty($_POST)) return FALSE;
+		
 		$parser = func_get_args();
-		if(isset($_POST) and !empty($_POST))
+		$mailbody = NULL;
+		$result = array();
+		$errors = array();
+		
+		// Analyse des résultats du formulaire
+		foreach($parser as $field)
 		{
-			if($parser)
-			{
-				$validate = r::parse($parser);
-				foreach($validate as $fieldname => $fieldvalue)
-					$this->status[$fieldname] =
-						(empty($fieldvalue) or (is_array($fieldvalue) and $fieldvalue['error'] != 0)) ? 'error' : 'success';	
-				return $validate;
-			}
-			else return $_POST;
+			$params			= explode(':', $field);
+			$key			= a::get($params, 0);
+			$type			= a::get($params, 1, $key);
+			$default		= a::get($params, 2, NULL);
+			$value 			= $type == 'file'
+								? a::get($_FILES, $key)
+								: str::sanitize(r::get($key, $default), $type);
+								
+			$status 			= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
+			
+			$result[$key] 		= $value;
+			$this->status[$key] = $status ? 'success' : 'error';
+			if(!$status) $errors[] = $key;
 		}
-		else return NULL;
+		
+		// Affichage des erreurs
+		if(!empty($errors))
+		{
+			str::display(l::get('form.incomplete'), 'error');
+			return FALSE;	
+		}
+		else
+		{
+			if(true == false)
+				foreach($result as $key => $value)
+				{
+					$mailbody .= '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : ';
+					if(is_array($value)) 
+					{
+						$mailbody .= '<br />';
+						$value = a::simplode(' : ', '<br />', $value);
+					}
+					$mailbody .= stripslashes($value). '<br />';
+				}
+			return $result;
+		}	
 	}
 	
 	/*
@@ -134,7 +166,7 @@ class forms
 		
 		$div_class = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
 		$div_class[] = $deploy['type'];
-		$div_class[] = a::get($this->status, $deploy['name'], a::get($params, 'status'));
+		$div_class[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
 		if($mandatory) $div_class[] = 'mandatory';
 		
 		////////////////////
@@ -171,8 +203,8 @@ class forms
 					
 				case 'submit':
 					$deploy['class'] .= ' btn';
-					$this->rend('<button ' .$this->paramRender($deploy). ' data-loading-text="Chargement">' .$deploy['name']. '</button>');
-					if($this->optionFormType != 'inline') $this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
+					$this->rend('<button ' .$this->paramRender($deploy). ' data-loading-text="Chargement"><i class="icon-camera icon-white"></i> ' .$deploy['name']. '</button>');
+					if($this->optionFormType != 'inline' and a::get($params, 'cancel', TRUE) == TRUE) $this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
 					break;
 			}
 			
@@ -210,7 +242,7 @@ class forms
 
 	function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addField($name, $abel, 'checkbox', $value, $additionalParams);
+		$this->addField($name, $label, 'checkbox', $value, $additionalParams);
 	}
 	function addCheckboxes($name, $label = NULL, $checkboxes, $value, $additionalParams = NULL)
 	{
@@ -229,12 +261,12 @@ class forms
 	function addFile($name, $label = NULL, $additionalParams = NULL)
 	{
 		$this->render = str_replace('method="' ,'enctype="multipart/form-data" method="', $this->render);
-		$this->addField($name, $abel, 'file', $value, $additionalParams);
+		$this->addField($name, $label, 'file', NULL, $additionalParams);
 	}	
-	function addSubmit($name = 'Valider', $label = NULL, $value = NULL, $additionalParams = NULL)
+	function addSubmit($name = 'Valider', $additionalParams = NULL)
 	{
 		if(!$additionalParams) $additionalParams['class'] = 'btn-primary';
-		$this->addField($name, $label, 'submit', $value, $additionalParams);
+		$this->addField($name, NULL, 'submit', NULL, $additionalParams);
 	}
 	
 	/*

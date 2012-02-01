@@ -76,7 +76,7 @@ function checkFields()
 		if(!empty($POST) or $type == 'facultative')
 		{
 			$unfilled = array_diff($unfilled, array($key));
-			if(checkString($POST, $type))
+			if(v::check($POST, $type))
 			{	
 				$mailbody .= (MULTILANGUE)
 					? '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : '

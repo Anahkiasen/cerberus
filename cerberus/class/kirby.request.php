@@ -11,18 +11,17 @@ class r
 	}
 
 	// Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT
-	static function parse($keep = NULL)
+	static function parse()
 	{
-		if(!is_array($keep)) $keep = func_get_args();
+		$keep	= func_get_args();
 		$result = array();
-		foreach($keep as $k)
+		foreach($keep AS $k)
 		{
 			$params			= explode(':', $k);
 			$key			= a::get($params, 0);
-			$type			= a::get($params, 1, $key);
+			$type			= a::get($params, 1, 'str');
 			$default		= a::get($params, 2, NULL);
-			$value 			= $type == 'file' ? a::get($_FILES, $key) : self::get($key, $default); // Si champ $_FILES, on récupère cette valeur plutôt
-			$result[$key] 	= str::sanitize($value, $type);
+			$result[$key] 	= str::sanitize(get($key, $default), $type);
 		}
 		return $result;
 	}
@@ -62,7 +61,7 @@ class r
 	{
 		$data = self::data();
 		if(is_array($key)) self::$_ = array_merge($data, $key);
-		else  self::$_[$key] = $value;
+		else self::$_[$key] = $value;
 	}
 	
 	static function body()

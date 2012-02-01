@@ -2,7 +2,7 @@
 	"menu-404":				"Erreur 404",
 	"menu-sitemap":			"Plan du site",
 	"menu-contact-legales":	"Mentions légales",
-	"form.incomplete":		"Un ou plusieurs champs sont incomplets",
+	"form.incomplete":		"Un ou plusieurs champs sont incomplets our incorrects",
 	"form.cancel":			"Annuler",
 	
 	"error.filepath":		"Le fichier {filepath} est introuvable",
