@@ -2,7 +2,7 @@
 class forms
 {
 	// Etats actifs
-	private $tabs = 0;
+	private $tabs;
 	private $infieldset = FALSE;
 	private $values;
 	private $status = array();
@@ -24,9 +24,9 @@ class forms
 	{
 		// Création de l'élément <form>
 		if(!isset($params['method'])) $params['method'] = 'post';
-		$this->tabs = a::get($params, 'tabs');
+		$this->tabs = a::get($params, 'tabs', 1);
 		$this->optionMultilangue = $multilangue ? $multilangue : MULTILANGUE;
-		$this->rend('<form ' .$this->paramRender($params). '>', 'TAB');
+		$this->rend('<form ' .$this->paramRender($params, 'tabs'). '>');
 		
 		// Type de formulaire
 		if(str::find('form-horizontal', $params['class'])) $this->optionFormType = 'horizontal';
@@ -135,7 +135,7 @@ class forms
 		/////////////////////////
 		// PARAMÈTRES DU CHAMP //
 		/////////////////////////
-				
+		
 		// Type du champ
 		$deploy['type'] = 	a::get($params, 'type', 
 							'text');
@@ -157,15 +157,24 @@ class forms
 							a::get($this->values, $deploy['name'])));
 		
 		// Paramètres auxiliaires
-		$deploy['placeholder'] = a::get($params, 'placeholder');
+		$auxiliaires = array('placeholder', 'rows', 'id', 'disabled');
+		foreach($auxiliaires as $ax) $deploy[$ax] = a::get($params, $ax);
 		$mandatory = a::get($params, 'mandatory');
+		if(isset($params['multiple'])) $deploy['multiple'] = 'multiple';
+		
+		// Add-ons
+		$prepend = a::get($params, 'prepend');
+		$append = a::get($params, 'append');
+		$prepend_type = $prepend ? 'prepend' : 'append';
+		
+		$addon = a::get($params, 'addon');
 		
 		// Classe du champ
 		$deploy['class'] = a::get($params, 'class');
-		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']);
+		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']); 
+		$deploy['class'] .= ' ' .$addon;
 		
 		$div_class = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
-		$div_class[] = $deploy['type'];
 		$div_class[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
 		if($mandatory) $div_class[] = 'mandatory';
 		
@@ -183,12 +192,21 @@ class forms
 			// DIV ENGLOBANTE
 			$englobe = ($deploy['type'] != 'submit' and $this->optionFormType == 'horizontal');
 			if($englobe) $this->rend('<div class="controls">', 'TAB');
+			if($prepend or $append) $this->rend('<div class="input-' .$prepend_type. '">', 'TAB');
 			
 			// CHAMP MÊME
+			if($prepend) $this->rend('<span class="add-on">' .$prepend. '</span>', 'TAB');
 			switch($deploy['type'])
 			{
+				// Texte
 				case 'text':
-					$this->rend('<input ' .$this->paramRender($deploy). ' />');
+					if($addon == 'uneditable-input') $this->rend('<span ' .$this->paramRender($deploy, 'value'). '>' .$deploy['value']. '</span>');
+					elseif($addon == 'disabled') $this->rend('<input ' .$this->paramRender($deploy, 'value'). ' placeholder="' .$deploy['value']. '" disabled />');
+					else $this->rend('<input ' .$this->paramRender($deploy). ' />');
+					break;
+					
+				case 'textarea':
+					$this->rend('<textarea ' .$this->paramRender($deploy, 'value'). '>' .$deploy['value']. '</textarea>');
 					break;
 					
 				case 'checkbox':
@@ -196,23 +214,54 @@ class forms
 					$this->rend('<input ' .$this->paramRender($deploy). ' /> '.$label);
 					$this->rend('</label>');
 					break;
+				
+				// Listes
+				case 'checkboxes':
+				case 'radio':
+					$i = 1;
+					$listType = $deploy['type'] == 'radio' ? 'radio' : 'checkbox';
+					$checkboxes_name = a::get($params, 'name');
+					foreach($deploy['value'] as $index => $label)
+					{
+						$this_checkbox = $checkboxes_name ? $checkboxes_name.$i : $index;
+						$this->rend('<label class="' .$listType. ' ' .$deploy['class']. '">');
+						$this->rend('<input type="' .$listType. '" name="' .$this_checkbox. '" /> '.$label);
+						$this->rend('</label>');
+						$i++;
+					}
+					break;
 					
+				case 'select':
+					$this->rend('<select ' .$this->paramRender($deploy, 'value'). '>');
+					foreach($deploy['value'] as $index => $label)
+					{
+						$this_option = is_numeric($index) ? NULL : ' value="' .$index. '"';
+						$this->rend('<option' .$this_option. '>'.$label. '</option>');
+					}
+					$this->rend('</select>');
+					break;
+					
+				// Fonctions
 				case 'file':
 					$this->rend('<input ' .$this->paramRender($deploy). ' />');
 					break;
 					
 				case 'submit':
 					$deploy['class'] .= ' btn';
-					$this->rend('<button ' .$this->paramRender($deploy). ' data-loading-text="Chargement"><i class="icon-camera icon-white"></i> ' .$deploy['name']. '</button>');
-					if($this->optionFormType != 'inline' and a::get($params, 'cancel', TRUE) == TRUE) $this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
+					$this->rend('<button ' .$this->paramRender($deploy, 'name'). ' data-loading-text="Chargement">' .$deploy['name']. '</button>');
+					
+					// Bouton annuler
+					if($this->optionFormType != 'inline' and a::get($params, 'cancel', TRUE))
+						$this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
 					break;
 			}
+			if($append) $this->render .= '<span class="add-on">' .$append. '</span>';
+			if($prepend or $append) $this->rend('</div>', 'UNTAB');
 			
 			// AIDE CONTEXTUELLE
 			if(a::get($params, 'help')) $this->rend('<p class="help-block">' .a::get($params, 'help'). '</p>');
 			if(a::get($params, 'help-inline')) $this->rend('<p class="help-inline">' .a::get($params, 'help-inline'). '</p>');
-	
-			// /DIV ENGLOBANTE
+			
 			if($englobe) $this->rend('</div>', 'UNTAB');
 					
 		if($this->optionFormType == 'horizontal')
@@ -228,6 +277,7 @@ class forms
 	// Add a field to the main form
 	function addField($name, $label, $type, $value, $additionalParams)
 	{
+		if(!is_array($additionalParams)) $additionalParams = str::parse('{' .$additionalParams. '}', 'json');
 		$this->addElement(array('label' => $label, 'name' => $name, 'value' => $value, 'type' => $type, 'params' => $additionalParams));
 	}
 	
@@ -239,19 +289,32 @@ class forms
 	{
 		$this->addField($name, $label, 'text', $value, $additionalParams);
 	}
+	
+	function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	{
+		$this->addField($name, $label, 'textarea', $value, $additionalParams);
+	}
 
 	function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label, 'checkbox', $value, $additionalParams);
 	}
-	function addCheckboxes($name, $label = NULL, $checkboxes, $value, $additionalParams = NULL)
+	
+	//////////////////
+	///// LISTES /////
+	//////////////////
+	
+	function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $additionalParams = NULL)
 	{
-		// Checkboxes (name => value)
-		foreach($checkboxes as $check_name => $check_value)
-		{
-			if(in_array($check_name, $value)) $thisValue = 'ON';
-			$this->addCheckbox($check_name, $check_value, $thisValue);
-		}
+		$this->addField($name, $label, 'checkboxes', $checkboxes, $additionalParams);
+	}
+	function addRadio($name = NULL, $label = NULL, $radio, $additionalParams = NULL)
+	{
+		$this->addField($name, $label, 'radio', $radio, $additionalParams);
+	}
+	function addSelect($name = NULL, $label = NULL, $select, $additionalParams = NULL)
+	{
+		$this->addField($name, $label, 'select', $select, $additionalParams);
 	}
 	
 	//////////////////
@@ -275,6 +338,11 @@ class forms
 	######################################## 
 	*/
 	
+	function insert($text)
+	{
+		$this->render .= $text;
+	}
+	
 	function rend($content, $tabs = NULL)
 	{
 		if($tabs == 'UNTAB') $this->tabs--;
@@ -282,11 +350,14 @@ class forms
 		if($tabs == 'TAB') $this->tabs++;
 	}
 	
-	function paramRender($params)
+	function paramRender($params, $except = NULL)
 	{
 		$render = NULL;
+		if(!is_array($except)) $except = array($except);
+		
 		foreach($params as $key => $value)
-			if(!empty($value)) $render .= $key.'="' .$value. '" ';
+			if(!empty($value) and !in_array($key, $except)) $render .= $key.'="' .$value. '" ';
+
 		return substr($render, 0, -1);
 	}
 	
