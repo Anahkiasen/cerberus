@@ -88,9 +88,10 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	
 	// Rassemblement des informations sur l'erreur
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
+	$current = isset($desired) ? $desired->current(false) : FALSE;
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
-	if(!LOCAL and $desired->current(false) != 'admin')
+	if(!LOCAL and $current != 'admin')
 	{
 		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
 		$titre_email = config::get('sitename');

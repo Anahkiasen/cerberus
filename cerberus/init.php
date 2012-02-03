@@ -153,7 +153,7 @@ if(CACHE)
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
 $dispatch = new dispatch();
-if(db::connection() and CACHE) backupSQL();
+if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 
 /*
 ########################################

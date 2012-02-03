@@ -13,7 +13,7 @@ class update
 			// Mises à jour de la base
 			if(self::$revision < 353)
 			{
-				if(!in_array('account', db::fields('cerberus_admin')))
+				if(db::is_table('cerberus_admin') and !in_array('account', db::fields('cerberus_admin')))
 				{
 					$utilisateur = db::row('cerberus_admin', '*');
 					$utilisateur['account'] = 'stappler';
@@ -22,7 +22,7 @@ class update
 				}
 				self::update(353);
 			}
-			if(self::$revision < 355)
+			if(self::$revision < 355 and db::is_table('cerberus_structure'))
 			{
 				db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
 				db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');

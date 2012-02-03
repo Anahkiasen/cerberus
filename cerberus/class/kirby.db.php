@@ -316,14 +316,18 @@ class db
 	{
 		$connection = self::connect();
 
-		$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
-		if(!$fields) return self::error(l::get('db.errors.fields'));
-
-		$count	= @mysql_num_fields($fields);
-		for($x = 0; $x < $count; $x++)
-			$output[] = @mysql_field_name($fields, $x);
+		if(db::is_table($table))
+		{
+			$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
+			if(!$fields) return self::error(l::get('db.errors.fields'));
+	
+			$count	= @mysql_num_fields($fields);
+			for($x = 0; $x < $count; $x++)
+				$output[] = @mysql_field_name($fields, $x);	
 		
-		return $output;
+			return $output;
+		}
+		else return array();
 	}
 
 	// Vérifie si une table existe

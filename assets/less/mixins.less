@@ -571,33 +571,17 @@
 	.border-radius(@top @top @bottom @bottom);
 }
 
-// Raccourcis box-shadow
-.box-shadow(@x: 0, @y: 0, @blur: 1px, @spread: 0, @color: #000)
-{
-	 -webkit-box-shadow: @arguments;
-		-moz-box-shadow: @arguments;
-			 box-shadow: @arguments;
-}
-.box-shadow-inset(@x: 0, @y: 0, @blur: 1px, @spread: 0, @color: #000)
-{
-	 -webkit-box-shadow: inset @arguments;
-		-moz-box-shadow: inset @arguments;
-			 box-shadow: inset @arguments;
-}
-// Raccourcis
+///////////////////////////////////////////////
+////////////////// OMBRES ///////////////////// 
+///////////////////////////////////////////////
+
+// Ombres blocks
 .box-shadow(@blur, @color) {
-	.box-shadow(0, 0, @blur, 0, @color) }
+	.box-shadow(0 0 @blur 0 @color) }
 .box-shadow-inset(@blur, @color) {
-	.box-shadow-inset(0, 0, @blur, 0, @color) }
-
-.box-shadow-none()
-{
-	 -webkit-box-shadow: none;
-		-moz-box-shadow: none;
-			 box-shadow: none;
-}
-
-// Ombres automatiques
+	.box-shadow-inset(0 0 @blur 0 @color) }
+	
+// Ombres texte
 @default_size: 2px;
 @default_opacity: 75;
 
@@ -622,8 +606,29 @@
 	text-shadow: none;
 }
 
-// Transitions
+///////////////////////////////////////////////
+////////////////// ANIMATIONS ///////////////// 
+///////////////////////////////////////////////
+
 @transition: 0.3s;
+
+.animate-fill-mode(@mode: both)
+{
+	-webkit-animation-fill-mode: both;
+	   -moz-animation-fill-mode: both;
+		-ms-animation-fill-mode: both;
+		 -o-animation-fill-mode: both;
+			animation-fill-mode: both;	
+}
+.animate(@animation: fadeIn, @duration: 1s, @delay: 0, @transition: ease)
+{
+	-webkit-animation: @animation @duration @transition @delay;
+	   -moz-animation: @animation @duration @transition @delay;
+		-ms-animation: @animation @duration @transition @delay;
+		 -o-animation: @animation @duration @transition @delay;
+			animation: @animation @duration @transition @delay;
+			.animate-fill-mode;
+}
 
 .transition(@range: all, @time: @transition, @ease: ease-in-out)
 {
@@ -632,10 +637,6 @@
 		 -ms-transition: @range @time @ease;
 			-o-transition: @range @time @ease;
 			 transition: @range @time @ease;
-}
-.transition-all(@time)
-{
-	.transition(all, @time);
 }
 
 ///////////////////////////////////////////////

@@ -78,13 +78,14 @@ class dispatch extends Cerberus
 
 		// API
 		$this->availableAPI = array(
-		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
-		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.1.min.js',
-		'colorbox' => 'jquery.colorbox-min',
+		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider' => 'jquery.nivo.slider.pack',
-		'tablesorter' => 'jquery.tablesorter.min');
+		'colorbox' => 'jquery.colorbox-min',
+		'easing' => 'jquery.easing',);
 	
 		// bootstrap
 		$bootstrap = glob('assets/js/bootstrap-*.js');
@@ -132,7 +133,7 @@ class dispatch extends Cerberus
 				{
 					$API = $this->availableAPI[$value];
 					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
-					if(str::find(array('http'), $API)) $this->JS['url'][] = $API;
+					if(str::find(array('http', 'bootstrap'), $API)) $this->JS['url'][] = $API;
 					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js');
 				}
 				else
@@ -176,7 +177,7 @@ class dispatch extends Cerberus
 				$this->CSS['min'] = a::splice($this->CSS['min'], str_replace('.less', '.css', $thisfile));
 			}
 			echo "\t".'<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>'.PHP_EOL;
-			echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
+			//echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
 		}
 		
 		// CSS
@@ -185,8 +186,8 @@ class dispatch extends Cerberus
 			$minify = array_unique(array_filter($this->CSS['min']));
 			if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
 		}
-		if(!empty($this->CSS['url'])) foreach($this->CSS['url'] as $url) echo '<link rel="stylesheet" type="text/css" href="' .$url. '" />' . "\n";	
-		if(isset($this->CSS['inline'])) echo '<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>' . "\n";
+		if(!empty($this->CSS['url'])) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
+		if(isset($this->CSS['inline'])) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
 	}
 	function getJS()
 	{
@@ -200,7 +201,7 @@ class dispatch extends Cerberus
 			$this->JS['url'] = array_unique(array_filter($this->JS['url']));
 			foreach($this->JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
 		}
-		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", $this->JS['inline']).PHP_EOL. '</script>' . "\n";
+		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", $this->JS['inline']).PHP_EOL. '</script>'.PHP_EOL;
 	}
 	
 	/* 
@@ -208,6 +209,15 @@ class dispatch extends Cerberus
 	########## RAJOUT GLOBAL ###############
 	########################################
 	*/
+	
+	// Ajoute une feuille de style
+	function addCSS($link)
+	{
+		$array = str::find('.less', $link) ? 'LESS' : 'CSS';
+		
+		if(str::find('http', $link)) $this->{$array}['url'][] = $link;
+		else $this->{$array}['min'][] = $link;
+	}
 	
 	// Ajout de scripts à la volée
 	function addJS()

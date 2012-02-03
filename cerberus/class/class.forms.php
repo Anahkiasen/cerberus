@@ -56,11 +56,11 @@ class forms
 								? a::get($_FILES, $key)
 								: str::sanitize(r::get($key, $default), $type);
 								
-			$status 			= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
+			$status 				= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
+			$this->status[$key] 	= $status ? 'success' : 'error';
 			
-			$result[$key] 		= $value;
-			$this->status[$key] = $status ? 'success' : 'error';
-			if(!$status) $errors[] = $key;
+			$result[$key] 			= $value;
+			if(!$status) $errors[] 	= $key;
 		}
 		
 		// Affichage des erreurs
@@ -172,10 +172,11 @@ class forms
 		// Classe du champ
 		$deploy['class'] = a::get($params, 'class');
 		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']); 
-		$deploy['class'] .= ' ' .$addon;
+		if($addon) $deploy['class'] .= ' ' .$addon;
 		
 		$div_class = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
 		$div_class[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
+		$div_class[] = str::slugify($label);
 		if($mandatory) $div_class[] = 'mandatory';
 		
 		////////////////////
@@ -215,31 +216,47 @@ class forms
 					$this->rend('</label>');
 					break;
 				
+				
 				// Listes
 				case 'checkboxes':
-				case 'radio':
-					$i = 1;
-					$listType = $deploy['type'] == 'radio' ? 'radio' : 'checkbox';
-					$checkboxes_name = a::get($params, 'name');
+					$nameCheckbox = a::get($params, 'name').'[]';
+					$postCheckbox = a::get($_POST, $deploy['name'], array());
 					foreach($deploy['value'] as $index => $label)
 					{
-						$this_checkbox = $checkboxes_name ? $checkboxes_name.$i : $index;
-						$this->rend('<label class="' .$listType. ' ' .$deploy['class']. '">');
-						$this->rend('<input type="' .$listType. '" name="' .$this_checkbox. '" /> '.$label);
+						$checked = in_array($index, $postCheckbox) ? ' checked="checked"' : NULL;	
+						$this->rend('<label class="checkbox ' .$deploy['class']. '">');
+						$this->rend('<input type="checkbox" name="' .$nameCheckbox. '" value="' .$index. '" ' .$checked. ' /> '.$label);
 						$this->rend('</label>');
-						$i++;
 					}
 					break;
+								
+				case 'date':
 					
+					break;
+										
+				case 'radio':
+					foreach($deploy['value'] as $index => $label)
+					{
+						$checked = r::get($deploy['name']) == $index ? ' checked="checked"' : NULL;	
+						$this->rend('<label class="radio ' .$deploy['class']. '">');
+						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$index. '" /> '.$label);
+						$this->rend('</label>');
+					}
+					break;
+				
 				case 'select':
+					if(isset($deploy['multiple'])) $deploy['name'] .= '[]';
+						
 					$this->rend('<select ' .$this->paramRender($deploy, 'value'). '>');
 					foreach($deploy['value'] as $index => $label)
 					{
+						$selected = r::get($deploy['name']) == $index ? ' selected="selected"' : NULL;	
 						$this_option = is_numeric($index) ? NULL : ' value="' .$index. '"';
-						$this->rend('<option' .$this_option. '>'.$label. '</option>');
+						$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
 					}
 					$this->rend('</select>');
 					break;
+					
 					
 				// Fonctions
 				case 'file':
@@ -255,7 +272,11 @@ class forms
 						$this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
 					break;
 			}
-			if($append) $this->render .= '<span class="add-on">' .$append. '</span>';
+
+			// APPEND
+			if($append) $this->render .= str::find('button:', $append)
+				? '<p class="btn btn-danger add-on">' .substr($append, 7). '</p>'
+				: '<span class="add-on">' .$append. '</span>';
 			if($prepend or $append) $this->rend('</div>', 'UNTAB');
 			
 			// AIDE CONTEXTUELLE
