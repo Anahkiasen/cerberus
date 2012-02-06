@@ -89,6 +89,15 @@
   }
 }
 
+// Text overflow
+// -------------------------
+// Requires inline-block or block for proper styling
+.text-overflow() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 
 
 // FONTS
@@ -101,6 +110,10 @@
     .serif() { font-family: @serif }
     .sans-serif() { font-family: @sansserif }
     .monospace() { font-family: Menlo, Monaco, "Courier New", monospace }
+  }
+  .custom(@font, @size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .custom-sans-serif(@font);
+    #font > .shorthand(@size, @weight, @lineHeight);
   }
   .shorthand(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
     font-size: @size;
@@ -117,10 +130,6 @@
   }
   .monospace(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
     #font > #family > .monospace;
-    #font > .shorthand(@size, @weight, @lineHeight);
-  }
-  .custom(@font, @size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
-    #font > #family > .custom-sans-serif(@font);
     #font > .shorthand(@size, @weight, @lineHeight);
   }
 }
