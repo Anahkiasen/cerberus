@@ -108,10 +108,12 @@ class navigation
 				unset($this->data[$key]);
 			}
 			if(!LOCAL) $this->data['admin']['hidden'] = 1;
-	
+			
 			// Page en cours
-			$page = isset($this->data[get('page')]) ? get('page') : 'home';
-			$sousMenu = isset($this->data[$page]) ? a::get($this->data[$page], 'submenu', a::get($this->data['home'], 'submenu', NULL)) : NULL;
+			$default_page = key($this->data);
+			
+			$page = isset($this->data[get('page')]) ? get('page') : $default_page;
+			$sousMenu = isset($this->data[$page]) ? a::get($this->data[$page], 'submenu', a::get($this->data[$default_page], 'submenu', NULL)) : NULL;
 			if($sousMenu) $sousPage = isset($sousMenu[get('pageSub')]) ? get('pageSub') : key($sousMenu);
 			else $sousPage = NULL;
 	

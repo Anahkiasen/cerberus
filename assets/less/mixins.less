@@ -654,27 +654,26 @@
 
 .bouton(@color: @main)
 {
-	@baselight: lighten(@color, 10);
-	@basedark: 	darken(@color, 10);
 	@bordure: 5px;
 	
 	cursor: pointer;
-	#gradient .vertical(@baselight, @basedark);
+	.gradient-auto-vertical(@color, 5%);
 	.text-shadow(0, 2px, 0, darken(@color, 25));
 	.box-shadow(0, @bordure, 0, 0, darken(@color, 20));
 	border: 1px solid darken(@color, 10);
+	padding: 5px;
+	.transition(all, 0.1s);
 	
 	&:hover
 	{
-		#gradient .vertical(lighten(@baselight, 10%), lighten(@basedark, 10));
+		.gradient-auto-vertical(lighten(@color, 5%), 5%);
 		.box-shadow(0, @bordure, 0, 0, lighten(darken(@color, 20%), 10));
 	}
 	&:active
 	{
-		position: relative;
-		top: @bordure;
-		#gradient .vertical(darken(@baselight, 10%), darken(@basedark, 10));
+		.gradient-auto-vertical(darken(@color, 10%), 5%);
 		.box-shadow-none;
+		margin-bottom: 5px;
 	}
 }
 .lighten(@light: 50)
