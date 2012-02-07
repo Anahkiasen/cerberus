@@ -14,7 +14,7 @@
 	"mail.sent":			"Votre message a bien été envoyé",
 	"mail.error":			"Une erreur est survenue durant l'envoi du message",
 	
-	"admin.add":			"Ajouter un",
+	"admin.add":			"Ajouter un élément",
 	"admin.no_results":		"Aucun résultat à afficher",
 	"admin.upload.success":	"Image envoyée avec succès",
 	"admin.upload.error":	"Erreur lors de l'envoi de l'image",

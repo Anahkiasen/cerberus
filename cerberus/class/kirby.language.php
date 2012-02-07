@@ -23,8 +23,7 @@ class l
 		// Chargement du fichier de langue et mise en cache
 		$current = self::current();
 		$filename = 'cerberus/cache/lang-' .$current. '.json';
-		self::load('cerberus/include/cerberus.{langue}.json');
-
+		
 		// Chargement et création dynamique du fichier langue
 		$tables = SQL ? db::field('cerberus_langue', 'tag') : FALSE;
 		if(!empty($tables))
@@ -44,6 +43,9 @@ class l
 				else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 			}
 		}
+		
+		// Clés de langue par défaut
+		self::load('cerberus/include/cerberus.{langue}.json');
 	}
 
 	// Charger un fichier langue
@@ -54,7 +56,7 @@ class l
 		if(!empty($index))
 		{
 			self::$lang = array_merge(self::$lang, $index);
-			return l::get();
+			return self::$lang;
 		}
 		else
 		{

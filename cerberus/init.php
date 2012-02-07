@@ -98,6 +98,7 @@ if(SQL)
 $userAgent = browser::css();
 
 // Ajout des balises HTML averc leur selecteur correct
+header('Content-type: text/html; charset=utf-8');
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
 
@@ -170,7 +171,6 @@ $description = $cerberus->meta('description');
 echo PHP_EOL.'<head>'.PHP_EOL;
 if(!empty($title)) echo "\t".'<title>' .$title. '</title>'.PHP_EOL;
 if(!empty($description)) echo "\t".'<meta name="description" content="' .$description. '" />'.PHP_EOL;
-echo "\t".'<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'.PHP_EOL;
 
 // Balise base
 if(REWRITING)

@@ -1,17 +1,5 @@
-.ie6 *,
-.ie7 *,
-.ie8 *
-{
-	.text-shadow-none !important;
-}
-
-.btn.add-on
-{
-	color: black;
-	.text-shadow-none;
-}
-
 // Blocks
+
 p.readmore,
 div.cerberus_debug
 {
@@ -61,7 +49,8 @@ p.readmore
 	&:active { background-color: lighten(@main, 10%) }
 }
 
-// Buttons 
+// Boutons
+
 .btn.cerberus
 {
 	color: white;
@@ -74,6 +63,21 @@ p.readmore
 	width: 100%;
 	text-align: center;
 }
+.btn.add-on
+{
+	color: black;
+	.text-shadow-none;
+}
+
+// Compatibilité
+
+.ie6,
+.ie7,
+.ie8
+{
+	* { .text-shadow-none !important }
+}
+.ie img { -ms-interpolation-mode: bicubic }
 
 // Old navbar
 /*.navbar

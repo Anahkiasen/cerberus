@@ -134,7 +134,7 @@ class dispatch extends Cerberus
 					$API = $this->availableAPI[$value];
 					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
 					if(str::find(array('http', 'bootstrap'), $API)) $this->JS['url'][] = $API;
-					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js');
+					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js', $API);
 				}
 				else
 				{
@@ -148,7 +148,6 @@ class dispatch extends Cerberus
 			}
 			else unset($this->scripts[$key]);
 		}
-		
 		return $this->scripts;
 	}
 	

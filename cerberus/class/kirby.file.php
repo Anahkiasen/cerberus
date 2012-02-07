@@ -184,9 +184,9 @@ class f
 	}
 	
 	// Retourne le chemin d'un fichier seulement s'il existe
-	static function sexist($file)
+	static function sexist($file, $default = NULL)
 	{
-		return (file_exists($file)) ? $file : NULL;
+		return (file_exists($file)) ? $file : $default;
 	}
 
 	// Détecte le type d'un fichier

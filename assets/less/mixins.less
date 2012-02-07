@@ -244,8 +244,6 @@
   }
 }
 
-
-
 // Input grid system
 // -------------------------
 #inputGridSystem {
@@ -274,6 +272,39 @@
 
 
 
+// Form field states (used in forms.less)
+// --------------------------------------------------
+
+// Mixin for form field states
+.formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
+  // Set the text color
+  > label,
+  .help-block,
+  .help-inline {
+    color: @textColor;
+  }
+  // Style inputs accordingly
+  input,
+  select,
+  textarea {
+    color: @textColor;
+    border-color: @borderColor;
+    &:focus {
+      border-color: darken(@borderColor, 10%);
+      .box-shadow(0 0 6px lighten(@borderColor, 20%));
+    }
+  }
+  // Give a small background color for input-prepend/-append
+  .input-prepend .add-on,
+  .input-append .add-on {
+    color: @textColor;
+    background-color: @backgroundColor;
+    border-color: @textColor;
+  }
+}
+
+
+
 // CSS3 PROPERTIES
 // --------------------------------------------------
 
@@ -285,7 +316,7 @@
 }
 
 // Drop shadows
-.box-shadow(@shadow: 0 1px 3px rgba(0,0,0,.25)) {
+.box-shadow(@shadow: 0 1px 3px fade(black,.25)) {
   -webkit-box-shadow: @shadow;
      -moz-box-shadow: @shadow;
           box-shadow: @shadow;
@@ -323,18 +354,18 @@
           transform: translate(@x, @y);
 }
 .skew(@x: 0, @y: 0) {
-  -webkit-transform: translate(@x, @y);
-     -moz-transform: translate(@x, @y);
-      -ms-transform: translate(@x, @y);
-       -o-transform: translate(@x, @y);
-          transform: translate(@x, @y);
-}
-.skew(@x: 0, @y: 0) {
   -webkit-transform: skew(@x, @y);
      -moz-transform: skew(@x, @y);
       -ms-transform: skew(@x, @y);
        -o-transform: skew(@x, @y);
           transform: skew(@x, @y);
+}
+.translate3d(@x: 0, @y: 0, @z: 0) {
+  -webkit-transform: translate(@x, @y, @z);
+     -moz-transform: translate(@x, @y, @z);
+      -ms-transform: translate(@x, @y, @z);
+       -o-transform: translate(@x, @y, @z);
+          transform: translate(@x, @y, @z);
 }
 
 // Background clipping
@@ -412,7 +443,7 @@
 .gradientBar(@primaryColor, @secondaryColor) {
   #gradient > .vertical(@primaryColor, @secondaryColor);
   border-color: @secondaryColor @secondaryColor darken(@secondaryColor, 15%);
-  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) fadein(rgba(0,0,0,.1), 15%);
+  border-color: fade(black,.1) fade(black,.1) fadein(fade(black,.1), 15%);
 }
 
 // Gradients
@@ -489,12 +520,12 @@
   }
   .striped(@color, @angle: -45deg) {
     background-color: @color;
-    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, rgba(255,255,255,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, rgba(255,255,255,.15)), color-stop(.75, rgba(255,255,255,.15)), color-stop(.75, transparent), to(transparent));
-    background-image: -webkit-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: -moz-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: -ms-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, fade(white,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, fade(white,.15)), color-stop(.75, fade(white,.15)), color-stop(.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
+    background-image: -ms-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
   }
 }
 // Reset filters for IE
@@ -581,13 +612,84 @@
 }
 
 ///////////////////////////////////////////////
+////////////////// IMAGES ///////////////////// 
+///////////////////////////////////////////////
+
+.image-wrap
+{
+	position: relative;
+	display: inline-block;
+	max-width: 100%;
+	vertical-align: bottom;
+}
+
+.image-wrap:after
+{
+	.square(100%);
+	content: ' ';
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	border: solid 1px #1b1b1b;
+	.border-radius(7px);
+	@shadows:
+		inset 0 0 1px fade(white, 40),
+		inset 0 1px 0 fade(white, 40),
+		0 1px 2px fade(black, 30);
+	.box-shadow(@shadows);
+}
+.image-wrap img
+{
+	vertical-align: bottom;
+	.box-shadow(0 1px 2px fade(black, 40));
+	.border-radius(6px);
+}
+
+.embossed.image-wrap:after
+{
+	@shadows:
+		inset 0 0 1px fade(black, 80),
+		inset 0 1px 0 fade(white, 50),
+		inset 0 -6px 0 fade(black, 60),
+		inset 0 -7px 0 fade(white, 30);
+	.box-shadow(@shadows);
+}
+.glossy.image-wrap:before
+{
+	position: absolute;
+	content: ' ';
+	.size(50%, 100%);
+	top: 0;
+	left: 0;
+	.border-radius(7px, 0);
+	#gradient .vertical(fade(white, 60), fade(white, 15));
+}
+.soft-embossed.image-wrap:after
+{
+	@shadows:
+		inset 0 0 3px fade(black, 10),
+		inset 0 1px 1px fade(white, 50),
+		inset 0 -6px 2px fade(black, 60),
+		inset 0 -8px 2px fade(white, 30);
+	.box-shadow(@shadows);
+}
+.cutout.image-wrap:after
+{
+	@shadows:
+		0 1px 0 fade(white, 20),
+		inset 0 4px 5px fade(black, 60),
+		inset 0 1px 2px fade(black, 60);
+	.box-shadow(@shadows);
+}
+
+///////////////////////////////////////////////
 ////////////////// OMBRES ///////////////////// 
 ///////////////////////////////////////////////
 
 // Ombres blocks
-.box-shadow(@blur, @color) {
+.box-shadow(@blur, @color) when (iscolor(@color)) {
 	.box-shadow(0 0 @blur 0 @color) }
-.box-shadow-inset(@blur, @color) {
+.box-shadow-inset(@blur, @color) when (iscolor(@color)) {
 	.box-shadow-inset(0 0 @blur 0 @color) }
 	
 // Ombres texte
