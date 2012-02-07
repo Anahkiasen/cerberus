@@ -69,6 +69,18 @@ p.readmore
 	.text-shadow-none;
 }
 
+// Modifications Cerberus
+
+.alert
+{
+	@shadowsize: 10px;	
+
+	&.alert-error { .box-shadow(inset 0 0 @shadowsize 0 darken(@errorBorder, 20)) }
+	&.alert-info { .box-shadow(inset 0 0 @shadowsize 0 darken(@infoBorder, 20)) }
+	&.alert-success { .box-shadow(inset 0 0 @shadowsize 0 darken(@successBorder, 20)) }
+	&.alert-warning { .box-shadow(inset 0 0 @shadowsize 0 darken(@warningBorder, 20)) }
+}
+
 // Compatibilité
 
 .ie6,

@@ -164,9 +164,9 @@ if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 
 // Génération du fichier META
 timer::save('cerberus').timer::start('meta');
-$cerberus->meta();
-$title = $cerberus->meta('titre');
-$description = $cerberus->meta('description');
+new meta();
+$title = meta::get('titre');
+$description = meta::get('description');
 
 echo PHP_EOL.'<head>'.PHP_EOL;
 if(!empty($title)) echo "\t".'<title>' .$title. '</title>'.PHP_EOL;

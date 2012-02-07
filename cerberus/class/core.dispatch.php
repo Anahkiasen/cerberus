@@ -187,6 +187,7 @@ class dispatch extends Cerberus
 		}
 		if(!empty($this->CSS['url'])) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
 		if(isset($this->CSS['inline'])) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
+		if(isset($this->typekit)) echo "\t".'<script type="text/javascript" src="http://use.typekit.com/' .$this->typekit. '.js"></script>'.PHP_EOL;
 	}
 	function getJS()
 	{
@@ -228,6 +229,21 @@ class dispatch extends Cerberus
 		
 		if(str::find('http', $javascript)) $this->JS['url'][] = $javascript;
 		else $this->JS['inline'][] = $javascript;
+	}
+	
+	// Ajoute de polices via @font-face
+	function typekit($kit = 'xky6uxx')
+	{
+		$this->typekit = $kit;
+		$this->addJS('try{Typekit.load();}catch(e){}');
+	}
+	function googleFonts()
+	{
+		$fonts = func_get_args();
+		
+		$fonts = implode('|', $fonts);
+		$fonts = str_replace(' ' , '+', $fonts);
+		$this->addCSS('http://fonts.googleapis.com/css?family=' .$fonts);
 	}
 }
 ?>

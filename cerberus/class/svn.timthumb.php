@@ -20,7 +20,7 @@
  * loaded by timthumb. This will save you having to re-edit these variables
  * everytime you download a new version
 */
-define ('VERSION', '2.8.5');																		// Version of this script 
+define ('VERSION', '2.8.6');																		// Version of this script 
 //Load a config file if it exists. Otherwise, use the values below
 if( file_exists(dirname(__FILE__) . '/timthumb-config.php'))	require_once('timthumb-config.php');
 if(! defined('DEBUG_ON') )					define ('DEBUG_ON', false);								// Enable debug logging to web server error log (STDERR)
@@ -471,11 +471,13 @@ class timthumb {
 				$this->error("Could note create cache clean timestamp file.");
 			}
 			$files = glob($this->cacheDirectory . '/*' . FILE_CACHE_SUFFIX);
-			$timeAgo = time() - FILE_CACHE_MAX_FILE_AGE;
-			foreach($files as $file){
-				if(@filemtime($file) < $timeAgo){
-					$this->debug(3, "Deleting cache file $file older than max age: " . FILE_CACHE_MAX_FILE_AGE . " seconds");
-					@unlink($file);
+			if ($files) {
+				$timeAgo = time() - FILE_CACHE_MAX_FILE_AGE;
+				foreach($files as $file){
+					if(@filemtime($file) < $timeAgo){
+						$this->debug(3, "Deleting cache file $file older than max age: " . FILE_CACHE_MAX_FILE_AGE . " seconds");
+						@unlink($file);
+					}
 				}
 			}
 			return true;
@@ -579,7 +581,7 @@ class timthumb {
 
 		$canvas_color_R = hexdec (substr ($canvas_color, 0, 2));
 		$canvas_color_G = hexdec (substr ($canvas_color, 2, 2));
-		$canvas_color_B = hexdec (substr ($canvas_color, 2, 2));
+		$canvas_color_B = hexdec (substr ($canvas_color, 4, 2));
 
 		// Create a new transparent color for image
 		$color = imagecolorallocatealpha ($canvas, $canvas_color_R, $canvas_color_G, $canvas_color_B, 127);
@@ -885,7 +887,7 @@ class timthumb {
 			if(file_exists($base . $src)){
 				$this->debug(3, "Found file as: " . $base . $src);
 				$real = realpath($base . $src);
-				if(stripos($real, $this->docRoot) == 0){ 
+				if(stripos($real, realpath($this->docRoot)) == 0){ 
 					return $real;
 				} else {
 					$this->debug(1, "Security block: The file specified occurs outside the document root.");

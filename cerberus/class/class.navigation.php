@@ -135,13 +135,20 @@ class navigation
 	{
 		$page_combined = $sousPage ? $page.'-'.$sousPage : $page;
 		if(!file_exists('pages')) mkdir('pages');
-		if(file_exists('pages/' .$page_combined. '.html')) return $page_combined.'.html';
-		elseif(file_exists('pages/' .$page_combined. '.php')) return $page_combined.'.php';
-		else 
+		
+		// Balayage des noms possibles de la page
+		$possible = array($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');
+		foreach($possible as $p)
+			if(!isset($return)) $return = f::sexist('pages/'.$p);
+			else break;
+					
+		// Si non trouvé -> 404
+		if(isset($return)) return basename($return);
+		else
 		{
 			$page = 404;
 			$sousPage = NULL;
-			return 'FALSE';
+			return 'FALSE';	
 		}
 	}
 	
@@ -319,6 +326,7 @@ class navigation
 	// Récupére le menu rendu
 	function getMenu($render = TRUE)
 	{
+		if($render) $this->render();
 		return ($render) ? $this->renderNavigation : $this->get();
 	}
 	
@@ -326,7 +334,10 @@ class navigation
 	{
 		$submenu = a::get($this->data[$this->page], 'submenu');
 		if($render)
+		{
+			$this->render();
 			return ($submenu and $this->page != 'admin' and count($submenu) > 1) ? $this->renderSubnav[$this->page] : NULL;
+		}
 		
 		else
 			return $submenu;
@@ -341,7 +352,9 @@ class navigation
 	// Récupération de la classe CSS
 	function css()
 	{
-		return $this->page. ' ' .$this->current();
+		return $this->page != $this->current()
+			? $this->page. ' ' .$this->current()
+			: $this->page;
 	}
 }
 ?>

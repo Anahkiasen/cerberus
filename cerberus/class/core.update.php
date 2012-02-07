@@ -153,14 +153,16 @@ class update
 				break;
 				
 			case 'cerberus_structure':
-				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_structure` (
-				  `id` tinyint(3) NOT NULL auto_increment,
-				  `page` varchar(20) collate utf8_unicode_ci NOT NULL,
-				  `parent` varchar(20) collate utf8_unicode_ci NOT NULL,
-				  `parent_priority` tinyint(3) NOT NULL,
-				  `page_priority` tinyint(3) NOT NULL,
-				  `cache` enum(\'0\',\'1\') collate utf8_unicode_ci NOT NULL,
-				  PRIMARY KEY  (`id`)
+				db::execute('CREATE TABLE `cerberus_structure` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `page` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				  `parent` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				  `parent_priority` int(11) NOT NULL,
+				  `page_priority` int(11) NOT NULL,
+				  `cache` enum(\'0\',\'1\') COLLATE utf8_unicode_ci NOT NULL DEFAULT \'1\',
+				  `hidden` enum(\'0\',\'1\') COLLATE utf8_unicode_ci NOT NULL,
+				  `external_link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				  PRIMARY KEY (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
 				
