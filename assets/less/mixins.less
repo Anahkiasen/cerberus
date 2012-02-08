@@ -316,7 +316,7 @@
 }
 
 // Drop shadows
-.box-shadow(@shadow: 0 1px 3px fade(black,.25)) {
+.box-shadow(@shadow: 0 1px 3px rgba(0,0,0,.25)) {
   -webkit-box-shadow: @shadow;
      -moz-box-shadow: @shadow;
           box-shadow: @shadow;
@@ -443,7 +443,7 @@
 .gradientBar(@primaryColor, @secondaryColor) {
   #gradient > .vertical(@primaryColor, @secondaryColor);
   border-color: @secondaryColor @secondaryColor darken(@secondaryColor, 15%);
-  border-color: fade(black,.1) fade(black,.1) fadein(fade(black,.1), 15%);
+  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) fadein(rgba(0,0,0,.1), 15%);
 }
 
 // Gradients
@@ -520,12 +520,12 @@
   }
   .striped(@color, @angle: -45deg) {
     background-color: @color;
-    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, fade(white,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, fade(white,.15)), color-stop(.75, fade(white,.15)), color-stop(.75, transparent), to(transparent));
-    background-image: -webkit-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
-    background-image: -moz-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
-    background-image: -ms-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(@angle, fade(white,.15) 25%, transparent 25%, transparent 50%, fade(white,.15) 50%, fade(white,.15) 75%, transparent 75%, transparent);
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, rgba(255,255,255,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, rgba(255,255,255,.15)), color-stop(.75, rgba(255,255,255,.15)), color-stop(.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -ms-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
   }
 }
 // Reset filters for IE

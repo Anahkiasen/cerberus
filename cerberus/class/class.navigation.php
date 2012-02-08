@@ -178,7 +178,7 @@ class navigation
 				
 				$this->data[$key]['class'] = implode(' ', a::get($this->data[$key], 'class', array()));
 				
-				if(!$value['link'])
+				if(!a::get($value, 'link'))
 					$this->data[$key]['link'] = url::rewrite($key);
 				
 				// Sous-page
