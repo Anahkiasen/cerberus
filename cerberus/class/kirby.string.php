@@ -383,6 +383,7 @@ class str
 
 		return '<a'.$title.$class.' href="mailto:'.$email.'">'.self::encode($string, 3).'</a>';
 	}
+	
 	// Encode des accents en HTML sans toucher aux tags
 	static function accents($string, $reverse = false)
 	{

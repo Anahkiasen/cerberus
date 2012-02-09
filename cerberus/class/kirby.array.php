@@ -103,6 +103,12 @@ class a
 		return $missing;
 	}
 	
+	// Vérifie si l'array donné est associatif
+	function check_assoc($array)
+	{
+		return !ctype_digit(implode('', array_keys($array)));
+	}
+	
 	/*
 	########################################
 	########## ACTIONS SUR ARRAY ###########

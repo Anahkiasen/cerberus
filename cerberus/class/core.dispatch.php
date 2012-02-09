@@ -123,7 +123,7 @@ class dispatch extends Cerberus
 			if(!isset($dispath[$basename])) $dispath[$basename] = array();
 			array_push($dispath[$basename], $path);
 		}
-		$dispath['bootstrap'] = array(PATH_COMMON. 'less/bootstrap.less', PATH_COMMON. 'css/bootstrap.css');
+		$dispath['bootstrap'] = array(PATH_CERBERUS. 'less/bootstrap.less', PATH_CERBERUS. 'css/bootstrap.css');
 		
 		// Récupération des différents scripts
 		$this->scripts = array_filter($this->dispatchArray($scripts));
@@ -198,7 +198,7 @@ class dispatch extends Cerberus
 	}
 	function getJS()
 	{
-		if(isset($this->typekit)) $this->addJS("http://use.typekit.com/' .$this->typekit. '.js");
+		if(isset($this->typekit)) $this->addJS('http://use.typekit.com/' .$this->typekit. '.js');
 		if(isset($this->JS['min']))
 		{
 			$minify = array_unique(array_filter($this->JS['min']));	
