@@ -87,7 +87,7 @@ class dispatch extends Cerberus
 		'nivoslider' => 'jquery.nivo.slider.pack',
 		'colorbox' => 'jquery.colorbox-min',
 		'easing' => 'jquery.easing');
-	
+		
 		// bootstrap
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
@@ -195,10 +195,10 @@ class dispatch extends Cerberus
 		}
 		if(!empty($this->CSS['url'])) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
 		if(isset($this->CSS['inline'])) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
-		if(isset($this->typekit)) echo "\t".'<script type="text/javascript" src="http://use.typekit.com/' .$this->typekit. '.js"></script>'.PHP_EOL;
 	}
 	function getJS()
 	{
+		if(isset($this->typekit)) $this->addJS("http://use.typekit.com/' .$this->typekit. '.js");
 		if(isset($this->JS['min']))
 		{
 			$minify = array_unique(array_filter($this->JS['min']));	
