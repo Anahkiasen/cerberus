@@ -46,7 +46,7 @@ if(isset($_POST['nofollow']))
 	else
 	{
 		content::uncache();
-		f::remove_folder('assets/file/cache');
+		f::remove_folder(PATH_FILE. 'cache');
 	}
 	
 	if($_POST['type'] != 'empty')

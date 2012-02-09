@@ -123,13 +123,13 @@ class getNews
 		if($news) 
 		foreach($news as $key => $value)
 		{
-			if($this->displayThumb and !empty($value['path']) and file_exists('assets/file/news/' .$value['path']))
+			if($this->displayThumb and !empty($value['path']) and file_exists(PATH_FILE. 'news/' .$value['path']))
 			{
 			
 				// Miniature
 				$thisThumb =
 					str::link(
-						'assets/file/news/' .$value['path'], 
+						PATH_FILE. 'news/' .$value['path'], 
 						str::img(
 							timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, 1),
 							$value['titre'],

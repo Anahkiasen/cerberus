@@ -19,7 +19,7 @@ class switcher
 	// Obtenir le chemin actuel
 	function path($getFolder = 'all')
 	{
-		$path = 'assets/switch/' .$this->actual. '/';
+		$path = 'assets/' .$this->actual. '/';
 		switch($getFolder)
 		{
 			case 'css':
@@ -30,6 +30,9 @@ class switcher
 				break;
 			case 'php':
 				return $path. 'php/';
+				break;
+			case 'img':
+				return $path. 'img/';
 				break;
 			
 			default:

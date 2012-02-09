@@ -37,9 +37,9 @@ foreach(glob('./cerberus/cache/sql/*') as $file)
 		echo 
 		'<tr>
 		<td>' .$folderDate. '</td>
-		<td>' .str::link($filesql, str::img('assets/css/load.png'), array('load' => $folderDate)). '</td>
-		<td>' .str::slink(NULL, str::img('assets/css/load.png'), array('load' => $folderDate)). '</td>
-		<td>' .str::slink(NULL, str::img('assets/css/delete.png'), array('delete' => $folderDate)). '</td>
+		<td>' .str::link($filesql, str::img(PATH_CERBERUS.'img/action-load.png'), array('load' => $folderDate)). '</td>
+		<td>' .str::slink(NULL, str::img(PATH_CERBERUS.'img/action-load.png'), array('load' => $folderDate)). '</td>
+		<td>' .str::slink(NULL, str::img(PATH_CERBERUS.'img/action-delete.png'), array('delete' => $folderDate)). '</td>
 		</tr>';
 	}
 }

@@ -7,8 +7,6 @@ $bool = array('rewriting', 'multi_admin', 'cache', 'logs', 'multilangue');
 asort($_POST);
 if(isset($_POST['db-host']))
 {
-	$getconf = f::read($config_file);
-
 	foreach($_POST as $key => $value)
 	{
 		// Définition du type de valeur
@@ -17,24 +15,13 @@ if(isset($_POST['db-host']))
 		{
 			if(str::find(',', $value)) $formatted_value = explode(',', $value);
 			else $formatted_value = array($value);
-			
-			$formatted_value = 'array(\'' .implode("', '", $formatted_value). '\')';
 		}
 		elseif(in_array($value, array('TRUE','FALSE'))) $formatted_value = $value;
 		else $formatted_value = "'" .$value. "'";
 		
-		// Recherche de sa présence dans le fichier config
-		if(preg_match('#\$config\[\'(' .$key. ')\'\] = (.+);#', $getconf))
-		{
-			$getconf = preg_replace(
-				'#\$config\[\'(' .$key. ')\'\] = (.+);#',
-				'$config[\'$1\'] = ' .$formatted_value. ';',
-				$getconf);
-		}
-		else if(!empty($value)) $getconf = str_replace('?>', '$config[\'' .$key. '\'] = ' .$formatted_value. ";\n?>", $getconf); 
+		config::hardcode($key, $formatted_value);
 	}
 	
-	f::write($config_file, $getconf);
 	str::display('La configuration du site a été changée avec succès', 'success');
 }
 

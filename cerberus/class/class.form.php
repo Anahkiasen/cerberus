@@ -220,7 +220,7 @@ class form
 		}
 		if($type == 'textarea')
 		{
-			if(isset($params['bbcode'])) $this->render .= '<div class="bbcode">' .file_get_contents('assets/php/bbcode.php'). '</div>';
+			if(isset($params['bbcode'])) $this->render .= '<div class="bbcode">' .file_get_contents(PATH_COMMON.'php/bbcode.php'). '</div>';
 			$this->render .= '<textarea id="textarea" ';
 			foreach($params as $key => $value) if($key != 'value') $this->render .= $key. '="' .$value. '" ';
 			$this->render .= '>' .$params['value']. '</textarea><p></p>';

@@ -27,8 +27,8 @@ class content
 			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base
-			$page = f::sexist('pages/' .$CORE. '.php');
-			if(!$page) $page = f::sexist('pages/' .$CORE. '.html');
+			$page = f::path('pages/' .$CORE. '.php');
+			if(!$page) $page = f::path('pages/' .$CORE. '.html');
 			$modifiedPHP = ($page) ? filemtime($page) : time(); 
 			
 			// Rercherche d'un fichier en cache

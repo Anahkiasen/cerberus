@@ -7,7 +7,7 @@ div.cerberus_debug
 	margin: 0;
 	margin-bottom: 10px;
 	width: 100%;
-	color: #FFF;
+	color: @white;
 	text-align: center;
 	padding: 5px;
 	#font #family .sans-serif;
@@ -28,7 +28,7 @@ div.cerberus_debug
 	h2, h3, h4
 	{
 		margin: 5px 0 0;
-		color: #FFF;
+		color: @white;
 	}
 	h4 { margin-bottom: 15px }
 	pre
@@ -54,7 +54,7 @@ p.readmore
 .btn.cerberus
 {
 	color: white;
-	.text-shadow(0, 1px, 1px, fadeout(black, 25));
+	.text-shadow(0, 1px, 1px, fadeout(@black, 25));
 	.gradientBar(@main, darken(@main, 15));
 }
 .btn.wide
@@ -73,12 +73,13 @@ p.readmore
 
 .alert
 {
-	@shadowsize: 10px;	
+	@shadowsize: 10px;
+	@shadowDark: 15;
 
-	&.alert-error { .box-shadow(inset 0 0 @shadowsize 0 darken(@errorBorder, 20)) }
-	&.alert-info { .box-shadow(inset 0 0 @shadowsize 0 darken(@infoBorder, 20)) }
-	&.alert-success { .box-shadow(inset 0 0 @shadowsize 0 darken(@successBorder, 20)) }
-	&.alert-warning { .box-shadow(inset 0 0 @shadowsize 0 darken(@warningBorder, 20)) }
+	&.alert-error { .box-shadow(inset 0 0 @shadowsize 0 darken(@errorBorder, @shadowDark)) }
+	&.alert-info { .box-shadow(inset 0 0 @shadowsize 0 darken(@infoBorder, @shadowDark)) }
+	&.alert-success { .box-shadow(inset 0 0 @shadowsize 0 darken(@successBorder, @shadowDark)) }
+	&.alert-warning { .box-shadow(inset 0 0 @shadowsize 0 darken(@warningBorder, @shadowDark)) }
 }
 
 // Compatibilité

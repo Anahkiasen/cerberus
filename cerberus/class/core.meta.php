@@ -1,15 +1,15 @@
 <?php
 class meta
 {
-	private $meta;
+	public static $meta = array();
 	
 	// Fonction META 
-	function __contruct()
+	static function build()
 	{
 		// Tableau des informations META
 		$metafile = 'cerberus/cache/meta-' .l::current(). '.php';
 		$db_exist = SQL ? db::is_table('cerberus_meta', 'cerberus_structure') : FALSE;
-		self::$meta = f::read($metafile, 'json');
+		$meta = f::read($metafile, 'json');
 		
 		if(!self::$meta and SQL and (config::get('meta', FALSE) or $db_exist))
 		{
@@ -47,23 +47,23 @@ class meta
 
 	// Renvoit un type de données précis
 	static function get($get, $default = NULL)
-	{	
+	{
 		// Affichage du titre
 		global $desired;
 		$pageVoulue = $desired->current(false);
 		$current = $desired->current();
-
-		if(isset($meta[$current][$get]) and !empty($meta[$current][$get]))
+		
+		if(isset(self::$meta[$current][$get]) and !empty(self::$meta[$current][$get]))
 		{
 			if($get == 'titre')
 			{
 				$title_prefix = ($pageVoulue == 'admin' and get('admin'))
 					? 'Gestion ' .ucfirst(get('admin'))
 					: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
-				if(!empty($title_prefix) and $title_prefix != $meta[$current]['titre'])
-					$meta[$current]['titre'] = $title_prefix. ' - ' .$meta[$current]['titre'];
+				if(!empty($title_prefix) and $title_prefix != self::$meta[$current]['titre'])
+					self::$meta[$current]['titre'] = $title_prefix. ' - ' .self::$meta[$current]['titre'];
 			}
-			return str::accents(a::get($meta[$current], $get, $default));
+			return ucfirst(str::accents(a::get(self::$meta[$current], $get, $default)));
 		}
 		else return $default;
 	}

@@ -171,7 +171,7 @@ class AdminSetup
 			foreach($this->multilangue as $langue)
 			{
 				$flag_state = (l::admin_current() == $langue) ? NULL : '_off';
-				echo str::slink(NULL, str::img('assets/css/flag_' .$langue.$flag_state. '.png', $langue), array('adminLangue' => $langue));
+				echo str::slink(NULL, str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue), array('adminLangue' => $langue));
 			}
 			echo '</p>';
 		}

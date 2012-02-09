@@ -13,6 +13,7 @@ class dispatch extends Cerberus
 		// Page en cours
 		$this->current = (!empty($current)) ? $current : $desired->current();
 		$this->global = $desired->current(false);
+		$this->minify = is_dir('min');
 	}
 		
 	/* 
@@ -85,10 +86,10 @@ class dispatch extends Cerberus
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider' => 'jquery.nivo.slider.pack',
 		'colorbox' => 'jquery.colorbox-min',
-		'easing' => 'jquery.easing',);
+		'easing' => 'jquery.easing');
 	
 		// bootstrap
-		$bootstrap = glob('assets/js/bootstrap-*.js');
+		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
 		$this->JS = $this->CSS = $this->LESS = array('min' => array());
@@ -103,21 +104,27 @@ class dispatch extends Cerberus
 		$scripts['*'][] = 'core';
 		$scripts['*'] += config::get('bootstrap', TRUE)
 			? array(99 => 'bootstrap')
-			: array(99 => 'cerberus', 98 => 'styles');
+			: array(99 => 'styles');
 		
 		$scripts[$this->current][] = $this->current;
 		$scripts[$this->global][] = $this->global;
 
 		// Préparation de l'array des scripts disponibles
-		$files = glob('assets/{css/*.{css,less},switch/'.$path.'/css/*.{css,less},js/*.js,switch/'.$path.'/js/*.js}', GLOB_BRACE);
+		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
+		$allowed_files = '{css/*.{css,less},less/*.{css,less},js/*.js}';
+		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,cerberus' .$templates. '}/';
+		elseif(PATH_COMMON == 'assets/') $allowed_folders = 'assets/';
+		else $allowed_folders = '/';
+		
+		$files = glob($allowed_folders.$allowed_files, GLOB_BRACE);
 		foreach($files as $path)
 		{
 			$basename = f::name($path, true);
 			if(!isset($dispath[$basename])) $dispath[$basename] = array();
 			array_push($dispath[$basename], $path);
 		}
-		$dispath['bootstrap'] = array('assets/less/bootstrap.less', 'assets/less/bootstrap.css');
-
+		$dispath['bootstrap'] = array(PATH_COMMON. 'less/bootstrap.less', PATH_COMMON. 'css/bootstrap.css');
+		
 		// Récupération des différents scripts
 		$this->scripts = array_filter($this->dispatchArray($scripts));
 		if($this->scripts) foreach($this->scripts as $key => $value)
@@ -134,7 +141,7 @@ class dispatch extends Cerberus
 					$API = $this->availableAPI[$value];
 					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
 					if(str::find(array('http', 'bootstrap'), $API)) $this->JS['url'][] = $API;
-					else $this->JS['min'][] = f::sexist('assets/js/' .$API. '.js', $API);
+					else $this->JS['min'][] = f::path(PATH_CERBERUS. 'js/' .$API. '.js', f::path(PATH_COMMON.'js/'.$API.'.js', $API));
 				}
 				else
 				{
@@ -173,7 +180,7 @@ class dispatch extends Cerberus
 			foreach($minify as $thisfile)
 			{
 				echo "\t".'<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
-				$this->CSS['min'] = a::splice($this->CSS['min'], str_replace('.less', '.css', $thisfile));
+				$this->CSS['min'] = a::splice($this->CSS['min'], strtr($thisfile, array('.less' => '.css', 'less/' => 'css/')));
 			}
 			echo "\t".'<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>'.PHP_EOL;
 			//echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
@@ -183,7 +190,8 @@ class dispatch extends Cerberus
 		if($this->CSS['min'] and !empty($this->CSS['min']))
 		{
 			$minify = array_unique(array_filter($this->CSS['min']));
-			if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify);
+			if($this->minify) { if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify); }
+			else $this->CSS['url'] = array_merge($this->CSS['url'], $minify);
 		}
 		if(!empty($this->CSS['url'])) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
 		if(isset($this->CSS['inline'])) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
@@ -193,8 +201,9 @@ class dispatch extends Cerberus
 	{
 		if(isset($this->JS['min']))
 		{
-			$minify = array_unique(array_filter($this->JS['min']));
-			if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify);
+			$minify = array_unique(array_filter($this->JS['min']));	
+			if($this->minify) { if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify); }
+			else $this->JS['url'] = array_merge($this->JS['url'], $minify);
 		}
 		if(!empty($this->JS['url']))
 		{

@@ -9,14 +9,14 @@ $PREFIXE = a::get($_SESSION, 'prefix', NULL);
 // Supprimer un dossier
 if(isset($_GET['deleteFolder']))
 {
-	if(f::remove('assets/file/' .$_GET['deleteFolder']. '/')) str::display('Le dossier a bien été supprimé', 'success');
+	if(f::remove(PATH_FILE.$_GET['deleteFolder']. '/')) str::display('Le dossier a bien été supprimé', 'success');
 	else str::display('Une erreur est survenue durant la suppression du dossier', 'error');
 }
 
 // Supprimer une image
 if(isset($_GET['delete_image']))
 {
-	if(f::remove('assets/file/' .$_GET['pictures']. '/' .$_GET['delete_image']))
+	if(f::remove(PATH_FILE.$_GET['pictures']. '/' .$_GET['delete_image']))
 		str::display('Image ' .$_GET['delete_image']. ' supprimée');
 }
 
@@ -25,7 +25,7 @@ if(isset($_POST['oldfile']))
 {
 	$dossier = a::get(explode('/', $_POST['oldfile']), 2);
 	$extension = f::extension($_POST['oldfile']);
-	rename($_POST['oldfile'], 'assets/file/' .$dossier. '/' .str::slugify($_POST['renommer']). '.jpg');
+	rename($_POST['oldfile'], PATH_FILE.$dossier. '/' .str::slugify($_POST['renommer']). '.jpg');
 	str::display('Le fichier a bien été renommé', 'success');
 }
 
@@ -34,7 +34,7 @@ if(isset($_GET['rename']))
 {
 	$i = 0;
 	$basename = $_GET['rename'];
-	$glob = glob('assets/file/' .$basename. '/*');
+	$glob = glob(PATH_FILE.$basename. '/*');
 	
 	// Nombre de 0
 	$count = count($glob);
@@ -47,7 +47,7 @@ if(isset($_GET['rename']))
 	{
 		$extension = f::extension($file);
 		$newname = $PREFIXE.$basename. '-' .str_pad($i, $numpad, "0", STR_PAD_LEFT). '.' .$extension;
-		rename($file, 'assets/file/' .$basename. '/' .$newname);
+		rename($file, PATH_FILE.$basename. '/' .$newname);
 		
 		$i++;
 	}
@@ -57,8 +57,10 @@ if(isset($_GET['rename']))
 ?>
 
 <form method="post" action="<?= url::rewrite('admin-images') ?>">
-<p class="infoblock" style="background:url(assets/css/overlay/noir-50.png)">Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
-<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" /></p>
+<p class="infoblock" style="background: rgba(0, 0, 0, .50)">
+	Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
+	<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" />
+</p>
 </form>
 
 <table>
@@ -74,20 +76,20 @@ if(isset($_GET['rename']))
 <tbody>
 <?php
 // Liste des dossiers d'images
-foreach(glob('assets/file/*') as $file)
+foreach(glob(PATH_FILE. '*') as $file)
 {
 	if(is_dir($file) and !in_array(f::filename($file), array('cache', 'news')))
 	{
 		$basename = f::filename($file);
-		$count = count(glob('assets/file/' .$basename. '/*'));
+		$count = count(glob(PATH_FILE.$basename. '/*'));
 	
 		echo '
 		<tr>
 			<td>' .$basename. '</td>
 			<td>' .$count. '</td>
 			<td>' .str::slink(NULL, $PREFIXE.$basename.'-XX.jpg', array('rename' => $basename)). '</td>
-			<td>' .str::slink(NULL, str::img('assets/css/picture.png', 'Voir les images'), array('pictures' => $basename)). '</td>
-			<td>' .str::slink(NULL, str::img('assets/css/delete.png', 'Supprimer le dossier'), array('deleteFolder' => $basename)). '</td>
+			<td>' .str::slink(NULL, str::img(PATH_CERBERUS.'img/action-picture.png', 'Voir les images'), array('pictures' => $basename)). '</td>
+			<td>' .str::slink(NULL, str::img(PATH_CERBERUS.'img/action-delete.png', 'Supprimer le dossier'), array('deleteFolder' => $basename)). '</td>
 		</tr>';
 	}
 }
@@ -97,9 +99,9 @@ foreach(glob('assets/file/*') as $file)
 
 <?php
 // Afficher les images
-if(isset($_GET['pictures']) and file_exists('assets/file/' .$_GET['pictures']))
+if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 {
-	$picpath = 'assets/file/' .$_GET['pictures']. '/';
+	$picpath = PATH_FILE.$_GET['pictures']. '/';
 
 	$images = glob($picpath. '*');
 	echo '
@@ -128,7 +130,7 @@ if(isset($_GET['pictures']) and file_exists('assets/file/' .$_GET['pictures']))
 				<input type="hidden" name="oldfile" value="' .$image. '" />
 				</form>
 				</td>
-			<td>' .str::slink('admin-images', str::img('assets/css/delete.png'), array('pictures' => $_GET['pictures'], 'delete_image' => $basename)). '</td>
+			<td>' .str::slink('admin-images', str::img(PATH_CERBERUS.'img/action-delete.png'), array('pictures' => $_GET['pictures'], 'delete_image' => $basename)). '</td>
 		</tr>';
 	}
 	echo '</tbody></table>';

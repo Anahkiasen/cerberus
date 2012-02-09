@@ -36,11 +36,11 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 	$idblock = str::slugify($path);
 
 	echo '<div id="' .$idblock. '" style="height:' .$hauteur. 'px; max-width: ' .$largeur. 'px; margin:auto">'.PHP_EOL;
-	$arrayImages = glob('assets/file/' .$path. '/*.jpg');
+	$arrayImages = glob(PATH_FILE.$path. '/*.jpg');
 	if($shuffle) shuffle($arrayImages);
 	foreach($arrayImages as $file)
 	{
-		$file = str_replace('assets/file/', '', $file);
+		$file = str_replace(PATH_FILE, NULL, $file);
 		echo str::img(timthumb($file, $largeur, $hauteur)).PHP_EOL;
 	}
 	echo '</div>'.PHP_EOL;

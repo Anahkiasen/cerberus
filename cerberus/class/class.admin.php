@@ -96,17 +96,17 @@ class AdminPage extends AdminSetup
 			if(in_array('path', $this->fields))
 			{
 				$path = db::field($this->table, 'path', array($this->index => $_GET['delete_' .$this->usable]));
-				if(isset($path) and !empty($path)) f::remove('assets/file/' .$this->usable. '/' .$path);
+				if(isset($path) and !empty($path)) f::remove(PATH_FILE.$this->usable. '/' .$path);
 			}
 			else
 			{
-				if(file_exists('assets/file/' .$this->usable))
+				if(file_exists(PATH_FILE.$this->usable))
 				{
 					$picExtension = array('jpg', 'jpeg', 'gif', 'png');
 					foreach($picExtension as $value)
 					{
 						$thisFile = $_GET['delete_' .$this->usable]. '.' .$value;
-						f::remove('assets/file/' .$this->usable. '/' .$thisFile);
+						f::remove(PATH_FILE.$this->usable. '/' .$thisFile);
 					}
 				}
 			}
@@ -119,7 +119,7 @@ class AdminPage extends AdminSetup
 			$image = $this->getImage($_GET['deleteThumb']);
 			if(f::remove($image)) str::display('Miniature supprimée', 'success');
 			else str::display('Miniature introuvable', 'error');
-			f::remove(glob('assets/file/' .$this->usable. '/' .$lastID. '-*.*'));
+			f::remove(glob(PATH_FILE.$this->usable. '/' .$lastID. '-*.*'));
 		}
 	}
 	
@@ -262,7 +262,7 @@ class AdminPage extends AdminSetup
 								.str::slink(
 									'admin-' .$this->usable,
 									str::img(
-										'assets/css/' .$function. '.png',
+										PATH_CERBERUS.'img/action-' .$function. '.png',
 										$name),
 									array($function. '_' .$this->usable => $key),
 									array('title' => $name)).
@@ -351,15 +351,15 @@ class AdminPage extends AdminSetup
 		switch($mode)
 		{
 			case 'table':
-				$image = 'assets/file/' .$this->usable. '/' .db::field($this->table, 'path', array('id_' .$this->table => $idpic));
+				$image = PATH_FILE.$this->usable. '/' .db::field($this->table, 'path', array('id_' .$this->table => $idpic));
 				break;
 				
 			case 'path':
-				$image = 'assets/file/' .$this->usable. '/' .db::field($this->table, 'path', array($this->index => $idpic));
+				$image = PATH_FILE.$this->usable. '/' .db::field($this->table, 'path', array($this->index => $idpic));
 				break;
 				
 			case 'default':
-				$image = a::simple(glob('assets/file/' .$this->usable. '/' .$idpic. '.*'));
+				$image = a::simple(glob(PATH_FILE.$this->usable. '/' .$idpic. '.*'));
 				break;
 		}
 		return $image;
@@ -397,7 +397,7 @@ class AdminPage extends AdminSetup
 
 						$path = db::field($this->table, 'path', array($this->index => $lastID));
 						if($path) f::remove($path);
-						f::remove(glob('assets/file/' .$this->usable. '/' .$lastID. '-*.*'));
+						f::remove(glob(PATH_FILE.$this->usable. '/' .$lastID. '-*.*'));
 						
 						db::update($this->table, array('path' => $file), array('id' => $lastID));
 						break;
@@ -409,7 +409,7 @@ class AdminPage extends AdminSetup
 				
 				// Sauvegarde de l'image
 				
-				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], 'assets/file/' .$this->usable. '/' .$file);
+				$resultat = move_uploaded_file($_FILES[$field]['tmp_name'], PATH_FILE.$this->usable. '/' .$file);
 				if($resultat) str::display(l::get('admin.upload.success'), 'success');
 				else str::display(l::get('admin.upload.error'), 'error');
 			}

@@ -139,7 +139,7 @@ class navigation
 		// Balayage des noms possibles de la page
 		$possible = array($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');
 		foreach($possible as $p)
-			if(!isset($return)) $return = f::sexist('pages/'.$p);
+			if(!isset($return)) $return = f::path('pages/'.$p);
 			else break;
 					
 		// Si non trouvé -> 404
@@ -215,38 +215,41 @@ class navigation
 	function render($glue = NULL)
 	{		
 		$glue .= PHP_EOL;
-		$this->createTree();
-
-		foreach($this->data as $key => $value)
+		if(empty($this->renderNavigation))
 		{
-			if(isset($value['hidden']) and $value['hidden'] != 1)
+		$this->createTree();
+			
+			foreach($this->data as $key => $value)
 			{
-				$class = a::get($value, 'class');
-				$classList = $class ? ' class="' .$class. '"' : NULL;
-				$lien = $this->optionListed
-					? '<li' .$classList. '>' .str::link($value['link'], $value['text']). '</li>'
-					: str::link($value['link'], $value['text'], array('class' => $class));
-				$this->renderNavigation .= $lien.$glue;
-			}
-			if(isset($value['submenu']))
-			{
-				$this->renderSubnav[$key] = NULL;
-				foreach($value['submenu'] as $subkey => $subvalue)
+				if(isset($value['hidden']) and $value['hidden'] != 1)
 				{
-					if($subvalue['hidden'] != 1)
+					$class = a::get($value, 'class');
+					$classList = $class ? ' class="' .$class. '"' : NULL;
+					$lien = $this->optionListed
+						? '<li' .$classList. '>' .str::link($value['link'], $value['text']). '</li>'
+						: str::link($value['link'], $value['text'], array('class' => $class));
+					$this->renderNavigation .= $lien.$glue;
+				}
+				if(isset($value['submenu']))
+				{
+					$this->renderSubnav[$key] = NULL;
+					foreach($value['submenu'] as $subkey => $subvalue)
 					{
-						$class = a::get($subvalue, 'class');
-						$classList = $class ? ' class="' .$class. '"' : NULL;
-						$lien = $this->optionListedSub
-							? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text']). '</li>'
-							: str::link($subvalue['link'], $subvalue['text'], array('class' => $class));
-						$this->renderSubnav[$key] .= $lien.$glue;
-					}
-				}	
+						if($subvalue['hidden'] != 1)
+						{
+							$class = a::get($subvalue, 'class');
+							$classList = $class ? ' class="' .$class. '"' : NULL;
+							$lien = $this->optionListedSub
+								? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text']). '</li>'
+								: str::link($subvalue['link'], $subvalue['text'], array('class' => $class));
+							$this->renderSubnav[$key] .= $lien.$glue;
+						}
+					}	
+				}
 			}
+			if($this->optionListed and isset($this->renderNavigation)) $this->renderNavigation = '<ul>'.$this->renderNavigation.'</ul>';
+			if($this->optionListedSub and isset($this->renderSubnav[$key])) $this->renderSubnav[$key] = '<ul>'.$this->renderSubnav[$key].'</ul>';
 		}
-		if($this->optionListed and isset($this->renderNavigation)) $this->renderNavigation = '<ul>'.$this->renderNavigation.'</ul>';
-		if($this->optionListedSub and isset($this->renderSubnav[$key])) $this->renderSubnav[$key] = '<ul>'.$this->renderSubnav[$key].'</ul>';
 	}
 	
 	/*

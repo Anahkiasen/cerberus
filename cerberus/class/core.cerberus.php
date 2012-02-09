@@ -88,7 +88,7 @@ class Cerberus
 		$cheminsValides = array(
 			'cerberus/tools/',
 			'cerberus/class/',
-			'assets/php/');
+			PATH_COMMON.'php/');
 		
 		foreach($cheminsValides as $chemin)
 		{

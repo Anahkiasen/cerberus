@@ -4,7 +4,7 @@
 	# Recadre et redimensionne une image
 	
 	$file
-		Image de base, placée dans le dossier assets/file/
+		Image de base, placée dans le dossier PATH_FILE
 	$width
 		Largeur voulue
 	$height
@@ -26,8 +26,8 @@ function timthumb($file, $width = NULL, $height = NULL, $crop = NULL, $quality =
 	if(!is_null($sharpen)) $params['s'] = $sharpen;
 
 	$file = (str::find('../', $file))
-		? realpath('assets/file/' .$file)
-		: 'assets/file/' .$file;
+		? realpath(PATH_FILE.$file)
+		: PATH_FILE.$file;
 
 	return 'cerberus/class/svn.timthumb.php?src=' .$file. '&' .a::simplode('=', '&', $params);
 }

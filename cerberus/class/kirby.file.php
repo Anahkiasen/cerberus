@@ -109,6 +109,12 @@ class f
 	########################################
 	*/
 
+	// Retourne le chemin d'un fichier seulement s'il existe
+	static function path($file, $default = NULL)
+	{
+		return (file_exists($file)) ? $file : $default;
+	}
+	
 	// Récupère l'extension d'un fichier
 	static function extension($filename)
 	{
@@ -181,12 +187,6 @@ class f
 			return true;
 		}
 		else return false;
-	}
-	
-	// Retourne le chemin d'un fichier seulement s'il existe
-	static function sexist($file, $default = NULL)
-	{
-		return (file_exists($file)) ? $file : $default;
 	}
 
 	// Détecte le type d'un fichier
