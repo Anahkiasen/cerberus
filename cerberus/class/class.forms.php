@@ -29,9 +29,10 @@ class forms
 		$this->rend('<form ' .$this->paramRender($params, 'tabs'). '>');
 		
 		// Type de formulaire
-		if(str::find('form-horizontal', $params['class'])) $this->optionFormType = 'horizontal';
-		elseif(str::find('form-search', $params['class'])) $this->optionFormType = 'inline';
-		elseif(str::find('form-inline', $params['class'])) $this->optionFormType = 'inline';
+		$formClass = a::get($params, 'class');
+		if(str::find('form-horizontal', $formClass)) $this->optionFormType = 'horizontal';
+		elseif(str::find('form-search', $formClass)) $this->optionFormType = 'inline';
+		elseif(str::find('form-inline', $formClass)) $this->optionFormType = 'inline';
 		else $this->optionFormType = 'vertical';		
 	}
 	
@@ -108,12 +109,15 @@ class forms
 		$this->rend('</fieldset>', 'UNTAB');
 	}
 	
+	// Modifier les valeurs du tableau
 	function values($table)
 	{
 		if(isset($_GET['edit_'.$table]))
-		{
 			$this->values = db::row($table, '*', array('id' => $_GET['edit_'.$table]));
-		}
+	}
+	function setValues($array)
+	{
+		foreach($array as $key => $val) $this->values[$key] = $val;
 	}
 	
 	/*
@@ -157,7 +161,7 @@ class forms
 							a::get($this->values, $deploy['name'])));
 		
 		// Paramètres auxiliaires
-		$auxiliaires = array('placeholder', 'rows', 'id', 'disabled');
+		$auxiliaires = array('placeholder', 'rows', 'id', 'disabled', 'select');
 		foreach($auxiliaires as $ax) $deploy[$ax] = a::get($params, $ax);
 		$mandatory = a::get($params, 'mandatory');
 		if(isset($params['multiple'])) $deploy['multiple'] = 'multiple';
@@ -229,10 +233,6 @@ class forms
 						$this->rend('</label>');
 					}
 					break;
-								
-				case 'date':
-					
-					break;
 										
 				case 'radio':
 					foreach($deploy['value'] as $index => $label)
@@ -246,18 +246,26 @@ class forms
 				
 				case 'select':
 					if(isset($deploy['multiple'])) $deploy['name'] .= '[]';
-						
-					$this->rend('<select ' .$this->paramRender($deploy, 'value'). '>');
-					foreach($deploy['value'] as $index => $label)
+					if(!is_array(current($deploy['select']))) $deploy['select'] = array($deploy['select']);
+					
+					foreach($deploy['select'] as $array_label => $array_entries)
 					{
-						$selected = r::get($deploy['name']) == $index ? ' selected="selected"' : NULL;	
-						$this_option = is_numeric($index) ? NULL : ' value="' .$index. '"';
-						$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
+						$array_label = sizeof($deploy['select']) > 1 ? $deploy['name']. '_' .$array_label : $deploy['name'];
+						$array_value = a::get($deploy, 'value', a::get($this->values, $array_label, r::get($array_label)));
+						
+						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>');
+						foreach($array_entries as $index => $label)
+						{
+							if(is_numeric($index)) $index = $label;
+							
+							$selected = $array_value == $index ? ' selected="selected"' : NULL;	
+							$this_option = $index == $label ? NULL : ' value="' .$index. '"';
+							$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
+						}
+						$this->rend('</select>');
 					}
-					$this->rend('</select>');
 					break;
-					
-					
+								
 				// Fonctions
 				case 'file':
 					$this->rend('<input ' .$this->paramRender($deploy). ' />');
@@ -268,7 +276,7 @@ class forms
 					$this->rend('<button ' .$this->paramRender($deploy, 'name'). ' data-loading-text="Chargement">' .$deploy['name']. '</button>');
 					
 					// Bouton annuler
-					if($this->optionFormType != 'inline' and a::get($params, 'cancel', TRUE))
+					if($this->optionFormType != 'inline' and a::get($params, 'cancel', FALSE))
 						$this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
 					break;
 			}
@@ -333,9 +341,20 @@ class forms
 	{
 		$this->addField($name, $label, 'radio', $radio, $additionalParams);
 	}
-	function addSelect($name = NULL, $label = NULL, $select, $additionalParams = NULL)
+	function addSelect($name = NULL, $label = NULL, $select, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addField($name, $label, 'select', $select, $additionalParams);
+		$additionalParams['select'] = $select;
+		$this->addField($name, $label, 'select', $value, $additionalParams);
+	}
+	function addDate($name = NULL, $label = NULL, $value = '0000-00-00', $additionalParams = NULL)
+	{
+		$value = explode('-', $value);
+		$additionalParams['class'] = 'dateForm';
+		$startingYear = a::get($additionalParams, 'start');
+		$endingYear = a::get($additionalParams, 'end');
+		
+		$this->setValues(array($name.'_jour' => $value[2], $name.'_mois' => $value[1], $name.'_annee' => $value[0]));
+		$this->addSelect($name, $label, $this->liste_date($startingYear, $endingYear), NULL, $additionalParams);
 	}
 	
 	//////////////////
@@ -351,6 +370,27 @@ class forms
 	{
 		if(!$additionalParams) $additionalParams['class'] = 'btn-primary';
 		$this->addField($name, NULL, 'submit', NULL, $additionalParams);
+	}
+	
+	//////////////////
+	//// SELECTS /////
+	//////////////////
+	
+	function liste_number($end, $start = 0, $step = 1)
+	{
+		return range($start, $end, $step);
+	}
+	
+	// Champ date
+	function liste_date($startingYear = NULL, $endingYear = NULL)
+	{
+		if(!$startingYear) $startingYear = date('Y');
+		if(!$endingYear) $endingYear = $startingYear + 10;
+		
+		return array(
+			'jour' => $this->liste_number(31, 1),
+			'mois' => $this->liste_number(12, 1),
+			'annee' => $this->liste_number($endingYear, $startingYear));
 	}
 	
 	/*
