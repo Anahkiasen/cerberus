@@ -9,9 +9,10 @@ $sitemap = $desired->get();
 $lignes = floor(count($sitemap) / 1);
 $count = 0;
 
+$forbidden = array('404', 'sitemap', 'admin');
 foreach($sitemap as $categorie => $pages)
 {
-	if($categorie != 'admin' or (LOCAL and $categorie == 'admin'))
+	if(!in_array($categorie, $forbidden))
 	{
 		echo '<ul>';
 		echo str::slink(

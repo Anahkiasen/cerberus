@@ -132,7 +132,7 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_
 
 // Fichiers manquants
 if(!file_exists(PATH_CERBERUS. 'less/variables_custom.less')) f::write(PATH_CERBERUS. 'less/variables_custom.less', '@main: #069;');
-if(!file_exists(PATH_COMMON. 'css/styles.less')) f::write(PATH_COMMON. 'css/styles.less');
+if(!file_exists(PATH_CERBERUS. 'css/styles.less')) f::write(PATH_CERBERUS. 'css/styles.less');
 
 /*
 ########################################
