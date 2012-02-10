@@ -161,7 +161,7 @@ class url
 					
 			// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
 			$thisPage = $page0. '-' .$page1;
-			$meta = $cerberus->metadata($thisPage);
+			$meta = meta::page($thisPage);
 			
 			if(!isset($pageHTML))
 				$pageHTML = a::get($meta, 'url', a::get($meta, 'titre', l::get('menu-'.$thisPage, NULL)));

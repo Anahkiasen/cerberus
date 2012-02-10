@@ -77,17 +77,23 @@ class navigation
 				if(!isset($this->data[$index]))
 				{
 					$lien = NULL;
+					$external = 0;
 					$subcount = db::count('cerberus_structure', array('parent' => $index));
 					if($subcount == 1)
 					{
 						$hidden = $values['hidden'];
-						if(!empty($values['external_link'])) $lien = $values['external_link'];
+						if(!empty($values['external_link']))
+						{
+							$lien = $values['external_link'];
+							$external = 1;
+						}
 					}
 					else $hidden = $subcount > 1 ? 0 : 1;
 						
 					$this->data[$index] = array(
 						'text' => l::get('menu-' .$index, ucfirst($index)),
 						'hidden' => $hidden,
+						'external' => $external,
 						'link' => $lien);
 				}
 				
@@ -300,7 +306,7 @@ class navigation
 	}
 	
 	// Pied de page
-	function footer()
+	function footer($links = array())
 	{
 		$footer =
 			'&copy;Copyright ' .date('Y'). ' - 
@@ -309,6 +315,11 @@ class navigation
 			Conception : ' .str::link('http://www.stappler.fr/', 'Le Principe de Stappler');
 		if(isset($this->data['contact']['submenu']['legales'])) $footer .= ' - ' .str::slink('contact-legales', l::get('menu-contact-legales'));
 		if(isset($this->data['contact']['submenu']['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact'));
+		if(!empty($links))
+		{
+			foreach($links as $link => $text)
+				$footer .= ' - ' .str::link($link, $text);
+		}
 		return $footer;
 	}
 	

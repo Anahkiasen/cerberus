@@ -6,7 +6,7 @@
 <?php
 global $desired;
 $sitemap = $desired->get();
-$lignes = floor(count($sitemap) / 3);
+$lignes = floor(count($sitemap) / 1);
 $count = 0;
 
 foreach($sitemap as $categorie => $pages)
@@ -20,12 +20,13 @@ foreach($sitemap as $categorie => $pages)
 		
 		if(isset($pages['submenu']))
 		{
-			foreach($pages['submenu'] as $pageSub => $subvalues)
-			{
-				echo str::slink(
-					$categorie.'-'.$pageSub,
-					'<li>' .l::get('menu-'.$categorie.'-'.$pageSub). '</li>');
-			}
+			if(isset($pages['external']) and $pages['external'] != 1)
+				foreach($pages['submenu'] as $pageSub => $subvalues)
+				{
+					echo str::slink(
+						$categorie.'-'.$pageSub,
+						'<li>' .l::get('menu-'.$categorie.'-'.$pageSub). '</li>');
+				}
 		}
 			
 		echo '</ul>';
