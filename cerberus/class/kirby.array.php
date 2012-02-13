@@ -223,8 +223,8 @@ class a
 	{
 		$direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
 		$helper = array();
-		foreach($array as $key = > $row)
-			$helper[$key] = (is_object($row)) ? (method_exists($row, $field)) ? str::lower($row - > $field()) : str::lower($row - > $field) : str::lower($row[$field]);
+		foreach($array as $key => $row)
+			$helper[$key] = (is_object($row)) ? (method_exists($row, $field)) ? str::lower($row -> $field()) : str::lower($row -> $field) : str::lower($row[$field]);
 		
 		array_multisort($helper, $direction, $method, $array);
 		return $array;
