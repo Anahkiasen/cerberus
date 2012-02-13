@@ -83,8 +83,8 @@ class str
 		
 		foreach($parts as $p)
 		{
-			$p = self::trim($p);
-			if(!empty($p) && str::length($p) >= $length) $out[] = $p;
+			$p = trim($p);
+			if(str::length($p) > 0 && str::length($p) >= $length) $out[] = $p;
 		}
 		
 		return $out;

@@ -217,6 +217,18 @@ class a
 			}
 		}
 	}
+	
+	// Trie un array selon une requête ORDER BY
+	static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
+	{
+		$direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
+		$helper = array();
+		foreach($array as $key = > $row)
+			$helper[$key] = (is_object($row)) ? (method_exists($row, $field)) ? str::lower($row - > $field()) : str::lower($row - > $field) : str::lower($row[$field]);
+		
+		array_multisort($helper, $direction, $method, $array);
+		return $array;
+	}
 				
 	/*
 	########################################

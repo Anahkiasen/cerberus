@@ -80,7 +80,7 @@ class dispatch extends Cerberus
 		// API
 		$this->availableAPI = array(
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
-		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.1.min.js',
+		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.2.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
