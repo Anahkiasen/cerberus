@@ -2,6 +2,7 @@
 	"menu-404":				"Erreur 404",
 	"menu-sitemap":			"Plan du site",
 	"menu-contact-legales":	"Mentions légales",
+		
 	"form.incomplete":		"Un ou plusieurs champs sont incomplets ou incorrects",
 	"form.cancel":			"Annuler",
 	
@@ -18,6 +19,9 @@
 	"admin.no_results":		"Aucun résultat à afficher",
 	"admin.upload.success":	"Image envoyée avec succès",
 	"admin.upload.error":	"Erreur lors de l'envoi de l'image",
+	"admin.login":			"Connexion",
+	"admin.password":		"Mot de passe",
+	"admin.user":			"Utilisateur",
 	
 	"upload.errors.missing-file": 		"Fichier introuvable",
 	"upload.errors.file-exists": 		"Le fichier existe déjà et ne peut être écrasé",

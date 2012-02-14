@@ -712,22 +712,12 @@
 .text-drop (@color, @size: @default_size) when (lightness(@color) >= 50%)
 {
 	color: @color;
-	.text-shadow(@size, @size, 0, fadeout(black, @default_opacity));
+	.text-shadow(@size @size 0 fadeout(black, @default_opacity));
 }
 .text-drop (@color, @size: @default_size) when (lightness(@color) < 50%)
 {
 	color: @color;
-	.text-shadow(@size, @size, 0, fadeout(black, @default_opacity));
-}
-.text-shadow(@x: 0, @y: 0, @blur: 1px, @color: #000)
-{
-	text-shadow: @arguments;
-	filter: ~'dropshadow(color=@{color}, offx=@{x}, offy=@{y})';
-}
-.text-shadow-none()
-{
-	filter: none;
-	text-shadow: none;
+	.text-shadow(@size @size 0 fadeout(black, @default_opacity));
 }
 
 ///////////////////////////////////////////////

@@ -24,6 +24,8 @@ class forms
 	{
 		// Création de l'élément <form>
 		if(!isset($params['method'])) $params['method'] = 'post';
+		if(!isset($params['class'])) $params['class'] = 'form-horizontal';
+		
 		$this->tabs = a::get($params, 'tabs', 1);
 		$this->optionMultilangue = $multilangue ? $multilangue : MULTILANGUE;
 		$this->rend('<form ' .$this->paramRender($params, 'tabs'). '>');
@@ -33,7 +35,7 @@ class forms
 		if(str::find('form-horizontal', $formClass)) $this->optionFormType = 'horizontal';
 		elseif(str::find('form-search', $formClass)) $this->optionFormType = 'inline';
 		elseif(str::find('form-inline', $formClass)) $this->optionFormType = 'inline';
-		else $this->optionFormType = 'vertical';		
+		else $this->optionFormType = 'horizontal';		
 	}
 	
 	// Si le formulaire est envoyé, on analyse les champs et on les retourne nettoyés
@@ -205,6 +207,7 @@ class forms
 			{
 				// Texte
 				case 'text':
+				case 'password':
 					if($addon == 'uneditable-input') $this->rend('<span ' .$this->paramRender($deploy, 'value'). '>' .$deploy['value']. '</span>');
 					elseif($addon == 'disabled') $this->rend('<input ' .$this->paramRender($deploy, 'value'). ' placeholder="' .$deploy['value']. '" disabled />');
 					else $this->rend('<input ' .$this->paramRender($deploy). ' />');
@@ -317,6 +320,11 @@ class forms
 	function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label, 'text', $value, $additionalParams);
+	}
+	
+	function addPassword($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	{
+		$this->addField($name, $label, 'password', $value, $additionalParams);
 	}
 	
 	function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)

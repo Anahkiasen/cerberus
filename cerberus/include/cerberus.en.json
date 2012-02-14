@@ -19,6 +19,9 @@
 	"admin.no_results":			"No results to display",
 	"admin.upload.success":		"Picture uploaded with success",
 	"admin.upload.error":		"Error during the upload of the picture",
+	"admin.login":				"Login",
+	"admin.password":			"Password",
+	"admin.user":				"User",
 		
 	"upload.errors.missing-file": 		"The file has not been found",
 	"upload.errors.file-exists": 		"The file exists and cannot be overwritten",
