@@ -54,7 +54,7 @@ p.readmore
 .btn.cerberus
 {
 	color: white;
-	.text-shadow(0, 1px, 1px, fadeout(@black, 25));
+	text-shadow: 0 1px 1px fadeout(@black, 25);
 	.gradientBar(@main, darken(@main, 15));
 }
 .btn.wide
@@ -66,7 +66,7 @@ p.readmore
 .btn.add-on
 {
 	color: black;
-	.text-shadow-none;
+	text-shadow: none;
 }
 
 // Modifications Cerberus
@@ -88,7 +88,7 @@ p.readmore
 .ie7,
 .ie8
 {
-	* { .text-shadow-none !important }
+	* { text-shadow: none !important }
 }
 .ie img { -ms-interpolation-mode: bicubic }
 
