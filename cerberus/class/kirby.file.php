@@ -25,7 +25,7 @@ class f
 				$write 		= @file_put_contents($file, $content, $mode);
 			
 			if($write and file_exists($file))
-				@chmod($file, 0777);
+				@chmod($file, 0666);
 			
 			return $write;
 		}

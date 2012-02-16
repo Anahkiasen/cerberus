@@ -173,7 +173,10 @@ class db
 	// SELECT
 	static function select($table, $select = '*', $where = NULL, $order = NULL, $group = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
 	{
-		$sql = 'SELECT ' .self::select_clause($select). ' FROM ' .self::prefix($table);
+		if($limit === 0) return array();
+		if(is_array($select)) $select = self::select_clause($select);
+		
+		$sql = 'SELECT ' .$select. ' FROM ' .self::prefix($table);
 
 		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
 		if(!empty($group)) $sql .= ' GROUP BY ' .$group;
@@ -288,7 +291,6 @@ class db
 	// Ne renvoit qu'un seul champ
 	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
 	{
-
 		$result = self::select($table, $column, $where, $order, NULL, $page, $limit, false);
 
 		$array = array();
@@ -596,14 +598,21 @@ class db
 		return $output;
 	}
 
-
 	static function search_clause($search, $fields, $mode = 'OR')
 	{
 		if(empty($search)) return false;
 
 		$arr = array();
-		foreach($fields as $f) array_push($arr, $f. ' LIKE \'%' .$search. '%\'');
-		return '(' .implode(' ' .trim($mode). ' ', $arr). ')';
+		foreach($fields AS $f)
+			array_push($arr, $f.' LIKE \'%'.$search.'%\'');
+			
+		
+		return '('.implode(' '.trim($mode).' ', $arr).')';
+	}
+
+	static function with($field, $char)
+	{
+		return 'LOWER(SUBSTRING('.$field.',1,1)) = "'.db::escape($char).'"';
 	}
 
 	static function in($array)

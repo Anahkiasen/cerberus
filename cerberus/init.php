@@ -131,8 +131,11 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xh
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
 
 // Fichiers manquants
-if(!file_exists(PATH_CERBERUS. 'less/variables_custom.less')) f::write(PATH_CERBERUS. 'less/variables_custom.less', '@main: #069;');
-if(!file_exists(PATH_CERBERUS. 'css/styles.less')) f::write(PATH_CERBERUS. 'css/styles.less');
+if(config::get('boostrap'))
+{
+	if(!file_exists(PATH_CERBERUS. 'less/variables_custom.less')) f::write(PATH_CERBERUS. 'less/variables_custom.less', '@main: #069;');
+	if(!file_exists(PATH_CERBERUS. 'css/styles.less')) f::write(PATH_CERBERUS. 'css/styles.less');	
+}
 
 /*
 ########################################

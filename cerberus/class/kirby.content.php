@@ -107,11 +107,20 @@ class content
 			$content = ob_get_contents();
 			ob_end_clean();
 			$content = str::accents($content);
-			// $content = trim(preg_replace('/\s+/', ' ', $content));
-			// $content = preg_replace('/(\/\/|<!--|\/\*)([a-zA-Z0-9&; #]+)(-->|\*\/)/', ' ', $content);
 			return $content;
 		}
 		ob_end_flush();
+	}
+	
+	// Charge le rendu d'un fichier
+	static function load($file, $return = true)
+	{
+		self::start();
+		require_once ($file);
+		$content = self::end(true);
+		if($return)
+			return $content;
+		echo $content;
 	}
 		
 	// Détermine le type du fichier
@@ -126,14 +135,15 @@ class content
 			'js'	 => 'text/javascript',
 			'jpg'	=> 'image/jpeg',
 			'png'	=> 'image/png',
-			'gif'	=> 'image/gif'
+			'gif'	=> 'image/gif',
+			'json' => 'application/json'
 		);
 
 		$ctype	 = a::get($args, 0, c::get('content_type', 'text/html'));
 		$ctype	 = a::get($ctypes, $ctype, $ctype);
 
 		$charset = a::get($args, 1, c::get('charset', 'utf-8'));
-		header('Content-type: ' . $ctype . '; charset=' . $charset);
+		header('Content-type: ' .$ctype. '; charset=' .$charset);
 	}
 }
 ?>

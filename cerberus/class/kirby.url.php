@@ -5,8 +5,7 @@ class url
 	static function current()
 	{
 		$http = (isset($_SESSION['HTTPS']) and server::get('HTTPS') == 'on')
-			? 'https://'
-			: 'http://';
+			? 'https://' : 'http://';
 		
 		return $http.server::get('http_host').server::get('request_uri');
 	}
@@ -40,7 +39,7 @@ class url
 	// Vérifie la présence de HTTP:// au début d'une URL
 	static function http($url = NULL)
 	{
-		return 'http://' .str_replace('http://', '', ($url));
+		return 'http://' .str_replace('http://', NULL, ($url));
 	}
 
 	// Présence de requêtes GET à la fin de l'URL
@@ -52,13 +51,13 @@ class url
 	// Supprimer les requêtes
 	static function strip_query($url)
 	{
-		return preg_replace('/\?.*$/is', '', $url);
+		return preg_replace('/\?.*$/is', NULL, $url);
 	}
 
 	// Supprimer le hash
 	static function strip_hash($url)
 	{
-		return preg_replace('/#.*$/is', '', $url);
+		return preg_replace('/#.*$/is', NULL, $url);
 	}
 
 	// Vérifier si l'URL est valide

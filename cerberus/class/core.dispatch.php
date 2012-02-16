@@ -92,13 +92,13 @@ class dispatch extends Cerberus
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
-		$this->JS = $this->CSS = $this->LESS = array('min' => array());
+		$this->JS = $this->CSS = $this->LESS = array('min' => array(), 'url' => array(), 'inline' => array());
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
 				
 		// Mise en array des différents scripts
-		a::force_array($scripts['*']);
-		a::force_array($scripts[$this->current]);
-		a::force_array($scripts[$this->global]);
+		$scripts['*'] = a::force_array($scripts['*']);
+		$scripts[$this->current] = a::force_array($scripts[$this->current]);
+		$scripts[$this->global] = a::force_array($scripts[$this->global]);
 				
 		// Fichiers par défaut
 		$scripts['*'][] = 'core';
@@ -180,37 +180,37 @@ class dispatch extends Cerberus
 			foreach($minify as $thisfile)
 			{
 				echo "\t".'<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
-				$this->CSS['min'] = a::splice($this->CSS['min'], strtr($thisfile, array('.less' => '.css', 'less/' => 'css/')));
+				$this->CSS['min'] = a::remove($this->CSS['min'], strtr($thisfile, array('.less' => '.css', 'less/' => 'css/')), false);
 			}
 			echo "\t".'<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>'.PHP_EOL;
 			//echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
 		}
 		
 		// CSS
-		if($this->CSS['min'] and !empty($this->CSS['min']))
+		if($this->CSS['min'])
 		{
 			$minify = array_unique(array_filter($this->CSS['min']));
 			if($this->minify) { if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify); }
-			else $this->CSS['url'] = array_merge($this->CSS['url'], $minify);
+			else { if($minify) $this->CSS['url'] = array_merge($this->CSS['url'], $minify); }
 		}
-		if(!empty($this->CSS['url'])) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
-		if(isset($this->CSS['inline'])) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
+		if($this->CSS['url']) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
+		if($this->CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
 	}
 	function getJS()
 	{
 		if(isset($this->typekit)) $this->addJS('http://use.typekit.com/' .$this->typekit. '.js');
-		if(isset($this->JS['min']))
+		if($this->JS['min'])
 		{
 			$minify = array_unique(array_filter($this->JS['min']));	
 			if($this->minify) { if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify); }
-			else $this->JS['url'] = array_merge($this->JS['url'], $minify);
+			else if($this->JS['url']) $this->JS['url'] = array_merge($this->JS['url'], $minify);
 		}
-		if(!empty($this->JS['url']))
+		if($this->JS['url'])
 		{
 			$this->JS['url'] = array_unique(array_filter($this->JS['url']));
 			foreach($this->JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
 		}
-		if(isset($this->JS['inline'])) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", $this->JS['inline']).PHP_EOL. '</script>'.PHP_EOL;
+		if($this->JS['inline']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", $this->JS['inline']).PHP_EOL. '</script>'.PHP_EOL;
 	}
 	
 	/* 
@@ -238,6 +238,16 @@ class dispatch extends Cerberus
 		
 		if(str::find('http', $javascript)) $this->JS['url'][] = $javascript;
 		else $this->JS['inline'][] = $javascript;
+	}
+	
+	// Ajout un élément Google Analytics
+	function analytics($analytics = 'XXXXX-X')
+	{
+		$this->addJS("
+		var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];
+	    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	    s.parentNode.insertBefore(g,s)}(document,'script'));");
 	}
 	
 	// Ajoute de polices via @font-face

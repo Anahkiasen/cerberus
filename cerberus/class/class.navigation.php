@@ -140,7 +140,7 @@ class navigation
 	function extension(&$page, &$sousPage)
 	{
 		$page_combined = $sousPage ? $page.'-'.$sousPage : $page;
-		if(!file_exists('pages')) mkdir('pages');
+		if(!file_exists('pages')) dir::make('pages');
 		
 		// Balayage des noms possibles de la page
 		$possible = array($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');

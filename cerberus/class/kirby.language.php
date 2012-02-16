@@ -168,7 +168,7 @@ class l
 		{
 			if($default === NULL) $default = ucfirst($key);
 			$translate = a::get(self::$lang, $key, $default);
-			return (empty($translate)) ? $default : stripslashes($translate);
+			return (empty($translate) or is_array($translate)) ? $default : stripslashes($translate);
 		}
 	}
 	
