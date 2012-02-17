@@ -43,9 +43,9 @@ class dispatch extends Cerberus
 		}
 		
 		// Récupération des scripts concernés
-		a::force_array($modules['*']);
-		a::force_array($modules[$this->global]);
-		a::force_array($modules[$this->current]);
+		$modules['*'] = a::force_array($modules['*']);
+		$modules[$this->global] = a::force_array($modules[$this->global]);
+		$modules[$this->current] = a::force_array($modules[$this->current]);
 		$arrayModules = array_merge($modules['*'], $modules[$this->global], $modules[$this->current]);
 		
 		// Suppressions des fonctions non voulues

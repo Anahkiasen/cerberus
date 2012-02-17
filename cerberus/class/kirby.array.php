@@ -190,7 +190,7 @@ class a
 			if(isset($value[$subkey]))
 			{
 				$output[$value[$subkey]] = $value;
-				if($remove) a::remove($output[$value[$subkey]], $subkey);
+				if($remove) $output[$value[$subkey]] = a::remove($output[$value[$subkey]], $subkey);
 			}
 			else
 			{
