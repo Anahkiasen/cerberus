@@ -178,7 +178,7 @@ class update
 	}
 	
 	// Génère les classes Iconic
-	static function iconic()
+	static function iconic($format = true)
 	{
 		$fill = f::read(PATH_CERBERUS.'fonts/iconic_fill.json', 'json');
 		$stroke = f::read(PATH_CERBERUS.'fonts/iconic_stroke.json', 'json');
@@ -195,6 +195,7 @@ class update
 			}
 		}
 		ksort($iconic);
+		if(!$format) return $iconic;
 		
 		$space = 25;
 		$return = NULL;
@@ -207,7 +208,7 @@ class update
 			$return .= PHP_EOL;
 		}
 		
-		echo $return;		
+		return $return;		
 	}
 }
 ?>
