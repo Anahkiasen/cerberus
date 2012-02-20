@@ -3,7 +3,7 @@
  * This class makes cookie handling easy */
 class cookie
 {
-	// Créer un nouveau cookie
+	// Set a new cookie
 	static function set($key, $value, $expires = 3600, $domain = '/')
 	{
 		if(is_array($value)) $value = a::json($value);
@@ -11,13 +11,13 @@ class cookie
 		return @setcookie($key, $value, time() + $expires, $domain);
 	}
 	
-	// Récupère la valeur d'un cookie
+	// Get a cookie value
 	static function get($key, $default = null)
 	{
 		return a::get($_COOKIE, $key, $default);
 	}
 
-	// Supprime un cookie
+	// Remove a cookie
 	static function remove($key, $domain = '/')
 	{
 		$_COOKIE[$key] = false;

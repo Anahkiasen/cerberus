@@ -3,13 +3,13 @@
  * Handles all session fiddling */
 class s
 {
-	// Retourn l'ID de la session en cours
+	// Returns the current session id
 	static function id()
 	{
 		return @session_id();
 	}
 	
-	// Ajoute un élément de session
+	// Sets a session value by key
 	static function set($key, $value = false)
 	{
 		if(!isset($_SESSION)) return false;
@@ -17,7 +17,7 @@ class s
 		else $_SESSION[$key] = $value;
 	}
 	
-	// Récupère un élément de la session en cours
+	// Gets a session value by key
 	static function get($key = false, $default = null)
 	{
 		if(!isset($_SESSION)) return false;
@@ -25,7 +25,7 @@ class s
 		return a::get($_SESSION, $key, $default);
 	}
 	
-	// Supprime un élément de la session en cours
+	// Removes a value from the session by key
 	static function remove($key)
 	{
 		if(!isset($_SESSION)) return false;
@@ -33,17 +33,19 @@ class s
 		return $_SESSION;
 	}
 	
-	// Gestion de la session en cours
+	// Starts a new session
 	static function start()
 	{
 		@session_start();
 	}
 	
+	// Destroys a session
 	static function destroy()
 	{
 		@session_destroy();
 	}
 	
+	// Destroys a session first and then starts it again
 	static function restart()
 	{
 		self::destroy();

@@ -2,7 +2,7 @@
 /* The Kirby Server Getter Class */
 class server
 {
-	// Récupère une variable serveur
+	// Gets a value from the _SERVER array
 	static function get($key = false, $default = NULL)
 	{
 		if(empty($key)) return $_SERVER;

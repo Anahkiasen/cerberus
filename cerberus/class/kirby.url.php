@@ -1,7 +1,7 @@
 <?php
 class url
 {
-	// Retourne l'URL actuelle
+	// Returns the current URL
 	static function current()
 	{
 		$http = (isset($_SESSION['HTTPS']) and server::get('HTTPS') == 'on')
@@ -10,16 +10,7 @@ class url
 		return $http.server::get('http_host').server::get('request_uri');
 	}
 	
-	// Renvoit le domaine du site actuel
-	static function domain()
-	{
-		$base = explode('/', url::short());
-		$url = a::get($base, 0);
-		if(LOCAL) $url .= '/' .a::get($base, 1);
-		return $url.'/';
-	}
-
-	// Raccourcit l'URL
+	// Shortens an URL
 	static function short($url = NULL, $chars = false, $base = false, $rep = '…')
 	{
 		if(!$url) $url = self::current();
@@ -34,39 +25,50 @@ class url
 			$url = a::get($a, 0);
 		}
 		return ($chars) ? str::short($url, $chars, $rep) : $url;
-	}
+	}	
 	
+	// Checks if the URL has a query string attached
+	static function has_query($url)
+	{
+		return (str::contains($url, '?'));
+	}	
+	
+	// Strips the query from the URL
+	static function strip_query($url)
+	{
+		return preg_replace('/\?.*$/is', NULL, $url);
+	}	
+	
+	// Strips a hash value from the URL
+	static function strip_hash($url)
+	{
+		return preg_replace('/#.*$/is', NULL, $url);
+	}	
+	
+
+	// Checks for a valid URL
+	static function valid($url)
+	{
+		return v::url($url);
+	}	
+	
+	
+	// Renvoit le domaine du site actuel
+	static function domain()
+	{
+		$base = explode('/', self::short());
+		$url = a::get($base, 0);
+		if(LOCAL) $url .= '/' .a::get($base, 1);
+		return $url.'/';
+	}
+
 	// Vérifie la présence de HTTP:// au début d'une URL
 	static function http($url = NULL)
 	{
 		return 'http://' .str_replace('http://', NULL, ($url));
 	}
 
-	// Présence de requêtes GET à la fin de l'URL
-	static function has_query($url)
-	{
-		return (str::contains($url, '?'));
-	}
-
-	// Supprimer les requêtes
-	static function strip_query($url)
-	{
-		return preg_replace('/\?.*$/is', NULL, $url);
-	}
-
-	// Supprimer le hash
-	static function strip_hash($url)
-	{
-		return preg_replace('/#.*$/is', NULL, $url);
-	}
-
-	// Vérifier si l'URL est valide
-	static function valid($url)
-	{
-		return v::url($url);
-	}
-	
-	// Aller à l'URL indiquée
+	// Redirects the user to a new URL
 	static function go($url = false, $code = false)
 	{
 		if(empty($url)) $url = config::get('url', '/');
@@ -91,6 +93,12 @@ class url
 
 		header('Location:' .$url);
 		exit();
+	}
+	
+	// Recharger la page en ajoutant des paramètres supplémentaires
+	static function reload($variables = array())
+	{
+		return self::rewrite(NULL, $variables);
 	}
 	
 	// Composer une URL depuis un index
@@ -170,11 +178,6 @@ class url
 		}
 		
 		return $lien.$hash;
-	}
-
-	static function reload($variables = array())
-	{
-		return self::rewrite(NULL, $variables);
 	}
 }
 ?>

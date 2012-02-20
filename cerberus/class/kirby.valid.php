@@ -37,33 +37,42 @@ class v
 		}
 	}
 	
-	// Vérifie qu'un numéro de téléphone est valide
-	static function phone($phone)
-	{
-		$regex = '#^0[1-78]([-. ]?[0-9]{2}){4}$#';
-		return (preg_match($regex, $phone));
-	}
+	/*
+	########################################
+	########### FONCTIONS MOTEUR ###########
+	########################################
+	*/
 	
-	// Vérifie qu'une email est valide
-	static function email($email)
+	// Core method to create a new validator
+	static function string($string, $options)
 	{
-		$regex = '#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix';
-		return (preg_match($regex, $email));
+		$format = null;
+		$min_length = $max_length = 0;
+		if(is_array($options)) extract($options);
+
+		if($format && !preg_match('/^[$format]*$/is', $string)) return false;
+		if($min_length && str::length($string) < $min_length) return false;
+		if($max_length && str::length($string) > $max_length) return false;
+		return true;
 	}
 
-	// Vérifie qu'une URL est valide
-	static function url($url)
+	// Checks for a valid password
+	static function password($password)
 	{
-		$regex = '/^(https?|ftp|rmtp|mms|svn):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i';
-		return (preg_match($regex, $url));
+		return self::string($password, array('min_length' => 4));
 	}
 
-	// Vérifie qu'une date est valide
+	// Checks for two valid, matching password
+	static function passwords($password1, $password2)
+	{
+		return ($password1 == $password2 && self::password($password1) && self::password($password2));
+	}
+
+	// Checks for valid date
 	static function date($date)
 	{
 		$time = strtotime($date);
-		if(!$time)
-			return false;
+		if(!$time) return false;
 
 		$year = date('Y', $time);
 		$month = date('m', $time);
@@ -71,41 +80,33 @@ class v
 
 		return (checkdate($month, $day, $year)) ? $time : false;
 	}
-
-	// Vérifie qu'un nom de fichier est valide
+	
+	// Checks for valid email address
+	static function email($email)
+	{
+		$regex = '#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix';
+		return (preg_match($regex, $email));
+	}
+	
+	// Checks for valid URL
+	static function url($url)
+	{
+		$regex = '/^(https?|ftp|rmtp|mms|svn):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i';
+		return (preg_match($regex, $url));
+	}
+	
+	// Checks for valid filename
 	static function filename($string)
 	{
 		$options = array('format' => 'a-zA-Z0-9_-', 'min_length' => 2);
 		return self::string($string, $options);
-	}
-
-	// Vérifie qu'une chaîne est valide
-	static function string($string, $options)
+	}	
+	
+	// Vérifie qu'un numéro de téléphone est valide
+	static function phone($phone)
 	{
-		$format = null;
-		$min_length = $max_length = 0;
-		if(is_array($options))
-			extract($options);
-
-		if($format && !preg_match('/^[$format]*$/is', $string))
-			return false;
-		if($min_length && str::length($string) < $min_length)
-			return false;
-		if($max_length && str::length($string) > $max_length)
-			return false;
-		return true;
-	}
-
-	// Vérifie un mot de passe
-	static function password($password)
-	{
-		return self::string($password, array('min_length' => 4));
-	}
-
-	// Vérifie que deux mots de passe concordent
-	static function passwords($password1, $password2)
-	{
-		return ($password1 == $password2 && self::password($password1) && self::password($password2));
+		$regex = '#^0[1-78]([-. ]?[0-9]{2}){4}$#';
+		return (preg_match($regex, $phone));
 	}
 }
 ?>
