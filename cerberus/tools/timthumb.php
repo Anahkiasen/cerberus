@@ -25,6 +25,7 @@ function timthumb($file, $width = NULL, $height = NULL, $crop = NULL, $quality =
 	if(!is_null($quality)) $params['q'] = $quality;
 	if(!is_null($sharpen)) $params['s'] = $sharpen;
 
+	$file = str_replace(PATH_FILE, NULL, $file);
 	$file = (str::find('../', $file))
 		? realpath(PATH_FILE.$file)
 		: PATH_FILE.$file;

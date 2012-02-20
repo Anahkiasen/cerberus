@@ -29,7 +29,7 @@ class v
 				break;
 				
 			case 'number':
-				return !empty($string) and preg__match('/\d+/', $string);
+				return !empty($string) and preg_match('/\d+/', $string);
 				
 			default:
 				return !empty($string);

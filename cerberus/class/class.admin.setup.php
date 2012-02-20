@@ -108,10 +108,10 @@ class AdminSetup
 	// Formulaire d'identification et vérification
 	function adminLogin()
 	{
-		$admin_form = new form(false);
+		$admin_form = new forms();
 		$admin_form->openFieldset('Identification');
 			$admin_form->addText('user', 'Identifiant');
-			$admin_form->addPass('password', 'Mot de passe');
+			$admin_form->addPassword('password', 'Mot de passe');
 			$admin_form->addSubmit('Connexion');
 		$admin_form->closeFieldset();
 				
@@ -127,14 +127,14 @@ class AdminSetup
 			else
 			{
 				str::display('Les identifiants entrés sont incorrects.');
-				echo $admin_form;
+				$admin_form->render();
 			}
 		}
 		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = TRUE;
 		else
 		{
 			str::display('Veuillez entrer votre identifiant et mot de passe.');
-			echo $admin_form;
+			$admin_form->render();
 		}
 	}
 	

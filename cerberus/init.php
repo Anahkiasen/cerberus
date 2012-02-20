@@ -136,6 +136,7 @@ if(config::get('boostrap'))
 	if(!file_exists(PATH_CERBERUS. 'less/variables_custom.less')) f::write(PATH_CERBERUS. 'less/variables_custom.less', '@main: #069;');
 	if(!file_exists(PATH_CERBERUS. 'css/styles.less')) f::write(PATH_CERBERUS. 'css/styles.less');	
 }
+dir::make('cerberus/cache');
 
 /*
 ########################################

@@ -53,19 +53,22 @@ class meta
 		$pageVoulue = $desired->current(false);
 		$current = $desired->current();
 		
-		if(isset(self::$meta[$current][$get]) and !empty(self::$meta[$current][$get]))
+		if($get == 'titre')
 		{
-			if($get == 'titre')
-			{
-				$title_prefix = ($pageVoulue == 'admin' and get('admin'))
-					? 'Gestion ' .ucfirst(get('admin'))
-					: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
-				if(!empty($title_prefix) and $title_prefix != self::$meta[$current]['titre'])
-					self::$meta[$current]['titre'] = $title_prefix. ' - ' .self::$meta[$current]['titre'];
-			}
-			return ucfirst(str::accents(a::get(self::$meta[$current], $get, $default)));
+			$title = ($pageVoulue == 'admin' and get('admin'))
+				? 'Gestion ' .ucfirst(get('admin'))
+				: l::get('menu-' .$current, l::get('menu-' .$pageVoulue, ucfirst($pageVoulue)));
+			$current_title = a::get(a::get(self::$meta, $current), 'titre');
+			
+			if($title and $current_title) $title = $title. ' - ' .$current_title;
+			elseif(!$title and $current_title) $title = $current_title;
+			
+			self::$meta[$current]['titre'] = $title;
 		}
-		else return $default;
+		
+		return (isset(self::$meta[$current][$get]) and !empty(self::$meta[$current][$get]))
+			? ucfirst(str::accents(a::get(self::$meta[$current], $get, $default)))
+			: $default;
 	}
 	
 	// Renvoit les données meta d'une page

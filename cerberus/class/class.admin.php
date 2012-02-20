@@ -117,9 +117,11 @@ class AdminPage extends AdminSetup
 		if(isset($_GET['deleteThumb']))
 		{
 			$image = $this->getImage($_GET['deleteThumb']);
+			
 			if(f::remove($image)) str::display('Miniature supprimée', 'success');
 			else str::display('Miniature introuvable', 'error');
-			f::remove(glob(PATH_FILE.$this->usable. '/' .$lastID. '-*.*'));
+			
+			if(isset($lastID)) f::remove(glob(PATH_FILE.$this->usable. '/' .$lastID. '-*.*'));
 		}
 	}
 	
@@ -381,8 +383,8 @@ class AdminPage extends AdminSetup
 			{	
 				$lastID = ($_POST['edit'] == 'add')
 					? db::increment($this->table) - 1
-					: $_POST['edit'];
-								
+					: a::get($_POST, 'edit');
+						
 				$storageMode = $this->imageMode();
 				switch($storageMode)
 				{

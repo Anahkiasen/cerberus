@@ -35,7 +35,7 @@ class forms
 		if(str::find('form-horizontal', $formClass)) $this->optionFormType = 'horizontal';
 		elseif(str::find('form-search', $formClass)) $this->optionFormType = 'inline';
 		elseif(str::find('form-inline', $formClass)) $this->optionFormType = 'inline';
-		else $this->optionFormType = 'horizontal';		
+		else $this->optionFormType = 'horizontal';	
 	}
 	
 	// Si le formulaire est envoyé, on analyse les champs et on les retourne nettoyés
@@ -114,8 +114,12 @@ class forms
 	// Modifier les valeurs du tableau
 	function values($table)
 	{
-		if(isset($_GET['edit_'.$table]))
-			$this->values = db::row($table, '*', array('id' => $_GET['edit_'.$table]));
+		$this->usable = str_replace('cerberus_', NULL, $table);
+		$id = db::fields($table);
+		$id = in_array('id', $id) ? 'id' : a::get($id, 0);
+		
+		if(isset($_GET['edit_'.$this->usable]))
+			$this->values = db::row($table, '*', array($id => $_GET['edit_'.$this->usable]));
 	}
 	function setValues($array)
 	{
@@ -147,9 +151,10 @@ class forms
 							'text');
 							
 		// Label du champ
-		$label = 	a::get($params, 'label', 
-					ucfirst(a::get($params, 'name', 
-					$deploy['type'])));
+		$label = 	a::get($params, 'label',
+					l::get('form-' .a::get($params, 'name'),
+					ucfirst(a::get($params, 'name'))),					
+					$deploy['type']);
 		
 		// Attribut name
 		$deploy['name'] = 	a::get($params, 'name', 
@@ -158,10 +163,11 @@ class forms
 							$deploy['name']);
 		
 		// Valeur du champ
+		$isset_post = isset($_POST) ? $_POST : NULL; 
 		$deploy['value'] = 	a::get($params, 'value',
-							a::get($_POST, $deploy['name'], 
+							a::get($isset_post, $deploy['name'], 
 							a::get($this->values, $deploy['name'])));
-		
+							
 		// Paramètres auxiliaires
 		$auxiliaires = array('placeholder', 'rows', 'id', 'disabled', 'select');
 		foreach($auxiliaires as $ax) $deploy[$ax] = a::get($params, $ax);
@@ -183,13 +189,16 @@ class forms
 		$div_class = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
 		$div_class[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
 		$div_class[] = str::slugify($label);
+		$div_class[] = str::slugify($deploy['type']);
 		if($mandatory) $div_class[] = 'mandatory';
 		
 		////////////////////
 		/////// RENDU //////
 		////////////////////
 		
-		if($this->optionFormType == 'horizontal')
+		$openDiv = ($this->optionFormType == 'horizontal' and $deploy['type'] != 'hidden');
+		
+		if($openDiv)
 			$this->rend('<div class="' .implode(' ', $div_class). '">', 'TAB');
 		
 			// LABEL
@@ -207,6 +216,7 @@ class forms
 			{
 				// Texte
 				case 'text':
+				case 'hidden':
 				case 'password':
 					if($addon == 'uneditable-input') $this->rend('<span ' .$this->paramRender($deploy, 'value'). '>' .$deploy['value']. '</span>');
 					elseif($addon == 'disabled') $this->rend('<input ' .$this->paramRender($deploy, 'value'). ' placeholder="' .$deploy['value']. '" disabled />');
@@ -276,7 +286,7 @@ class forms
 					
 				case 'submit':
 					$deploy['class'] .= ' btn';
-					$this->rend('<button ' .$this->paramRender($deploy, 'name'). ' data-loading-text="Chargement">' .$deploy['name']. '</button>');
+					$this->rend('<button ' .$this->paramRender($deploy, 'label'). ' data-loading-text="Chargement">' .$label. '</button>');
 					
 					// Bouton annuler
 					if($this->optionFormType != 'inline' and a::get($params, 'cancel', FALSE))
@@ -296,7 +306,7 @@ class forms
 			
 			if($englobe) $this->rend('</div>', 'UNTAB');
 					
-		if($this->optionFormType == 'horizontal')
+		if($openDiv)
 			$this->rend('</div>', 'UNTAB');
 	}
 	
@@ -337,6 +347,11 @@ class forms
 		$this->addField($name, $label, 'checkbox', $value, $additionalParams);
 	}
 	
+	function addHidden($name, $value = NULL, $additionalParams = NULL)
+	{
+		$this->addField($name, $label = NULL, 'hidden', $value, $additionalParams);
+	}
+	
 	//////////////////
 	///// LISTES /////
 	//////////////////
@@ -369,6 +384,11 @@ class forms
 	/// FUNCTIONS ////
 	//////////////////
 
+	function addType()
+	{
+		$formType = a::get($_GET, 'edit_' .$this->usable, 'add');
+		$this->addHidden('edit', $formType);
+	}
 	function addFile($name, $label = NULL, $additionalParams = NULL)
 	{
 		$this->render = str_replace('method="' ,'enctype="multipart/form-data" method="', $this->render);
@@ -415,7 +435,7 @@ class forms
 	function rend($content, $tabs = NULL)
 	{
 		if($tabs == 'UNTAB') $this->tabs--;
-		$this->render .= str_repeat("\t", $this->tabs).$content.PHP_EOL;
+		if($this->tabs >= 0) $this->render .= str_repeat("\t", $this->tabs).$content.PHP_EOL;
 		if($tabs == 'TAB') $this->tabs++;
 	}
 	

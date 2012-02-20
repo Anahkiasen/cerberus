@@ -8,21 +8,21 @@ $newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 content::uncache('{news,actualite}');
 
 // Formulaire
-$form = new form(false, array('action' => url::rewrite(NULL, $urlAction)));
-$form->getValues($newsAdmin->getFieldsTable());
-
-$form->openFieldset($diffText. ' une news');
-	$form->addText('titre', 'Titre de la news');
-	$form->addTextarea('contenu', 'Texte de la news');
+$forms = new forms();
+$forms->values('cerberus_news');
+$forms->openFieldset($diffText. ' une news');
+{
+	$forms->addText('titre', 'Titre de la news');
+	$forms->addTextarea('contenu', 'Texte de la news');
 	if(isset($_GET['edit_news']))
 	{
 		$path = $newsAdmin->getImage(get('edit_news'));
 		if(file_exists($path) and !empty($path))
 		{
-			$form->insertText('
+			$forms->insert('
 				<dl class="actualThumb">
 				<dt>Supprimer la miniature actuelle</dt>
-				<dd style="text-align:center"><p><img src="' .timthumb('../../' .$path, 125, 125, 1). '" /><br />	' 
+				<dd style="text-align:center"><p><img src="' .timthumb($path, 125, 125, 1). '" /><br />	' 
 					.str::slink(
 					'admin-news',
 					'Supprimer',
@@ -32,11 +32,12 @@ $form->openFieldset($diffText. ' une news');
 				'</p></dd></dl>');
 		}
 	}
-	$form->addFile('thumb', 'Envoi d\'une miniature');
-	$form->addEdit();
-	if($diffText == 'Ajouter') $form->addHidden('date', date('Y-m-d')); 
-	$form->addSubmit($diffText);
-$form->closeFieldset();
-	
-echo $newsAdmin->formAddOrEdit($form);
+	$forms->addFile('thumb', 'Envoi d\'une miniature');
+	$forms->addType();
+	if($diffText == 'Ajouter') $forms->addHidden('date', date('Y-m-d')); 
+	$forms->addSubmit($diffText);
+}
+$forms->closeFieldset();
+
+echo $newsAdmin->formAddOrEdit($forms->returns());
 ?>

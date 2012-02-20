@@ -281,7 +281,7 @@ class navigation
 			
 			case 'admin':
 				global $cerberus;
-				$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form');
+				$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form', 'class.forms');
 				new AdminSetup();
 				break;
 				

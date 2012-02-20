@@ -76,18 +76,17 @@ $langueAdmin->createList(
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
 
 // Formulaire
-$form = new form(false);
-$form->getValues($langueAdmin->getFieldsTable());
+$forms = new forms();
+$forms->values('cerberus_langue');
 
-$form->openFieldset($diffText. ' une traduction');
-	$form->addText('tag', 'Identitifant de la traduction');
+$forms->openFieldset($diffText. ' une traduction');
+	$forms->addText('tag', 'Identitifant de la traduction');
 	foreach(config::get('langues') as $langue)
-	{
-		$form->addText($langue, 'Traduction ' .strtoupper($langue));
-	}
-	$form->addEdit();
-	$form->addSubmit($diffText);
-$form->closeFieldset();
+		$forms->addText($langue, 'Traduction ' .strtoupper($langue));
 	
-echo $langueAdmin->formAddOrEdit($form);
+	$forms->addType();
+	$forms->addSubmit($diffText);
+$forms->closeFieldset();
+	
+echo $langueAdmin->formAddOrEdit($forms->returns());
 ?>
