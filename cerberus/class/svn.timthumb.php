@@ -20,7 +20,7 @@
  * loaded by timthumb. This will save you having to re-edit these variables
  * everytime you download a new version
 */
-define ('VERSION', '2.8.7');																		// Version of this script 
+define ('VERSION', '2.8.8');																		// Version of this script 
 //Load a config file if it exists. Otherwise, use the values below
 if( file_exists(dirname(__FILE__) . '/timthumb-config.php'))	require_once('timthumb-config.php');
 if(! defined('DEBUG_ON') )					define ('DEBUG_ON', false);								// Enable debug logging to web server error log (STDERR)
@@ -31,6 +31,7 @@ if(! defined('BLOCK_EXTERNAL_LEECHERS') ) 	define ('BLOCK_EXTERNAL_LEECHERS', fa
 //Image fetching and caching
 if(! defined('ALLOW_EXTERNAL') )			define ('ALLOW_EXTERNAL', TRUE);						// Allow image fetching from external websites. Will check against ALLOWED_SITES if ALLOW_ALL_EXTERNAL_SITES is false
 if(! defined('ALLOW_ALL_EXTERNAL_SITES') ) 	define ('ALLOW_ALL_EXTERNAL_SITES', false);				// Less secure. 
+if(! defined('FETCH_LOCAL_URLS') )          define ('FETCH_LOCAL_URLS', false);                     // If true, URL sources will always be fetched over HTTP, even if they have the same hostname as this script
 if(! defined('FILE_CACHE_ENABLED') ) 		define ('FILE_CACHE_ENABLED', TRUE);					// Should we store resized/modified images on disk to speed things up?
 if(! defined('FILE_CACHE_TIME_BETWEEN_CLEANS'))	define ('FILE_CACHE_TIME_BETWEEN_CLEANS', 86400);	// How often the cache is cleaned 
 
@@ -51,6 +52,7 @@ if(! defined('MAX_WIDTH') ) 			define ('MAX_WIDTH', 1500);									// Maximum im
 if(! defined('MAX_HEIGHT') ) 			define ('MAX_HEIGHT', 1500);								// Maximum image height
 if(! defined('NOT_FOUND_IMAGE') )		define ('NOT_FOUND_IMAGE', '');								// Image to serve if any 404 occurs 
 if(! defined('ERROR_IMAGE') )			define ('ERROR_IMAGE', '');									// Image to serve if an error occurs instead of showing error message 
+if(! defined('PNG_IS_TRANSPARENT') ) 	define ('PNG_IS_TRANSPARENT', FALSE);  //42 Define if a png image should have a transparent background color. Use False value if you want to display a custom coloured canvas_colour 
 if(! defined('DEFAULT_Q') )				define ('DEFAULT_Q', 90);									// Default image quality. Allows overrid in timthumb-config.php
 if(! defined('DEFAULT_ZC') )			define ('DEFAULT_ZC', 1);									// Default zoom/crop setting. Allows overrid in timthumb-config.php
 if(! defined('DEFAULT_F') )				define ('DEFAULT_F', '');									// Default image filters. Allows overrid in timthumb-config.php
@@ -225,7 +227,7 @@ class timthumb {
 			return false;
 			exit(0);
 		}
-		if(preg_match('/https?:\/\/(?:www\.)?' . $this->myHost . '(?:$|\/)/i', $this->src)){
+		if(!FETCH_LOCAL_URLS && preg_match('/https?:\/\/(?:www\.)?' . $this->myHost . '(?:$|\/)/i', $this->src)){
 			$this->src = preg_replace('/https?:\/\/(?:www\.)?' . $this->myHost . '/i', '', $this->src);
 		}
 		if(preg_match('/^https?:\/\/[^\/]+/i', $this->src)){
@@ -326,7 +328,6 @@ class timthumb {
 					$this->error("Additionally, the error image that is configured could not be found or there was an error serving it.");
 				}
 			}
-				
 			$this->serveErrors(); 
 			exit(0); 
 		}
@@ -416,12 +417,12 @@ class timthumb {
 		return false;
 	}
 	protected function serveErrors(){
+		header ($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
 		$html = '<ul>';
 		foreach($this->errors as $err){
 			$html .= '<li>' . htmlentities($err) . '</li>';
 		}
 		$html .= '</ul>';
-		header ($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
 		echo '<h1>A TimThumb error has occured</h1>The following error(s) occured:<br />' . $html . '<br />';
 		echo '<br />Query String : ' . htmlentities ($_SERVER['QUERY_STRING']);
 		echo '<br />TimThumb version : ' . VERSION . '</pre>';
@@ -525,6 +526,7 @@ class timthumb {
 		$filters = $this->param('f', DEFAULT_F);
 		$sharpen = (bool) $this->param('s', DEFAULT_S);
 		$canvas_color = $this->param('cc', DEFAULT_CC);
+		$canvas_trans = (bool) $this->param('ct', '1');
 
 		// set default width and height if neither are set already
 		if ($new_width == 0 && $new_height == 0) {
@@ -586,7 +588,14 @@ class timthumb {
 		$canvas_color_B = hexdec (substr ($canvas_color, 4, 2));
 
 		// Create a new transparent color for image
-		$color = imagecolorallocatealpha ($canvas, $canvas_color_R, $canvas_color_G, $canvas_color_B, 127);
+	    // If is a png and PNG_IS_TRANSPARENT is false then remove the alpha transparency 
+		// (and if is set a canvas color show it in the background)
+		if(preg_match('/^image\/png$/i', $mimeType) && !PNG_IS_TRANSPARENT && $canvas_trans){ 
+			$color = imagecolorallocatealpha ($canvas, $canvas_color_R, $canvas_color_G, $canvas_color_B, 127);		
+		}else{
+			$color = imagecolorallocatealpha ($canvas, $canvas_color_R, $canvas_color_G, $canvas_color_B, 0);
+		}
+
 
 		// Completely fill the background of the new image with allocated color.
 		imagefill ($canvas, 0, 0, $color);
@@ -845,7 +854,7 @@ class timthumb {
 			//We don't support serving images outside the current dir if we don't have a doc root for security reasons.
 			$file = preg_replace('/^.*?([^\/\\\\]+)$/', '$1', $src); //strip off any path info and just leave the filename.
 			if(is_file($file)){
-				return realpath($file);
+				return $this->realpath($file);
 			}
 			return $this->error("Could not find your website document root and the file specified doesn't exist in timthumbs directory. We don't support serving files outside timthumb's directory without a document root for security reasons.");
 		} //Do not go past this point without docRoot set
@@ -853,7 +862,7 @@ class timthumb {
 		//Try src under docRoot
 		if(file_exists ($this->docRoot . '/' . $src)) {
 			$this->debug(3, "Found file as " . $this->docRoot . '/' . $src);
-			$real = realpath($this->docRoot . '/' . $src);
+			$real = $this->realpath($this->docRoot . '/' . $src);
 			if(stripos($real, str_replace('/', DIRECTORY_SEPARATOR, $this->docRoot)) === 0){
 				return $real;
 			} else {
@@ -862,11 +871,11 @@ class timthumb {
 			}
 		}
 		//Check absolute paths and then verify the real path is under doc root
-		$absolute = realpath('/' . $src);
+		$absolute = $this->realpath('/' . $src);
 		if($absolute && file_exists($absolute)){ //realpath does file_exists check, so can probably skip the exists check here
 			$this->debug(3, "Found absolute path: $absolute");
 			if(! $this->docRoot){ $this->sanityFail("docRoot not set when checking absolute path."); }
-			if(stripos($absolute, $this->docRoot) == 0){
+			if(stripos($absolute, $this->docRoot) === 0){
 				return $absolute;
 			} else {
 				$this->debug(1, "Security block: The file specified occurs outside the document root.");
@@ -888,8 +897,8 @@ class timthumb {
 			$this->debug(3, "Trying file as: " . $base . $src);
 			if(file_exists($base . $src)){
 				$this->debug(3, "Found file as: " . $base . $src);
-				$real = realpath($base . $src);
-				if(stripos($real, str_replace('/', DIRECTORY_SEPARATOR, realpath($this->docRoot))) === 0){
+				$real = $this->realpath($base . $src);
+				if(stripos($real, str_replace('/', DIRECTORY_SEPARATOR, $this->realpath($this->docRoot))) === 0){
 					return $real;
 				} else {
 					$this->debug(1, "Security block: The file specified occurs outside the document root.");
@@ -898,6 +907,16 @@ class timthumb {
 			}
 		}
 		return false;
+	}
+	protected function realpath($path){
+		//try to remove any relative paths
+		$remove_relatives = '/\w+\/\.\.\//';
+		while(preg_match($remove_relatives,$path)){
+		    $path = preg_replace($remove_relatives, '', $path);
+		}
+		//if any remain use PHP realpath to strip them out, otherwise return $path
+		//if using realpath, any symlinks will also be resolved
+		return preg_match('#^\.\./|/\.\./#', $path) ? realpath($path) : $path;
 	}
 	protected function toDelete($name){
 		$this->debug(3, "Scheduling file $name to delete on destruct.");
