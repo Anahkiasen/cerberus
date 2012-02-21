@@ -386,10 +386,6 @@ class navigation
 	{
 		return self::$sousPage ? self::$page. '-' .self::$sousPage : self::$page;
 	}
-		static function current_page()
-		{
-			return self::$page;
-		}
 		
 	// Récupération de la classe CSS
 	static function css()

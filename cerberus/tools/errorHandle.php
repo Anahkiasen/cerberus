@@ -87,7 +87,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	
 	// Rassemblement des informations sur l'erreur
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
-	$current = navigation::current_page();
+	$current = navigation::$page);
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
 	if(!LOCAL and $current != 'admin')
