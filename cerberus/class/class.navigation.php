@@ -252,7 +252,7 @@ class navigation
 					$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
 					
 					$lien = self::$optionListed
-						? '<li' .$classList. '>' .str::link($value['link'], $value['text'], array($attr['title'])). '</li>'
+						? '<li' .$classList. '>' .str::link($value['link'], $value['text'], array('title' => $attr['title'])). '</li>'
 						: str::link($value['link'], $value['text'], $attr);
 					self::$renderNavigation .= $lien.$glue;
 				}
@@ -270,7 +270,7 @@ class navigation
 							$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
 							
 							$lien = self::$optionListedSub
-								? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text'], array($attr['title'])). '</li>'
+								? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text'], array('title' => $attr['title'])). '</li>'
 								: str::link($subvalue['link'], $subvalue['text'], $attr);
 							self::$renderSubnav[$key] .= $lien.$glue;
 						}
