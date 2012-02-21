@@ -248,11 +248,11 @@ class navigation
 					$subpage = key(a::get($value, 'submenu', array()));
 					$metapage = meta::page($key. '-' .$subpage);
 					$attr['class'] = a::get($value, 'class');
-					$attr['title'] = a::get($metapage, 'titre');				
+					$attr['title'] = a::get($metapage, 'titre');			
 					$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
 					
 					$lien = self::$optionListed
-						? '<li' .$classList. '>' .str::link($value['link'], $value['text']). '</li>'
+						? '<li' .$classList. '>' .str::link($value['link'], $value['text'], array($attr['title'])). '</li>'
 						: str::link($value['link'], $value['text'], $attr);
 					self::$renderNavigation .= $lien.$glue;
 				}
@@ -270,7 +270,7 @@ class navigation
 							$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
 							
 							$lien = self::$optionListedSub
-								? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text']). '</li>'
+								? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text'], array($attr['title'])). '</li>'
 								: str::link($subvalue['link'], $subvalue['text'], $attr);
 							self::$renderSubnav[$key] .= $lien.$glue;
 						}
