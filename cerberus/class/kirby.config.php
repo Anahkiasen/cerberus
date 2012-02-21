@@ -4,7 +4,7 @@ class config
 	private static $config = array();
 	private static $config_file = 'cerberus/conf.php';
 	
-	// Charger un fichier config
+	// Loads an additional config file 
 	static function load($file)
 	{
 		if(file_exists($file)) require_once($file);
@@ -12,21 +12,21 @@ class config
 		return self::get();
 	}
 	
-	// Récupérer une valeur config
+	// Gets a config value by key
 	static function get($key = NULL, $default = NULL)
 	{
 		if(empty($key)) return self::$config;
 		return a::get(self::$config, $key, $default);
 	}
 	
-	// Changer une valeur config
+	// Sets a config value by key
 	static function set($key, $value = NULL)
 	{
 		if(is_array($key)) self::$config = array_merge(self::$config, $key);
 		else self::$config[$key] = $value;
 	}
 	
-	// Ajoute une clé au fichier config
+	//// Ajoute une clé au fichier config
 	static function hardcode($key, $value = NULL)
 	{
 		// Traitement de la valeur
@@ -48,5 +48,35 @@ class config
 		
 		$config = f::write(self::$config_file, $config);
 	}
+}
+
+/*
+########################################
+############### KIRBY CORE #############
+########################################
+*/
+
+// Returns the status from a Kirby response
+function status($response)
+{
+	return a::get($response, 'status');
+}
+
+// Returns the message from a Kirby response
+function msg($response)
+{
+	return a::get($response, 'msg');
+}
+
+// Checks if a Kirby response is an error response or not. 
+function error($response)
+{
+	return (status($response) == 'error');
+}
+
+// Checks if a Kirby response is a success response. 
+function success($response)
+{
+	return !error($response);
 }
 ?>

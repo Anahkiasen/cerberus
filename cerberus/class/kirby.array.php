@@ -1,14 +1,14 @@
 <?php
 class a
 {
-	// Récupérer une entrée (mixed)$key d'un (array)$array - retourne (mixed)$default si inexistant
+	// Gets an element of an array by key
 	static function get($array, $key, $default = NULL)
 	{
 		if(is_array($key)) return (isset($array[$key[0]][$key[1]])) ? $array[$key[0]][$key[1]] : $default;
 		else return (isset($array[$key])) ? $array[$key] : $default;
 	}
 	
-	// Récupère les clés (array)$keys dans l'array (array)$array
+	// Gets all elements for an array of key
 	static function getall($array, $keys)
 	{
 		$result = array();
@@ -16,8 +16,7 @@ class a
 	    return $result;
 	}
 	
-	// Supprimer une (mixed)$search d'un tableau (array)$array
-	// Si (bool)$key, $search est une clé, sinon $search est une valeur
+	// Removes an element from an array
 	static function remove($array, $search, $key = true)
 	{
 		if(is_array($search))
@@ -40,7 +39,7 @@ class a
 		return $array;
 	}
 
-	// Affiche ou retourne un (array)$array selon si (bool)$echo est vrai
+	// Shows an entire array or object in a human readable way
 	static function show($array, $echo = true)
 	{
 		$output = '<pre>';
@@ -57,38 +56,38 @@ class a
 	########################################
 	*/
 
-	// Premier élément d'un array
+	// Returns the first element of an array
 	static function first($array)
 	{
 		return array_shift($array);
 	}
 
-	// Dernier élément d'un array
+	// Returns the last element of an array
 	static function last($array)
 	{
 		return array_pop($array);
 	}
 	
-	// Moyenne d'un array
+	//// Returns the medium value of an array
 	static function medium($array)
 	{
 		return round(array_sum($array), 0) / sizeof($array); 
 	}
 
-	// Cherche dans un array
+	// Search for elements in an array by regular expression
 	static function search($array, $search)
 	{
 		return preg_grep('#'.preg_quote($search).'#i', $array);
 	}
 
-	// Identique à search mais retourne un boolean
+	// Checks if an array contains a certain string
 	static function contains($array, $search)
 	{
 		$search = self::search($array, $search);
 		return !empty($search);
 	}
 
-	// Vérifie que les champs $required se trouvent dans $array
+	// Checks for missing elements in an array
 	static function missing($array, $required = array())
 	{
 		$missing = array();
@@ -98,7 +97,7 @@ class a
 		return $missing;
 	}
 	
-	// Vérifie si l'array donné est associatif
+	//// Checks if an array is associative (experimental)
 	static function check_assoc($array)
 	{
 		return !ctype_digit(implode('', array_keys($array)));
@@ -110,14 +109,14 @@ class a
 	########################################
 	*/
 	
-	// Force un élément à être un array
+	//// Force an element to be an array
 	static function force_array(&$variable)
 	{
 		$return = !is_array($variable) ? array($variable) : $variable;
 		return $return;
 	}
 	
-	// Injècte un élément (mixed)$element dans un (array)$array à la position (int)$position
+	// Injects an element into an array
 	static function inject($array, $position, $element = 'placeholder')
 	{
 		$start = array_slice($array, 0, $position);
@@ -125,7 +124,7 @@ class a
 		return array_merge($start, (array)$element, $end);
 	}
 	
-	// Shuffle un array en conservant les paires
+	// Shuffles an array and keeps the keys
 	static function shuffle($array)
 	{
 		$keys = array_keys($array);
@@ -133,7 +132,7 @@ class a
 		return array_merge(array_flip($keys), $array);
 	}
   	
-	// Remplit un array avec le placeholder X
+	// Fills an array up with additional elements to certain amount. 
 	static function fill($array, $limit, $fill = 'placeholder')
 	{
 		if(count($array) < $limit)
@@ -144,7 +143,7 @@ class a
 		return $array;
 	}
 	
-	// Trie un array selon une requête ORDER BY
+	// Sorts a multi-dimensional array by a certain column
 	static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
 	{
 		$direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
@@ -157,7 +156,7 @@ class a
 		return $array;
 	}
 	
-	// Simplifie un array
+	//// Simplify an array to its simplest form
 	static function simple($array, $unarray = true)
 	{
 		$output = array();
@@ -180,7 +179,7 @@ class a
 		return $output;
 	}
 
-	// Utilise une sous-clé en tant qu'index d'un array
+	//// Rearrange a multidimensionnal array by one of its subkey
 	static function rearrange($array, $subkey = NULL, $remove = FALSE)
 	{
 		$output = array();
@@ -203,7 +202,7 @@ class a
 		return $output;
 	}
 		
-	// Implose un array via différentes glues (glue 1 autour de la valeur, glue 2 entre les entrées)
+	//// Implose an array with different glues (glue1 around the value, glue2 between entries)
 	static function simplode($glue1, $glue2, $array, $escape = FALSE)
 	{
 		if(is_array($array) and !empty($glue2))
@@ -226,7 +225,7 @@ class a
 	########################################
 	*/
 	
-	// Extraire une colonne (string)$key d'un array multidimensionnel (array)$array
+	// Extracts a single column from an array
 	static function extract($array, $key)
 	{
 		$output = array();
@@ -235,7 +234,7 @@ class a
 		return $output;
 	}
 	
-	// Récupère un chemin précis dans un array multidimensionnel
+	//// Get a precise path inside a multidimensionnal array
 	static function get_path($array, $path, $default = NULL)
 	{
 		if(!is_array($path)) $path = explode(' ', $path);
@@ -247,7 +246,7 @@ class a
 		return $array;
 	}
 		
-	// Applatit un array multidimensionnel
+	//// Flatten an array
 	static function array_flatten($array, $return)
 	{
 		foreach($array as $key => $value)
@@ -264,13 +263,13 @@ class a
 	########################################
 	*/
 	
-	// Convertit un (array)$array au format JSON
+	// Converts an array to a JSON string
 	static function json($array)
 	{
 		return @json_encode((array)$array);
 	}
 
-	// Exporte un (array)$array au format XML avec (string)$tag en tag root
+	// Converts an array to a XML string
 	static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '	', $level = 0)
 	{
 		$result = ($level == 0 && $head) ? '<?xml version="1.0" encoding="'.$charset.'"?>'.PHP_EOL : NULL;
@@ -307,9 +306,11 @@ class a
 		return $result.str_repeat($tab, $level).'</'.$tag.'>'.PHP_EOL;
 	}
 	
-	// Exporter au format CSV
+	//// Converts an array to CSV format
 	static function csv($array)
 	{
+		$csv = NULL;
+		
 		foreach($array as $row)
 		{
 			if(!empty($csv)) $csv .= PHP_EOL;

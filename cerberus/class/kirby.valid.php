@@ -1,6 +1,7 @@
 <?php
 class v
 {
+	//// Vérifie si une chaîne est valide à un type de chaîne donné
 	static function check($string, $type)
 	{
 		switch($type)
@@ -102,7 +103,7 @@ class v
 		return self::string($string, $options);
 	}	
 	
-	// Vérifie qu'un numéro de téléphone est valide
+	//// Vérifie qu'un numéro de téléphone est valide
 	static function phone($phone)
 	{
 		$regex = '#^0[1-78]([-. ]?[0-9]{2}){4}$#';

@@ -44,8 +44,6 @@ $strucAdmin->createList(
 // Formulaire META
 if(isset($_GET['meta_structure']))
 {
-	global $navigation;
-
 	$meta = 
 		a::simple(db::join(
 			'cerberus_meta M',

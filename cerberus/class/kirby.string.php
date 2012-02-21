@@ -105,7 +105,7 @@ class str
 		return ($string == $foo) ? $bar : $foo;
 	}
 	
-	// Trim une string
+	// A more brutal way to trim. 
 	static function trim($string)
 	{
 		$string = preg_replace('/\s\s+/u', ' ', $string);
@@ -139,9 +139,32 @@ class str
 		}
 	}
 	
+	// Shortens a string by cutting out chars in the middle
+	static function cutout($str, $length, $rep = '…')
+	{
+		$strlength = str::length($str);
+		if($length >= $strlength) return $str;
 
+		// Calc how much we have to cut off
+		$cut	= (($strlength+str::length($rep)) - $length);
+
+		// Divide it to cut left and right from the center
+		$cutp = round($cut/2);
+
+		// Get the center of the string
+		$strcenter = round($strlength/2);
+
+		// Get the start of the cut
+		$strlcenter = ($strcenter-$cutp);
+
+		// Get the end of the cut
+		$strrcenter = ($strcenter+$cutp);
+
+		// Cut and glue
+		return str::substr($str, 0, $strlcenter) . $rep . str::substr($str, $strrcenter);
+	}
 	
-	// Parse une chaîne
+	// Parses a string by a set of available methods
 	static function parse($string, $mode = 'json')
 	{
 		if(is_array($string)) return $string;
@@ -180,27 +203,15 @@ class str
 
 		return $result;
 	}
-		
-	// Met une chaîne en minuscule
-	static function lower($str)
-	{
-		return mb_strtolower($str, 'UTF-8');
-	}
-
-	// Met une chaîne en majuscule
-	static function upper($str)
-	{
-		return mb_strtoupper($str, 'UTF-8');
-	}
-	
-	// Met un chiffre à deux numéros
+			
+	//// Force a number to be in the 00 format
 	static function twonum($number)
 	{
 		return str_pad($number, 2, "0", STR_PAD_LEFT);
 	}
 
 
-	// Normalise une chaîne
+	// Convert a string to a safe version
 	static function slugify($text, $accents = false)
 	{
 		$foreign = array
@@ -240,17 +251,10 @@ class str
 		return $text;
 	}
 	
-	// Normalise les accents d'une chaîne
+	//// Normalise les accents d'une chaîne
 	static function slugify_accents($text)
 	{
 		return self::slugify($text, true);
-	}
-	
-	// Ajout des balises HTML autour d'une chaîne
-	static function wrap($balise, $texte = NULL)
-	{
-		$var = array('content' => $texte);
-		return zenPHP($balise.'["{content}"]', $var);
 	}
 	
 	/*
@@ -259,7 +263,7 @@ class str
 	########################################
 	*/
 	
-	// Trouve une chaîne dans une autre
+	//// Finds a string in another
 	static function find($needle, $haystack, $absolute = FALSE, $case_sensitive = FALSE)
 	{
 		if(is_array($needle))
@@ -288,14 +292,8 @@ class str
 			else return TRUE;
 		}
 	}
-
-	// Longueur d'une chaîne
-	static function length($str)
-	{
-		return mb_strlen($str, 'UTF-8');
-	}
 	
-	// Affiche la valeur d'un booléen
+	//// Affiche la valeur d'un booléen
 	static function boolprint($boolean)
 	{
 		return ($boolean) ? 'TRUE' : 'FALSE';
@@ -307,36 +305,49 @@ class str
 	########################################
 	*/
 	
-	// Affiche une image
+	//// Displays a picture
 	static function img($src, $alt = NULL, $attr = NULL)
 	{
-		if($attr)
-			$attributes = (is_array($attr))
-				? a::simplode(array('="', '"'), ' ', $attr)
-				: $attr;
-		else $attributes = NULL;
+		if(!$attr) $attributes = 'src="' .$src. '"';
+		else
+		{
+			if(!is_array($attr)) $attributes = $attr;
+			else
+			{
+				$attr['src'] = $src;
+				if(!isset($attr['alt']))
+					$attr['alt'] = pathinfo($src, PATHINFO_FILENAME);
+				
+				$attributes = NULL;
+				foreach($attr as $key => $value)
+					if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
+			}
+		}
 	
-		$alt = ($alt) ? $alt : pathinfo($src, PATHINFO_FILENAME);
-		return '<img src="' .$src. '" alt="' .$alt. '" ' .$attributes. ' />';
+		return '<img ' .trim($attributes). ' />';
 	}
 	
-	// Créer un lien à partir d'une chaîne
+	/// Creates a link tag
 	static function link($link, $text = NULL, $attr = NULL)
 	{
-		$attr['href'] = $link;
-		if(is_array($attr))
+		if(!$attr) $attributes = 'href="' .$link. '"';
+		else
 		{
-			$attributes = NULL;
-			foreach($attr as $key => $value)
-				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
+			if(!is_array($attr)) $attributes = $attr;
+			else
+			{
+				$attr['href'] = $link;
+				$attributes = NULL;
+				foreach($attr as $key => $value)
+					if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
+			}
 		}
-		else $attributes = $attr;
 		
 		$text = ($text) ? $text : $link;
 		return '<a ' .trim($attributes). '>' . str::html($text) . '</a>';
 	}
 	
-	// Utilise la fonction link en combinisaison avec url::rewrite()
+	//// Utilise la fonction link en combinisaison avec url::rewrite()
 	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
 	{
 		$page = meta::page($link);
@@ -347,7 +358,7 @@ class str
 		return self::link($link, $text, $attr);
 	}
 	
-	// Génère une chaîne aléatoire
+	// Generates a random string
 	static function random($length = false)
 	{
 		$length = ($length) ? $length : rand(10,20);
@@ -364,7 +375,7 @@ class str
 		return $string;
 	}
 		
-	// Créer un lien mailto
+	// Creates an encoded email address, including proper html-tags
 	static function email($email, $text = false, $title = false, $class = false)
 	{
 		if(empty($email)) return false;
@@ -375,10 +386,10 @@ class str
 		if(!empty($class)) $class = ' class="'.$class.'"';
 		if(!empty($title)) $title = ' title="'.html($title).'"';
 
-		return '<a'.$title.$class.' href="mailto:'.$email.'">'.self::encode($string, 3).'</a>';
+		return '<a'.$title.$class.' href="mailto:'.$email.'">' .self::encode($string, 3). '</a>';
 	}
 	
-	// Encode des accents en HTML sans toucher aux tags
+	//// Encode des accents en HTML sans toucher aux tags
 	static function accents($string, $reverse = false)
 	{
 		$table = array(
@@ -473,8 +484,54 @@ class str
 		echo self::alert($message, $type);
 	}
 
+	/*
+	########################################
+	################# UTF8 #################
+	########################################
+	*/
 
+	// Converts a string to UTF-8
+	static function utf8($string)
+	{
+		$encoding = mb_detect_encoding($string,'UTF-8, ISO-8859-1, GBK');
+		return ($encoding != 'UTF-8') ? iconv($encoding,'utf-8',$string) : $string;
+	}
 
+	// An UTF-8 safe version of substr()
+	static function substr($str, $start, $end = NULL)
+	{
+		return mb_substr($str, $start, ($end == null) ? mb_strlen($str, 'UTF-8') : $end, 'UTF-8');
+	}
+	
+	// An UTF-8 safe version of ucwords()
+	static function ucwords($str)
+	{
+		return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
+	}
+
+	// An UTF-8 safe version of ucfirst()
+	static function ucfirst($str)
+	{
+		return str::upper(str::substr($str, 0, 1)) . str::substr($str, 1);
+	}
+	
+	// An UTF-8 safe version of strtolower()
+	static function lower($str)
+	{
+		return mb_strtolower($str, 'UTF-8');
+	}
+
+	// An UTF-8 safe version of strotoupper()
+	static function upper($str)
+	{
+		return mb_strtoupper($str, 'UTF-8');
+	}
+
+	// An UTF-8 safe version of strlen()
+	static function length($str)
+	{
+		return mb_strlen($str, 'UTF-8');
+	}
 
 
 	
@@ -494,6 +551,7 @@ class str
 		return strtr($text, self::entities());
 	}
 
+	// Removes all xml entities from a string
 	static function unxml($string)
 	{
 		// flip the conversion table
@@ -530,16 +588,18 @@ class str
 			return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
 	
+	// Encode a string (used for email addresses)
 	static function encode($string)
 	{
-		$encoded = '';
+		$encoded = NULL;
 		$length	= str::length($string);
 		for($i = 0; $i < $length; $i++)
-			$encoded .= (rand(1,2)==1) ? '&#' . ord($string[$i]) . ';' : '&#x' . dechex(ord($string[$i])) . ';';
+			$encoded .= (rand(1, 2) == 1) ? '&#' . ord($string[$i]) . ';' : '&#x' . dechex(ord($string[$i])) . ';';
 
 		return $encoded;
 	}
 
+	// Shortens a string and adds an ellipsis if the string is too long
 	static function short($string, $chars, $rep = '…')
 	{
 		if(str::length($string) <= $chars) return $string;
@@ -549,17 +609,13 @@ class str
 		return $string . $rep;
 	}
 
+	// Shortens an URL
 	static function shorturl($url, $chars = false, $base = false, $rep = '…')
 	{
 		return url::short($url, $chars, $base, $rep);
 	}
-	
-	// An UTF-8 safe version of substr()
-	static function substr($str, $start, $end = NULL)
-	{
-		return mb_substr($str, $start, ($end == null) ? mb_strlen($str, 'UTF-8') : $end, 'UTF-8');
-	}
 
+	// Checks if a str contains another string
 	static function contains($str, $needle)
 	{
 		return strstr($str, $needle);
@@ -575,28 +631,19 @@ class str
 		return a::get($array, $get, $placeholder);
 	}
 
-	static function ucwords($str)
-	{
-		return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
-	}
+	
 
-	static function ucfirst($str)
-	{
-		return str::upper(str::substr($str, 0, 1)) . str::substr($str, 1);
-	}
 
-	static function utf8($string)
-	{
-		$encoding = mb_detect_encoding($string,'UTF-8, ISO-8859-1, GBK');
-		return ($encoding != 'UTF-8') ? iconv($encoding,'utf-8',$string) : $string;
-	}
+	
 
+	// A better way to strip slashes
 	static function stripslashes($string)
 	{
 		if(is_array($string)) return $string;
 		return (get_magic_quotes_gpc()) ? stripslashes(stripslashes($string)) : $string;
 	}
 	
+	// An internal store for a html entities translation table
 	static function entities()
 	{
 			return array(

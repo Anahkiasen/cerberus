@@ -9,7 +9,7 @@ class content
 	########################################
 	*/
 			
-	// Mise en cache de la page
+	//// Mise en cache de la page
 	static function cache_start($params)
 	{
 		global $switcher;
@@ -18,7 +18,7 @@ class content
 		if($params['cachetime'] == 0) $params['cachetime'] = 60 * 60 * 24 * 365;
 		
 		$cache = (SQL and db::is_table('cerberus_structure')) ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : $params['cache'];
-		if(navigation::current_page() == 'admin') $cache = FALSE;
+		if(navigation::$page) == 'admin') $cache = FALSE;
 		
 		if($params['cache'] or ($cache and CACHE))
 		{			
@@ -48,7 +48,7 @@ class content
 				
 				// Si le fichier a été mis à jour on vide le cache
 				if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= $params['cachetime']) $cachename = $found_files[0];
-				else unlink($found_files[0]);
+				else f::remove($found_files[0]);
 			}
 			if(!isset($cachename))
 				$cachename = $basename. '-' .$modifiedPHP. '.html';
@@ -70,7 +70,7 @@ class content
 		else return true;
 	}
 
-	// Affiche et sauvegarde le cache
+	//// Affiche et sauvegarde le cache
 	static function cache_end()
 	{
 		if(self::$cachename)
@@ -82,7 +82,7 @@ class content
 		if(config::get('timer', false)) timer::get();
 	}
 	
-	// Vide le cache
+	//// Vide le cache
 	static function uncache($page = NULL)
 	{
 		if($page == 'meta') $captcha ='{meta-*,lang-*}';
@@ -100,14 +100,13 @@ class content
 	########################################
 	*/
 	
-	// Démarre la récupération du contenu
+	// Starts the output buffer
 	static function start()
 	{
-		//ob_start("ob_gzhandler");
 		ob_start();
 	}
 
-	// Retourne le contenu récupéré
+	// Stops the output buffer and flush the content or return it.
 	static function end($return = FALSE)
 	{
 		if($return)
@@ -120,7 +119,7 @@ class content
 		ob_end_flush();
 	}
 	
-	// Charge le rendu d'un fichier
+	// Loads content from a passed file
 	static function load($file, $return = true)
 	{
 		self::start();
@@ -131,7 +130,7 @@ class content
 		echo $content;
 	}
 		
-	// Détermine le type du fichier
+	// Simplifies setting content type headers
 	static function type()
 	{
 		$args = func_get_args();

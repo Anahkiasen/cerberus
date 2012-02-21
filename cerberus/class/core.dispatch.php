@@ -4,14 +4,17 @@ class dispatch extends Cerberus
 	private $current;
 	private $CSS;
 	private $JS;
+	private $LESS;
 	
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
 	{			
 		// Page en cours
 		$this->current = (!empty($current)) ? $current : navigation::current();
-		$this->global = navigation::current_page();
+		$this->global = navigation::$page);
 		$this->minify = is_dir('min');
+		$this->JS = $this->CSS = $this->LESS =
+			array('min' => array(), 'url' => array(), 'inline' => array());
 	}
 		
 	/* 
@@ -90,7 +93,6 @@ class dispatch extends Cerberus
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
-		$this->JS = $this->CSS = $this->LESS = array('min' => array(), 'url' => array(), 'inline' => array());
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
 				
 		// Mise en array des différents scripts
@@ -231,21 +233,25 @@ class dispatch extends Cerberus
 	{
 		$args = func_get_args();
 		$javascript = $args[0];
-		$javascript = str_replace('<script type="text/javascript">', '', $javascript);
-		$javascript = str_replace('</script>', '', $javascript);
+		$javascript = str_replace('<script type="text/javascript">', NULL, $javascript);
+		$javascript = str_replace('</script>', NULL, $javascript);
 		
-		if(str::find('http', $javascript)) $this->JS['url'][] = $javascript;
+		if(str::find('http', substr($javascript, 0, 4))) $this->JS['url'][] = $javascript;
 		else $this->JS['inline'][] = $javascript;
 	}
 	
 	// Ajout un élément Google Analytics
 	function analytics($analytics = 'XXXXX-X')
 	{
-		$this->addJS("
-		var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];
-	    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-	    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-	    s.parentNode.insertBefore(g,s)}(document,'script'));");
+		$this->addJS(
+		"var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-" .$analytics. "']);
+		_gaq.push(['_trackPageview']);
+		
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();");
 	}
 	
 	// Ajoute de polices via @font-face

@@ -23,7 +23,7 @@ class r
 		return $data;	
 	}
 
-	// Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT
+	/// Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT
 	static function parse()
 	{
 		$keep	= func_get_args();
@@ -105,13 +105,13 @@ class r
 		return (self::method() == 'POST');
 	}
 	
-	// // Checks if the current request is a DELETE request
+	// Checks if the current request is a DELETE request
 	static function is_delete()
 	{
 		return (self::method() == 'DELETE'); 
 	}
 	
-	// // Checks if the current request is a PUT request
+	// Checks if the current request is a PUT request
 	static function is_put()
 	{
 		return (self::method() == 'PUT');

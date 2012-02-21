@@ -44,7 +44,6 @@ class url
 	{
 		return preg_replace('/#.*$/is', NULL, $url);
 	}	
-	
 
 	// Checks for a valid URL
 	static function valid($url)
@@ -52,22 +51,6 @@ class url
 		return v::url($url);
 	}	
 	
-	
-	// Renvoit le domaine du site actuel
-	static function domain()
-	{
-		$base = explode('/', self::short());
-		$url = a::get($base, 0);
-		if(LOCAL) $url .= '/' .a::get($base, 1);
-		return $url.'/';
-	}
-
-	// Vérifie la présence de HTTP:// au début d'une URL
-	static function http($url = NULL)
-	{
-		return 'http://' .str_replace('http://', NULL, ($url));
-	}
-
 	// Redirects the user to a new URL
 	static function go($url = false, $code = false)
 	{
@@ -95,13 +78,28 @@ class url
 		exit();
 	}
 	
-	// Recharger la page en ajoutant des paramètres supplémentaires
+	//// Renvoit le domaine du site actuel
+	static function domain()
+	{
+		$base = explode('/', self::short());
+		$url = a::get($base, 0);
+		if(LOCAL) $url .= '/' .a::get($base, 1);
+		return $url.'/';
+	}
+
+	//// Vérifie la présence de HTTP:// au début d'une URL
+	static function http($url = NULL)
+	{
+		return 'http://' .str_replace('http://', NULL, ($url));
+	}
+	
+	//// Recharger la page en ajoutant des paramètres supplémentaires
 	static function reload($variables = array())
 	{
 		return self::rewrite(NULL, $variables);
 	}
 	
-	// Composer une URL depuis un index
+	//// Composer une URL depuis un index
 	static function rewrite($page = NULL, $params = NULL)
 	{
 		// Importation des variables
@@ -113,24 +111,20 @@ class url
 		$page = $hashless;
 		
 		// Page actuelle
-		if(!$page)
-			$page = navigation::current();
+		if(!$page) $page = navigation::current();
 				
 		if(!is_array($page)) $page = explode('-', $page);
 		$page0 = a::get($page, 0);
 		
 		$submenu = a::get(navigation::get($page0), 'submenu');	
-		if(isset($page[1])) $page1 = $page[1];
-		else $page1 = $submenu ? key($submenu) : NULL;
+		$page1 = $submenu ? key($submenu) : NULL;
+		$page1 = a::get($page, 1, $page1);
 		
-		if(is_array($params))
+		// Si le nom HTML de la page est fourni
+		if(isset($params['html']))
 		{		
-			// Si le nom HTML de la page est fourni
-			if(isset($params['html']))
-			{
-				$pageHTML = $params['html'];
-				$params = a::remove($params, 'html');
-			}
+			$pageHTML = $params['html'];
+			$params = a::remove($params, 'html');
 		}
 	
 		if(!REWRITING or $page0 == 'admin')
@@ -139,8 +133,8 @@ class url
 			$lien = 'index.php?page=' .$page0;
 			if($page1)
 			{
-				if($page0 == 'admin') $lien .= '&admin=' .$page1;
-				else $lien .= '&pageSub=' .$page1;
+				$lien .= $page0 == 'admin' ? '&admin=' : '&pageSub=';
+				$lien .= $page1;
 			}
 			if(!empty($params))
 			{
@@ -168,7 +162,11 @@ class url
 			$meta = meta::page($thisPage);
 			
 			if(!isset($pageHTML))
-				$pageHTML = a::get($meta, 'url', a::get($meta, 'titre', l::get('menu-'.$thisPage, NULL)));
+				$pageHTML =
+					a::get($meta, 'url',
+					a::get($meta, 'titre',
+					l::get('menu-'.$thisPage,
+					NULL)));
 			
 			if($pageHTML)
 				$lien .= str::slugify($pageHTML). '.html';
