@@ -4,8 +4,7 @@
 <tr>
 <td>
 <?php
-global $desired;
-$sitemap = $desired->get();
+$sitemap = navigation::get();
 $lignes = floor(count($sitemap) / 1);
 $count = 0;
 

@@ -33,12 +33,15 @@ if(config::get('local'))
 }
 
 // Constantes
-define('SQL', 			config::get('local.name', FALSE));
-define('REWRITING', 	config::get('rewriting', FALSE));
-define('LOCAL', 		config::get('local', FALSE));
-define('MULTILANGUE', 	config::get('multilangue', FALSE));
-if(LOCAL)	define('CACHE', FALSE);
-else		define('CACHE', config::get('cache', TRUE));
+if(!defined('SQL')) 		 define('SQL', 		   config::get('local.name',  FALSE));
+if(!defined('REWRITING')) 	 define('REWRITING',   config::get('rewriting',   FALSE));
+if(!defined('LOCAL')) 		 define('LOCAL', 	   config::get('local', 	  FALSE));
+if(!defined('MULTILANGUE'))  define('MULTILANGUE', config::get('multilangue', FALSE));
+if(!defined('CACHE'))
+{
+	if(LOCAL)  define('CACHE', TRUE);
+	else	   define('CACHE', config::get('cache', TRUE));
+}
 
 // Affichage et gestion des erreurs
 error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
@@ -145,11 +148,11 @@ dir::make('cerberus/cache');
 */
 // Gestion des langues
 timer::save('logs').timer::start('langue');
-$index = new l();
+new l();
 
 // Gestion de la navigation
 timer::save('langue').timer::start('navigation');
-$desired = new navigation();
+new navigation();
 
 // Affichage des superglobales pour debug
 if(isset($_GET['cerberus_debug']))
@@ -158,7 +161,7 @@ if(isset($_GET['cerberus_debug']))
 	$constantes = a::get($constantes, 'user');
 	
 	$debug  = "[<strong>URL</strong>] " .url::current().'<br/>'.PHP_EOL;
-	$debug .= "[<strong>PAGE</strong>] " .$desired->current().'<br/>'.PHP_EOL;
+	$debug .= "[<strong>PAGE</strong>] " .navigation::current().'<br/>'.PHP_EOL;
 	$debug .= "[<strong>LANGUE</strong>] " .l::current().'<br/>'.PHP_EOL;
 	if($_GET) $debug .= "[<strong>GET</strong>]\n\n<pre>" .print_r($_GET, true). '</pre>'.PHP_EOL;
 	if($_POST) $debug .= "[<strong>POST</strong>]\n\n<pre>" .print_r($_POST,true). '</pre>'.PHP_EOL;
@@ -179,8 +182,15 @@ if(isset($_GET['cerberus_debug']))
 timer::save('navigation').timer::start('cerberus');
 if(CACHE)
 {
-	if(!isset($basename)) $basename = $desired->current();
-	$start = content::cache_start($basename);
+	// Paramètres préexistants
+	if(!isset($setCache)) $setCache = array();
+	$setCache['basename'] = a::get($setCache, 'basename', navigation::current());
+	$setCache['cachetime'] = a::get($setCache, 'cachetime', config::get('cachetime', 604800));
+	$setCache['getvar'] = a::get($setCache, 'getvar', true);
+	$setCache['cache'] = a::get($setCache, 'cache', false);
+	
+	// Démarrage de la mise en cache
+	$start = content::cache_start($setCache);
 	if(!$start)
 	{
 		content::cache_end();

@@ -28,10 +28,15 @@ class update
 				db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 				self::update(355);
 			}
-			
+		}
+		if(self::$revision < 447)
+		{
+			self::codematch('\$desired->([a-z]+)\(', 'navigation::$1(');
+			self::codematch('\$desired->([a-z]+)', 'navigation::$$$1');
+			self::codematch('global \$desired;', '');
 		}
 				
-		self::update(446);
+		self::update(447);
 	}
 	
 	// Met à jour le numéro de révision
@@ -66,7 +71,7 @@ class update
 	{
 		$searchLine = '#' .$search. '.+\n#';
 		$search = '#' .$search. '#';
-		$pages = glob('{index.php,pages/*}', GLOB_BRACE);
+		$pages = glob('{index.php,pages/*,' .PATH_COMMON. 'php}', GLOB_BRACE);
 		
 		echo '<div class="cerberus_debug" style="width:100%"><h2>Recherche de ' .$search. '</h2>';
 		

@@ -1,4 +1,4 @@
-<? global $desired; $arbre = $desired->get(); ?>
+<? $arbre = navigation::get(); ?>
 <p class="alert alert-error">La page demandée n'existe pas</p>
 
 <p>La page que vous avez demandé n'existe pas ou plus. Il est possible que vous ayez fait une erreur en tapant son nom.

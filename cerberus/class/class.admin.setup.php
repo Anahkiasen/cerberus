@@ -22,7 +22,7 @@ class AdminSetup
 	
 	function __construct($customNavigation = NULL)
 	{	
-		global $connected, $desired;
+		global $connected;
 
 		$this->defineMultilangue();
 			
@@ -45,7 +45,7 @@ class AdminSetup
 				if(db::is_table('cerberus_news')) self::$navigation['website']['Actualités'] = 'news';
 			}
 			
-			foreach($desired->getSubmenu(FALSE) as $index => $name) if($index != 'admin') self::$navigation['website'][$name['text']] = $index;
+			foreach(navigation::getSubmenu(FALSE) as $index => $name) if($index != 'admin') self::$navigation['website'][$name['text']] = $index;
 			self::$navigation['systeme'] = array_merge(self::$navigation['systeme'], a::force_array($customNavigation));
 			
 			// Droits de l'utilisateur

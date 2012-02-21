@@ -22,6 +22,7 @@
 	"admin.login":			"Connexion",
 	"admin.password":		"Mot de passe",
 	"admin.user":			"Utilisateur",
+	"admin.config.success":	"La configuration du site a été changée avec succès",
 	
 	"upload.errors.missing-file": 		"Fichier introuvable",
 	"upload.errors.file-exists": 		"Le fichier existe déjà et ne peut être écrasé",

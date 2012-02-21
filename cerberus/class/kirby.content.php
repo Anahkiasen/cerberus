@@ -10,21 +10,29 @@ class content
 	*/
 			
 	// Mise en cache de la page
-	static function cache_start($basename)
+	static function cache_start($params)
 	{
-		global $switcher, $desired;
-		$CORE = $basename;
-		$cache = (SQL and db::is_table('cerberus_structure')) ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : FALSE;
-		if($desired->current(false) == 'admin') $cache = FALSE;
+		global $switcher;
 		
-		if(EXTERNAL or ($cache and CACHE))
+		$basename = $CORE = $params['basename'];
+		if($params['cachetime'] == 0) $params['cachetime'] = 60 * 60 * 24 * 365;
+		
+		$cache = (SQL and db::is_table('cerberus_structure')) ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : $params['cache'];
+		if(navigation::current_page() == 'admin') $cache = FALSE;
+		
+		if($params['cache'] or ($cache and CACHE))
 		{			
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
-			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
-			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
-			foreach($getvar as $key => $value) if(str::find('http://', $value)) $getvar = a::remove($getvar, $key); // Sécurité f::write
-			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
+			if($params['getvar']) $basename = l::current(). '-' .$basename;
+			$basename = 'cerberus/cache/' .$basename;
+			
+			if($params['getvar'])
+			{
+				$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
+				foreach($getvar as $key => $value) if(str::find('http://', $value)) $getvar = a::remove($getvar, $key); // Sécurité f::write
+				if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
+			}
 			
 			// Date de modification du fichier de base
 			$page = f::path('pages/' .$CORE. '.php');
@@ -39,7 +47,7 @@ class content
 				$modified = end($modified);
 				
 				// Si le fichier a été mis à jour on vide le cache
-				if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= 604800) $cachename = $found_files[0];
+				if($modified == $modifiedPHP and (time() - filemtime($found_files[0])) <= $params['cachetime']) $cachename = $found_files[0];
 				else unlink($found_files[0]);
 			}
 			if(!isset($cachename))

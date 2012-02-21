@@ -22,6 +22,7 @@
 	"admin.login":				"Login",
 	"admin.password":			"Password",
 	"admin.user":				"User",
+	"admin.config.success":		"The configuration has been modified successfully",
 		
 	"upload.errors.missing-file": 		"The file has not been found",
 	"upload.errors.file-exists": 		"The file exists and cannot be overwritten",

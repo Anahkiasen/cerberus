@@ -2,12 +2,11 @@
 function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue', $errorFile = __FILE__, $errorLine = __LINE__)
 {	
 	// Récupération du chemin du fichier
-	global $desired;
 	$path = array_reverse(debug_backtrace());
 	$indentation = 0;
 	
 	// Date et position de l'erreur
-	$currentPage = (isset($desired)) ? ' sur la page ['.$desired->current().']' : NULL;
+	$currentPage = ' sur la page ['.navigation::current().']';
 	$DEBUG['date'] = 'Une erreur est survenue &agrave; ' .date('H:i:s \l\e Y-m-d').$currentPage. '<br />';
 	if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
 	
@@ -88,7 +87,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	
 	// Rassemblement des informations sur l'erreur
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
-	$current = isset($desired) ? $desired->current(false) : FALSE;
+	$current = navigation::current_page();
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
 	if(!LOCAL and $current != 'admin')

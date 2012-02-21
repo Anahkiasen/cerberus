@@ -22,7 +22,7 @@ if(isset($_POST['db-host']))
 		config::hardcode($key, $formatted_value);
 	}
 	
-	str::display('La configuration du site a été changée avec succès', 'success');
+	str::display(l::get('admin.config.ok'), 'success');
 }
 
 // Paramètres de Cerberus
@@ -31,6 +31,7 @@ array(
 	'Paramètres du site' => array(
 		'rewriting' => 'Activer la réecriture d\'URL',
 		'cache' => 'Mise en cache',
+		'cachetime' => 'Durée du cache par défaut',
 		'multi_admin' => 'Multiples administrateurs',
 		'logs' => 'Statistiques'),
 	'International' => array(
@@ -59,30 +60,26 @@ if(file_exists($config_file)) include($config_file);
 if(!isset($config)) $config = array();
 	
 // Création du formulaire
-$form = new form(false);
-$select = new select();
+$forms = new forms();
 foreach($CONFIGURATION as $FIELDSET => $FIELDS)
 {
-	$form->openFieldset($FIELDSET);
+	$forms->openFieldset($FIELDSET);
 		foreach($FIELDS as $FIELD => $TRADUCTION)
 		{
 			$value = a::get($config, $FIELD, FALSE);
 			if(in_array($FIELD, $bool))
 			{
 				$value = str::boolprint($value);
-				$select->newSelect($FIELD, $TRADUCTION);
-				$select->appendList(array('TRUE' => 'Oui', 'FALSE' => 'Non'), false);
-				$select->setValue($value);
-				$form->insertText($select);
+				$forms->addSelect($FIELD, $TRADUCTION, array('TRUE' => 'Oui', 'FALSE' => 'Non'), $value);
 			}
 			else
 			{
 				if(is_array($value)) $value = implode(',', $value);
-				$form->addText($FIELD, $TRADUCTION, $value);
+				$forms->addText($FIELD, $TRADUCTION, $value);
 			}
 		}
-	$form->closeFieldset();
+	$forms->closeFieldset();
 }
-$form->addSubmit('Enregistrer');
-echo $form;
+$forms->addSubmit('Enregistrer');
+$forms->render();
 ?>

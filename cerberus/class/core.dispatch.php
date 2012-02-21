@@ -7,12 +7,10 @@ class dispatch extends Cerberus
 	
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
-	{	
-		global $desired;
-		
+	{			
 		// Page en cours
-		$this->current = (!empty($current)) ? $current : $desired->current();
-		$this->global = $desired->current(false);
+		$this->current = (!empty($current)) ? $current : navigation::current();
+		$this->global = navigation::current_page();
 		$this->minify = is_dir('min');
 	}
 		
@@ -75,7 +73,7 @@ class dispatch extends Cerberus
 	// Modules JS/CSS
 	function getAPI($scripts = array())
 	{
-		global $switcher, $desired;
+		global $switcher;
 
 		// API
 		$this->availableAPI = array(

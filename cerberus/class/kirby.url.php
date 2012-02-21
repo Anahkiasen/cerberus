@@ -105,7 +105,7 @@ class url
 	static function rewrite($page = NULL, $params = NULL)
 	{
 		// Importation des variables
-		global $cerberus, $desired;
+		global $cerberus;
 		
 		// Détermination de la page/sous-page
 		$hashless = url::strip_hash($page);
@@ -114,15 +114,12 @@ class url
 		
 		// Page actuelle
 		if(!$page)
-		{
-			global $desired;
-			$page = $desired->current();
-		}
+			$page = navigation::current();
 				
 		if(!is_array($page)) $page = explode('-', $page);
 		$page0 = a::get($page, 0);
 		
-		$submenu = a::get($desired->get($page0), 'submenu');	
+		$submenu = a::get(navigation::get($page0), 'submenu');	
 		if(isset($page[1])) $page1 = $page[1];
 		else $page1 = $submenu ? key($submenu) : NULL;
 		
