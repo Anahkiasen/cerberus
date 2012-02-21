@@ -131,7 +131,7 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xh
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
 
 // Fichiers manquants
-if(config::get('boostrap'))
+if(config::get('boostrap', true))
 {
 	if(!file_exists(PATH_CERBERUS. 'less/variables_custom.less')) f::write(PATH_CERBERUS. 'less/variables_custom.less', '@main: #069;');
 	if(!file_exists(PATH_CERBERUS. 'css/styles.less')) f::write(PATH_CERBERUS. 'css/styles.less');	
@@ -154,16 +154,20 @@ $desired = new navigation();
 // Affichage des superglobales pour debug
 if(isset($_GET['cerberus_debug']))
 {
-	$debug  = "[<strong>URL</strong>] " .url::current().PHP_EOL;
-	$debug .= "[<strong>PAGE</strong>] " .$desired->current().PHP_EOL;
-	$debug .= "[<strong>LANGUE</strong>] " .l::current().PHP_EOL;
-	if($_GET) $debug .= "[<strong>GET</strong>]\n\n<div>" .print_r($_GET, true). '</div>'.PHP_EOL;
-	if($_POST) $debug .= "[<strong>POST</strong>]\n\n<div>" .print_r($_POST,true). '</div>'.PHP_EOL;
-	if($_SESSION) $debug .= "[<strong>SESSION</strong>]\n\n<div>" .print_r($_SESSION, true). '</div>';
+	$constantes = get_defined_constants(true);
+	$constantes = a::get($constantes, 'user');
+	
+	$debug  = "[<strong>URL</strong>] " .url::current().'<br/>'.PHP_EOL;
+	$debug .= "[<strong>PAGE</strong>] " .$desired->current().'<br/>'.PHP_EOL;
+	$debug .= "[<strong>LANGUE</strong>] " .l::current().'<br/>'.PHP_EOL;
+	if($_GET) $debug .= "[<strong>GET</strong>]\n\n<pre>" .print_r($_GET, true). '</pre>'.PHP_EOL;
+	if($_POST) $debug .= "[<strong>POST</strong>]\n\n<pre>" .print_r($_POST,true). '</pre>'.PHP_EOL;
+	if($_SESSION) $debug .= "[<strong>SESSION</strong>]\n\n<pre>" .print_r($_SESSION, true). '</pre>';
+	if($constantes) $debug .= "[<strong>CONSTANTES</strong>]\n\n<pre>" .print_r($constantes, true). '</pre>';
 	
 	echo LOCAL
-		? '<div class="cerberus_debug">' .nl2br($debug). '</div>'
-		: '<p style="display:none">' .$debug. '</p>';
+		? '<div class="cerberus_debug">' .$debug. '</div>'
+		: '<p style="display:none">' .str::unhtml($debug). '</p>';
 }
 
 /*
@@ -175,7 +179,8 @@ if(isset($_GET['cerberus_debug']))
 timer::save('navigation').timer::start('cerberus');
 if(CACHE)
 {
-	$start = content::cache_start($desired->current());
+	if(!isset($basename)) $basename = $desired->current();
+	$start = content::cache_start($basename);
 	if(!$start)
 	{
 		content::cache_end();

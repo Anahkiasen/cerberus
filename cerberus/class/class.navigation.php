@@ -111,7 +111,7 @@ class navigation
 						'link' => $lien);						
 				}
 					
-				unset($this->data[$key]);
+				$this->data = a::remove($this->data, $key);
 			}
 			if(!LOCAL) $this->data['admin']['hidden'] = 1;
 			
@@ -129,6 +129,20 @@ class navigation
 				if($page != 'admin') $this->filepath = $this->extension($page, $sousPage);
 				else if(get('admin')) $sousPage = get('admin');
 			}
+			
+			// Page externe
+			$path = array_reverse(debug_backtrace());
+			$path = f::name($path[0]['file'], true);
+			if($page == $default_page and 
+			   a::get($_GET, 'page') != $default_page and 
+			   $path != config::get('index', 'index'))
+			{
+				$page = $path;
+				$sousPage = NULL;
+				$external = true;
+			}
+			else $external = false;
+			define('EXTERNAL', $external);
 			
 			// Enregistrement des variables
 			$this->page = $page;
@@ -223,17 +237,22 @@ class navigation
 		$glue .= PHP_EOL;
 		if(empty($this->renderNavigation))
 		{
-		$this->createTree();
+			$this->createTree();
 			
 			foreach($this->data as $key => $value)
 			{
 				if(isset($value['hidden']) and $value['hidden'] != 1)
 				{
-					$class = a::get($value, 'class');
-					$classList = $class ? ' class="' .$class. '"' : NULL;
+					// Attributs
+					$subpage = key(a::get($value, 'submenu', array()));
+					$metapage = meta::page($key. '-' .$subpage);
+					$attr['class'] = a::get($value, 'class');
+					$attr['title'] = a::get($metapage, 'titre');				
+					$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
+					
 					$lien = $this->optionListed
 						? '<li' .$classList. '>' .str::link($value['link'], $value['text']). '</li>'
-						: str::link($value['link'], $value['text'], array('class' => $class));
+						: str::link($value['link'], $value['text'], $attr);
 					$this->renderNavigation .= $lien.$glue;
 				}
 				if(isset($value['submenu']))
@@ -243,11 +262,15 @@ class navigation
 					{
 						if($subvalue['hidden'] != 1)
 						{
-							$class = a::get($subvalue, 'class');
-							$classList = $class ? ' class="' .$class. '"' : NULL;
+							// Attributs
+							$metapage = meta::page($key.'-'.$subkey);
+							$attr['class'] = a::get($subvalue, 'class');
+							$attr['title'] = a::get($metapage, 'titre');		
+							$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
+							
 							$lien = $this->optionListedSub
 								? '<li' .$classList. '>' .str::link($subvalue['link'], $subvalue['text']). '</li>'
-								: str::link($subvalue['link'], $subvalue['text'], array('class' => $class));
+								: str::link($subvalue['link'], $subvalue['text'], $attr);
 							$this->renderSubnav[$key] .= $lien.$glue;
 						}
 					}	
@@ -328,7 +351,7 @@ class navigation
 	############## EXPORTS #################
 	######################################## 
 	*/
-	
+		
 	// Vérifie la présence d'une clé dans l'arbre
 	function get($key = NULL)
 	{
@@ -346,7 +369,7 @@ class navigation
 	
 	function getSubmenu($render = TRUE)
 	{
-		$submenu = a::get($this->data[$this->page], 'submenu');
+		$submenu = a::get(a::get($this->data, $this->page), 'submenu');
 		if($render)
 		{
 			$this->render();

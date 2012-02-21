@@ -50,7 +50,7 @@ class Cerberus
 		{
 			// Modules de base
 			$modules = array_merge(array(
-				'timthumb', 'zencode', 'swf'),
+				'timthumb', 'swf'),
 				$modules);
 		}
 				

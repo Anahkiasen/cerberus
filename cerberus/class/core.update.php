@@ -31,7 +31,7 @@ class update
 			
 		}
 				
-		self::update(445);
+		self::update(446);
 	}
 	
 	// Met à jour le numéro de révision

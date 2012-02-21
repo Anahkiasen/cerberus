@@ -323,19 +323,26 @@ class str
 	// Créer un lien à partir d'une chaîne
 	static function link($link, $text = NULL, $attr = NULL)
 	{
-		if($attr)
-			$attributes = (is_array($attr))
-				? a::simplode(array('="', '"'), ' ', $attr)
-				: $attr;
-		else $attributes = NULL;
+		$attr['href'] = $link;
+		if(is_array($attr))
+		{
+			$attributes = NULL;
+			foreach($attr as $key => $value)
+			if(!empty($value)) $attributes .= $key. '="' .$value. '"';
+		}
+		else $attributes = $attr;
 		
 		$text = ($text) ? $text : $link;
-		return '<a href="' . $link . '" ' .$attributes. '>' . str::html($text) . '</a>';
+		return '<a ' .trim($attributes). '>' . str::html($text) . '</a>';
 	}
 	
 	// Utilise la fonction link en combinisaison avec url::rewrite()
 	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
 	{
+		$page = meta::page($link);
+		$page = a::get($page, 'titre');
+		if(!isset($attr['title'])) $attr['title'] = $page;
+		
 		$link = url::rewrite($link, $params);
 		return self::link($link, $text, $attr);
 	}

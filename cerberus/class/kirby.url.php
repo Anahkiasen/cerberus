@@ -132,7 +132,7 @@ class url
 			if(isset($params['html']))
 			{
 				$pageHTML = $params['html'];
-				unset($params['html']);
+				$params = a::remove($params, 'html');
 			}
 		}
 	

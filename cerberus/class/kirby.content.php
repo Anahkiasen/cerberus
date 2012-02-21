@@ -17,13 +17,13 @@ class content
 		$cache = (SQL and db::is_table('cerberus_structure')) ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : FALSE;
 		if($desired->current(false) == 'admin') $cache = FALSE;
 		
-		if($cache and CACHE)
+		if(EXTERNAL or ($cache and CACHE))
 		{			
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
 			$basename = 'cerberus/cache/' .l::current(). '-' .$basename;
 			$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
-			foreach($getvar as $key => $value) if(str::find('http://', $value)) unset($getvar[$key]); // Sécurité f::write
+			foreach($getvar as $key => $value) if(str::find('http://', $value)) $getvar = a::remove($getvar, $key); // Sécurité f::write
 			if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
 			
 			// Date de modification du fichier de base
@@ -44,7 +44,7 @@ class content
 			}
 			if(!isset($cachename))
 				$cachename = $basename. '-' .$modifiedPHP. '.html';
-
+			
 			if(file_exists($cachename))
 			{
 				self::start();

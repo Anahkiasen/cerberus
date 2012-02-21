@@ -46,13 +46,14 @@ class meta
 	}
 
 	// Renvoit un type de données précis
-	static function get($get, $default = NULL)
+	static function get($get = NULL, $default = NULL)
 	{
 		// Affichage du titre
 		global $desired;
 		$pageVoulue = $desired->current(false);
 		$current = $desired->current();
 		
+		if(!$get) return self::$meta;
 		if($get == 'titre')
 		{
 			$title = ($pageVoulue == 'admin' and get('admin'))
@@ -73,10 +74,8 @@ class meta
 	
 	// Renvoit les données meta d'une page
 	static function page($page)
-	{
-		global $meta;
-		
-		if(isset($meta[$page]) and !empty($meta[$page])) return $meta[$page];
+	{		
+		if(isset(self::$meta[$page]) and !empty(self::$meta[$page])) return self::$meta[$page];
 		else return array();
 	}
 }
