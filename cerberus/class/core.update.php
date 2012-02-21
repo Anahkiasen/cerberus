@@ -29,14 +29,15 @@ class update
 				self::update(355);
 			}
 		}
-		if(self::$revision < 448)
+		if(self::$revision < 449)
 		{
 			self::codematch('\$desired->([a-z]+)\(', 'navigation::$1(');
 			self::codematch('\$desired->([a-z]+)', 'navigation::$1');
 			self::codematch('global \$desired;', '');
+			self::codematch('navigation::page', 'navigation::$page');
 		}
 				
-		self::update(448);
+		self::update(449);
 	}
 	
 	// Met à jour le numéro de révision

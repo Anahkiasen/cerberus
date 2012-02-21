@@ -222,7 +222,7 @@ class PHPCrawler
 					
 					// Set flag "content_found" if..content was found
 					if(isset($page_data["http_status_code"]) && $page_data["http_status_code"] == 200) $content_found = true;
-					else $this->CRAWLED = a::splice($this->CRAWLED, url::strip_query($tempurl));
+					else $this->CRAWLED = a::remove($this->CRAWLED, url::strip_query($tempurl), false);
 					
 					// Check for a REDIRECT-header and if wanted, put it into the array of found links
 					$redirect = PHPCrawlerUtils::getRedirectLocation($page_data["header"]);
