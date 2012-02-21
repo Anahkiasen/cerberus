@@ -328,7 +328,7 @@ class str
 		{
 			$attributes = NULL;
 			foreach($attr as $key => $value)
-			if(!empty($value)) $attributes .= $key. '="' .$value. '"';
+				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
 		}
 		else $attributes = $attr;
 		

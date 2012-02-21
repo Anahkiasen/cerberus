@@ -39,7 +39,7 @@ if(!defined('LOCAL')) 		 define('LOCAL', 	   config::get('local', 	  FALSE));
 if(!defined('MULTILANGUE'))  define('MULTILANGUE', config::get('multilangue', FALSE));
 if(!defined('CACHE'))
 {
-	if(LOCAL)  define('CACHE', TRUE);
+	if(LOCAL)  define('CACHE', FALSE);
 	else	   define('CACHE', config::get('cache', TRUE));
 }
 

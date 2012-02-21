@@ -75,7 +75,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			$thisPath[] = $parametres;
 		}
 		
-		$DEBUG['path_' .$id_file] = '<div style="padding-left:' .($id_file * 25 + 10). 'px">' .implode('<br />', $thisPath). '</div>';
+		$DEBUG['path_' .$id_file] = '<div style="padding-left:' .($id_file * 25 + 10). 'px">' .implode('<br />'.PHP_EOL."\t", $thisPath). '</div>';
 		$thisPath = array();
 	}
 	

@@ -21,8 +21,8 @@ class l
 		self::locale();
 	
 		// Chargement du fichier de langue et mise en cache
-		$current = self::current();
-		$filename = 'cerberus/cache/lang-' .$current. '.json';
+		self::change(self::sanitize(self::current()));
+		$filename = 'cerberus/cache/lang-' .self::current(). '.json';
 		
 		// Chargement et création dynamique du fichier langue
 		$tables = SQL ? db::field('cerberus_langue', 'tag') : FALSE;
