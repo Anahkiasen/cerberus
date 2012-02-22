@@ -253,7 +253,7 @@ textarea[class*="span"],
 // GRID SIZING FOR INPUTS
 // ----------------------
 
-#inputGridSystem > .generate(@gridColumns, @gridColumnWidth, @gridGutterWidth);
+#grid > .input (@gridColumnWidth, @gridGutterWidth);
 
 
 
@@ -301,7 +301,7 @@ select:focus:required:invalid {
   border-color: #ee5f5b;
   &:focus {
     border-color: darken(#ee5f5b, 10%);
-    .box-shadow(0 0 6px lighten(#ee5f5b, 20%));    
+    .box-shadow(0 0 6px lighten(#ee5f5b, 20%));
   }
 }
 
@@ -335,17 +335,19 @@ select:focus:required:invalid {
 // HELP TEXT
 // ---------
 
+.help-block,
+.help-inline {
+  color: @gray; // lighten the text some for contrast
+}
+
 .help-block {
   display: block; // account for any element using help-block
-  margin-top: 5px;
-  margin-bottom: 0;
-  color: @grayLight;
+  margin-bottom: @baseLineHeight / 2;
 }
 
 .help-inline {
   display: inline-block;
   .ie7-inline-block();
-  margin-bottom: 9px;
   vertical-align: middle;
   padding-left: 5px;
 }
@@ -361,6 +363,7 @@ select:focus:required:invalid {
   margin-bottom: 5px;
   .clearfix(); // Clear the float to prevent wrapping
   input,
+  select,
   .uneditable-input {
     .border-radius(0 3px 3px 0);
     &:focus {
@@ -400,13 +403,14 @@ select:focus:required:invalid {
 }
 .input-append {
   input,
+  select
   .uneditable-input {
     float: left;
     .border-radius(3px 0 0 3px);
   }
   .uneditable-input {
     border-left-color: #eee;
-    border-right-color: #ccc;    
+    border-right-color: #ccc;
   }
   .add-on {
     margin-right: 0;
@@ -525,6 +529,11 @@ legend + .control-group {
   // Move over all input controls and content
   .controls {
     margin-left: 160px;
+  }
+  // Remove bottom margin on block level help text since that's accounted for on .control-group
+  .help-block {
+    margin-top: @baseLineHeight / 2;
+    margin-bottom: 0;
   }
   // Move over buttons in .form-actions to align with .controls
   .form-actions {
