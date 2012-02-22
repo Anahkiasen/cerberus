@@ -2,16 +2,29 @@
 class dispatch extends Cerberus
 {
 	private $current;
+
+	// Tableaux des ressources	
 	private $CSS;
 	private $JS;
 	private $LESS;
+	
+	// API disponibles
+	private $availableAPI = array(
+		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
+		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.2.min.js',
+		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+		'tablesorter' => 'jquery.tablesorter.min',
+		'nivoslider' => 'jquery.nivo.slider.pack',
+		'colorbox' => 'jquery.colorbox-min',
+		'easing' => 'jquery.easing');
 	
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
 	{			
 		// Page en cours
 		$this->current = (!empty($current)) ? $current : navigation::current();
-		$this->global = navigation::$page);
+		$this->global = navigation::$page;
 		$this->minify = is_dir('min');
 		$this->JS = $this->CSS = $this->LESS =
 			array('min' => array(), 'url' => array(), 'inline' => array());
@@ -77,25 +90,16 @@ class dispatch extends Cerberus
 	function getAPI($scripts = array())
 	{
 		global $switcher;
-
-		// API
-		$this->availableAPI = array(
-		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
-		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.2.min.js',
-		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
-		'tablesorter' => 'jquery.tablesorter.min',
-		'nivoslider' => 'jquery.nivo.slider.pack',
-		'colorbox' => 'jquery.colorbox-min',
-		'easing' => 'jquery.easing');
 		
-		// bootstrap
+		// Bootstrap
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
+		// Swotcher
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
 				
 		// Mise en array des différents scripts
+		if(!is_array($scripts)) $scripts = array('*' => func_get_args());
 		$scripts['*'] = a::force_array($scripts['*']);
 		$scripts[$this->current] = a::force_array($scripts[$this->current]);
 		$scripts[$this->global] = a::force_array($scripts[$this->global]);
@@ -174,7 +178,7 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if(isset($this->LESS['min']) and (LOCAL or empty($this->CSS['min'])))
+		if(isset($this->LESS['min']) and !empty($this->LESS['min']) and (LOCAL or empty($this->CSS['min'])))
 		{
 			$minify = array_unique(array_filter($this->LESS['min'])); 
 			foreach($minify as $thisfile)

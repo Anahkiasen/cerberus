@@ -111,7 +111,7 @@
     .sans-serif() { font-family: @sansserif }
     .monospace() { font-family: Menlo, Monaco, "Courier New", monospace }
   }
-  .custom(@font, @size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+  .custom(@font, @size: @baseFontSize, @weight: normal, @lineHeight: normal) {
     #font > #family > .custom-sans-serif(@font);
     #font > .shorthand(@size, @weight, @lineHeight);
   }

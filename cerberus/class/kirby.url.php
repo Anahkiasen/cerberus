@@ -100,14 +100,24 @@ class url
 	}
 	
 	//// Composer une URL depuis un index
-	static function rewrite($page = NULL, $params = NULL)
-	{
-		// Importation des variables
-		global $cerberus;
+	static function rewrite($page = NULL, $params = array())
+	{		
+		// Création du tableau des paramètres
+		if(!is_array($params))
+		{
+			$explode_params = explode('&', $params);
+			$params = array();
+			foreach($explode_params as $p)
+			{
+				$p = explode('=', $p);
+				if(sizeof($p) != 1) $params[$p[0]] = $p[1];
+				else $params[$p[0]] = TRUE;
+			}
+		}
 		
 		// Détermination de la page/sous-page
 		$hashless = url::strip_hash($page);
-		$hash = str_replace($hashless, '', $page);
+		$hash = str_replace($hashless, NULL, $page);
 		$page = $hashless;
 		
 		// Page actuelle
@@ -127,26 +137,28 @@ class url
 			$params = a::remove($params, 'html');
 		}
 	
+		// Ecriture du lien
+		$lien = NULL;
+		if($page0) $params['page'] = $page0;
+		if($page1)
+		{
+			if($page0 == 'admin') $params['admin'] = $page1;
+			else $params['pageSub'] = $page1;
+		}
+		
 		if(!REWRITING or $page0 == 'admin')
 		{
-			// Mode local
-			$lien = 'index.php?page=' .$page0;
-			if($page1)
-			{
-				$lien .= $page0 == 'admin' ? '&admin=' : '&pageSub=';
-				$lien .= $page1;
-			}
 			if(!empty($params))
-			{
-				// Si les paramètres sont un array on les implode, sinon on les ajoute en brut
-				if(is_array($params)) $lien .= '&' .a::simplode('=', '&', $params);
-				else $lien .= '&' .$params;
-			}
+				foreach($params as $key => $value)
+				{
+					$lien .= !$lien ? '?' : '&';
+					$lien .= is_bool($value) ? $key : $key. '=' .$value; 
+				}
+				$lien = 'index.php'.$lien;	
 		}
 		else
 		{
-			// Mode URL Rewriting
-			$lien = $page0. '/';
+			if($page0) $lien .= $page0. '/';
 			if($page1) $lien .= $page1. '/';
 		
 			if(!empty($params))

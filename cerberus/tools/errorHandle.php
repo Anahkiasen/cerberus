@@ -42,7 +42,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		break;
 	}
 		
-	f::append('cerberus/cache/error.log', f::filename($errorFile). '::' .$errorLine. ' - ' .$DEBUG['error']. ': ' .$error.PHP_EOL);
+	//f::append('cerberus/cache/error.log', f::filename($errorFile). '::' .$errorLine. ' - ' .$DEBUG['error']. ': ' .$error.PHP_EOL);
 	$DEBUG['error'] = '<h3>[' .$DEBUG['error']. '] ' .$error. '</h3>
 	<h4>' .f::filename($errorFile). ':' .$errorLine. '</h4>';
 	
@@ -87,7 +87,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	
 	// Rassemblement des informations sur l'erreur
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
-	$current = navigation::$page);
+	$current = navigation::$page;
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
 	if(!LOCAL and $current != 'admin')

@@ -49,7 +49,7 @@ class meta
 	static function get($get = NULL, $default = NULL)
 	{
 		// Affichage du titre
-		$pageVoulue = navigation::$page);
+		$pageVoulue = navigation::$page;
 		$current = navigation::current();
 		
 		if(!$get) return self::$meta;

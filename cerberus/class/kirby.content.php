@@ -18,7 +18,7 @@ class content
 		if($params['cachetime'] == 0) $params['cachetime'] = 60 * 60 * 24 * 365;
 		
 		$cache = (SQL and db::is_table('cerberus_structure')) ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : $params['cache'];
-		if(navigation::$page) == 'admin') $cache = FALSE;
+		if(navigation::$page == 'admin') $cache = FALSE;
 		
 		if($params['cache'] or ($cache and CACHE))
 		{			
