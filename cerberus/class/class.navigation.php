@@ -292,7 +292,7 @@ class navigation
 	static function content()
 	{
 		// Chargement de l'admin ou d'une page
-		echo '<div class="' .self::current(). '-content ' .self::current_page(). '-content">';
+		echo '<div class="' .self::current(). '-content ' .self::$page. '-content">';
 		switch(self::$page)
 		{
 			case '404';

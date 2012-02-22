@@ -134,7 +134,7 @@ class str
 			default:
 				$string = str_replace("\n", ' ', $string);
 				if(str::length($string) <= $count) return $string;
-				return ($chars == 0) ? $string : substr($string, 0, strrpos(substr($string, 0, $count), ' ')).$trailing;
+				return ($count == 0) ? $string : substr($string, 0, strrpos(substr($string, 0, $count), ' ')).$trailing;
 				break;
 		}
 	}
