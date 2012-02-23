@@ -224,24 +224,29 @@ class dispatch extends Cerberus
 	*/
 	
 	// Ajoute une feuille de style
-	function addCSS($link)
+	function addCSS($link, $min = true)
 	{
 		$array = str::find('.less', $link) ? 'LESS' : 'CSS';
 		
-		if(str::find('http', $link)) $this->{$array}['url'][] = $link;
+		if(str::find('http', $link) or !$min) $this->{$array}['url'][] = $link;
 		else $this->{$array}['min'][] = $link;
 	}
 	
 	// Ajout de scripts à la volée
-	function addJS()
+	function addJS($javascript)
 	{
-		$args = func_get_args();
-		$javascript = $args[0];
-		$javascript = str_replace('<script type="text/javascript">', NULL, $javascript);
-		$javascript = str_replace('</script>', NULL, $javascript);
+		$javascript = func_get_args();	
 		
-		if(str::find('http', substr($javascript, 0, 4))) $this->JS['url'][] = $javascript;
-		else $this->JS['inline'][] = $javascript;
+		if(sizeof($javascript) == 1)
+		{
+			$javascript = a::get($javascript, 0);
+			$javascript = str_replace('<script type="text/javascript">', NULL, $javascript);
+			$javascript = str_replace('</script>', NULL, $javascript);
+			
+			if(str::find('http', substr($javascript, 0, 4))) $this->JS['url'][] = $javascript;
+			else $this->JS['inline'][] = $javascript;
+		}
+		else foreach($javascript as $j) $this->addJS($j);
 	}
 	
 	// Ajout un élément Google Analytics

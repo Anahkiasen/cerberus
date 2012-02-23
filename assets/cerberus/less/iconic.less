@@ -7,11 +7,11 @@
 // Load font
 @font-face
 {
-	.font-face('IconicFill', '../cerberus/fonts/iconic_fill');
+	.font-face('IconicFill', '../fonts/iconic_fill');
 }
 @font-face
 {
-	.font-face('IconicStroke', '../cerberus/fonts/iconic_stroke');
+	.font-face('IconicStroke', '../fonts/iconic_stroke');
 }
 	
 // Icons
@@ -22,7 +22,7 @@
 	{
 		&:before
 		{
-			#font #family .custom-sans-serif('IconicFill');
+			font-family: 'IconicFill', Arial, sans-serif;
 			vertical-align: middle;
 			display: inline-block;
 			content: "";
@@ -31,7 +31,7 @@
 		}
 	}
 	i { font-style: normal }
-	.iconic-stroke:before { #font #family .custom-sans-serif('IconicStroke') }
+	.iconic-stroke:before { font-family: 'IconicStroke', Arial, sans-serif; }
   
 	.iconic-aperture:before                 { content: "\e026" }
 	.iconic-aperture-alt:before             { content: "\e00c" }
