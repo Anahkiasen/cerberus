@@ -1,38 +1,33 @@
-@import "variables";
-@import "mixins";
-
-// ICONIC ICONS
-// ------------
-
-// Load font
 @font-face
 {
-	.font-face('IconicFill', '../cerberus/fonts/iconic_fill');
+	font-family: 'IconicFill';
+	font-style: normal;
+	font-weight: normal;
+	src: url('../cerberus/fonts/iconic_fill.eot');
+	src: local('IconicFill'), url('../cerberus/fonts/iconic_fill.eot?#iefix') format('embedded-opentype'), url('../cerberus/fonts/iconic_fill.woff') format('woff'), url('../cerberus/fonts/iconic_fill.ttf') format('truetype'), url('../cerberus/fonts/iconic_fill.svg#IconicFill') format('svg'), url("../cerberus/fonts/iconic_fill.otf") format('opentype');
 }
 @font-face
 {
-	.font-face('IconicStroke', '../cerberus/fonts/iconic_stroke');
+	font-family: 'IconicStroke';
+	font-style: normal;
+	font-weight: normal;
+	src: url('../cerberus/fonts/iconic_stroke.eot');
+	src: local('IconicStroke'), url('../cerberus/fonts/iconic_stroke.eot?#iefix') format('embedded-opentype'), url('../cerberus/fonts/iconic_stroke.woff') format('woff'), url('../cerberus/fonts/iconic_stroke.ttf') format('truetype'), url('../cerberus/fonts/iconic_stroke.svg#IconicStroke') format('svg'), url("../cerberus/fonts/iconic_stroke.otf") format('opentype');
 }
-	
-// Icons
 @media screen, print
 {
-	[class^="iconic-"],
-	[class*=" iconic-"]
+	[class^="iconic-"]:before, [class*=" iconic-"]:before
 	{
-		&:before
-		{
-			#font #family .custom-sans-serif('IconicFill');
-			vertical-align: middle;
-			display: inline-block;
-			content: "";
-			width: 1em;
-			line-height: 100%;
-		}
+		font-family: 'IconicFill', "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		vertical-align: middle;
+		display: inline-block;
+		content: "";
+		width: 1em;
+		line-height: 100%;
 	}
-	i { font-style: normal }
-	.iconic-stroke:before { #font #family .custom-sans-serif('IconicStroke') }
-  
+	i { font-style: normal }
+	.iconic-stroke:before { font-family: 'IconicStroke', "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif }
+
 	.iconic-aperture:before                 { content: "\e026" }
 	.iconic-aperture-alt:before             { content: "\e00c" }
 	.iconic-arrow-down:before               { content: "\2193" }
