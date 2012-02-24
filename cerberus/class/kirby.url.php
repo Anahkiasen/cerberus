@@ -149,10 +149,10 @@ class url
 		if(!REWRITING or $page0 == 'admin')
 		{
 			if(!empty($params))
-				foreach($params as $key => $value)
+				foreach($params as $key => $value) if(!empty($key))
 				{
 					$lien .= !$lien ? '?' : '&';
-					$lien .= is_bool($value) ? $key : $key. '=' .$value; 
+					$lien .= is_bool($value) ? $key : $key. '=' .$value; 	
 				}
 				$lien = 'index.php'.$lien;	
 		}

@@ -136,8 +136,8 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_
 // Fichiers manquants
 if(config::get('boostrap', true))
 {
-	if(!file_exists(PATH_CERBERUS. 'less/variables_custom.less')) f::write(PATH_CERBERUS. 'less/variables_custom.less', '@main: #069;');
-	if(!file_exists(PATH_CERBERUS. 'css/styles.less')) f::write(PATH_CERBERUS. 'css/styles.less');	
+	if(!file_exists(PATH_CERBERUS. 'scss/_variables_custom.scss')) f::write(PATH_CERBERUS. 'scss/_variables_custom.scss', '$main: #069;');
+	if(!file_exists(PATH_CERBERUS. 'css/styles.scss')) f::write(PATH_CERBERUS. 'css/styles.scss');	
 }
 dir::make('cerberus/cache');
 
