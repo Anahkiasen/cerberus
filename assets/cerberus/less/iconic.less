@@ -5,14 +5,8 @@
 // ------------
 
 // Load font
-@font-face
-{
-	.font-face('IconicFill', '../fonts/iconic_fill');
-}
-@font-face
-{
-	.font-face('IconicStroke', '../fonts/iconic_stroke');
-}
+@font-face { .font-face('IconicFill', '../fonts/iconic_fill') }
+@font-face { .font-face('IconicStroke', '../fonts/iconic_stroke') }
 	
 // Icons
 @media screen, print
@@ -29,7 +23,11 @@
 			width: 1em;
 			line-height: 100%;
 		}
+		.btn & {
+			margin-right: 5px;
+		}
 	}
+	
 	i { font-style: normal }
 	.iconic-stroke:before { font-family: 'IconicStroke', Arial, sans-serif; }
   

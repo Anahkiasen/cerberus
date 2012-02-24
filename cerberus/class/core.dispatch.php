@@ -178,7 +178,7 @@ class dispatch extends Cerberus
 	function getCSS()
 	{
 		// LESS
-		if(isset($this->LESS['min']) and !empty($this->LESS['min']) and (LOCAL or empty($this->CSS['min'])))
+		if(config::get('lesscss', true) and isset($this->LESS['min']) and !empty($this->LESS['min']) and (LOCAL or empty($this->CSS['min'])))
 		{
 			$minify = array_unique(array_filter($this->LESS['min'])); 
 			foreach($minify as $thisfile)
@@ -243,7 +243,11 @@ class dispatch extends Cerberus
 			$javascript = str_replace('<script type="text/javascript">', NULL, $javascript);
 			$javascript = str_replace('</script>', NULL, $javascript);
 			
-			if(str::find('http', substr($javascript, 0, 4))) $this->JS['url'][] = $javascript;
+			if(f::extension($javascript) == 'js')
+			{
+				if(str::find('http', substr($javascript, 0, 4))) $this->JS['url'][] = $javascript;
+				else $this->JS['min'][] = $javascript;
+			}
 			else $this->JS['inline'][] = $javascript;
 		}
 		else foreach($javascript as $j) $this->addJS($j);
