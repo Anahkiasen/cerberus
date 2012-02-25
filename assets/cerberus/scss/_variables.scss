@@ -7,6 +7,12 @@
 // GLOBAL VALUES
 // --------------------------------------------------
 
+// Cerberus
+$cerberus: #069;
+$main: $cerberus;
+$serif: "Droid Serif", "Georgia", "Times New Roman", Times, serif;
+$sansserif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 // Links
 $linkColor:             #08c !default;
 $linkColorHover:        darken($linkColor, 15) !default;
@@ -32,7 +38,7 @@ $purple:                #7a43b6 !default;
 
 // Typography
 $baseFontSize:          13px !default;
-$baseFontFamily:        "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$baseFontFamily:        $sansserif;
 $baseLineHeight:        18px !default;
 $textColor:             $grayDark !default;
 

@@ -134,6 +134,7 @@
 .btn-info,
 .btn-success {
   .caret {
+    border-bottom-color: $white;
     border-top-color: $white;
     @include opacity(75);
   }
