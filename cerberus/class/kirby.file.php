@@ -13,8 +13,8 @@ class f
 		$folder = dirname($file);
 		if(!file_exists($folder))
 		{
-			$dossier = dir::make($dossier);
-			if($dossier) self::write($file, $content);
+			$folder = dir::make($folder);
+			if($folder) self::write($file, $content);
 			else str::display(l::get('file.folder.error'), 'error');
 		}
 		else
