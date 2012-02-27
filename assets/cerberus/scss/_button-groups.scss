@@ -132,10 +132,11 @@
 .btn-primary,
 .btn-danger,
 .btn-info,
-.btn-success {
-  .caret {
-    border-bottom-color: $white;
-    border-top-color: $white;
+.btn-success,
+.btn-inverse {
+.caret {
+  border-top-color: $white;
+  border-bottom-color: $white; {
     @include opacity(75);
   }
 }
