@@ -25,7 +25,7 @@
   cursor: pointer;
 
   // Give IE7 some love
-  @include ie7-restore-left-whitespace;
+  @include ie7-restore-left-whitespace();
 }
 
 // Hover state
@@ -132,7 +132,7 @@
 // Set the backgrounds
 // -------------------------
 .btn-primary {
-  @include buttonBackground($primaryButtonBackground, adjust-hue($primaryButtonBackground, 20);
+  @include buttonBackground($primaryButtonBackground, adjust-hue($primaryButtonBackground, 20));
 }
 // Warning appears are orange
 .btn-warning {

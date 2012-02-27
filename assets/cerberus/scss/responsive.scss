@@ -5,19 +5,20 @@
  * Licensed under the Apache License v2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Designed and built with all the love in the world @twitter by @mdo and @fat.
+ * Designed and built with all the love in the world $twitter by $mdo and $fat.
  */
 
 // Responsive.less
 // For phone and tablet devices
 // -------------------------------------------------------------
 
-// Compass
-@import "compass/css3/";
 
 // REPEAT VARIABLES & MIXINS
 // -------------------------
 // Required since we compile the responsive stuff separately
+
+// Compass
+@import "compass/css3/";
 
 @import "variables"; // Modify this for custom colors, font-sizes, etc
 @import "mixins";
@@ -64,6 +65,7 @@
   .hidden-desktop    { display: block; }
   .visible-desktop   { display: none; }
 }
+
 
 // UP TO LANDSCAPE PHONE
 // ---------------------
@@ -189,13 +191,13 @@
 @media (min-width: 768px) and (max-width: 979px) {
 
   // Fixed grid
-  @include gridSystem-generate(12, 42px, 20px);
+  @include gridSystem-generate(42px, 20px);
 
   // Fluid grid
-  @include fluidGridSystem-generate(12, 5.801104972%, 2.762430939%);
+  @include fluidGridSystem-generate(5.801104972%, 2.762430939%);
 
   // Input grid
-  @include inputGridSystem-generate(12, 42px, 20px);
+  @include inputGridSystem-generate(42px, 20px);
 
 }
 
@@ -329,6 +331,7 @@
 @media (min-width: 980px) {
   .nav-collapse.collapse {
     height: auto !important;
+    overflow: visible !important;
   }
 }
 
@@ -340,13 +343,13 @@
 @media (min-width: 1200px) {
 
   // Fixed grid
-  @include gridSystem-generate(12, 70px, 30px);
+  @include gridSystem-generate(70px, 30px);
 
   // Fluid grid
-  @include fluidGridSystem-generate(12, 5.982905983%, 2.564102564%);
+  @include fluidGridSystem-generate(5.982905983%, 2.564102564%);
 
   // Input grid
-  @include inputGridSystem-generate(12, 70px, 30px);
+  @include inputGridSystem-generate(70px, 30px);
 
   // Thumbnails
   .thumbnails {

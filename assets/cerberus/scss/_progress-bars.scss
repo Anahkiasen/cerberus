@@ -87,7 +87,7 @@
 }
 
 // Info (teal)
-.progress.info .bar {
+.progress-info .bar {
   @include gradient-vertical(#5bc0de, #339bb9);
 }
 .progress-info.progress-striped .bar {

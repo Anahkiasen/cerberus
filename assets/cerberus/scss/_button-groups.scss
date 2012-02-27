@@ -85,6 +85,7 @@
 }
 
 
+
 // Split button dropdowns
 // ----------------------
 
@@ -134,9 +135,9 @@
 .btn-info,
 .btn-success,
 .btn-inverse {
-.caret {
-  border-top-color: $white;
-  border-bottom-color: $white; {
+  .caret {
+    border-top-color: $white;
+    border-bottom-color: $white;
     @include opacity(75);
   }
 }
