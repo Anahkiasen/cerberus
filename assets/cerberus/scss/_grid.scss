@@ -1,5 +1,0 @@
-// Fixed (940px)
-@include gridSystem-generate($gridColumnWidth, $gridGutterWidth);
-
-// Fluid (940px)
-@include fluidGridSystem-generate($fluidGridColumnWidth, $fluidGridGutterWidth);

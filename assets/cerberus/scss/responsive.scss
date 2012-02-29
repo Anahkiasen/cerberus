@@ -20,8 +20,8 @@
 // Compass
 @import "compass/css3/";
 
-@import "variables"; // Modify this for custom colors, font-sizes, etc
-@import "mixins";
+@import "bootstrap/variables"; // Modify this for custom colors, font-sizes, etc
+@import "bootstrap/mixins";
 
 
 // RESPONSIVE CLASSES
@@ -191,13 +191,13 @@
 @media (min-width: 768px) and (max-width: 979px) {
 
   // Fixed grid
-  @include gridSystem-generate(42px, 20px);
+  @include gridCore-generate(42px, 20px);
 
   // Fluid grid
-  @include fluidGridSystem-generate(5.801104972%, 2.762430939%);
+  @include gridFluid-generate(5.801104972%, 2.762430939%);
 
   // Input grid
-  @include inputGridSystem-generate(42px, 20px);
+  @include gridInput-generate(42px, 20px);
 
 }
 
@@ -343,13 +343,13 @@
 @media (min-width: 1200px) {
 
   // Fixed grid
-  @include gridSystem-generate(70px, 30px);
+  @include gridCore-generate(70px, 30px);
 
   // Fluid grid
-  @include fluidGridSystem-generate(5.982905983%, 2.564102564%);
+  @include gridFluid-generate(5.982905983%, 2.564102564%);
 
   // Input grid
-  @include inputGridSystem-generate(70px, 30px);
+  @include gridInput-generate(70px, 30px);
 
   // Thumbnails
   .thumbnails {

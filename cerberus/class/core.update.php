@@ -36,8 +36,15 @@ class update
 			self::codematch('global \$desired;', '');
 			self::codematch('navigation::page', 'navigation::$page');
 		}
+		if(self::$revision < 450)
+		{
+			self::codematch('\$dispatch->([a-zA-Z]+)\(', 'dispatch::$1(');
+			self::codematch('dispatch::getPHP', 'dispatch::setPHP');
+			self::codematch('dispatch::getAPI', 'dispatch::assets');
+			self::codematch('global \$dispatch;', '');
+		}
 				
-		self::update(449);
+		self::update(450);
 	}
 	
 	// Met à jour le numéro de révision

@@ -1,1 +1,95 @@
-@import "compass/css3/;
+@import "compass/";
+
+// Cerberus variables
+$cerberus: #069;
+$main: $cerberus;
+$serif: "Droid Serif", "Georgia", "Times New Roman", Times, serif;
+$sansserif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$baseFontFamily: $sansserif !default;
+@import "_custom";
+
+///////////////////////////////////////////////
+////////////////// FONCTIONS ////////////////// 
+///////////////////////////////////////////////
+
+@function fade($color, $opacity)
+{
+	@return(rgba($color, ($opacity / 100)));
+}
+
+@function fadein($color, $opacity)
+{
+	@return(fade-in($color, ($opacity / 100)));
+}
+
+@function fadeout($color, $opacity)
+{
+	@return(fade-out($color, ($opacity / 100)));
+}
+
+///////////////////////////////////////////////
+////////////////// MIXINS ///////////////////// 
+///////////////////////////////////////////////
+
+@mixin fonts($fontFamily, $fileName, $style: normal, $weight: normal)
+{
+	@include font-face(
+		$fontFamily,
+		font-files(
+			'${fileName}.woff', woff,
+			'${fileName}.ttf', truetype,
+			'${fileName}.otf', opentype),
+		'${fileName}.eot')	
+}
+
+@mixin selection($background, $color: white)
+{
+	&::selection
+	{
+		background: $background;
+		color: $color;
+	}
+	&::-moz-selection
+	{
+		background: $background;
+		color: $color;
+	}
+}
+
+@mixin text-drop ($color, $size: $default_size)
+{
+	color: $color;
+	$default_size: 2px;
+	$default_opacity: 75;
+	
+	@if(lightness($color) >= 50) {
+		@include text-shadow($size $size 0 fadeout(black, $default_opacity)) }
+	@else {
+		@include text-shadow($size $size 0 fadeout(white, $default_opacity)) }
+}
+
+@mixin bouton($color: $main)
+{
+	$bordure: 5px;
+	
+	cursor: pointer;
+	border: 1px solid darken($color, 10);
+	padding: 5px;
+	
+	@include single-text-shadow(darken($color, 25), 0, 2px, 0);
+	@include gradient-auto-vertical($color, 5%);
+	@include box-shadow(0 $bordure 0 0 darken($color, 20));
+	@include transition(all, 0.1s);
+	
+	&:hover
+	{
+		@include gradient-auto-vertical(lighten($color, 5%), 5%);
+		@include box-shadow(0, $bordure, 0, 0, lighten(darken($color, 20%), 10));
+	}
+	&:active
+	{
+		@include gradient-auto-vertical(darken($color, 10%), 5%);
+		@include box-shadow(none);
+		margin-bottom: 5px;
+	}
+}

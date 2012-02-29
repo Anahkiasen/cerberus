@@ -1,15 +1,18 @@
 <?php
 class dispatch extends Cerberus
 {
-	private $current;
+	static private $current;
+	static private $global;
+	static private $minify;
+	static private $scripts;
 
 	// Tableaux des ressources	
-	private $CSS;
-	private $JS;
-	private $LESS;
+	static private $CSS;
+	static private $JS;
+	static private $LESS;
 	
 	// API disponibles
-	private $availableAPI = array(
+	static private $availableAPI = array(
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.2.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
@@ -23,10 +26,10 @@ class dispatch extends Cerberus
 	function __construct($current = NULL)
 	{			
 		// Page en cours
-		$this->current = (!empty($current)) ? $current : navigation::current();
-		$this->global = navigation::$page;
-		$this->minify = is_dir('min');
-		$this->JS = $this->CSS = $this->LESS =
+		self::$current = (!empty($current)) ? $current : navigation::current();
+		self::$global = navigation::$page;
+		self::$minify = is_dir('min');
+		self::$JS = self::$CSS = self::$LESS =
 			array('min' => array(), 'url' => array(), 'inline' => array());
 	}
 		
@@ -37,7 +40,7 @@ class dispatch extends Cerberus
 	*/
 	
 	// Tri et répartition des modules demandés
-	function dispatchArray($modules)
+	static function dispatchArray($modules)
 	{
 		// Séparation des groupes
 		foreach($modules as $key => $value)
@@ -58,9 +61,9 @@ class dispatch extends Cerberus
 		
 		// Récupération des scripts concernés
 		$modules['*'] = a::force_array($modules['*']);
-		$modules[$this->global] = a::force_array($modules[$this->global]);
-		$modules[$this->current] = a::force_array($modules[$this->current]);
-		$arrayModules = array_merge($modules['*'], $modules[$this->global], $modules[$this->current]);
+		$modules[self::$global] = a::force_array($modules[self::$global]);
+		$modules[self::$current] = a::force_array($modules[self::$current]);
+		$arrayModules = array_merge($modules['*'], $modules[self::$global], $modules[self::$current]);
 		
 		// Suppressions des fonctions non voulues
 		foreach($arrayModules as $key => $value)
@@ -73,27 +76,27 @@ class dispatch extends Cerberus
 		}
 		
 		// Distinction avec les modules coeur
-		if(isset($this->cacheCore)) $arrayModules = array_values(array_diff($arrayModules, $this->cacheCore));
+		if(isset(self::$cacheCore)) $arrayModules = array_values(array_diff($arrayModules, self::$cacheCore));
 
 		if(!empty($arrayModules)) return $arrayModules;
 		else return FALSE;
 	}
 
 	// Modules PHP
-	function getPHP($modules)
+	static function setPHP($modules)
 	{
-		$modules = $this->dispatchArray($modules);
+		$modules = self::dispatchArray($modules);
 		if($modules) new Cerberus($modules, get('page', 'home'));
 	}
 	
 	// Modules JS/CSS
-	function getAPI($scripts = array())
+	static function assets($scripts = array())
 	{
 		global $switcher;
 		
 		// Bootstrap
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
-		foreach($bootstrap as $bs) $this->availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
+		foreach($bootstrap as $bs) self::$availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
 		// Swotcher
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
@@ -101,8 +104,8 @@ class dispatch extends Cerberus
 		// Mise en array des différents scripts
 		if(!is_array($scripts)) $scripts = array('*' => func_get_args());
 		$scripts['*'] = a::force_array($scripts['*']);
-		$scripts[$this->current] = a::force_array($scripts[$this->current]);
-		$scripts[$this->global] = a::force_array($scripts[$this->global]);
+		$scripts[self::$current] = a::force_array($scripts[self::$current]);
+		$scripts[self::$global] = a::force_array($scripts[self::$global]);
 				
 		// Fichiers par défaut
 		$scripts['*'][] = 'core';
@@ -110,8 +113,8 @@ class dispatch extends Cerberus
 			? array(99 => 'bootstrap')
 			: array(99 => 'styles');
 		
-		$scripts[$this->current][] = $this->current;
-		$scripts[$this->global][] = $this->global;
+		$scripts[self::$current][] = self::$current;
+		$scripts[self::$global][] = self::$global;
 
 		// Préparation de l'array des scripts disponibles
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
@@ -130,22 +133,22 @@ class dispatch extends Cerberus
 		$dispath['bootstrap'] = array(PATH_CERBERUS. 'less/bootstrap.less', PATH_CERBERUS. 'css/bootstrap.css');
 		
 		// Récupération des différents scripts
-		$this->scripts = array_filter($this->dispatchArray($scripts));
-		if($this->scripts) foreach($this->scripts as $key => $value)
+		self::$scripts = array_filter(self::dispatchArray($scripts));
+		if(self::$scripts) foreach(self::$scripts as $key => $value)
 		{
 			if(!empty($value))
 			{
 				// Bootstrap
 				if($value == 'bootstrapjs')
-					$this->JS['url'] = array_merge($this->JS['url'], $bootstrap);
+					self::$JS['url'] = array_merge(self::$JS['url'], $bootstrap);
 				
 				// API
-				if(isset($this->availableAPI[$value]))
+				if(isset(self::$availableAPI[$value]))
 				{
-					$API = $this->availableAPI[$value];
-					if(isset($dispath[$value])) $this->CSS['min'] = array_merge($this->CSS['min'], $dispath[$value]); // CSS annexe
-					if(str::find(array('http', 'bootstrap'), $API)) $this->JS['url'][] = $API;
-					else $this->JS['min'][] = f::path(PATH_CERBERUS. 'js/' .$API. '.js', f::path(PATH_COMMON.'js/'.$API.'.js', $API));
+					$API = self::$availableAPI[$value];
+					if(isset($dispath[$value])) self::$CSS['min'] = array_merge(self::$CSS['min'], $dispath[$value]); // CSS annexe
+					if(str::find(array('http', 'bootstrap'), $API)) self::$JS['url'][] = $API;
+					else self::$JS['min'][] = f::path(PATH_CERBERUS. 'js/' .$API. '.js', f::path(PATH_COMMON.'js/'.$API.'.js', $API));
 				}
 				else
 				{
@@ -153,13 +156,13 @@ class dispatch extends Cerberus
 						foreach($dispath[$value] as $script)
 						{
 							$extension = strtoupper(f::extension($script));
-							$this->{$extension}['min'][] = $script;
+							self::${$extension}['min'][] = $script;
 						}
 				}
 			}
-			else unset($this->scripts[$key]);
+			else unset(self::$scripts[$key]);
 		}
-		return $this->scripts;
+		return self::$scripts;
 	}
 	
 	/* 
@@ -169,52 +172,54 @@ class dispatch extends Cerberus
 	*/
 	
 	// Script activé ou non
-	function isScript($script)
+	static function isScript($script)
 	{
-		return (isset($this->scripts) and in_array($script, $this->scripts));
+		return (isset(self::$scripts) and in_array($script, self::$scripts));
 	}
 	
-	// Affichage des scripts
-	function getCSS()
+	// Récupération des feuilles de style
+	static function getCSS()
 	{
 		// LESS
-		if(config::get('lesscss', true) and isset($this->LESS['min']) and !empty($this->LESS['min']) and (LOCAL or empty($this->CSS['min'])))
+		if(config::get('lesscss', FALSE) and isset(self::$LESS['min']) and !empty(self::$LESS['min']) and (LOCAL or empty(self::$CSS['min'])))
 		{
-			$minify = array_unique(array_filter($this->LESS['min'])); 
+			$minify = array_unique(array_filter(self::$LESS['min'])); 
 			foreach($minify as $thisfile)
 			{
 				echo "\t".'<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
-				$this->CSS['min'] = a::remove($this->CSS['min'], strtr($thisfile, array('.less' => '.css', 'less/' => 'css/')), false);
+				self::$CSS['min'] = a::remove(self::$CSS['min'], strtr($thisfile, array('.less' => '.css', 'less/' => 'css/')), false);
 			}
-			echo "\t".'<script type="text/javascript" src="' .$this->availableAPI['lesscss']. '"></script>'.PHP_EOL;
+			echo "\t".'<script type="text/javascript" src="' .self::$availableAPI['lesscss']. '"></script>'.PHP_EOL;
 			//echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
 		}
 		
 		// CSS
-		if($this->CSS['min'])
+		if(self::$CSS['min'])
 		{
-			$minify = array_unique(array_filter($this->CSS['min']));
-			if($this->minify) { if($minify) $this->CSS['url'][] = 'min/?f=' .implode(',', $minify); }
-			else { if($minify) $this->CSS['url'] = array_merge($this->CSS['url'], $minify); }
+			$minify = array_unique(array_filter(self::$CSS['min']));
+			if(self::$minify) { if($minify) self::$CSS['url'][] = 'min/?f=' .implode(',', $minify); }
+			else { if($minify) self::$CSS['url'] = array_merge(self::$CSS['url'], $minify); }
 		}
-		if($this->CSS['url']) foreach($this->CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
-		if($this->CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", $this->CSS['inline']). '</style>'.PHP_EOL;
+		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
+		if(self::$CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']). '</style>'.PHP_EOL;
 	}
-	function getJS()
+
+	// Récupération du Javascript
+	static function getJS()
 	{
-		if(isset($this->typekit)) $this->addJS('http://use.typekit.com/' .$this->typekit. '.js');
-		if($this->JS['min'])
+		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
+		if(self::$JS['min'])
 		{
-			$minify = array_unique(array_filter($this->JS['min']));	
-			if($this->minify) { if($minify) $this->JS['url'][] = 'min/?f=' .implode(',', $minify); }
-			else if($this->JS['url']) $this->JS['url'] = array_merge($this->JS['url'], $minify);
+			$minify = array_unique(array_filter(self::$JS['min']));	
+			if(self::$minify) { if($minify) self::$JS['url'][] = 'min/?f=' .implode(',', $minify); }
+			else if(self::$JS['url']) self::$JS['url'] = array_merge(self::$JS['url'], $minify);
 		}
-		if($this->JS['url'])
+		if(self::$JS['url'])
 		{
-			$this->JS['url'] = array_unique(array_filter($this->JS['url']));
-			foreach($this->JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
+			self::$JS['url'] = array_unique(array_filter(self::$JS['url']));
+			foreach(self::$JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
 		}
-		if($this->JS['inline']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", $this->JS['inline']).PHP_EOL. '</script>'.PHP_EOL;
+		if(self::$JS['inline']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", self::$JS['inline']).PHP_EOL. '</script>'.PHP_EOL;
 	}
 	
 	/* 
@@ -224,16 +229,16 @@ class dispatch extends Cerberus
 	*/
 	
 	// Ajoute une feuille de style
-	function addCSS($link, $min = true)
+	static function addCSS($link, $min = true)
 	{
 		$array = str::find('.less', $link) ? 'LESS' : 'CSS';
 		
-		if(str::find('http', $link) or !$min) $this->{$array}['url'][] = $link;
-		else $this->{$array}['min'][] = $link;
+		if(str::find('http', $link) or !$min) self::${$array}['url'][] = $link;
+		else self::${$array}['min'][] = $link;
 	}
 	
 	// Ajout de scripts à la volée
-	function addJS($javascript)
+	static function addJS($javascript)
 	{
 		$javascript = func_get_args();	
 		
@@ -245,41 +250,68 @@ class dispatch extends Cerberus
 			
 			if(f::extension($javascript) == 'js')
 			{
-				if(str::find('http', substr($javascript, 0, 4))) $this->JS['url'][] = $javascript;
-				else $this->JS['min'][] = $javascript;
+				if(str::find('http', substr($javascript, 0, 4))) self::$JS['url'][] = $javascript;
+				else self::$JS['min'][] = $javascript;
 			}
-			else $this->JS['inline'][] = $javascript;
+			else self::$JS['inline'][] = $javascript;
 		}
-		else foreach($javascript as $j) $this->addJS($j);
+		else foreach($javascript as $j) self::addJS($j);
+	}
+	
+	/* 
+	########################################
+	########## MODULES ET API ##############
+	########################################
+	*/
+	
+	static function compass($config = array())
+	{
+		if(!file_exists('config.rb'))
+		{
+			$array = array(
+				'css_dir' => PATH_COMMON.'css',
+				'images_dir' => PATH_COMMON.'img',
+				'images_dir' => PATH_COMMON.'img',
+				'fonts_dir' => PATH_CERBERUS.'fonts',
+				'javascripts_dir' => PATH_COMMON.'js',
+				'output_style' => 'expanded',
+				'additional_import_paths' => '[\'' .PATH_CERBERUS. 'scss\', \'' .PATH_COMMON. 'scss\']'
+			);
+			$config = array_merge($config, $array);
+			
+			$file = NULL;
+			foreach($config as $k => $v) $file .= $k. ' = "' .$v. '"' .PHP_EOL;
+			f::write('config.rb', $file);
+		}	
 	}
 	
 	// Ajout un élément Google Analytics
-	function analytics($analytics = 'XXXXX-X')
+	static function analytics($analytics = 'XXXXX-X')
 	{
-		$this->addJS(
+		self::addJS(
 		"var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-" .$analytics. "']);
 		_gaq.push(['_trackPageview']);
 		
-		(function() {
+		(static function() {
 			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
 			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();");
 	}
 	
 	// Ajoute de polices via @font-face
-	function typekit($kit = 'xky6uxx')
+	static function typekit($kit = 'xky6uxx')
 	{
-		$this->typekit = $kit;
-		$this->addJS('try{Typekit.load();}catch(e){}');
+		self::$typekit = $kit;
+		self::addJS('try{Typekit.load();}catch(e){}');
 	}
-	function googleFonts()
+	static function googleFonts()
 	{
 		$fonts = func_get_args();
 		
 		$fonts = implode('|', $fonts);
 		$fonts = str_replace(' ' , '+', $fonts);
-		$this->addCSS('http://fonts.googleapis.com/css?family=' .$fonts);
+		self::addCSS('http://fonts.googleapis.com/css?family=' .$fonts);
 	}
 }
 ?>

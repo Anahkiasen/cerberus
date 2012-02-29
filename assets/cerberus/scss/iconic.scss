@@ -1,12 +1,11 @@
-@import "compass/css3";
-@import "mixins";
+@import "base";
 
 // ICONIC ICONS
 // ------------
 
 // Load font
-@include fontface('IconicFill', '../fonts/iconic_fill');
-@include fontface('IconicStroke', '../fonts/iconic_stroke');
+@include fonts('IconicFill', '../fonts/iconic_fill');
+@include fonts('IconicStroke', '../fonts/iconic_stroke');
 	
 // Icons
 @media screen, print
