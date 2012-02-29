@@ -1,0 +1,395 @@
+// Mixins.less
+// Snippets of reusable CSS to develop faster and keep code readable
+// -----------------------------------------------------------------
+
+// UTILITY MIXINS
+// --------------------------------------------------
+
+// Clearfix
+// --------
+// For clearing floats like a boss h5bp.com/q
+=clearfix
+  *zoom: 1
+  &:before,
+  &:after
+    display: table
+    content: ""
+  &:after
+    clear: both
+
+// Webkit-style focus
+// ------------------
+=tab-focus
+  // Default
+  outline: thin dotted #333
+  // Webkit
+  outline: 5px auto -webkit-focus-ring-color
+  outline-offset: -2px
+
+// Center-align a block level element
+// ----------------------------------
+=center-block
+  display: block
+  margin-left: auto
+  margin-right: auto
+
+// IE7 inline-block
+// ----------------
+=ie7-inline-block
+  *display: inline
+  /* IE7 inline-block hack
+  *zoom: 1
+
+// IE7 likes to collapse whitespace on either side of the inline-block elements.
+// Ems because we're attempting to match the width of a space character. Left
+// version is for form buttons, which typically come after other elements, and
+// right version is for icons, which come before. Applying both is ok, but it will
+// mean that space between those elements will be .6em (~2 space characters) in IE7,
+// instead of the 1 space in other browsers.
+=ie7-restore-left-whitespace
+  *margin-left: .3em
+  &:first-child
+    *margin-left: 0
+
+=ie7-restore-right-whitespace
+  *margin-right: .3em
+  &:last-child
+    *margin-left: 0
+
+// Sizing shortcuts
+// -------------------------
+=size($height: 5px, $width: 5px)
+  width: $width
+  height: $height
+
+=square($size: 5px)
+  +size($size, $size)
+
+// Placeholder text
+// -------------------------
+=placeholder($color: $placeholderText)
+  \:-moz-placeholder
+    color: $color
+  \::-webkit-input-placeholder
+    color: $color
+
+// Text overflow
+// -------------------------
+// Requires inline-block or block for proper styling
+=text-overflow
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+// FONTS
+// --------------------------------------------------
+
+=font-family-custom-serif($font)
+  font-family: $font, $serif
+
+=font-family-custom-sans-serif($font)
+  font-family: $font, $sansserif
+
+=font-family-serif
+  font-family: $serif
+
+=font-family-sans-serif
+  font-family: $sansserif
+
+=font-family-monospace
+  font-family: Menlo, Monaco, "Courier New", monospace
+
+=font-custom($font, $size: $baseFontSize, $weight: normal, $lineHeight: normal)
+  +font-family-custom-sans-serif($font)
+  +font-shorthand($size, $weight, $lineHeight)
+
+=font-shorthand($size: $baseFontSize, $weight: normal, $lineHeight: $baseLineHeight)
+  font-size: $size
+  font-weight: $weight
+  line-height: $lineHeight
+
+=font-serif($size: $baseFontSize, $weight: normal, $lineHeight: $baseLineHeight)
+  +font-family-serif
+  +font-shorthand($size, $weight, $lineHeight)
+
+=font-sans-serif($size: $baseFontSize, $weight: normal, $lineHeight: $baseLineHeight)
+  +font-family-sans-serif
+  +font-shorthand($size, $weight, $lineHeight)
+
+=font-monospace($size: $baseFontSize, $weight: normal, $lineHeight: $baseLineHeight)
+  +font-family-monospace
+  +font-shorthand($size, $weight, $lineHeight)
+
+// Form field states (used in forms.less)
+// --------------------------------------------------
+
+// Mixin for form field states
+=formFieldState($textColor: #555555, $borderColor: #cccccc, $backgroundColor: whitesmoke)
+  // Set the text color
+  > label,
+  .help-block,
+  .help-inline
+    color: $textColor
+  // Style inputs accordingly
+  input,
+  select,
+  textarea
+    color: $textColor
+    border-color: $borderColor
+    &:focus
+      border-color: darken($borderColor, 10%)
+      +box-shadow(0 0 6px lighten($borderColor, 20%))
+  // Give a small background color for input-prepend/-append
+  .input-prepend .add-on,
+  .input-append .add-on
+    color: $textColor
+    background-color: $backgroundColor
+    border-color: $textColor
+
+// CSS3 PROPERTIES
+// --------------------------------------------------
+
+// User select
+// For selecting text on the page
+=user-select($select)
+  -webkit-user-select: $select
+  -moz-user-select: $select
+  -o-user-select: $select
+  user-select: $select
+
+// Resize anything
+=resizable($direction: both)
+  resize: $direction
+  // Options: horizontal, vertical, both
+  overflow: auto
+  // Safari fix
+
+// BACKGROUNDS
+// --------------------------------------------------
+
+// Gradient Bar Colors for buttons andÌ alerts
+=gradientBar($primaryColor, $secondaryColor)
+  +gradient-vertical($primaryColor, $secondaryColor)
+  border-color: $secondaryColor $secondaryColor darken($secondaryColor, 15%)
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%)
+
+// Gradients
+$diff: 5%
+
+=gradient-auto-vertical($color, $difference: $diff)
+  +gradient-vertical(lighten($color, $difference), darken($color, $difference))
+  border-top: 1px solid lighten($color, $difference + 20)
+  border-bottom: 1px solid darken($color, $difference + 20)
+
+=gradient-auto-horizontal($color, $difference: $diff)
+  +gradient-horizontal(lighten($color, $difference), darken($color, $difference))
+  border-top: 1px solid lighten($color, $difference + 20)
+  border-bottom: 1px solid darken($color, $difference + 20)
+
+=gradient-auto-radial($color, $difference: $diff)
+  +gradient-radial(lighten($color, $difference), darken($color, $difference))
+  border-top: 1px solid lighten($color, $difference + 20)
+  border-bottom: 1px solid darken($color, $difference + 20)
+
+=gradient-horizontal($startColor: #555555, $endColor: #333333)
+  background-color: $endColor
+  +background-image(linear-gradient(left, $startColor, $endColor))
+  background-repeat: repeat-x
+
+=gradient-vertical($startColor: #555555, $endColor: #333333)
+  background-color: mix($startColor, $endColor, 60%)
+  +background-image(linear-gradient(top, $startColor, $endColor))
+  background-repeat: repeat-x
+
+=gradient-directional($startColor: #555555, $endColor: #333333, $deg: 45deg)
+  background-color: $endColor
+  background-repeat: repeat-x
+  +background-image(linear-gradient($deg, $startColor, $endColor))
+
+=gradient-vertical-three-colors($startColor: #00b3ee, $midColor: #7a43b6, $colorStop: 50%, $endColor: #c3325f)
+  background-color: mix($midColor, $endColor, 80%)
+  +background-image(linear-gradient($startColor, $midColor $colorStop, $endColor))
+  background-repeat: no-repeat
+
+=gradient-radial($innerColor: #555555, $outerColor: #333333)
+  background-color: $outerColor
+  +background-image(radial-gradient(circle, $innerColor, $outerColor))
+  background-repeat: no-repeat
+
+=gradient-striped($color, $angle: -45deg)
+  background-color: $color
+  +background-image(linear, 0 100%, 100% 0, color-stop($angle 25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent))
+
+// Reset filters for IE
+=reset-filter
+  filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)"
+
+// COMPONENT MIXINS
+// --------------------------------------------------
+
+// Horizontal dividers
+// -------------------------
+// Dividers (basically an hr) within dropdowns and nav lists
+=nav-divider
+  height: 1px
+  margin: $baseLineHeight / 2 - 1 1px
+  // 8px 1px
+  overflow: hidden
+  background-color: #e5e5e5
+  border-bottom: 1px solid $white
+  // IE7 needs a set width since we gave a height. Restricting just
+  // to IE7 to keep the 1px left/right space in other browsers.
+  // It is unclear where IE is getting the extra space that we need
+  // to negative-margin away, but so it goes.
+  *width: 100%
+  *margin: -5px 0 5px
+
+// Button backgrounds
+// ------------------
+=buttonBackground($startColor, $endColor)
+  // gradientBar will set the background to a pleasing blend of these, to support IE<=9
+  +gradientBar($startColor, $endColor)
+  +reset-filter
+  // in these cases the gradient won't cover the background, so we override
+  &:hover, &:active, &.active, &.disabled, &[disabled]
+    background-color: $endColor
+  // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
+  &:active,
+  &.active
+    background-color: darken($endColor, 10%) \9
+
+// Navbar vertical align
+// -------------------------
+// Vertically center elements in the navbar.
+// Example: an element has a height of 30px, so write out `.navbarVerticalAlign(30px);` to calculate the appropriate top margin.
+=navbarVerticalAlign($elementHeight)
+  margin-top: ($navbarHeight - $elementHeight) / 2
+
+// Popover arrows
+// -------------------------
+// For tipsies and popovers
+=popoverArrow-top($arrowWidth: 5px)
+  bottom: 0
+  left: 50%
+  margin-left: -$arrowWidth
+  border-left: $arrowWidth solid transparent
+  border-right: $arrowWidth solid transparent
+  border-top: $arrowWidth solid $black
+
+=popoverArrow-left($arrowWidth: 5px)
+  top: 50%
+  right: 0
+  margin-top: -$arrowWidth
+  border-top: $arrowWidth solid transparent
+  border-bottom: $arrowWidth solid transparent
+  border-left: $arrowWidth solid $black
+
+=popoverArrow-bottom($arrowWidth: 5px)
+  top: 0
+  left: 50%
+  margin-left: -$arrowWidth
+  border-left: $arrowWidth solid transparent
+  border-right: $arrowWidth solid transparent
+  border-bottom: $arrowWidth solid $black
+
+=popoverArrow-right($arrowWidth: 5px)
+  top: 50%
+  left: 0
+  margin-top: -$arrowWidth
+  border-top: $arrowWidth solid transparent
+  border-bottom: $arrowWidth solid transparent
+  border-right: $arrowWidth solid $black
+
+// Grid System
+// -----------
+
+=container-fixed
+  margin-left: auto
+  margin-right: auto
+  +clearfix
+
+=tableColumns($columnSpan: 1)
+  float: none
+  // undo default grid column styles
+  width: $gridColumnWidth * $columnSpan + $gridGutterWidth * ($columnSpan - 1) - 16
+  // 16 is total padding on left and right of table cells
+  margin-left: 0
+  // undo default grid column styles
+
+// Le grid system
+// -------------------------
+
+=gridCore-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $columns)
+  width: ($gridColumnWidth * $columns) + ($gridGutterWidth * ($columns - 1))
+  
+=gridCore-offset($gridColumnWidth, $gridGutterWidth, $columns)
+  margin-left: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) + $gridGutterWidth * 2
+
+=gridCore-gridColumn($gridGutterWidth)
+  float: left
+  margin-left: $gridGutterWidth
+
+// Take these values and mixins, and make 'em do their thang
+=gridCore-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
+  // Row surrounds the columns
+  .row
+    margin-left: $gridGutterWidth * -1
+    +clearfix
+    
+  // Find all .span# classes within .row and give them the necessary properties for grid columns (supported by all browsers back to IE7, thanks $dhg)
+  [class*="span"]
+    +gridCore-gridColumn($gridGutterWidth)
+  
+  // Set the container width, and override it for fixed navbars in media queries
+  .container,
+  .navbar-fixed-top .container,
+  .navbar-fixed-bottom .container
+    +gridCore-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, 12)
+  
+  // Default columns
+  @for $i from 1 through 12
+    .span#{$i}
+      +gridCore-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $i)
+    .offset#{$i}
+      +gridCore-offset($gridColumnWidth, $gridGutterWidth, $i)  
+
+// Fluid grid system
+// -------------------------
+=gridFluid-span($fluidGridGutterWidth, $fluidGridColumnWidth, $columns)
+  width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)
+
+=gridFluid-gridColumn($fluidGridGutterWidth)
+  float: left
+  margin-left: $fluidGridGutterWidth
+
+// Take these values and mixins, and make 'em do their thang
+=gridFluid-generate($gridColumns, $fluidGridColumnWidth, $fluidGridGutterWidth)
+  
+  // Row surrounds the columns
+  .row-fluid
+    width: 100%
+    +clearfix
+    
+    // Find all .span# classes within .row and give them the necessary properties for grid columns (supported by all browsers back to IE7, thanks $dhg)
+    > [class*="span"]
+      +gridFluid-gridColumn($fluidGridGutterWidth)
+    > [class*="span"]:first-child
+      margin-left: 0
+      
+    // Default columns
+    @for $i from 1 through 12
+      > .span#{$i}
+        +gridFluid-span($fluidGridGutterWidth, $fluidGridColumnWidth, $i)
+
+// Input grid system
+// -------------------------
+=gridInput-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $columns)
+  width: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) - 10
+
+=gridInput-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
+  input,
+  textarea,
+  .uneditable-input
+    @for $i from 1 through 12
+      &.span#{$i}
+        +gridInput-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $i)

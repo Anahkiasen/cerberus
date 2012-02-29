@@ -68,6 +68,8 @@ if(!$path_common)
 	config::hardcode('path.common', $path_common);
 	config::hardcode('path.cerberus', $path_cerberus);
 	config::hardcode('path.file', $path_file);
+	
+	f::remove('config.rb');
 }
 
 define('PATH_COMMON', $path_common);
@@ -136,8 +138,9 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_
 // Fichiers manquants
 if(config::get('boostrap', true))
 {
-	if(!file_exists(PATH_CERBERUS. 'scss/_variables_custom.scss')) f::write(PATH_CERBERUS. 'scss/_variables_custom.scss', '$main: #069;');
-	if(!file_exists(PATH_CERBERUS. 'css/styles.scss')) f::write(PATH_CERBERUS. 'css/styles.scss');	
+	$extension = config::get('lesscss') ? 'less' : 'sass';
+	$required = array(PATH_CERBERUS.'/' .$extension. '/_custom.'.$extension, PATH_CERBERUS.'css/styles.'.$extension, PATH_COMMON.'css/styles.'.$extension);
+	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
 dir::make('cerberus/cache');
 
