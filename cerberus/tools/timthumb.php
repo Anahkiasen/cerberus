@@ -16,20 +16,19 @@
 	$sharpen
 		Renforcer la netteté ou non
 */
-function timthumb($file, $width = NULL, $height = NULL, $crop = NULL, $quality = NULL, $sharpen = NULL)
+function timthumb($file, $width = NULL, $height = NULL, $params = array())
 {
 	if(!empty($width)) $params['w'] = $width;
 	if(!empty($height)) $params['h'] = $height;
 	
-	if(!is_null($crop)) $params['zc'] = $crop;
-	if(!is_null($quality)) $params['q'] = $quality;
-	if(!is_null($sharpen)) $params['s'] = $sharpen;
-
-	$file = str_replace(PATH_FILE, NULL, $file);
-	$file = (str::find('../', $file))
-		? realpath(PATH_FILE.$file)
-		: PATH_FILE.$file;
-
+	if(!str::find('http', $file))
+	{
+		$file = str_replace(PATH_FILE, NULL, $file);
+		$file = (str::find('../', $file))
+			? realpath(PATH_FILE.$file)
+			: PATH_FILE.$file;
+	}
+		
 	return 'cerberus/class/svn.timthumb.php?src=' .$file. '&' .a::simplode('=', '&', $params);
 }
 ?>

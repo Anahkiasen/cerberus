@@ -85,6 +85,7 @@ class dispatch extends Cerberus
 	// Modules PHP
 	static function setPHP($modules)
 	{
+		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::dispatchArray($modules);
 		if($modules) new Cerberus($modules, get('page', 'home'));
 	}
@@ -120,7 +121,7 @@ class dispatch extends Cerberus
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
 		$allowed_files = '{css/*.{css,less},less/*.{css,less},js/*.js}';
 		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,cerberus' .$templates. '}/';
-		elseif(PATH_COMMON == 'assets/') $allowed_folders = 'assets/';
+		elseif(PATH_COMMON == 'assets/') $allowed_folders = '{assets,assets/cerberus}/';
 		else $allowed_folders = '/';
 		
 		$files = glob($allowed_folders.$allowed_files, GLOB_BRACE);

@@ -174,7 +174,12 @@ class str
 			case 'csv':
 				$result = explode("\r", $string);
 				if(count($result == 1)) $result = explode("\n", $string);
-				foreach($result as $key => $value) $result[$key] = explode(';', $value);
+				foreach($result as $key => $value)
+				{
+					$val = explode("\t", $value);
+					if(sizeof($val) == 1) $val = explode(';', $value);
+					$result[$key] = $val;
+				}
 				break;
 			case 'json':
 				$result = (array)@json_decode($string, true);

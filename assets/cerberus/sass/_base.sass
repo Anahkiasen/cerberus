@@ -21,6 +21,9 @@ $baseFontFamily: $sansserif !default
 
 @function fadeout($color, $opacity)
   @return fade-out($color, $opacity / 100)
+  
+@function light($lightness)
+  @return lighten(black, $lightness)
 
 ///////////////////////////////////////////////
 ////////////////// MIXINS ///////////////////// 

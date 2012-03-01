@@ -4,11 +4,12 @@ class upload
 	static function file($field, $destination, $params = array())
 	{
 		$allowed = a::get($params, 'allowed', config::get('upload.allowed', array('image/jpeg', 'image/png', 'image/gif')));
+		if(!is_array($allowed)) $allowed = array($allowed);
 		$maxsize = a::get($params, 'maxsize', config::get('upload.maxsize', self::max_size()));
 		$overwrite = a::get($params, 'overwrite', config::get('upload.overwrite', true));
 		$sanitize = a::get($params, 'sanitize', true);
 		$file = a::get($_FILES, $field);
-
+		
 		if(empty($file))
 			return array('status' => 'error', 'msg' => l::get('upload.errors.missing-file'));
 
@@ -18,23 +19,23 @@ class upload
 		$error = a::get($file, 'error');
 		$size = a::get($file, 'size');
 		$msg = false;
-		$extension = self::mime_to_extension($type, 'jpg');
-
+		$extension = self::mime_to_extension($type, f::extension($name));
+		
 		// Normalisation du nom
 		$fname = ($sanitize) ? str::slugify(f::name($name)) : f::name($name);
 
 		// Réglage de la destination
-		if(!str::find('{name}', $destination))
+		if(!str::find('{extension}', $destination))
 		{
 			if(substr($destination, -1) != '/') $destination .= '/';
 			$destination .= '{name}.{extension}';
 		}
 		$destination = str_replace('{name}', $fname, $destination);
 		$destination = str_replace('{extension}', $extension, $destination);
-
+		
 		if(file_exists($destination) && $overwrite == false)
 			return array('status' => 'error', 'msg' => l::get('upload.errors.file-exists'), );
-
+		
 		if(empty($tmp_name))
 			return array('status' => 'error', 'msg' => l::get('upload.errors.missing-file'), );
 

@@ -28,12 +28,13 @@
 .glossy.image-wrap:before
   position: absolute
   content: ' '
-  width: 50%
-  height: 100%
+  width: 100%
+  height: 50%
   top: 0
   left: 0
-  +border-radius(7px, 0)
-  +border-image(linear-gradient(top, fade(white, 60), fade(white, 15)))
+  +border-top-left-radius(7px)
+  +border-top-right-radius(7px)
+  +background-image(linear-gradient(top, fade(white, 40) 0%, fade(white, 15) 100%))
 
 .soft-embossed.image-wrap:after
   +box-shadow(inset 0 0 3px fade(black, 10), inset 0 1px 1px fade(white, 50), inset 0 -6px 2px fade(black, 60), inset 0 -8px 2px fade(white, 30))

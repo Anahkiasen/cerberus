@@ -292,33 +292,40 @@ class navigation
 	static function content()
 	{
 		// Chargement de l'admin ou d'une page
-		echo '<div class="' .self::current(). '-content ' .self::$page. '-content">';
-		switch(self::$page)
+		if(self::$page)
 		{
-			case '404';
-				f::inclure('cerberus/include/404.php');
-				break;
+			echo '<div class="' .self::current(). '-content ' .self::$page. '-content">';
+			switch(self::$page)
+			{
+				case '404';
+					f::inclure('cerberus/include/404.php');
+					break;
+					
+				case 'sitemap':
+					f::inclure('cerberus/include/sitemap.php');
+					break;
 				
-			case 'sitemap':
-				f::inclure('cerberus/include/sitemap.php');
-				break;
-			
-			case 'admin':
-				global $cerberus;
-				$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form', 'class.forms');
-				new AdminSetup();
-				break;
-				
-			default:
-				if(!f::inclure('pages/' .self::$filepath))
-				{
-					$error = str_replace('{filepath}', self::$filepath, l::get('error.filepath'));
-					str::display($error, 'error');
-					errorHandle('Warning', 'Le fichier ' .self::$filepath. ' est introuvable', __FILE__, __LINE__);
-				}
-				break;
+				case 'admin':
+					global $cerberus;
+					$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form', 'class.forms');
+					new AdminSetup();
+					break;
+					
+				case NULL:
+					return false;
+					break;
+					
+				default:
+					if(!f::inclure('pages/' .self::$filepath))
+					{
+						$error = str_replace('{filepath}', self::$filepath, l::get('error.filepath'));
+						str::display($error, 'error');
+						errorHandle('Warning', 'Le fichier ' .self::$filepath. ' est introuvable', __FILE__, __LINE__);
+					}
+					break;
+			}
+			echo '</div>';	
 		}
-		echo '</div>';
 	}
 	
 	// Fil d'arianne

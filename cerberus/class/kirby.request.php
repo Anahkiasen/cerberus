@@ -61,6 +61,12 @@ class r
 		return a::get($request, $key, $default);
 	}
 	
+	static function post($key = NULL, $default = NULL)
+	{
+		if(!$key) return $_POST;
+		else return a::get($_POST, $key, $default);
+	}
+	
 	// Returns the current request method
 	static function method()
 	{
