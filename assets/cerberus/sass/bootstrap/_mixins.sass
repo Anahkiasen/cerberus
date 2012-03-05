@@ -319,77 +319,74 @@ $diff: 5%
 // Le grid system
 // -------------------------
 
-=gridCore-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $columns)
+$maxspan: 12
+
+=grid-core-span($columns)
   width: ($gridColumnWidth * $columns) + ($gridGutterWidth * ($columns - 1))
   
-=gridCore-offset($gridColumnWidth, $gridGutterWidth, $columns)
+=grid-core-offset($columns)
   margin-left: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) + $gridGutterWidth * 2
 
-=gridCore-gridColumn($gridGutterWidth)
+=grid-core-column
   float: left
   margin-left: $gridGutterWidth
 
-// Take these values and mixins, and make 'em do their thang
-=gridCore-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
-  // Row surrounds the columns
+=grid-core-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
   .row
     margin-left: $gridGutterWidth * -1
     +clearfix
     
-  // Find all .span# classes within .row and give them the necessary properties for grid columns (supported by all browsers back to IE7, thanks $dhg)
   [class*="span"]
-    +gridCore-gridColumn($gridGutterWidth)
+    +grid-core-column
   
-  // Set the container width, and override it for fixed navbars in media queries
   .container,
   .navbar-fixed-top .container,
   .navbar-fixed-bottom .container
-    +gridCore-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, 12)
+    +grid-core-span(12)
   
   // Default columns
-  @for $i from 1 through 12
+  @for $i from 1 through $maxspan
     .span#{$i}
-      +gridCore-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $i)
+      +grid-core-span($i)
     .offset#{$i}
-      +gridCore-offset($gridColumnWidth, $gridGutterWidth, $i)  
+      +grid-core-offset($i)  
 
 // Fluid grid system
 // -------------------------
-=gridFluid-span($fluidGridGutterWidth, $fluidGridColumnWidth, $columns)
+=grid-fluid-span($columns)
   width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)
 
-=gridFluid-gridColumn($fluidGridGutterWidth)
+=grid-fluid-column($fluidGridGutterWidth)
   float: left
   margin-left: $fluidGridGutterWidth
 
 // Take these values and mixins, and make 'em do their thang
-=gridFluid-generate($gridColumns, $fluidGridColumnWidth, $fluidGridGutterWidth)
-  
-  // Row surrounds the columns
+=grid-fluid-generate($gridColumns, $fluidGridColumnWidth, $fluidGridGutterWidth)
   .row-fluid
     width: 100%
     +clearfix
     
-    // Find all .span# classes within .row and give them the necessary properties for grid columns (supported by all browsers back to IE7, thanks $dhg)
     > [class*="span"]
-      +gridFluid-gridColumn($fluidGridGutterWidth)
+      +grid-fluid-column
+    
     > [class*="span"]:first-child
       margin-left: 0
       
     // Default columns
-    @for $i from 1 through 12
+    @for $i from 1 through $maxspan
       > .span#{$i}
-        +gridFluid-span($fluidGridGutterWidth, $fluidGridColumnWidth, $i)
+        +grid-fluid-span($i)
 
 // Input grid system
 // -------------------------
-=gridInput-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $columns)
+=grid-input-span($columns)
   width: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) - 10
 
-=gridInput-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
+=grid-input-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
   input,
   textarea,
   .uneditable-input
-    @for $i from 1 through 12
+    margin-left: 0 // override margin-left from core grid system
+    @for $i from 1 through $maxspan
       &.span#{$i}
-        +gridInput-span($gridGutterWidth, $gridColumnWidth, $gridRowWidth, $i)
+        +grid-input-span($i)

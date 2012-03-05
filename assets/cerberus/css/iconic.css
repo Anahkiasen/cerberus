@@ -1,12 +1,12 @@
 @font-face {
   font-family: "IconicFill";
-  src: url('/assets/cerberus/fonts/${fileName}.eot');
-  src: url('/assets/cerberus/fonts/${fileName}.eot?#iefix') format('eot'), url('/assets/cerberus/fonts/${fileName}.woff') format('woff'), url('/assets/cerberus/fonts/${fileName}.ttf') format('truetype'), url('/assets/cerberus/fonts/${fileName}.otf') format('opentype'); }
+  src: url('/stylesheets/fonts/${fileName}.eot');
+  src: url('/stylesheets/fonts/${fileName}.eot?#iefix') format('eot'), url('/stylesheets/fonts/${fileName}.woff') format('woff'), url('/stylesheets/fonts/${fileName}.ttf') format('truetype'), url('/stylesheets/fonts/${fileName}.otf') format('opentype'); }
 
 @font-face {
   font-family: "IconicStroke";
-  src: url('/assets/cerberus/fonts/${fileName}.eot');
-  src: url('/assets/cerberus/fonts/${fileName}.eot?#iefix') format('eot'), url('/assets/cerberus/fonts/${fileName}.woff') format('woff'), url('/assets/cerberus/fonts/${fileName}.ttf') format('truetype'), url('/assets/cerberus/fonts/${fileName}.otf') format('opentype'); }
+  src: url('/stylesheets/fonts/${fileName}.eot');
+  src: url('/stylesheets/fonts/${fileName}.eot?#iefix') format('eot'), url('/stylesheets/fonts/${fileName}.woff') format('woff'), url('/stylesheets/fonts/${fileName}.ttf') format('truetype'), url('/stylesheets/fonts/${fileName}.otf') format('opentype'); }
 
 @media screen, print {
   [class^="iconic-"]:before,
