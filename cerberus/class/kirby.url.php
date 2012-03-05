@@ -1,7 +1,7 @@
 <?php
 class url
 {
-	// Returns the current URL
+	/* Returns the current URL */
 	static function current()
 	{
 		$http = (isset($_SESSION['HTTPS']) and server::get('HTTPS') == 'on')
@@ -10,7 +10,7 @@ class url
 		return $http.server::get('http_host').server::get('request_uri');
 	}
 	
-	// Shortens an URL
+	/* Shortens an URL */
 	static function short($url = NULL, $chars = false, $base = false, $rep = '…')
 	{
 		if(!$url) $url = self::current();
@@ -27,31 +27,31 @@ class url
 		return ($chars) ? str::short($url, $chars, $rep) : $url;
 	}	
 	
-	// Checks if the URL has a query string attached
+	/* Checks if the URL has a query string attached */
 	static function has_query($url)
 	{
 		return (str::contains($url, '?'));
 	}	
 	
-	// Strips the query from the URL
+	/* Strips the query from the URL */
 	static function strip_query($url)
 	{
 		return preg_replace('/\?.*$/is', NULL, $url);
 	}	
 	
-	// Strips a hash value from the URL
+	/* Strips a hash value from the URL */
 	static function strip_hash($url)
 	{
 		return preg_replace('/#.*$/is', NULL, $url);
 	}	
 
-	// Checks for a valid URL
+	/* Checks for a valid URL */
 	static function valid($url)
 	{
 		return v::url($url);
 	}	
 	
-	// Redirects the user to a new URL
+	/* Redirects the user to a new URL */
 	static function go($url = false, $code = false)
 	{
 		if(empty($url)) $url = config::get('url', '/');
@@ -78,7 +78,7 @@ class url
 		exit();
 	}
 	
-	//// Renvoit le domaine du site actuel
+	/**** Renvoit le domaine du site actuel */
 	static function domain()
 	{
 		$base = explode('/', self::short());
@@ -87,19 +87,19 @@ class url
 		return $url.'/';
 	}
 
-	//// Vérifie la présence de HTTP:// au début d'une URL
+	/**** Vérifie la présence de HTTP:// au début d'une URL */
 	static function http($url = NULL)
 	{
 		return 'http://' .str_replace('http://', NULL, ($url));
 	}
 	
-	//// Recharger la page en ajoutant des paramètres supplémentaires
+	/**** Recharger la page en ajoutant des paramètres supplémentaires */
 	static function reload($variables = array())
 	{
 		return self::rewrite(NULL, $variables);
 	}
 	
-	//// Composer une URL depuis un index
+	/**** Composer une URL depuis un index */
 	static function rewrite($page = NULL, $params = array())
 	{		
 		// Création du tableau des paramètres

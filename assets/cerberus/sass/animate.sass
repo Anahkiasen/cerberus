@@ -1,5 +1,13 @@
 // Animate Mixin Plugin
 
+@import compass/css3/shared
+
+.animated
+  +experimental(animation, 1s ease both)
+	
+.animated.hinge
+  +experimental(animation, 2s ease)
+
 =animate($name: fadeIn, $duration: 0.3s, $delay: 0s, $function: ease-in-out, $mode: both)
   +experimental(animation, $name $duration $delay $function $mode)
 

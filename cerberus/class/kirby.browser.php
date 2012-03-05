@@ -16,7 +16,7 @@ class browser
 	static public $ios = false; // iOS device or not
 	static public $iphone = false; // iPhone or not
 	
-	// Fonctions de détection
+	/* Fonctions de détection */
 	static function name($ua = NULL)
 	{
 		self::detect($ua);
@@ -70,7 +70,7 @@ class browser
 		return ($array) ? $css : implode(' ', $css);
 	}
 
-	// FONCTION COEUR
+	/* FONCTION COEUR */
 	static function detect($ua = NULL)
 	{
 		$ua = ($ua) ? str::lower($ua) : str::lower(server::get('http_user_agent'));

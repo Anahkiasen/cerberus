@@ -7,7 +7,7 @@ class f
 	########################################
 	*/
 
-	/// Creates a new file
+	/** Creates a new file */
 	static function write($file, $content = NULL, $append = false)
 	{
 		$folder = dirname($file);
@@ -29,13 +29,13 @@ class f
 		}
 	}
 	
-	// Appends new content to an existing file
+	/* Appends new content to an existing file */
 	static function append($file, $content)
 	{
 		return self::write($file, $content, true);
 	}
 	
-	// Reads the content of a file
+	/* Reads the content of a file */
 	static function read($file, $parse = false)
 	{
 		if(file_exists($file))
@@ -46,14 +46,14 @@ class f
 		else return false;
 	}
 
-	// Moves a file to a new location
+	/* Moves a file to a new location */
 	static function move($old, $new)
 	{
 		if(!file_exists($old)) return false;
 		else return (@rename($old, $new) && file_exists($new));
 	}
 
-	/// Deletes a file
+	/** Deletes a file */
 	static function remove($file)
 	{
 		if(is_array($file))
@@ -74,25 +74,25 @@ class f
 	########################################
 	*/
 
-	//// Returns the path of a file only if it exists
+	/**** Returns the path of a file only if it exists */
 	static function path($file, $default = NULL)
 	{
 		return (file_exists($file)) ? $file : $default;
 	}
 	
-	// Gets the extension of a file
+	/* Gets the extension of a file */
 	static function extension($filename)
 	{
 		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
 	
-	// Extracts the filename from a file path
+	/* Extracts the filename from a file path */
 	static function filename($name)
 	{
 		return basename($name);
 	}
 
-	// Extracts the name from a file path or filename without extension
+	/* Extracts the name from a file path or filename without extension */
 	static function name($name, $remove_path = false)
 	{
 		if($remove_path == true)
@@ -103,13 +103,13 @@ class f
 		return $name;
 	}
 
-	// Just an alternative for dirname() to stay consistent
+	/* Just an alternative for dirname() to stay consistent */
 	static function dirname($file = __FILE__)
 	{
 		return dirname($file);
 	}
 	
-	// Returns the size of a file.
+	/* Returns the size of a file. */
 	static function size($file, $nice = false)
 	{
 		@clearstatcache();
@@ -118,7 +118,7 @@ class f
 		else return ($nice) ? self::nice_size($size) : $size;
 	}
 
-	// Converts an integer size into a human readable format
+	/* Converts an integer size into a human readable format */
 	static function nice_size($size)
 	{
 		$size = str::sanitize($size, 'int');
@@ -128,13 +128,13 @@ class f
 		return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2). ' ' .$unit[$i];
 	}
 	
-	// Convert the filename to a new extension
+	/* Convert the filename to a new extension */
 	static function convert($name, $type = 'jpg')
 	{
 		return self::name($name).$type;
 	}
 	
-	// Inclure un fichier
+	/* Inclure un fichier */
 	static function inclure($file, $type = 'once')
 	{
 		if(file_exists($file))
@@ -154,7 +154,7 @@ class f
 		else return false;
 	}
 
-	//// Returns the type of the file
+	/**** Returns the type of the file */
 	static function filecat($extension) 
 	{
 		$typeArray = array(

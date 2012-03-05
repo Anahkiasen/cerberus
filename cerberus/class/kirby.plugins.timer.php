@@ -3,20 +3,20 @@ class timer
 {
 	public static $timer = array();
 
-	// Démarre le chronométrage d'un temps
+	/* Démarre le chronométrage d'un temps */
 	static function start($key = 'start')
 	{
 		if(config::get('timer', FALSE) === false) return false;
 		self::$timer[$key] = microtime(true);
 	}
 	
-	// Sauvegarde un temps
+	/* Sauvegarde un temps */
 	static function save($key = 'start')
 	{
 		self::$timer[$key] = round(self::get($key) * 1000, 2).' ms';
 	}
 
-	// Récupère un/l'ensemble des temps enregistrés
+	/* Récupère un/l'ensemble des temps enregistrés */
 	static function get($key = NULL)
 	{
 		if(config::get('timer', FALSE) === false) return false;

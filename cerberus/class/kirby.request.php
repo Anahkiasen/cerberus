@@ -3,14 +3,14 @@ class r
 {
 	static private $_ = false;
 
-	// Fetch all data from the request and sanitize it
+	/* Fetch all data from the request and sanitize it */
 	static function data()
 	{
 		if(self::$_) return self::$_;
 		return self::$_ = self::sanitize($_REQUEST);
 	}
 	
-	// Sanitizes the incoming data
+	/* Sanitizes the incoming data */
 	static function sanitize($data)
 	{
 		foreach($data as $key => $value)
@@ -23,7 +23,7 @@ class r
 		return $data;	
 	}
 
-	/// Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT
+	/** Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT */
 	static function parse()
 	{
 		$keep	= func_get_args();
@@ -45,7 +45,7 @@ class r
 	######################################## 
 	*/
 	
-	// Sets a request value by key
+	/* Sets a request value by key */
 	static function set($key, $value = NULL)
 	{
 		$data = self::data();
@@ -53,7 +53,7 @@ class r
 		else self::$_[$key] = $value;
 	}
 	
-	// Gets a request value by key
+	/* Gets a request value by key */
 	static function get($key = FALSE, $default = NULL)
 	{
 		$request = (self::method() == 'GET') ? self::data() : array_merge(self::data(), self::body());
@@ -67,20 +67,20 @@ class r
 		else return a::get($_POST, $key, $default);
 	}
 	
-	// Returns the current request method
+	/* Returns the current request method */
 	static function method()
 	{
 		return strtoupper(server::get('request_method'));
 	}
 	
-	// Returns the request body from POST requests for example
+	/* Returns the request body from POST requests for example */
 	static function body()
 	{
 		@parse_str(@file_get_contents('php://input'), $body); 
 		return self::sanitize((array)$body);
 	}
 	
-	// Returns the HTTP_REFERER
+	/* Returns the HTTP_REFERER */
 	static function referer($default = NULL)
 	{
 		if(empty($default)) $default = '/';
@@ -93,31 +93,31 @@ class r
 	######################################## 
 	*/
 
-	// Checks if the current request is an AJAX request
+	/* Checks if the current request is an AJAX request */
 	static function is_ajax()
 	{
 		return (strtolower(server::get('http_x_requested_with')) == 'xmlhttprequest');
 	}
 	
-	// Checks if the current request is a GET request	
+	/* Checks if the current request is a GET request	 */
 	static function is_get()
 	{
 		return (self::method() == 'GET');
 	}
 	
-	// Checks if the current request is a POST request
+	/* Checks if the current request is a POST request */
 	static function is_post()
 	{
 		return (self::method() == 'POST');
 	}
 	
-	// Checks if the current request is a DELETE request
+	/* Checks if the current request is a DELETE request */
 	static function is_delete()
 	{
 		return (self::method() == 'DELETE'); 
 	}
 	
-	// Checks if the current request is a PUT request
+	/* Checks if the current request is a PUT request */
 	static function is_put()
 	{
 		return (self::method() == 'PUT');

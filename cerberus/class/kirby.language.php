@@ -48,7 +48,7 @@ class l
 		self::load('cerberus/include/cerberus.{langue}.json');
 	}
 
-	// Loads a language file
+	/* Loads a language file */
 	static function load($fileraw)
 	{
 		$file = str_replace('{langue}', l::current(), $fileraw);
@@ -71,7 +71,7 @@ class l
 	########################################
 	*/
 	
-	// Affiche un lien vers une ou la totalité des langues
+	/* Affiche un lien vers une ou la totalité des langues */
 	static function flags($path, $langue = NULL)
 	{
 		$array = ($langue) ? array(self::sanitize($langue)) : config::get('langues');
@@ -89,14 +89,14 @@ class l
 		}
 	}
 	
-	// Changes the language currently used
+	/* Changes the language currently used */
 	static function change($langue = 'fr')
 	{
 		s::set('langueSite', l::sanitize($langue));
 		return s::get('langueSite');
 	}
 	
-	// Returns the current language
+	/* Returns the current language */
 	static function current()
 	{
 		if(s::get('langueSite')) return s::get('langueSite');
@@ -111,14 +111,14 @@ class l
 		}
 	}
 	
-	//// Langue en cours dans l'administration
+	/**** Langue en cours dans l'administration */
 	static function admin_current()
 	{
 		if(isset($_SESSION['admin']['langue'])) return $_SESSION['admin']['langue'];
 		else return NULL;
 	}
 	
-	// Sets the language according to the environnement language
+	/* Sets the language according to the environnement language */
 	static function locale($language = FALSE)
 	{
 		if(!$language) $language = l::current();
@@ -137,7 +137,7 @@ class l
 		return setlocale(LC_ALL, 0);
 	}
 
-	// Sanitize a wanted language according to existing ones
+	/* Sanitize a wanted language according to existing ones */
 	static function sanitize($langue)
 	{
 		$default = config::get('langue_default', 'fr');
@@ -153,14 +153,14 @@ class l
 	########################################
 	*/
 	
-	// Sets a language value by key
+	/* Sets a language value by key */
 	static function set($key, $value = NULL)
 	{
 		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
 		else self::$lang[$key] = $value;
 	}
 	
-	// Gets a language value by key
+	/* Gets a language value by key */
 	static function get($key = NULL, $default = NULL)
 	{
 		if(empty($key)) return self::$lang;
@@ -172,7 +172,7 @@ class l
 		}
 	}
 	
-	//// Récupérer une traduction dans une langue en particulier
+	/**** Récupérer une traduction dans une langue en particulier */
 	static function getalt($key, $language = NULL, $default = NULL, $fallback = false)
 	{
 		$translate = db::field('cerberus_langue', $language, array('tag' => $key));
@@ -182,7 +182,7 @@ class l
 		return stripslashes($translate);
 	}
 	
-	//// Traduction d'un jour
+	/**** Traduction d'un jour */
 	static function day($day = NULL)
 	{
 		if(!$day) $day = date('Y-m-d');
@@ -190,7 +190,7 @@ class l
 		return strtolower(strftime('%A', $day));
 	}
 	
-	//// Traduction d'un mois
+	/**** Traduction d'un mois */
 	static function month($month = NULL)
 	{
 		if(!$month) $month = date('Y-m-d');
@@ -198,7 +198,7 @@ class l
 		return strftime('%B', $month);
 	}
 	
-	//// Charger du contenu traduit
+	/**** Charger du contenu traduit */
 	static function content($file)
 	{
 		$file = 'pages/text/' .self::current(). '-' .$file;

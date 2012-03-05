@@ -4,7 +4,7 @@ class config
 	private static $config = array();
 	private static $config_file = 'cerberus/conf.php';
 	
-	// Loads an additional config file 
+	/* Loads an additional config file  */
 	static function load($file)
 	{
 		if(file_exists($file)) require_once($file);
@@ -12,21 +12,21 @@ class config
 		return self::get();
 	}
 	
-	// Gets a config value by key
+	/* Gets a config value by key */
 	static function get($key = NULL, $default = NULL)
 	{
 		if(empty($key)) return self::$config;
 		return a::get(self::$config, $key, $default);
 	}
 	
-	// Sets a config value by key
+	/* Sets a config value by key */
 	static function set($key, $value = NULL)
 	{
 		if(is_array($key)) self::$config = array_merge(self::$config, $key);
 		else self::$config[$key] = $value;
 	}
 	
-	//// Ajoute une clé au fichier config
+	/**** Ajoute une clé au fichier config */
 	static function hardcode($key, $value = NULL)
 	{
 		// Traitement de la valeur

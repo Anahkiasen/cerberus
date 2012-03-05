@@ -330,6 +330,10 @@ $maxspan: 12
 =grid-core-column
   float: left
   margin-left: $gridGutterWidth
+  
+=grid-core-columns($columns)
+  +grid-core-column
+  +grid-core-span($columns)
 
 =grid-core-generate($gridColumns, $gridColumnWidth, $gridGutterWidth)
   .row

@@ -7,7 +7,7 @@ class str
 	########################################
 	*/
 	
-	// A set of sanitizer methods
+	/* A set of sanitizer methods */
 	static function sanitize($string, $type = 'str', $default = NULL)
 	{
 		$string = stripslashes((string)$string);
@@ -73,7 +73,7 @@ class str
 	}
 	
 	// Better alternative for explode()
-	// It takes care of removing empty values and it has a built-in way to skip values which are too short. 
+	/* It takes care of removing empty values and it has a built-in way to skip values which are too short.  */
 	static function split($string, $separator = ',', $length = 1)
 	{
 		if(is_array($string)) return $string;
@@ -91,7 +91,7 @@ class str
 		return $out;
 	}	
 		
-	// A switch to display either one or the other string dependend on a counter
+	/* A switch to display either one or the other string dependend on a counter */
 	static function plural($count, $many, $one, $zero = NULL)
 	{
 		if($count == 1) return $one;
@@ -99,20 +99,20 @@ class str
 		else return $many;
 	}
 	
-	// Remplace une chaîne par une autre
+	/* Remplace une chaîne par une autre */
 	static function toggle($string, $foo, $bar)
 	{
 		return ($string == $foo) ? $bar : $foo;
 	}
 	
-	// A more brutal way to trim. 
+	/* A more brutal way to trim.  */
 	static function trim($string)
 	{
 		$string = preg_replace('/\s\s+/u', ' ', $string);
 		return trim($string);
 	}
 	
-	// Tronque une chaîne $string après $count $mode (word/sentence/default:characters) et ajoute $trailing à la fin
+	/* Tronque une chaîne $string après $count $mode (word/sentence/default:characters) et ajoute $trailing à la fin */
 	static function truncate($string, $count = 255, $mode = NULL, $removeHTML = true, $trailing = NULL)
 	{
 		if($removeHTML) $string = strip_tags($string);
@@ -139,7 +139,7 @@ class str
 		}
 	}
 	
-	// Shortens a string by cutting out chars in the middle
+	/* Shortens a string by cutting out chars in the middle */
 	static function cutout($str, $length, $rep = '…')
 	{
 		$strlength = str::length($str);
@@ -164,7 +164,7 @@ class str
 		return str::substr($str, 0, $strlcenter) . $rep . str::substr($str, $strrcenter);
 	}
 	
-	// Parses a string by a set of available methods
+	/* Parses a string by a set of available methods */
 	static function parse($string, $mode = 'json')
 	{
 		if(is_array($string)) return $string;
@@ -209,14 +209,14 @@ class str
 		return $result;
 	}
 			
-	//// Force a number to be in the 00 format
+	/**** Force a number to be in the 00 format */
 	static function twonum($number)
 	{
 		return str_pad($number, 2, "0", STR_PAD_LEFT);
 	}
 
 
-	// Convert a string to a safe version
+	/* Convert a string to a safe version */
 	static function slugify($text, $accents = false)
 	{
 		$foreign = array
@@ -256,7 +256,7 @@ class str
 		return $text;
 	}
 	
-	//// Normalise les accents d'une chaîne
+	/**** Normalise les accents d'une chaîne */
 	static function slugify_accents($text)
 	{
 		return self::slugify($text, true);
@@ -268,7 +268,7 @@ class str
 	########################################
 	*/
 	
-	//// Finds a string in another
+	/**** Finds a string in another */
 	static function find($needle, $haystack, $absolute = FALSE, $case_sensitive = FALSE)
 	{
 		if(is_array($needle))
@@ -298,7 +298,7 @@ class str
 		}
 	}
 	
-	//// Affiche la valeur d'un booléen
+	/**** Affiche la valeur d'un booléen */
 	static function boolprint($boolean)
 	{
 		return ($boolean) ? 'TRUE' : 'FALSE';
@@ -310,7 +310,7 @@ class str
 	########################################
 	*/
 	
-	//// Displays a picture
+	/**** Displays a picture */
 	static function img($src, $alt = NULL, $attr = NULL)
 	{
 		if(!$attr) $attributes = 'src="' .$src. '"';
@@ -332,7 +332,7 @@ class str
 		return '<img ' .trim($attributes). ' />';
 	}
 	
-	/// Creates a link tag
+	/** Creates a link tag */
 	static function link($link, $text = NULL, $attr = NULL)
 	{
 		if(!$attr) $attributes = 'href="' .$link. '"';
@@ -352,7 +352,7 @@ class str
 		return '<a ' .trim($attributes). '>' . str::html($text) . '</a>';
 	}
 	
-	//// Utilise la fonction link en combinisaison avec url::rewrite()
+	/**** Utilise la fonction link en combinisaison avec url::rewrite() */
 	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
 	{
 		$page = meta::page($link);
@@ -363,7 +363,7 @@ class str
 		return self::link($link, $text, $attr);
 	}
 	
-	// Generates a random string
+	/* Generates a random string */
 	static function random($length = false)
 	{
 		$length = ($length) ? $length : rand(10,20);
@@ -380,7 +380,7 @@ class str
 		return $string;
 	}
 		
-	// Creates an encoded email address, including proper html-tags
+	/* Creates an encoded email address, including proper html-tags */
 	static function email($email, $text = false, $title = false, $class = false)
 	{
 		if(empty($email)) return false;
@@ -394,7 +394,7 @@ class str
 		return '<a'.$title.$class.' href="mailto:'.$email.'">' .self::encode($string, 3). '</a>';
 	}
 	
-	//// Encode des accents en HTML sans toucher aux tags
+	/**** Encode des accents en HTML sans toucher aux tags */
 	static function accents($string, $reverse = false)
 	{
 		$table = array(
@@ -471,7 +471,7 @@ class str
 		return '<p class="infoblock alert alert-' .$type. '">' .$message. '</p>';
 	}
 	
-	// Raccourcis d'alertes
+	/* Raccourcis d'alertes */
 	static function display($message, $type = 'info')
 	{
 		echo self::alert($message, $type);
@@ -481,7 +481,7 @@ class str
 		echo self::alert(l::get($message, $default), $type);
 	}
 	
-	// Affiche un status
+	/* Affiche un status */
 	static function status($bool, $message_success, $message_error)
 	{
 		$message = $bool ? $message_success : $message_error;
@@ -495,44 +495,44 @@ class str
 	########################################
 	*/
 
-	// Converts a string to UTF-8
+	/* Converts a string to UTF-8 */
 	static function utf8($string)
 	{
 		$encoding = mb_detect_encoding($string,'UTF-8, ISO-8859-1, GBK');
 		return ($encoding != 'UTF-8') ? iconv($encoding,'utf-8',$string) : $string;
 	}
 
-	// An UTF-8 safe version of substr()
+	/* An UTF-8 safe version of substr() */
 	static function substr($str, $start, $end = NULL)
 	{
 		return mb_substr($str, $start, ($end == null) ? mb_strlen($str, 'UTF-8') : $end, 'UTF-8');
 	}
 	
-	// An UTF-8 safe version of ucwords()
+	/* An UTF-8 safe version of ucwords() */
 	static function ucwords($str)
 	{
 		return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
 	}
 
-	// An UTF-8 safe version of ucfirst()
+	/* An UTF-8 safe version of ucfirst() */
 	static function ucfirst($str)
 	{
 		return str::upper(str::substr($str, 0, 1)) . str::substr($str, 1);
 	}
 	
-	// An UTF-8 safe version of strtolower()
+	/* An UTF-8 safe version of strtolower() */
 	static function lower($str)
 	{
 		return mb_strtolower($str, 'UTF-8');
 	}
 
-	// An UTF-8 safe version of strotoupper()
+	/* An UTF-8 safe version of strotoupper() */
 	static function upper($str)
 	{
 		return mb_strtoupper($str, 'UTF-8');
 	}
 
-	// An UTF-8 safe version of strlen()
+	/* An UTF-8 safe version of strlen() */
 	static function length($str)
 	{
 		return mb_strlen($str, 'UTF-8');
@@ -546,7 +546,7 @@ class str
 	########################################
 	*/
 
-	// Converts a string to a xml-safe string. Converts it to html-safe first and then it will replace html entities to xml entities
+	/* Converts a string to a xml-safe string. Converts it to html-safe first and then it will replace html entities to xml entities */
 	static function xml($text, $html = true)
 	{
 		// convert raw text to html safe text
@@ -556,7 +556,7 @@ class str
 		return strtr($text, self::entities());
 	}
 
-	// Removes all xml entities from a string
+	/* Removes all xml entities from a string */
 	static function unxml($string)
 	{
 		// flip the conversion table
@@ -566,7 +566,7 @@ class str
 		return strip_tags(strtr($string, $table));
 	}
 	
-	// Converts a string to a html-safe string
+	/* Converts a string to a html-safe string */
 	static function html($string, $keep_html = true)
 	{
 		if($keep_html)
@@ -586,14 +586,14 @@ class str
 		else return htmlentities($string, ENT_COMPAT, 'utf-8');
 	}
 	
-	// Removes all html tags and encoded chars from a string
+	/* Removes all html tags and encoded chars from a string */
 	static function unhtml($string)
 	{
 			$string = strip_tags($string);
 			return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
 	
-	// Encode a string (used for email addresses)
+	/* Encode a string (used for email addresses) */
 	static function encode($string)
 	{
 		$encoded = NULL;
@@ -604,7 +604,7 @@ class str
 		return $encoded;
 	}
 
-	// Shortens a string and adds an ellipsis if the string is too long
+	/* Shortens a string and adds an ellipsis if the string is too long */
 	static function short($string, $chars, $rep = '…')
 	{
 		if(str::length($string) <= $chars) return $string;
@@ -614,20 +614,20 @@ class str
 		return $string . $rep;
 	}
 
-	// Shortens an URL
+	/* Shortens an URL */
 	static function shorturl($url, $chars = false, $base = false, $rep = '…')
 	{
 		return url::short($url, $chars, $base, $rep);
 	}
 
-	// Checks if a str contains another string
+	/* Checks if a str contains another string */
 	static function contains($str, $needle)
 	{
 		return strstr($str, $needle);
 	}
 
 	// preg_match sucks! This tries to make it more convenient
-	// Search $regex in $string, returns the $get entry from the result array, or $placeholder if not found
+	/* Search $regex in $string, returns the $get entry from the result array, or $placeholder if not found */
 	static function match($string, $regex, $get = false, $placeholder = false)
 	{
 		$match = @preg_match($regex, $string, $array);
@@ -641,14 +641,14 @@ class str
 
 	
 
-	// A better way to strip slashes
+	/* A better way to strip slashes */
 	static function stripslashes($string)
 	{
 		if(is_array($string)) return $string;
 		return (get_magic_quotes_gpc()) ? stripslashes(stripslashes($string)) : $string;
 	}
 	
-	// An internal store for a html entities translation table
+	/* An internal store for a html entities translation table */
 	static function entities()
 	{
 			return array(

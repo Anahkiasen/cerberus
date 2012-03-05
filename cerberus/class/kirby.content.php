@@ -9,7 +9,7 @@ class content
 	########################################
 	*/
 			
-	//// Mise en cache de la page
+	/**** Mise en cache de la page */
 	static function cache_start($params)
 	{
 		global $switcher;
@@ -70,7 +70,7 @@ class content
 		else return true;
 	}
 
-	//// Affiche et sauvegarde le cache
+	/**** Affiche et sauvegarde le cache */
 	static function cache_end()
 	{
 		if(self::$cachename)
@@ -82,7 +82,7 @@ class content
 		if(config::get('timer', false)) timer::get();
 	}
 	
-	//// Vide le cache
+	/**** Vide le cache */
 	static function uncache($page = NULL)
 	{
 		if($page == 'meta') $captcha ='{meta-*,lang-*}';
@@ -100,13 +100,13 @@ class content
 	########################################
 	*/
 	
-	// Starts the output buffer
+	/* Starts the output buffer */
 	static function start()
 	{
 		ob_start();
 	}
 
-	// Stops the output buffer and flush the content or return it.
+	/* Stops the output buffer and flush the content or return it. */
 	static function end($return = FALSE)
 	{
 		if($return)
@@ -119,7 +119,7 @@ class content
 		ob_end_flush();
 	}
 	
-	// Loads content from a passed file
+	/* Loads content from a passed file */
 	static function load($file, $return = true)
 	{
 		self::start();
@@ -130,7 +130,7 @@ class content
 		echo $content;
 	}
 		
-	// Simplifies setting content type headers
+	/* Simplifies setting content type headers */
 	static function type()
 	{
 		$args = func_get_args();

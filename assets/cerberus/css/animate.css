@@ -1,3 +1,17 @@
+.animated {
+  -webkit-animation: 1s ease both;
+  -moz-animation: 1s ease both;
+  -ms-animation: 1s ease both;
+  -o-animation: 1s ease both;
+  animation: 1s ease both; }
+
+.animated.hinge {
+  -webkit-animation: 2s ease;
+  -moz-animation: 2s ease;
+  -ms-animation: 2s ease;
+  -o-animation: 2s ease;
+  animation: 2s ease; }
+
 @-webkit-keyframes fadeIn {
   0% {
     opacity: 0; }

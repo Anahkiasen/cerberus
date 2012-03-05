@@ -1,14 +1,14 @@
 <?php
 class a
 {
-	// Gets an element of an array by key
+	/* Gets an element of an array by key */
 	static function get($array, $key, $default = NULL)
 	{
 		if(is_array($key)) return (isset($array[$key[0]][$key[1]])) ? $array[$key[0]][$key[1]] : $default;
 		else return (isset($array[$key])) ? $array[$key] : $default;
 	}
 	
-	// Gets all elements for an array of key
+	/* Gets all elements for an array of key */
 	static function getall($array, $keys)
 	{
 		$result = array();
@@ -16,7 +16,7 @@ class a
 	    return $result;
 	}
 	
-	// Removes an element from an array
+	/* Removes an element from an array */
 	static function remove($array, $search, $key = true)
 	{
 		if(is_array($search))
@@ -39,7 +39,7 @@ class a
 		return $array;
 	}
 
-	// Shows an entire array or object in a human readable way
+	/* Shows an entire array or object in a human readable way */
 	static function show($array, $echo = true)
 	{
 		$output = '<pre>';
@@ -56,38 +56,38 @@ class a
 	########################################
 	*/
 
-	// Returns the first element of an array
+	/* Returns the first element of an array */
 	static function first($array)
 	{
 		return array_shift($array);
 	}
 
-	// Returns the last element of an array
+	/* Returns the last element of an array */
 	static function last($array)
 	{
 		return array_pop($array);
 	}
 	
-	//// Returns the medium value of an array
+	/**** Returns the medium value of an array */
 	static function medium($array)
 	{
 		return round(array_sum($array), 0) / sizeof($array); 
 	}
 
-	// Search for elements in an array by regular expression
+	/* Search for elements in an array by regular expression */
 	static function search($array, $search)
 	{
 		return preg_grep('#'.preg_quote($search).'#i', $array);
 	}
 
-	// Checks if an array contains a certain string
+	/* Checks if an array contains a certain string */
 	static function contains($array, $search)
 	{
 		$search = self::search($array, $search);
 		return !empty($search);
 	}
 
-	// Checks for missing elements in an array
+	/* Checks for missing elements in an array */
 	static function missing($array, $required = array())
 	{
 		$missing = array();
@@ -97,7 +97,7 @@ class a
 		return $missing;
 	}
 	
-	//// Checks if an array is associative (experimental)
+	/**** Checks if an array is associative (experimental) */
 	static function check_assoc($array)
 	{
 		return !ctype_digit(implode('', array_keys($array)));
@@ -109,14 +109,14 @@ class a
 	########################################
 	*/
 	
-	//// Force an element to be an array
+	/**** Force an element to be an array */
 	static function force_array(&$variable)
 	{
 		$return = !is_array($variable) ? array($variable) : $variable;
 		return $return;
 	}
 	
-	// Injects an element into an array
+	/* Injects an element into an array */
 	static function inject($array, $position, $element = 'placeholder')
 	{
 		$start = array_slice($array, 0, $position);
@@ -124,7 +124,7 @@ class a
 		return array_merge($start, (array)$element, $end);
 	}
 	
-	// Shuffles an array and keeps the keys
+	/* Shuffles an array and keeps the keys */
 	static function shuffle($array)
 	{
 		$keys = array_keys($array);
@@ -132,7 +132,7 @@ class a
 		return array_merge(array_flip($keys), $array);
 	}
   	
-	// Fills an array up with additional elements to certain amount. 
+	/* Fills an array up with additional elements to certain amount.  */
 	static function fill($array, $limit, $fill = 'placeholder')
 	{
 		if(count($array) < $limit)
@@ -143,7 +143,7 @@ class a
 		return $array;
 	}
 	
-	// Sorts a multi-dimensional array by a certain column
+	/* Sorts a multi-dimensional array by a certain column */
 	static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
 	{
 		$direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
@@ -156,7 +156,7 @@ class a
 		return $array;
 	}
 	
-	//// Simplify an array to its simplest form
+	/**** Simplify an array to its simplest form */
 	static function simple($array, $unarray = true)
 	{
 		$output = array();
@@ -179,7 +179,7 @@ class a
 		return $output;
 	}
 
-	//// Rearrange a multidimensionnal array by one of its subkey
+	/**** Rearrange a multidimensionnal array by one of its subkey */
 	static function rearrange($array, $subkey = NULL, $remove = FALSE)
 	{
 		$output = array();
@@ -202,7 +202,7 @@ class a
 		return $output;
 	}
 		
-	//// Implose an array with different glues (glue1 around the value, glue2 between entries)
+	/**** Implose an array with different glues (glue1 around the value, glue2 between entries) */
 	static function simplode($glue1, $glue2, $array, $escape = FALSE)
 	{
 		if(is_array($array) and !empty($glue2))
@@ -225,7 +225,7 @@ class a
 	########################################
 	*/
 	
-	// Extracts a single column from an array
+	/* Extracts a single column from an array */
 	static function extract($array, $key)
 	{
 		$output = array();
@@ -234,7 +234,7 @@ class a
 		return $output;
 	}
 	
-	//// Get a precise path inside a multidimensionnal array
+	/**** Get a precise path inside a multidimensionnal array */
 	static function get_path($array, $path, $default = NULL)
 	{
 		if(!is_array($path)) $path = explode(' ', $path);
@@ -246,7 +246,7 @@ class a
 		return $array;
 	}
 		
-	//// Flatten an array
+	/**** Flatten an array */
 	static function array_flatten($array, $return)
 	{
 		foreach($array as $key => $value)
@@ -263,13 +263,13 @@ class a
 	########################################
 	*/
 	
-	// Converts an array to a JSON string
+	/* Converts an array to a JSON string */
 	static function json($array)
 	{
 		return @json_encode((array)$array);
 	}
 
-	// Converts an array to a XML string
+	/* Converts an array to a XML string */
 	static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '	', $level = 0)
 	{
 		$result = ($level == 0 && $head) ? '<?xml version="1.0" encoding="'.$charset.'"?>'.PHP_EOL : NULL;
@@ -306,7 +306,7 @@ class a
 		return $result.str_repeat($tab, $level).'</'.$tag.'>'.PHP_EOL;
 	}
 	
-	//// Converts an array to CSV format
+	/**** Converts an array to CSV format */
 	static function csv($array)
 	{
 		$csv = NULL;

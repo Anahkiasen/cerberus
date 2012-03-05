@@ -286,7 +286,7 @@ class forms
 					
 				case 'submit':
 					$deploy['class'] .= ' btn';
-					$this->rend('<button ' .$this->paramRender($deploy, 'label'). ' data-loading-text="Chargement">' .$label. '</button>');
+					$this->rend('<button ' .$this->paramRender($deploy, array('label', 'name')). ' data-loading-text="Chargement">' .$label. '</button>');
 					
 					// Bouton annuler
 					if($this->optionFormType != 'inline' and a::get($params, 'cancel', FALSE))

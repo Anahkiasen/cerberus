@@ -14,7 +14,7 @@ class db
 	########################################
 	*/
 
-	/// The core connection method : Tries to connect to the server, selects the database and sets the charset
+	/** The core connection method : Tries to connect to the server, selects the database and sets the charset */
 	static function connect()
 	{
 		$connection	= self::connection();
@@ -91,13 +91,13 @@ class db
 		else return self::$connection;
 	}
 
-	// Returns the current connection or false
+	/* Returns the current connection or false */
 	static function connection()
 	{
 		return (is_resource(self::$connection)) ? self::$connection : FALSE;
 	}
 	
-	// Selects a database
+	/* Selects a database */
 	static function database($database)
 	{
 		if(!$database) return self::error(l::get('db.errors.missing_db_name'), true);
@@ -114,7 +114,7 @@ class db
 		}
 	}
 	
-	// Disconnects from the server
+	/* Disconnects from the server */
 	static function disconnect()
 	{
 		if(!config::get('db.disconnect')) return false;
@@ -130,7 +130,7 @@ class db
 		return true;
 	}
 	
-	// Sets the charset for all queries. The default and recommended charset is utf8
+	/* Sets the charset for all queries. The default and recommended charset is utf8 */
 	static function charset($charset = 'utf8')
 	{
 		// Check if there is an assigned charset and compare it
@@ -145,7 +145,7 @@ class db
 		return $charset;
 	}
 	
-	/// Escapes unwanted stuff in values like slashes, etc. 
+	/** Escapes unwanted stuff in values like slashes, etc.  */
 	static function escape($string)
 	{
 		if(ctype_digit($string)) $string = intval($string);
@@ -169,7 +169,7 @@ class db
 	*/
 	
 	// Runs a MySQL query. You can use any valid MySQL query here.
-	// This is also the fallback method if you can't use one of the provided shortcut methods from this class. 
+	/* This is also the fallback method if you can't use one of the provided shortcut methods from this class.  */
 	static function query($sql, $fetch = true)
 	{
 		$connection = self::connect();
@@ -189,7 +189,7 @@ class db
 		return $array;
 	}
 	
-	// Executes a MySQL query without result set.
+	/* Executes a MySQL query without result set. */
 	static function execute($sql)
 	{
 		$connection = self::connect();
@@ -212,7 +212,19 @@ class db
 	########################################
 	*/
 	
-	/// Returns multiple rows from a table
+	/** 
+    * Returns multiple rows from a table
+    *
+    * @param  string  $table The table name
+    * @param  mixed   $select Either an array of fields or a MySQL string of fields
+    * @param  mixed   $where Either a key/value array as AND connected where clause or a simple MySQL where clause string
+    * @param  string  $order Order clause without the order keyword. ie: "added desc"
+	 * @param  string  $group Add a GROUP BY clause without the group by keyword. ie: "field"
+    * @param  int     $page a page number
+    * @param  int     $limit a number for rows to return
+    * @param  boolean $fetch true: apply db::fetch(), false: don't apply db::fetch()
+    * @return mixed      
+    */
 	static function select($table, $select = '*', $where = NULL, $order = NULL, $group = NULL, $page = NULL, $limit = NULL, $fetch = TRUE)
 	{
 		if($limit === 0) return array();
@@ -228,14 +240,14 @@ class db
 		return self::query($sql, $fetch);
 	}
 	
-	// Runs a INSERT query
+	/* Runs a INSERT query */
 	static function insert($table, $input, $ignore = false)
 	{
 		$ignore = ($ignore) ? ' IGNORE' : NULL;
 		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 	
-	/// Runs a INSERT query with values
+	/** Runs a INSERT query with values */
 	static function insert_all($table, $fields, $values)
 	{
 		$fields = ($fields) ? '(' .implode(',', $fields). ')' : NULL; 
@@ -261,13 +273,13 @@ class db
 		return self::execute($query);
 	}	
 	
-	// Runs an UPDATE query
+	/* Runs an UPDATE query */
 	static function update($table, $input, $where, $limit = NULL)
 	{
 		return self::execute('UPDATE ' .self::prefix($table). ' SET ' .self::values($input). ' WHERE ' .self::where($where). ' ' .$limit);
 	}
 	
-	// Runs a DELETE query
+	/* Runs a DELETE query */
 	static function delete($table, $where = '')
 	{
 		$sql = 'DELETE FROM ' .self::prefix($table);
@@ -275,13 +287,13 @@ class db
 		return self::execute($sql);
 	}
 	
-	// Runs a REPLACE query
+	/* Runs a REPLACE query */
 	static function replace($table, $input)
 	{
 		return self::execute('REPLACE INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 	
-	// Joins two tables and returns data from them
+	/* Joins two tables and returns data from them */
 	static function join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $group = NULL, $page = NULL, $limit = NULL, $type = 'JOIN')
 	{
 			return self::select(
@@ -297,20 +309,20 @@ class db
 			);
 	}
 
-	// Runs a LEFT JOIN
+	/* Runs a LEFT JOIN */
 	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
 	{
 			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
 	}
 			
-	// Counts a number of rows in a table
+	/* Counts a number of rows in a table */
 	static function count($table, $where = '')
 	{
 		$result = self::row($table, 'count(*)', $where);
 		return ($result) ? a::get($result, 'count(*)') : 0;
 	}
 	
-	// Gets the minimum value in a column of a table
+	/* Gets the minimum value in a column of a table */
 	static function min($table, $column, $where = NULL)
 	{
 		$sql = 'SELECT MIN(' .$column. ') as min FROM ' .self::prefix($table);
@@ -322,7 +334,7 @@ class db
 		return a::get($result, 'min', 1);
 	}
 	
-	// Gets the maximum value in a column of a table
+	/* Gets the maximum value in a column of a table */
 	static function max($table, $column, $where = NULL)
 	{
 		$sql = 'SELECT MAX(' .$column. ') as max FROM ' .self::prefix($table);
@@ -334,7 +346,7 @@ class db
 		return a::get($result, 'max', 1);
 	}
 
-	// Gets the sum of values in a column of a table
+	/* Gets the sum of values in a column of a table */
 	static function sum($table, $column, $where = NULL)
 	{
 		$sql = 'SELECT SUM(' .$column. ') as sum FROM ' .self::prefix($table);
@@ -346,7 +358,7 @@ class db
 		return a::get($result, 'sum', 0);
 	}
 	
-	// Adds a prefix to a table name if set in c::set('db.prefix', 'myprefix_')
+	/* Adds a prefix to a table name if set in c::set('db.prefix', 'myprefix_') */
 	static function prefix($table)
 	{
 		$prefix = config::get('db.prefix');
@@ -354,7 +366,7 @@ class db
 		else return (!str::contains($table, $prefix)) ? $prefix.$table : $table;
 	}
 	
-	//// Drops a table
+	/**** Drops a table */
 	static function drop($table)
 	{
 		return db::execute('DROP TABLE IF EXISTS `' .$table. '`;');
@@ -366,21 +378,47 @@ class db
 	########################################
 	*/
 	
-	// Returns a single row from a table
+	/** 
+    * Returns a single row from a table
+    *
+    * @param  string  $table The table name
+    * @param  mixed   $select Either an array of fields or a MySQL string of fields
+    * @param  mixed   $where Either a key/value array as AND connected where clause or a simple MySQL where clause string
+    * @param  string  $order Order clause without the order keyword. ie: "added desc"
+    * @return mixed      
+    */
 	static function row($table, $select = '*', $where = NULL, $order = NULL)
 	{
 		$result = self::select($table, $select, $where, $order, NULL, 0, 1, false);
 		return self::fetch($result);
 	}
 		
-	// Returns a single field value from a table
+	/** 
+    * Returns a single field value from a table
+    *
+    * @param  string  $table The table name
+    * @param  string  $field The name of the field
+    * @param  mixed   $where Either a key/value array as AND connected where clause or a simple MySQL where clause string
+    * @param  string  $order Order clause without the order keyword. ie: "added desc"
+    * @return mixed      
+    */
 	static function field($table, $field, $where = NULL, $order = NULL)
 	{
 		$result = self::row($table, $field, $where, $order);
 		return a::get($result, $field);
 	}
 	
-	// Returns all values from single column of a table
+	/** 
+    * Returns all values from single column of a table
+    *
+    * @param  string  $table The table name
+    * @param  string  $column The name of the column
+    * @param  mixed   $where Either a key/value array as AND connected where clause or a simple MySQL where clause string
+    * @param  string  $order Order clause without the order keyword. ie: "added desc"
+    * @param  int     $page a page number
+    * @param  int     $limit a number for rows to return
+    * @return mixed      
+    */
 	static function column($table, $column, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
 	{
 		$result = self::select($table, $column, $where, $order, NULL, $page, $limit, false);
@@ -396,7 +434,7 @@ class db
 	########################################
 	*/
 	
-	//// Gets the list of tables
+	/**** Gets the list of tables */
 	static function showtables()
 	{
 		$tables = self::query('SHOW TABLES', TRUE);
@@ -405,7 +443,7 @@ class db
 		return $tables;
 	}
 
-	// Returns an array of fields in a given table
+	/* Returns an array of fields in a given table */
 	static function fields($table)
 	{
 		$connection = self::connect();
@@ -425,7 +463,7 @@ class db
 		else return array();
 	}
 
-	//// Checks if one or more tables exists
+	/**** Checks if one or more tables exists */
 	static function is_table($tables)
 	{
 		$tables = func_get_args();
@@ -443,39 +481,61 @@ class db
 		}
 	}
 	
-	//// Checks if a field exists in a table
+	/**** Checks if a field exists in a table */
 	static function is_field($field, $table)
 	{
 		return in_array($field, self::fields($table));
 	}
 		
-	// Returns the number of affected rows for the last query
+	/**
+	 * Returns the number of affected rows for the last query
+	 * 
+	 * @return int
+	 */
 	static function affected()
 	{
 		return self::$affected;
 	}
 	
-	// Returns the last returned insert id
+	/**
+	 * Returns the last returned insert id
+	 * 
+	 * @return int
+	 */
 	static function last_id()
 	{
 		$connection = self::connection();
 		return @mysql_insert_id($connection);
 	}
 	
-	//// Returns the last query
+	/****
+	 * Returns the last query exectued
+	 * 
+	 * @return string
+	 */
 	static function last_sql()
 	{
 		str::display(end(self::$trace));
 	}
 	
-	//// Affiche un message selon le status de la dernière requête
+	
+	/*****
+	 * Display a different message according to the last query status
+	 * 
+	 * @param  string $true The string to return if the number of affected lines > 0
+	 * @param  string $false And if it is <= 0
+	 * @param  boolean $format Format or not the returned status
+	 * 
+	 * @return string
+	 */
 	static function status($true, $false, $format = TRUE)
 	{
-		if($format) str::display(self::$affected, $true, $false);
+		$return = self::$affected >= 0 ? $true : $false;
+		if($format) str::display($return);
 		else return $return;
 	}
 	
-	//// Construit deux statuts en se basant sur self::$affected et str::plural
+	/***** Construit deux statuts en se basant sur self::$affected et str::plural */
 	static function status_this($many, $one, $zero = NULL, $action, $action_plural = NULL)
 	{
 		if(!$action_plural) $action_plural = $action;
@@ -491,7 +551,7 @@ class db
 		else str::display($terme. ' ' .$action, 'error');
 	}
 
-	//// Returns the next value of the table key
+	/**** Returns the next value of the table key */
 	static function increment($table)
 	{
 		$result = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$table. '"'));
@@ -504,20 +564,20 @@ class db
 	########################################
 	*/
 	
-	// Shortcut for mysql_fetch_array
+	/* Shortcut for mysql_fetch_array */
 	static function fetch($result, $type = MYSQL_ASSOC)
 	{
 		if(!$result) return array();
 		return @mysql_fetch_array($result, $type);
 	}
 	
-	// Builds a select clause from a simple array
+	/* Builds a select clause from a simple array */
 	static function select_clause($fields)
 	{
 		return is_array($fields) ? implode(', ', $fields) : $fields;
 	}
 	
-	// A simplifier to build search clauses
+	/* A simplifier to build search clauses */
 	static function search_clause($search, $fields, $mode = 'OR')
 	{
 		if(empty($search)) return false;
@@ -530,19 +590,19 @@ class db
 		return '('.implode(' '.trim($mode).' ', $arr).')';
 	}
 
-	// An easy method to build a part of the where clause to find stuff by its first character
+	/* An easy method to build a part of the where clause to find stuff by its first character */
 	static function with($field, $char)
 	{
 		return 'LOWER(SUBSTRING('.$field.',1,1)) = "'.db::escape($char).'"';
 	}
 
-	// A simplifier to build IN clauses
+	/* A simplifier to build IN clauses */
 	static function in($array)
 	{
 		return '\'' .implode('\',\'', $array). '\'';
 	}
 	
-	/// A handler to convert key/value arrays to an where clause
+	/** A handler to convert key/value arrays to an where clause */
 	static function where($array, $method = 'AND')
 	{
 		if(!is_array($array)) return $array;
@@ -608,7 +668,7 @@ class db
 		return implode(' ' .$method. ' ', $output);
 	}	
 			
-	// Makes it possible to use arrays for inputs instead of MySQL strings 
+	/* Makes it possible to use arrays for inputs instead of MySQL strings  */
 	static function values($input)
 	{
 		if(!is_array($input)) return $input;
@@ -628,7 +688,7 @@ class db
 		return implode(', ', $output);
 	}
 			
-	// An internal error handler
+	/* An internal error handler */
 	static function error($message = NULL, $exit = FALSE)
 	{
 		$connection = self::connection();
@@ -640,7 +700,7 @@ class db
 		if($exit or !LOCAL) die($message);
 	}
 
-	// Strips table specific column prefixes from the result array
+	/* Strips table specific column prefixes from the result array */
 	static function simple_fields($array)
 	{
 		if(empty($array)) return false;

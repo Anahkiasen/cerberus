@@ -6,12 +6,13 @@ class dispatch extends Cerberus
 	static private $minify;
 	static private $scripts;
 
-	// Tableaux des ressources	
+	/* Tableaux des ressources	 */
 	static private $CSS;
 	static private $JS;
 	static private $LESS;
-	
-	// API disponibles
+		
+	/* API disponibles */
+	static private $typekit;
 	static private $availableAPI = array(
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.2.min.js',
@@ -39,7 +40,7 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
-	// Tri et répartition des modules demandés
+	/* Tri et répartition des modules demandés */
 	static function dispatchArray($modules)
 	{
 		// Séparation des groupes
@@ -82,7 +83,7 @@ class dispatch extends Cerberus
 		else return FALSE;
 	}
 
-	// Modules PHP
+	/* Modules PHP */
 	static function setPHP($modules)
 	{
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
@@ -90,7 +91,7 @@ class dispatch extends Cerberus
 		if($modules) new Cerberus($modules, get('page', 'home'));
 	}
 	
-	// Modules JS/CSS
+	/* Modules JS/CSS */
 	static function assets($scripts = array())
 	{
 		global $switcher;
@@ -172,13 +173,13 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
-	// Script activé ou non
+	/* Script activé ou non */
 	static function isScript($script)
 	{
 		return (isset(self::$scripts) and in_array($script, self::$scripts));
 	}
 	
-	// Récupération des feuilles de style
+	/* Récupération des feuilles de style */
 	static function getCSS()
 	{
 		// LESS
@@ -205,7 +206,7 @@ class dispatch extends Cerberus
 		if(self::$CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']). '</style>'.PHP_EOL;
 	}
 
-	// Récupération du Javascript
+	/* Récupération du Javascript */
 	static function getJS()
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
@@ -229,7 +230,7 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
-	// Ajoute une feuille de style
+	/* Ajoute une feuille de style */
 	static function addCSS($link, $min = true)
 	{
 		$array = str::find('.less', $link) ? 'LESS' : 'CSS';
@@ -238,7 +239,7 @@ class dispatch extends Cerberus
 		else self::${$array}['min'][] = $link;
 	}
 	
-	// Ajout de scripts à la volée
+	/* Ajout de scripts à la volée */
 	static function addJS($javascript)
 	{
 		$javascript = func_get_args();	
@@ -286,7 +287,7 @@ class dispatch extends Cerberus
 		}	
 	}
 	
-	// Ajout un élément Google Analytics
+	/* Ajout un élément Google Analytics */
 	static function analytics($analytics = 'XXXXX-X')
 	{
 		self::addJS(
@@ -300,7 +301,7 @@ class dispatch extends Cerberus
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();");
 	}
 	
-	// Ajoute de polices via @font-face
+	/* Ajoute de polices via @font-face */
 	static function typekit($kit = 'xky6uxx')
 	{
 		self::$typekit = $kit;

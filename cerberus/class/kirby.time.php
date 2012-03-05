@@ -1,7 +1,7 @@
 <?php
 class t
 {
-	//// Format a number of seconds to any given format
+	/**** Format a number of seconds to any given format */
 	static function format($secs, $format = NULL, $modulus = true) 
 	{
 		if($modulus)
@@ -32,14 +32,14 @@ class t
 		return $format;
 	}
 	
-	//// Calculates the difference between two dates
+	/**** Calculates the difference between two dates */
 	static function difference($debut, $fin, $pattern = '{d}')
 	{
 		$time = strtotime($fin) - strtotime($debut);
 		return self::format($time, $pattern, true);
 	}
 	
-	//// Calculates the exact age from birthday
+	/**** Calculates the exact age from birthday */
 	static function age($date)
 	{
  		list($year, $month, $day) = explode('-', $date);
@@ -60,13 +60,13 @@ class t
 	########################################
 	*/
 	
-	//// 00:00:00
+	/**** 00:00:00 */
 	static function hms($s)
 	{
 		return self::format($s, '{h}:{i}:{s}');
 	}
 	
-	//// 00:00
+	/**** 00:00 */
 	static function ms($s)
 	{
 		return self::format($s, '{i}:{s}');
