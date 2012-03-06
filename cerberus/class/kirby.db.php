@@ -327,7 +327,13 @@ class db
 			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
 	}
 			
-	/* Counts a number of rows in a table */
+	/** 
+    * Counts a number of rows in a table
+    *
+    * @param  string  $table The table name
+    * @param  mixed   $where Either a key/value array as AND connected where clause or a simple MySQL where clause string
+    * @return int      
+    */
 	static function count($table, $where = '')
 	{
 		$result = self::row($table, 'count(*)', $where);

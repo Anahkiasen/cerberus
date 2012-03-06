@@ -1,328 +1,469 @@
 @import base
++fonts("FontAwesome", "fontawesome-webfont")
 
-// ICONIC ICONS
-// ------------
+// ICONS
+// Glyphs and icons for buttons, nav, and more
+// -------------------------------------------
+// Font Awesome courtesy of Dave Gandy at fortaweso.me/font-awesome
 
-// Load font
-+fonts("IconicFill", "iconic_fill")
+[class^="iconic-"],
+[class*=" iconic-"]
+	&:before
+		font-family: "FontAwesome" !important
+		font-weight: normal
+		font-style: normal
+		display: inline-block
 
-+fonts("IconicStroke", "iconic_stroke")
+// makes the font 33% larger relative to the icon container
+.iconic-large:before
+	font-size: 4 / 3em
 
-// Icons
+// keeps button heights with and without icons the same
+.btn
+	[class^="iconic-"],
+	[class*=" iconic-"]
+		line-height: .9em
+li
+	[class^="iconic-"],
+	[class*=" iconic-"]
+		display: inline-block
+		width: 1.25em
+		text-align: center
+		
+	// 1.5 increased font size for iconic-large * 1.25 width
+	.iconic-large
+		[class^="iconic-"],
+		[class*=" iconic-"]
+			width: 1.5 * 1.25em
 
-@media screen, print
-  [class^="iconic-"],
-  [class*=" iconic-"]
-    &:before
-      font-family: 'IconicFill', Arial, sans-serif
-      vertical-align: middle
-      display: inline-block
-      content: ""
-      width: 1em
-      line-height: 100%
-    .btn &
-      margin-right: 5px
-  i
-    font-style: normal
-  .iconic-stroke:before
-    font-family: 'IconicStroke', Arial, sans-serif
-  .iconic-aperture:before
-    content: "\e026"
-  .iconic-aperture-alt:before
-    content: "\e00c"
-  .iconic-arrow-down:before
-    content: "\2193"
-  .iconic-arrow-down-alt1:before
-    content: "\e016"
-  .iconic-arrow-down-alt2:before
-    content: "\e01a"
-  .iconic-arrow-left:before
-    content: "\2190"
-  .iconic-arrow-left-alt1:before
-    content: "\e013"
-  .iconic-arrow-left-alt2:before
-    content: "\e017"
-  .iconic-arrow-right:before
-    content: "\2192"
-  .iconic-arrow-right-alt1:before
-    content: "\e015"
-  .iconic-arrow-right-alt2:before
-    content: "\e019"
-  .iconic-arrow-up:before
-    content: "\2191"
-  .iconic-arrow-up-alt1:before
-    content: "\e014"
-  .iconic-arrow-up-alt2:before
-    content: "\e018"
-  .iconic-article:before
-    content: "\e053"
-  .iconic-at:before
-    content: "\0040"
-  .iconic-award:before
-    content: "\e022"
-  .iconic-bars:before
-    content: "\e06f"
-  .iconic-bars-alt:before
-    content: "\e00a"
-  .iconic-battery-charging:before
-    content: "\e05d"
-  .iconic-battery-empty:before
-    content: "\e05c"
-  .iconic-battery-full:before
-    content: "\e073"
-  .iconic-battery-half:before
-    content: "\e05b"
-  .iconic-beaker:before
-    content: "\e023"
-  .iconic-beaker-alt:before
-    content: "\e010"
-  .iconic-bolt:before
-    content: "\26a1"
-  .iconic-book:before
-    content: "\e069"
-  .iconic-book-alt:before
-    content: "\e00b"
-  .iconic-book-alt2:before
-    content: "\e06a"
-  .iconic-box:before
-    content: "\e06b"
-  .iconic-brush:before
-    content: "\e01b"
-  .iconic-brush-alt:before
-    content: "\e01c"
-  .iconic-calendar:before
-    content: "\e001"
-  .iconic-calendar-alt:before
-    content: "\e06c"
-  .iconic-camera:before
-    content: "\e070"
-  .iconic-cd:before
-    content: "\e064"
-  .iconic-chart:before
-    content: "\e028"
-  .iconic-chart-alt:before
-    content: "\e029"
-  .iconic-chat:before
-    content: "\e05e"
-  .iconic-chat-alt:before
-    content: "\e007"
-  .iconic-check:before
-    content: "\2717"
-  .iconic-check-alt:before
-    content: "\2718"
-  .iconic-clock:before
-    content: "\e079"
-  .iconic-cloud:before
-    content: "\2601"
-  .iconic-cloud-download:before
-    content: "\e044"
-  .iconic-cloud-upload:before
-    content: "\e045"
-  .iconic-cog:before
-    content: "\2699"
-  .iconic-comment:before
-    content: "\e06d"
-  .iconic-comment-alt1:before
-    content: "\e003"
-  .iconic-comment-alt2:before
-    content: "\e004"
-  .iconic-compass:before
-    content: "\e021"
-  .iconic-cursor:before
-    content: "\e057"
-  .iconic-curved-arrow:before
-    content: "\2935"
-  .iconic-denied:before
-    content: "\26d4"
-  .iconic-dial:before
-    content: "\e058"
-  .iconic-document:before
-    content: "\e066"
-  .iconic-document-alt:before
-    content: "\e000"
-  .iconic-download:before
-    content: "\e042"
-  .iconic-eject:before
-    content: "\e04b"
-  .iconic-equalizer:before
-    content: "\e052"
-  .iconic-eye:before
-    content: "\e025"
-  .iconic-eyedropper:before
-    content: "\e01e"
-  .iconic-first:before
-    content: "\e04c"
-  .iconic-folder:before
-    content: "\e065"
-  .iconic-fork:before
-    content: "\e046"
-  .iconic-fullscreen:before
-    content: "\e04e"
-  .iconic-fullscreen-alt:before
-    content: "\e04f"
-  .iconic-fullscreen-exit:before
-    content: "\e050"
-  .iconic-fullscreen-exit-alt:before
-    content: "\e051"
-  .iconic-hash:before
-    content: "\0023"
-  .iconic-headphones:before
-    content: "\e061"
-  .iconic-heart:before
-    content: "\2764"
-  .iconic-home:before
-    content: "\2302"
-  .iconic-image:before
-    content: "\e027"
-  .iconic-info:before
-    content: "\2139"
-  .iconic-iphone:before
-    content: "\e06e"
-  .iconic-key:before
-    content: "\26bf"
-  .iconic-last:before
-    content: "\e04d"
-  .iconic-layers:before
-    content: "\e01f"
-  .iconic-layers-alt:before
-    content: "\e020"
-  .iconic-left-quote:before
-    content: "\275d"
-  .iconic-left-quote-alt:before
-    content: "\e011"
-  .iconic-lightbulb:before
-    content: "\e063"
-  .iconic-link:before
-    content: "\e077"
-  .iconic-list:before
-    content: "\e055"
-  .iconic-list-nested:before
-    content: "\e056"
-  .iconic-lock:before
-    content: "\e075"
-  .iconic-loop-alt1:before
-    content: "\e032"
-  .iconic-loop-alt2:before
-    content: "\e033"
-  .iconic-loop-alt3:before
-    content: "\e034"
-  .iconic-loop-alt4:before
-    content: "\e035"
-  .iconic-magnifying-glass:before
-    content: "\e074"
-  .iconic-mail:before
-    content: "\2709"
-  .iconic-map-pin:before
-    content: "\e068"
-  .iconic-map-pin-alt:before
-    content: "\e002"
-  .iconic-mic:before
-    content: "\e05f"
-  .iconic-minus:before
-    content: "\2796"
-  .iconic-minus-alt:before
-    content: "\e009"
-  .iconic-moon:before
-    content: "\263e"
-  .iconic-move:before
-    content: "\e03e"
-  .iconic-move-alt1:before
-    content: "\e03f"
-  .iconic-move-alt2:before
-    content: "\e040"
-  .iconic-move-horizontal:before
-    content: "\e038"
-  .iconic-move-horizontal-alt1:before
-    content: "\e039"
-  .iconic-move-horizontal-alt2:before
-    content: "\e03a"
-  .iconic-move-vertical:before
-    content: "\e03b"
-  .iconic-move-vertical-alt1:before
-    content: "\e03c"
-  .iconic-move-vertical-alt2:before
-    content: "\e03d"
-  .iconic-movie:before
-    content: "\e060"
-  .iconic-new-window:before
-    content: "\e059"
-  .iconic-pause:before
-    content: "\e049"
-  .iconic-pen:before
-    content: "\270e"
-  .iconic-pen-alt:before
-    content: "\e005"
-  .iconic-pen-alt2:before
-    content: "\e006"
-  .iconic-pilcrow:before
-    content: "\00b6"
-  .iconic-pin:before
-    content: "\e067"
-  .iconic-play:before
-    content: "\e047"
-  .iconic-play-alt:before
-    content: "\e048"
-  .iconic-plus:before
-    content: "\2795"
-  .iconic-plus-alt:before
-    content: "\e008"
-  .iconic-question-mark:before
-    content: "\003f"
-  .iconic-rain:before
-    content: "\26c6"
-  .iconic-read-more:before
-    content: "\e054"
-  .iconic-reload:before
-    content: "\e030"
-  .iconic-reload-alt:before
-    content: "\e031"
-  .iconic-right-quote:before
-    content: "\275e"
-  .iconic-right-quote-alt:before
-    content: "\e012"
-  .iconic-rss:before
-    content: "\e02c"
-  .iconic-rss-alt:before
-    content: "\e02d"
-  .iconic-share:before
-    content: "\e02e"
-  .iconic-spin:before
-    content: "\e036"
-  .iconic-spin-alt:before
-    content: "\e037"
-  .iconic-star:before
-    content: "\2605"
-  .iconic-steering-wheel:before
-    content: "\e024"
-  .iconic-stop:before
-    content: "\e04a"
-  .iconic-sun:before
-    content: "\2600"
-  .iconic-tag:before
-    content: "\e02b"
-  .iconic-target:before
-    content: "\e02a"
-  .iconic-transfer:before
-    content: "\e041"
-  .iconic-trash:before
-    content: "\e05a"
-  .iconic-umbrella:before
-    content: "\2602"
-  .iconic-undo:before
-    content: "\e02f"
-  .iconic-unlock:before
-    content: "\e076"
-  .iconic-upload:before
-    content: "\e043"
-  .iconic-user:before
-    content: "\e062"
-  .iconic-volume:before
-    content: "\e072"
-  .iconic-volume-mute:before
-    content: "\e071"
-  .iconic-wrench:before
-    content: "\e078"
-  .iconic-x:before
-    content: "\2713"
-  .iconic-x-alt:before
-    content: "\2714"
+li[class^="iconic-"]
+	margin-left: 0
+	list-style-type: none
+	&:before
+		text-indent: -2em
+		text-align: center
+	&.iconic-large:before
+		text-indent: -4 / 3em
+
+// uses Unicode Private Use Area (PUA) to ensure screen readers do not read off
+// random characters that represent icons
+.iconic-glass:before
+	content: "\f000"
+
+.iconic-music:before
+	content: "\f001"
+
+.iconic-search:before
+	content: "\f002"
+
+.iconic-envelope:before
+	content: "\f003"
+
+.iconic-heart:before
+	content: "\f004"
+
+.iconic-star:before
+	content: "\f005"
+
+.iconic-star-empty:before
+	content: "\f006"
+
+.iconic-user:before
+	content: "\f007"
+
+.iconic-film:before
+	content: "\f008"
+
+.iconic-th-large:before
+	content: "\f009"
+
+.iconic-th:before
+	content: "\f00a"
+
+.iconic-th-list:before
+	content: "\f00b"
+
+.iconic-ok:before
+	content: "\f00c"
+
+.iconic-remove:before
+	content: "\f00d"
+
+.iconic-zoom-in:before
+	content: "\f00e"
+
+.iconic-zoom-out:before
+	content: "\f010"
+
+.iconic-off:before
+	content: "\f011"
+
+.iconic-signal:before
+	content: "\f012"
+
+.iconic-cog:before
+	content: "\f013"
+
+.iconic-trash:before
+	content: "\f014"
+
+.iconic-home:before
+	content: "\f015"
+
+.iconic-file:before
+	content: "\f016"
+
+.iconic-time:before
+	content: "\f017"
+
+.iconic-road:before
+	content: "\f018"
+
+.iconic-download-alt:before
+	content: "\f019"
+
+.iconic-download:before
+	content: "\f01a"
+
+.iconic-upload:before
+	content: "\f01b"
+
+.iconic-inbox:before
+	content: "\f01c"
+
+.iconic-play-circle:before
+	content: "\f01d"
+
+.iconic-repeat:before
+	content: "\f01e"
+
+// \f020 is not a valid unicode character. all shifted one down
+.iconic-refresh:before
+	content: "\f021"
+
+.iconic-list-alt:before
+	content: "\f022"
+
+.iconic-lock:before
+	content: "\f023"
+
+.iconic-flag:before
+	content: "\f024"
+
+.iconic-headphones:before
+	content: "\f025"
+
+.iconic-volume-off:before
+	content: "\f026"
+
+.iconic-volume-down:before
+	content: "\f027"
+
+.iconic-volume-up:before
+	content: "\f028"
+
+.iconic-qrcode:before
+	content: "\f029"
+
+.iconic-barcode:before
+	content: "\f02a"
+
+.iconic-tag:before
+	content: "\f02b"
+
+.iconic-tags:before
+	content: "\f02c"
+
+.iconic-book:before
+	content: "\f02d"
+
+.iconic-bookmark:before
+	content: "\f02e"
+
+.iconic-print:before
+	content: "\f02f"
+
+.iconic-camera:before
+	content: "\f030"
+
+.iconic-font:before
+	content: "\f031"
+
+.iconic-bold:before
+	content: "\f032"
+
+.iconic-italic:before
+	content: "\f033"
+
+.iconic-text-height:before
+	content: "\f034"
+
+.iconic-text-width:before
+	content: "\f035"
+
+.iconic-align-left:before
+	content: "\f036"
+
+.iconic-align-center:before
+	content: "\f037"
+
+.iconic-align-right:before
+	content: "\f038"
+
+.iconic-align-justify:before
+	content: "\f039"
+
+.iconic-list:before
+	content: "\f03a"
+
+.iconic-indent-left:before
+	content: "\f03b"
+
+.iconic-indent-right:before
+	content: "\f03c"
+
+.iconic-facetime-video:before
+	content: "\f03d"
+
+.iconic-picture:before
+	content: "\f03e"
+
+.iconic-pencil:before
+	content: "\f040"
+
+.iconic-map-marker:before
+	content: "\f041"
+
+.iconic-adjust:before
+	content: "\f042"
+
+.iconic-tint:before
+	content: "\f043"
+
+.iconic-edit:before
+	content: "\f044"
+
+.iconic-share:before
+	content: "\f045"
+
+.iconic-check:before
+	content: "\f046"
+
+.iconic-move:before
+	content: "\f047"
+
+.iconic-step-backward:before
+	content: "\f048"
+
+.iconic-fast-backward:before
+	content: "\f049"
+
+.iconic-backward:before
+	content: "\f04a"
+
+.iconic-play:before
+	content: "\f04b"
+
+.iconic-pause:before
+	content: "\f04c"
+
+.iconic-stop:before
+	content: "\f04d"
+
+.iconic-forward:before
+	content: "\f04e"
+
+.iconic-fast-forward:before
+	content: "\f050"
+
+.iconic-step-forward:before
+	content: "\f051"
+
+.iconic-eject:before
+	content: "\f052"
+
+.iconic-chevron-left:before
+	content: "\f053"
+
+.iconic-chevron-right:before
+	content: "\f054"
+
+.iconic-plus-sign:before
+	content: "\f055"
+
+.iconic-minus-sign:before
+	content: "\f056"
+
+.iconic-remove-sign:before
+	content: "\f057"
+
+.iconic-ok-sign:before
+	content: "\f058"
+
+.iconic-question-sign:before
+	content: "\f059"
+
+.iconic-info-sign:before
+	content: "\f05a"
+
+.iconic-screenshot:before
+	content: "\f05b"
+
+.iconic-remove-circle:before
+	content: "\f05c"
+
+.iconic-ok-circle:before
+	content: "\f05d"
+
+.iconic-ban-circle:before
+	content: "\f05e"
+
+.iconic-arrow-left:before
+	content: "\f060"
+
+.iconic-arrow-right:before
+	content: "\f061"
+
+.iconic-arrow-up:before
+	content: "\f062"
+
+.iconic-arrow-down:before
+	content: "\f063"
+
+.iconic-share-alt:before
+	content: "\f064"
+
+.iconic-resize-full:before
+	content: "\f065"
+
+.iconic-resize-small:before
+	content: "\f066"
+
+.iconic-plus:before
+	content: "\f067"
+
+.iconic-minus:before
+	content: "\f068"
+
+.iconic-asterisk:before
+	content: "\f069"
+
+.iconic-exclamation-sign:before
+	content: "\f06a"
+
+.iconic-gift:before
+	content: "\f06b"
+
+.iconic-leaf:before
+	content: "\f06c"
+
+.iconic-fire:before
+	content: "\f06d"
+
+.iconic-eye-open:before
+	content: "\f06e"
+
+.iconic-eye-close:before
+	content: "\f070"
+
+.iconic-warning-sign:before
+	content: "\f071"
+
+.iconic-plane:before
+	content: "\f072"
+
+.iconic-calendar:before
+	content: "\f073"
+
+.iconic-random:before
+	content: "\f074"
+
+.iconic-comment:before
+	content: "\f075"
+
+.iconic-magnet:before
+	content: "\f076"
+
+.iconic-chevron-up:before
+	content: "\f077"
+
+.iconic-chevron-down:before
+	content: "\f078"
+
+.iconic-retweet:before
+	content: "\f079"
+
+.iconic-shopping-cart:before
+	content: "\f07a"
+
+.iconic-folder-close:before
+	content: "\f07b"
+
+.iconic-folder-open:before
+	content: "\f07c"
+
+.iconic-resize-vertical:before
+	content: "\f07d"
+
+.iconic-resize-horizontal:before
+	content: "\f07e"
+
+.iconic-bar-chart:before
+	content: "\f080"
+
+.iconic-twitter-sign:before
+	content: "\f081"
+
+.iconic-facebook-sign:before
+	content: "\f082"
+
+.iconic-camera-retro:before
+	content: "\f083"
+
+.iconic-key:before
+	content: "\f084"
+
+.iconic-cogs:before
+	content: "\f085"
+
+.iconic-comments:before
+	content: "\f086"
+
+.iconic-thumbs-up:before
+	content: "\f087"
+
+.iconic-thumbs-down:before
+	content: "\f088"
+
+.iconic-star-half:before
+	content: "\f089"
+
+.iconic-heart-empty:before
+	content: "\f08a"
+
+.iconic-signout:before
+	content: "\f08b"
+
+.iconic-linkedin-sign:before
+	content: "\f08c"
+
+.iconic-pushpin:before
+	content: "\f08d"
+
+.iconic-external-link:before
+	content: "\f08e"
+
+.iconic-signin:before
+	content: "\f090"
+
+.iconic-trophy:before
+	content: "\f091"
+
+.iconic-github-sign:before
+	content: "\f092"
+
+.iconic-upload-alt:before
+	content: "\f093"
+
+.iconic-lemon:before
+	content: "\f094"

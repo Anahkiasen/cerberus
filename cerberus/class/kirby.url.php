@@ -96,6 +96,11 @@ class url
 	/**** Recharger la page en ajoutant des paramètres supplémentaires */
 	static function reload($variables = array())
 	{
+		if(is_array($variables))
+		{
+			$get = a::remove($_GET, array('page', 'pageSub', 'admin'));
+			$variables = array_merge($get, $variables);
+		}
 		return self::rewrite(NULL, $variables);
 	}
 	
