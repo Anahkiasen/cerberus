@@ -157,8 +157,9 @@ class a
 	}
 	
 	/**** Simplify an array to its simplest form */
-	static function simple($array, $unarray = true)
+	static function simple($array, $unarray = true, $rearrange = NULL)
 	{
+		if($rearrange) $array = self::rearrange($array, $rearrange, true);
 		$output = array();
 		
 		if(sizeof($array) == 1 and $unarray)

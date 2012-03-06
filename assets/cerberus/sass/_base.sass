@@ -30,7 +30,7 @@ $baseFontFamily: $sansserif !default
 ///////////////////////////////////////////////
 
 =fonts($fontFamily, $fileName, $style: normal, $weight: normal)
-  +font-face($fontFamily, font-files("${fileName}.woff", woff, "${fileName}.ttf", truetype, "${fileName}.otf", opentype), "${fileName}.eot")
+  +font-face($fontFamily, font-files("#{$fileName}.woff", woff, "#{$fileName}.ttf", truetype, "#{$fileName}.otf", opentype), "#{$fileName}.eot")
 
 =selection($background, $color: white)
   &::selection

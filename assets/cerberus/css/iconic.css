@@ -1,12 +1,12 @@
 @font-face {
   font-family: "IconicFill";
-  src: url('/stylesheets/fonts/${fileName}.eot');
-  src: url('/stylesheets/fonts/${fileName}.eot?#iefix') format('eot'), url('/stylesheets/fonts/${fileName}.woff') format('woff'), url('/stylesheets/fonts/${fileName}.ttf') format('truetype'), url('/stylesheets/fonts/${fileName}.otf') format('opentype'); }
+  src: url('../fonts/iconic_fill.eot');
+  src: url('../fonts/iconic_fill.eot?#iefix') format('eot'), url('../fonts/iconic_fill.woff') format('woff'), url('../fonts/iconic_fill.ttf') format('truetype'), url('../fonts/iconic_fill.otf') format('opentype'); }
 
 @font-face {
   font-family: "IconicStroke";
-  src: url('/stylesheets/fonts/${fileName}.eot');
-  src: url('/stylesheets/fonts/${fileName}.eot?#iefix') format('eot'), url('/stylesheets/fonts/${fileName}.woff') format('woff'), url('/stylesheets/fonts/${fileName}.ttf') format('truetype'), url('/stylesheets/fonts/${fileName}.otf') format('opentype'); }
+  src: url('../fonts/iconic_stroke.eot');
+  src: url('../fonts/iconic_stroke.eot?#iefix') format('eot'), url('../fonts/iconic_stroke.woff') format('woff'), url('../fonts/iconic_stroke.ttf') format('truetype'), url('../fonts/iconic_stroke.otf') format('opentype'); }
 
 @media screen, print {
   [class^="iconic-"]:before,
@@ -22,7 +22,7 @@
     margin-right: 5px; }
 
   i {
-     font-style: normal; }
+    font-style: normal; }
 
   .iconic-stroke:before {
     font-family: "IconicStroke", Arial, sans-serif; }

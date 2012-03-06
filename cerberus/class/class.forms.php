@@ -33,7 +33,7 @@ class forms
 		// Type de formulaire
 		$formClass = a::get($params, 'class');
 		if(str::find('form-horizontal', $formClass)) $this->optionFormType = 'horizontal';
-		elseif(str::find('form-search', $formClass)) $this->optionFormType = 'inline';
+		elseif(str::find('form-search', $formClass)) $this->optionFormType = 'search';
 		elseif(str::find('form-inline', $formClass)) $this->optionFormType = 'inline';
 		else $this->optionFormType = 'horizontal';	
 	}
@@ -202,7 +202,7 @@ class forms
 			$this->rend('<div class="' .implode(' ', $div_class). '">', 'TAB');
 		
 			// LABEL
-			if(!in_array($deploy['type'], array('submit', 'checkbox', 'hidden')) and $this->optionFormType != 'inline')
+			if(!in_array($deploy['type'], array('submit', 'checkbox', 'hidden')) and $this->optionFormType != 'search')
 				$this->rend('<label for="' .$deploy['name']. '" class="control-label">' .$label. '</label>');
 			
 			// DIV ENGLOBANTE

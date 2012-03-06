@@ -309,7 +309,19 @@ class db
 			);
 	}
 
-	/* Runs a LEFT JOIN */
+	/** 
+    * Runs a LEFT JOIN
+    *
+    * @param  string  $table_1 The table name of the first table
+    * @param  string  $table_2 The table name of the second table
+    * @param  string  $on The MySQL ON clause without the ON keyword. ie: "user_id = comment_user" 
+    * @param  mixed   $select Either an array of fields or a MySQL string of fields
+    * @param  mixed   $where Either a key/value array as AND connected where clause or a simple MySQL where clause string
+    * @param  string  $order Order clause without the order keyword. ie: "added desc"
+    * @param  int     $page a page number
+    * @param  int     $limit a number for rows to return
+    * @return mixed      
+    */
 	static function left_join($table_1, $table_2, $on, $select, $where = NULL, $order = NULL, $page = NULL, $limit = NULL)
 	{
 			return self::join($table_1, $table_2, $on, $select, $where, $order, $page, $limit, 'LEFT JOIN');
