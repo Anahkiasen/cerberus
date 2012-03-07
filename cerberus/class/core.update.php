@@ -167,10 +167,10 @@ class update
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `page` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 				  `parent` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-				  `parent_priority` int(11) NOT NULL,
-				  `page_priority` int(11) NOT NULL,
+				  `parent_priority` int(11) NOT NULL DEFAULT \'0\',
+				  `page_priority` int(11) NOT NULL DEFAULT \'0\',
 				  `cache` enum(\'0\',\'1\') COLLATE utf8_unicode_ci NOT NULL DEFAULT \'1\',
-				  `hidden` enum(\'0\',\'1\') COLLATE utf8_unicode_ci NOT NULL,
+				  `hidden` enum(\'0\',\'1\') COLLATE utf8_unicode_ci NOT NULL DEFAULT \'0\',
 				  `external_link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');

@@ -168,9 +168,11 @@ class forms
 							a::get($isset_post, $deploy['name'], 
 							a::get($this->values, $deploy['name'])));
 							
-		// Paramètres auxiliaires
-		$auxiliaires = array('placeholder', 'rows', 'id', 'disabled', 'select');
-		foreach($auxiliaires as $ax) $deploy[$ax] = a::get($params, $ax);
+		// Paramètres auxiliaires et data-*
+		$auxiliaires = array('placeholder', 'rel', 'rows', 'id', 'disabled', 'select');
+		foreach($params as $key => $value)
+			if(in_array($key, $auxiliaires) or str::find('data-', $key)) $deploy[$key] = $value;
+		
 		$mandatory = a::get($params, 'mandatory');
 		if(isset($params['multiple'])) $deploy['multiple'] = 'multiple';
 		
