@@ -396,7 +396,7 @@ class db
 	########################################
 	*/
 	
-	/** 
+	/**
     * Returns a single row from a table
     *
     * @param  string  $table The table name
@@ -411,7 +411,7 @@ class db
 		return self::fetch($result);
 	}
 		
-	/** 
+	/**
     * Returns a single field value from a table
     *
     * @param  string  $table The table name

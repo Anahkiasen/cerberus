@@ -140,8 +140,7 @@ if(config::get('boostrap', true))
 {
 	$extension = config::get('lesscss') ? 'less' : 'sass';
 	$required = array(
-		PATH_CERBERUS.'/' .$extension. '/_custom.'.$extension,
-		PATH_COMMON.'css/styles.'.$extension);
+		PATH_CERBERUS.'/' .$extension. '/_custom.'.$extension);
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
 dir::make('cerberus/cache');
