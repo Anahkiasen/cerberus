@@ -30,15 +30,29 @@ if(isset($_POST['traduction_titre']))
 
 $strucAdmin = new AdminPage();
 $strucAdmin->setPage('cerberus_structure', array('external_link'));
-$strucAdmin->addRow('meta', 'META');
-$strucAdmin->createList(
-	array('index' => 'pageid', 'Titre' => l::admin_current(), 'Masqué' => 'hidden', 'En cache' => 'cache', 'Ordre' => 'page_priority'),
-	array(
-		'SELECT' => 'S.id AS id, S.hidden, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .l::admin_current(). ', (SELECT ' .l::admin_current(). ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
-		'FROM' => 'cerberus_meta M',
-		'RIGHT JOIN' => 'cerberus_structure S ON S.id=M.page LEFT JOIN cerberus_langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
-		'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
-		'WHERE' => 'S.parent IS NOT NULL',
+
+if(db::is_table('cerberus_meta'))
+{
+	$strucAdmin->addRow('meta', 'META');
+	$strucAdmin->createList(
+		array('index' => 'pageid', 'Titre' => l::admin_current(), 'Masqué' => 'hidden', 'En cache' => 'cache', 'Ordre' => 'page_priority'),
+		array(
+			'SELECT' => 'S.id AS id, S.hidden, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .l::admin_current(). ', (SELECT ' .l::admin_current(). ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+			'FROM' => 'cerberus_meta M',
+			'RIGHT JOIN' => 'cerberus_structure S ON S.id=M.page LEFT JOIN cerberus_langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
+			'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
+			'WHERE' => 'S.parent IS NOT NULL',
+		'DIVIDE' => 'categ'));
+}
+else
+	$strucAdmin->createList(
+		array('index' => 'pageid', 'Titre' => l::admin_current(), 'Masqué' => 'hidden', 'En cache' => 'cache', 'Ordre' => 'page_priority'),
+		array(
+			'SELECT' => 'S.id AS id, S.hidden, S.cache, S.parent, S.page_priority, CONCAT_WS("-", S.parent, S.page) AS pageid, L.' .l::admin_current(). ', (SELECT ' .l::admin_current(). ' FROM cerberus_langue WHERE tag = CONCAT("menu-", parent)) AS categ',
+			'FROM' => 'cerberus_structure S',
+			'LEFT JOIN' => 'cerberus_langue L ON L.tag = CONCAT("menu-", CONCAT_WS("-", S.parent, S.page))',
+			'ORDER BY' => 'S.parent_priority ASC, S.page_priority ASC',
+			'WHERE' => 'S.parent IS NOT NULL',
 		'DIVIDE' => 'categ'));
 
 // Formulaire META

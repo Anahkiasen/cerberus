@@ -52,40 +52,45 @@ class forms
 		foreach($parser as $field)
 		{
 			$params			= explode(':', $field);
-			$key			= a::get($params, 0);
-			$type			= a::get($params, 1, $key);
-			$default		= a::get($params, 2, NULL);
+			$key      		= a::get($params, 0);
+			$type				= a::get($params, 1, $key);
+			$default			= a::get($params, 2, NULL);
 			$value 			= $type == 'file'
-								? a::get($_FILES, $key)
-								: str::sanitize(r::get($key, $default), $type);
+									? a::get($_FILES, $key)
+									: str::sanitize(r::get($key, $default), $type);
 								
-			$status 				= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
+			$status 					= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
 			$this->status[$key] 	= $status ? 'success' : 'error';
 			
-			$result[$key] 			= $value;
+			$result[$key] 				= $value;
 			if(!$status) $errors[] 	= $key;
 		}
 		
 		// Affichage des erreurs
 		if(!empty($errors))
 		{
-			str::display(l::get('form.incomplete'), 'error');
-			return FALSE;	
+			return array(
+				'msg' => l::get('form.incomplete'),
+				'result' => $result,
+				'status' => FALSE);
 		}
 		else
 		{
-			if(true == false)
-				foreach($result as $key => $value)
+			foreach($result as $key => $value)
+			{
+				$mailbody .= '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : ';
+				if(is_array($value)) 
 				{
-					$mailbody .= '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : ';
-					if(is_array($value)) 
-					{
-						$mailbody .= '<br />';
-						$value = a::simplode(' : ', '<br />', $value);
-					}
-					$mailbody .= stripslashes($value). '<br />';
+					$mailbody .= '<br />';
+					$value = a::simplode(' : ', '<br />', $value);
 				}
-			return $result;
+				$mailbody .= stripslashes($value). '<br />';
+			}
+			
+			return array(
+				'status' => TRUE,
+				'result' => $result,
+				'mail' => $mailbody);
 		}	
 	}
 	
@@ -147,14 +152,13 @@ class forms
 		/////////////////////////
 		
 		// Type du champ
-		$deploy['type'] = 	a::get($params, 'type', 
-							'text');
+		$deploy['type'] = a::get($params, 'type', 'text');
 							
 		// Label du champ
 		$label = 	a::get($params, 'label',
-					l::get('form-' .a::get($params, 'name'),
-					ucfirst(a::get($params, 'name'))),					
-					$deploy['type']);
+						l::get('form-' .a::get($params, 'name'),
+						ucfirst(a::get($params, 'name'))),					
+						$deploy['type']);
 		
 		// Attribut name
 		$deploy['name'] = 	a::get($params, 'name', 
@@ -164,23 +168,27 @@ class forms
 		
 		// Valeur du champ
 		$isset_post = isset($_POST) ? $_POST : NULL; 
-		$deploy['value'] = 	a::get($params, 'value',
-							a::get($isset_post, $deploy['name'], 
-							a::get($this->values, $deploy['name'])));
+		$deploy['value'] = 	a::get($isset_post, $deploy['name'], 
+									a::get($params, 'value',
+									a::get($this->values, $deploy['name'])));
 							
 		// Paramètres auxiliaires et data-*
-		$auxiliaires = array('placeholder', 'rel', 'rows', 'id', 'disabled', 'select');
+		$auxiliaires = array('placeholder', 'style', 'rel', 'rows', 'id', 'disabled', 'select');
 		foreach($params as $key => $value)
 			if(in_array($key, $auxiliaires) or str::find('data-', $key)) $deploy[$key] = $value;
+			if(a::get($deploy, 'data-provide') == 'typeahead') $deploy['autocomplete'] = 'off';
 		
+		// Champ obligatoire
 		$mandatory = a::get($params, 'mandatory');
 		if(isset($params['multiple'])) $deploy['multiple'] = 'multiple';
+		
+		// Listes
+		$checkboxes = a::get($params, 'checkboxes');
 		
 		// Add-ons
 		$prepend = a::get($params, 'prepend');
 		$append = a::get($params, 'append');
 		$prepend_type = $prepend ? 'prepend' : 'append';
-		
 		$addon = a::get($params, 'addon');
 		
 		// Classe du champ
@@ -235,26 +243,25 @@ class forms
 					$this->rend('</label>');
 					break;
 				
-				
 				// Listes
 				case 'checkboxes':
 					$nameCheckbox = a::get($params, 'name').'[]';
 					$postCheckbox = a::get($_POST, $deploy['name'], array());
-					foreach($deploy['value'] as $index => $label)
+					if($checkboxes) foreach($checkboxes as $check_index => $check_label)
 					{
-						$checked = in_array($index, $postCheckbox) ? ' checked="checked"' : NULL;	
+						$checked = in_array($check_index, $postCheckbox) ? ' checked="checked"' : NULL;	
 						$this->rend('<label class="checkbox ' .$deploy['class']. '">');
-						$this->rend('<input type="checkbox" name="' .$nameCheckbox. '" value="' .$index. '" ' .$checked. ' /> '.$label);
+						$this->rend('<input type="checkbox" name="' .$nameCheckbox. '" value="' .$check_index. '" ' .$checked. ' /> '.$check_label);
 						$this->rend('</label>');
 					}
 					break;
 										
 				case 'radio':
-					foreach($deploy['value'] as $index => $label)
+					foreach($deploy['value'] as $radio_index => $radio_label)
 					{
-						$checked = r::get($deploy['name']) == $index ? ' checked="checked"' : NULL;	
+						$checked = r::get($deploy['name']) == $radio_index ? ' checked="checked"' : NULL;	
 						$this->rend('<label class="radio ' .$deploy['class']. '">');
-						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$index. '" /> '.$label);
+						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$radio_index. '" /> '.$radio_label);
 						$this->rend('</label>');
 					}
 					break;
@@ -360,7 +367,8 @@ class forms
 	
 	function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $additionalParams = NULL)
 	{
-		$this->addField($name, $label, 'checkboxes', $checkboxes, $additionalParams);
+		$additionalParams['checkboxes'] = $checkboxes;
+		$this->addField($name, $label, 'checkboxes', NULL, $additionalParams);
 	}
 	function addRadio($name = NULL, $label = NULL, $radio, $additionalParams = NULL)
 	{

@@ -6,6 +6,7 @@ class pager
 	static public $limit;
 	static public $pages;
 	
+	static private $pagination;
 	static private $get_var;
 
 	/* Définit les variables environnement */
@@ -14,6 +15,7 @@ class pager
 		self::$get_var = !$get_var ? navigation::current(). '_page' : $get_var;
 		if(!$page) $page = a::get($_GET, self::$get_var, 1);
 		
+		self::$pagination = NULL;
 		self::$entries = $entries;
 		self::$limit = $limit;
 		self::$pages = ($entries > 0) ? ceil($entries / $limit) : 0;
@@ -88,23 +90,30 @@ class pager
 	/* Builds a navigation */
 	static function pagination()
 	{
-		?>
-		<div class="pagination">
-			<ul>
-				<?php
-				echo '<li><a href="' .url::reload(array(self::$get_var => pager::previous())). '">&laquo;</a></li>';
-				
-				for($i = pager::first(); $i <= pager::last(); $i++)
-				{
-					$class = ($i == self::get()) ? ' class="active"' : NULL;
-					echo '<li' .$class. '>' .str::link(url::reload(array(self::$get_var => $i)), $i). '</li>';
-				}
+		if(!empty(self::$pagination)) echo self::$pagination;
+		else
+		{
+			content::start();
+			?>
+			<div class="pagination">
+				<ul>
+					<?php
+					echo '<li><a href="' .url::reload(array(self::$get_var => self::previous())). '">&laquo;</a></li>';
 					
-				echo '<li><a href="' .url::reload(array(self::$get_var => pager::next())). '">&raquo;</a></li>';
-				?>
-			</ul>
-		</div>
-		<?
+					for($i = self::first(); $i <= self::last(); $i++)
+					{
+						$class = ($i == self::get()) ? ' class="active"' : NULL;
+						echo '<li' .$class. '>' .str::link(url::reload(array(self::$get_var => $i)), $i). '</li>';
+					}
+						
+					echo '<li><a href="' .url::reload(array(self::$get_var => self::next())). '">&raquo;</a></li>';
+					?>
+				</ul>
+			</div>
+			<?
+			self::$pagination = content::end(true);
+			echo self::$pagination;
+		}
 	}
 }
 ?>

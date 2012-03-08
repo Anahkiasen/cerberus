@@ -29,7 +29,7 @@ class AdminSetup
 		// Identification	 
  		if(isset($_GET['logoff'])) s::remove('admin');
 		$this->login_user = md5(config::get('admin.login', 'root'));
-		$this->login_password = md5(config::get('admin.password', ''));
+		$this->login_password = md5(config::get('admin.password', 'root'));
 		$this->adminLogin();
 		
 		if($this->granted)
@@ -126,7 +126,7 @@ class AdminSetup
 			}
 			else
 			{
-				str::display('Les identifiants entrés sont incorrects.');
+				str::display('Les identifiants entrés sont incorrects.', 'error');
 				$admin_form->render();
 			}
 		}

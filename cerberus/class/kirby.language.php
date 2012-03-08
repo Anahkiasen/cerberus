@@ -175,10 +175,9 @@ class l
 	/**** Récupérer une traduction dans une langue en particulier */
 	static function getalt($key, $language = NULL, $default = NULL, $fallback = false)
 	{
-		$translate = db::field('cerberus_langue', $language, array('tag' => $key));
+		$translate = $language ? db::field('cerberus_langue', $language, array('tag' => $key)) : NULL;
 		if(!$translate)
-			$translate = $fallback ? l::get($key, $default) : $default;
-		
+			$translate = $fallback ? l::get($key, $default) : $default;		
 		return stripslashes($translate);
 	}
 	

@@ -19,28 +19,28 @@ s::start();
 */
 
 // Configuration du site
-timer::save().timer::start('config');
 if(!file_exists($config_file)) f::write($config_file, NULL);
 else config::load($config_file);
 config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
 
+// Paramètres si LOCAL
 if(config::get('local'))
 {
 	config::set(array(
-		'cache' => 		false,
-		'rewriting' => 	false,
-		'db.debug' => 	true));
+		'cache' =>     false,
+		'rewriting' => false,
+		'db.debug' =>  true));
 }
 
 // Constantes
-if(!defined('SQL')) 		 define('SQL', 		   config::get('local.name',  FALSE));
-if(!defined('REWRITING')) 	 define('REWRITING',   config::get('rewriting',   FALSE));
-if(!defined('LOCAL')) 		 define('LOCAL', 	   config::get('local', 	  FALSE));
-if(!defined('MULTILANGUE'))  define('MULTILANGUE', config::get('multilangue', FALSE));
+if(!defined('SQL'))           define('SQL', 		   config::get('local.name',  FALSE));
+if(!defined('REWRITING'))     define('REWRITING',   config::get('rewriting',   FALSE));
+if(!defined('LOCAL'))         define('LOCAL', 	   config::get('local', 	  FALSE));
+if(!defined('MULTILANGUE'))   define('MULTILANGUE', config::get('multilangue', FALSE));
 if(!defined('CACHE'))
 {
-	if(LOCAL)  define('CACHE', FALSE);
-	else	   define('CACHE', config::get('cache', TRUE));
+	if(LOCAL)   define('CACHE', FALSE);
+	else        define('CACHE', config::get('cache', TRUE));
 }
 
 // Affichage et gestion des erreurs
@@ -49,21 +49,21 @@ set_error_handler('errorHandle');
 
 /*
 ########################################
-######## CHEMINS ET ENVERGURE ##########
+######### CHEMINS ET ASSETS ############
 ########################################
 */
 
 // Chemins récurrents
-$path_common = config::get('path.common');
+$path_common =   config::get('path.common');
 $path_cerberus = config::get('path.cerberus');
-$path_file = config::get('path.file');
+$path_file =     config::get('path.file');
 
 // Chemins par défaut
 if(!$path_common)
 {
-	$path_common = 		f::path('assets/common/',f::path('assets/', '/'));
-	$path_cerberus = 	f::path('assets/cerberus/', f::path('assets/', '/'));
-	$path_file = 		f::path('assets/common/file/', f::path('assets/file/', f::path('file/')));
+	$path_common =    f::path('assets/common/',f::path('assets/', '/'));
+	$path_cerberus =  f::path('assets/cerberus/', f::path('assets/', '/'));
+	$path_file =      f::path('assets/common/file/', f::path('assets/file/', f::path('file/')));
 	
 	config::hardcode('path.common', $path_common);
 	config::hardcode('path.cerberus', $path_cerberus);
@@ -83,8 +83,6 @@ define('PATH_FILE', $path_file);
 */
 
 // Connexion à la base de données
-timer::save('config');
-timer::start('sql');
 if(SQL)
 {
 	if(LOCAL) config::set(array(
@@ -104,7 +102,6 @@ new update();
 ########################################
 */
 
-timer::save('sql').timer::start('logs');
 $ip = server::get('remote_addr');
 if(SQL)
 {
@@ -129,11 +126,16 @@ if(SQL)
 	}
 	else update::table('cerberus_logs');
 }
-$userAgent = browser::css();
+
+/*
+########################################
+########### EN-TÊTE DU SITE ############
+########################################
+*/
 
 // Ajout des balises HTML averc leur selecteur correct
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
-echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .$userAgent. '">'.PHP_EOL;
+echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.PHP_EOL;
 
 // Fichiers manquants
 if(config::get('boostrap', true))
@@ -145,18 +147,15 @@ if(config::get('boostrap', true))
 }
 dir::make('cerberus/cache');
 
+// Gestion des langues et de la navigation
+new l();
+new navigation();
+
 /*
 ########################################
-##### PARAMETRES CURRENT DU SITE #######
+####### DEBUG ET CONSTANTES ############
 ########################################
 */
-// Gestion des langues
-timer::save('logs').timer::start('langue');
-new l();
-
-// Gestion de la navigation
-timer::save('langue').timer::start('navigation');
-new navigation();
 
 // Affichage des superglobales pour debug
 if(isset($_GET['cerberus_debug']))
@@ -183,7 +182,6 @@ if(isset($_GET['cerberus_debug']))
 ########################################
 */
 
-timer::save('navigation').timer::start('cerberus');
 if(CACHE)
 {
 	// Paramètres préexistants
@@ -209,19 +207,11 @@ if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 
 /*
 ########################################
-################# GLOBALES #############
+############ BALISES META ##############
 ########################################
 */
 
-// Génération du fichier META
-timer::save('cerberus').timer::start('meta');
-meta::build();
-$title = meta::get('titre');
-$description = meta::get('description');
-
-echo PHP_EOL.'<head>'.PHP_EOL;
-if(!empty($title)) echo "\t".'<title>' .$title. '</title>'.PHP_EOL;
-if(!empty($description)) echo "\t".'<meta name="description" content="' .$description. '" />'.PHP_EOL;
+if(update::revision() < 478) meta::head();
 
 // Balise base
 if(REWRITING)
@@ -229,5 +219,4 @@ if(REWRITING)
 	$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
 	echo '<base href="' .config::get('http').$baseref. '" />';
 }
-timer::save('meta').timer::start('end');
 ?>

@@ -125,7 +125,7 @@ class Cerberus
 		$module = func_get_args();
 		foreach($module as $thismodule)
 		{
-			if(!function_exists($thismodule) and !class_exists($thismodule))
+			if(!function_exists($thismodule) and !class_exists($thismodule) and !class_exists(substr($thismodule, 6)))
 			{
 				$fichier = $this->getFile($thismodule);
 				if($fichier) include($fichier);
