@@ -36,10 +36,10 @@ $baseFontFamily: $sansserif !default
   +font-face($fontFamily, font-files("#{$fileName}.woff", woff, "#{$fileName}.ttf", truetype, "#{$fileName}.otf", opentype), "#{$fileName}.eot")
 
 =selection($background, $color: white)
-  &::selection
+  ::selection
     background: $background
     color: $color
-  &::-moz-selection
+  ::-moz-selection
     background: $background
     color: $color
 

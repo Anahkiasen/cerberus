@@ -43,7 +43,7 @@ class meta
 					self::$meta[$page][$v] = a::get($values, $v);
 				}
 			}
-
+			
 			// Mise en cache
 			if(CACHE) f::write($metafile, json_encode($meta));
 		}
@@ -91,7 +91,7 @@ class meta
 			// Récupération de la balise
 			$return = NULL;
 			$value = self::get($key);
-			$value = str_replace('{meta}', $value, a::get(self::$overwrite, $key));
+			$value = str_replace('{meta}', $value, a::get(self::$overwrite, $key, '{meta}'));
 			
 			if($value)
 			{
