@@ -22,7 +22,7 @@
     text-shadow: 0 2px 0 fade(black, 25)
     $button: #338ccc
     &:hover,
-    &.hover
+    &.active
       padding: 3px 11px
       border: solid hsl(0, 0, 20%)
       border-width: 0 1px
@@ -32,7 +32,7 @@
       background-color: $button
       position: relative
       top: 1px
-    &.hover
+    &.active
       +gradient-vertical(desaturate($button, 15), saturate($button, 15))
   .section
     margin: 0
@@ -47,6 +47,11 @@
     text-transform: uppercase
     width: 75px
 
+table
+  background: white
+  color: #333
+  +text-shadow(none)
+  
 .admin-content
   +font-sans-serif
   font-weight: 400

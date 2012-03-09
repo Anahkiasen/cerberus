@@ -56,12 +56,14 @@ if(isset($_GET['rename']))
 }
 ?>
 
-<form method="post" action="<?= url::rewrite('admin-images') ?>">
-<p class="infoblock" style="background: rgba(0, 0, 0, .50)">
+<div class="infoblock alert alert-info">
 	Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
-	<input type="text" name="prefixpost" value="<?= $PREFIXE ?>" style="padding:5px" /> <input type="submit" value="OK" class="ok" />
-</p>
-</form>
+	<? $form = new forms(array('class' => 'form-search'));
+	$form->addText('prefixpost', 'Préfixe', $PREFIXE, array('style' => 'padding: 5px'));
+	$form->addSubmit('ok');
+	$form->render();
+	?>
+</div>
 
 <table>
 <thead>

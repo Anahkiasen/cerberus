@@ -15,13 +15,13 @@ if(isset($_GET['load']))
 }
 
 echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
-<table>
+<table class="table table-bordered table-condensed table-striped">
 	<thead>
-		<tr class="entete">
-			<td>Date</td>
-			<td>Télécharger (format SQL)</td>
-			<td>Charger la sauvegarde</td>
-			<td>Supprimer</td>
+		<tr>
+			<th>Date</th>
+			<th>Télécharger (format SQL)</th>
+			<th>Charger la sauvegarde</th>
+			<th>Supprimer</th>
 		</tr>
 	</thead>
 	<tbody>';

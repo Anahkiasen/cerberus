@@ -145,7 +145,7 @@ class AdminPage extends AdminSetup
 	}
 	function createList($fieldsDisplay, $manualQuery = NULL)
 	{		
-		echo '<table><thead><tr>';
+		echo '<table class="table table-striped table-bordered table-condensed"><thead><tr>';
 		
 		/* ######## EN-TÊTE ########## */
 		
@@ -278,7 +278,7 @@ class AdminPage extends AdminSetup
 		// Ajouter un élément
 		echo '
 		<tr class="additem"><td colspan="50">'
-			.str::slink(NULL, l::get('admin.add'), 'add_'.$this->usable).'
+			.str::slink(NULL, l::get('admin.add'), 'add_'.$this->usable, array('class' => 'btn btn-wide btn-primary')).'
 		</td></tr>
 		</tbody></table><br /><br />';
 	}

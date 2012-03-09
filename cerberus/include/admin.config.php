@@ -1,7 +1,7 @@
 <?php
 $config_file = 'cerberus/conf.php';
 $arrays = array('cerberus', 'langues');
-$bool = array('rewriting', 'multi_admin', 'cache', 'logs', 'multilangue');
+$bool = array('rewriting', 'minify', 'bootstrap', 'multi_admin', 'cache', 'logs', 'multilangue');
 
 // Enregistrement des paramètres
 asort($_POST);
@@ -31,9 +31,15 @@ array(
 	'Paramètres du site' => array(
 		'rewriting' => 'Activer la réecriture d\'URL',
 		'cache' => 'Mise en cache',
-		'cachetime' => 'Durée du cache par défaut',
-		'multi_admin' => 'Multiples administrateurs',
-		'logs' => 'Statistiques'),
+		'cachetime' => 'Durée du cache par défaut'),
+	'Administration' => array(
+		'admin.login' => 'Administrateur par défaut',
+		'admin.password' => 'Mot de passe par défaut',
+		'multi_admin' => 'Multiples administrateurs'),
+	'Modules' => array(
+		'minify' => 'Minifier les ressources CSS et JS',
+		'bootstrap' => 'Utiliser le framework Bootstrap',
+		'logs' => 'Activer les statistiques'),
 	'International' => array(
 		'multilangue' => 'Site multilingue',
 		'langue_default' => 'Langue par défaut',

@@ -19,26 +19,32 @@ $exploration = a::get($_POST, 'exploration', 2);
 $type = a::get($_POST, 'type', 'empty');
 
 // Formulaire de paramètres
-$select = new select();
-$form = new form(false, array('action' => url::rewrite('admin-crawler#results')));
+$form = new forms(array('class' => 'form-horizontal'));
 $form->openFieldset('Paramètres');
 	$form->addText('domain', 'Domaine à explorer', $domain);
 	$form->addText('nofollow', 'Ignorer les extensions suivantes', $extensions);
 	$form->addText('nofollow2', 'Ignorer les pages qui contiennent dans leur URL', $nofollow2);
 	$form->addText('pagelimit', 'Limite de pages à renvoyer (0 = illimité)', $pageLimit);
 	$form->addText('trafficlimit', 'Limite de traffic en MB (0 = illimité)', $trafficLimit);
-		$select->newSelect('exploration', 'Portée du crawler');
-		$select->appendList(array('0 - Suivre tous les liens (externes compris)', '1 - Ne suivre que les liens du même domaine' ,'2 - Ne suivre que les liens du même site', '3 - Ne suivre que les liens du même dossier'));
-		$select->setValue($exploration);
-		$form->insertText($select);
-		
-		$select->newSelect('type', 'Mode d\'exploration');
-		$select->appendList(array('empty' => 'Vider le cache', 'cache' => 'Régénérer le cache', 'sitemap' => 'Créer un sitemap'), false);
-		$select->setValue($type);
-		$form->insertText($select);
+	$form->addSelect(
+		'exploration',
+		'Portée du crawler', 
+		array(
+			'0 - Suivre tous les liens (externes compris)',
+			'1 - Ne suivre que les liens du même domaine',
+			'2 - Ne suivre que les liens du même site',
+			'3 - Ne suivre que les liens du même dossier'));
+	$form->addSelect(
+		'type',
+		'Mode d\'exploration',
+		array(
+			'empty' => 'Vider le cache',
+			'cache' => 'Régénérer le cache',
+			'sitemap' => 'Créer un sitemap'));
 	$form->addSubmit('Lancer le crawler');
 $form->closeFieldset();
-echo $form. '<p id="results"></p>';
+$form->render();
+echo '<p id="results"></p>';
 
 if(isset($_POST['nofollow']))
 {
