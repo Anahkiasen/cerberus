@@ -62,7 +62,7 @@ $path_file =     config::get('path.file');
 if(!$path_common)
 {
 	$path_common =    f::path('assets/common/',f::path('assets/', '/'));
-	$path_cerberus =  f::path('assets/cerberus/', f::path('assets/', '/'));
+	$path_cerberus =  f::path('assets/_cerberus/', f::path('assets/', '/'));
 	$path_file =      f::path('assets/common/file/', f::path('assets/file/', f::path('file/')));
 	
 	config::hardcode('path.common', $path_common);
@@ -142,7 +142,7 @@ if(config::get('boostrap', true))
 {
 	$extension = config::get('lesscss') ? 'less' : 'sass';
 	$required = array(
-		PATH_CERBERUS.'/' .$extension. '/_custom.'.$extension);
+		str_replace('assets/', 'assets/lib/', PATH_CERBERUS).$extension. '/_custom.'.$extension);
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
 dir::make('cerberus/cache');

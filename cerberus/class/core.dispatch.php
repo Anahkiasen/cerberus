@@ -211,9 +211,13 @@ class dispatch extends Cerberus
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
 		if(self::$JS['min'])
 		{
-			$minify = array_unique(array_filter(self::$JS['min']));	
-			if(self::$minify) { if($minify) self::$JS['url'][] = 'min/?f=' .implode(',', $minify); }
-			else if(self::$JS['url']) self::$JS['url'] = array_merge(self::$JS['url'], $minify);
+			if(config::get('minify', TRUE))
+			{
+				$minify = array_unique(array_filter(self::$JS['min']));	
+				if(self::$minify) { if($minify) self::$JS['url'][] = 'min/?f=' .implode(',', $minify); }
+				else if(self::$JS['url']) self::$JS['url'] = array_merge(self::$JS['url'], $minify);
+			}
+			else self::$JS['url'] = array_merge(self::$JS['url'], self::$JS['min']);
 		}
 		if(self::$JS['url'])
 		{
