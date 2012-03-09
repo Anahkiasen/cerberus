@@ -197,9 +197,13 @@ class dispatch extends Cerberus
 		// CSS
 		if(self::$CSS['min'])
 		{
-			$minify = array_unique(array_filter(self::$CSS['min']));
-			if(self::$minify) { if($minify) self::$CSS['url'][] = 'min/?f=' .implode(',', $minify); }
-			else { if($minify) self::$CSS['url'] = array_merge(self::$CSS['url'], $minify); }
+			if(config::get('minify', TRUE))
+			{
+				$minify = array_unique(array_filter(self::$CSS['min']));
+				if(self::$minify) { if($minify) self::$CSS['url'][] = 'min/?f=' .implode(',', $minify); }
+				else { if($minify) self::$CSS['url'] = array_merge(self::$CSS['url'], $minify); }
+			}
+			else self::$CSS['url'] = array_merge(self::$CSS['url'], self::$CSS['min']);
 		}
 		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
 		if(self::$CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']). '</style>'.PHP_EOL;

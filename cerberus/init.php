@@ -140,9 +140,8 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.
 // Fichiers manquants
 if(config::get('boostrap', true))
 {
-	$extension = config::get('lesscss') ? 'less' : 'sass';
 	$required = array(
-		str_replace('assets/', 'assets/lib/', PATH_CERBERUS).$extension. '/_custom.'.$extension);
+		str_replace('assets/', 'assets/_compile/', PATH_CERBERUS).'css/_custom.sass');
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
 dir::make('cerberus/cache');
