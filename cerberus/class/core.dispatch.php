@@ -119,9 +119,9 @@ class dispatch extends Cerberus
 
 		// Préparation de l'array des scripts disponibles
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
-		$allowed_files = '{css/*.{css,less},less/*.{css,less},js/*.js}';
-		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,cerberus' .$templates. '}/';
-		elseif(PATH_COMMON == 'assets/') $allowed_folders = '{assets,assets/cerberus}/';
+		$allowed_files = '{css/*.css,js/*.js}';
+		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,_cerberus' .$templates. '}/';
+		elseif(PATH_COMMON == 'assets/') $allowed_folders = '{assets,assets/_cerberus}/';
 		else $allowed_folders = '/';
 		
 		$files = glob($allowed_folders.$allowed_files, GLOB_BRACE);
@@ -181,29 +181,16 @@ class dispatch extends Cerberus
 	/* Récupération des feuilles de style */
 	static function getCSS()
 	{
-		// LESS
-		if(config::get('lesscss', FALSE) and isset(self::$LESS['min']) and !empty(self::$LESS['min']) and (LOCAL or empty(self::$CSS['min'])))
-		{
-			$minify = array_unique(array_filter(self::$LESS['min'])); 
-			foreach($minify as $thisfile)
-			{
-				echo "\t".'<link rel="stylesheet/less" type="text/css" href="' .$thisfile. '" />'. PHP_EOL;
-				self::$CSS['min'] = a::remove(self::$CSS['min'], strtr($thisfile, array('.less' => '.css', 'less/' => 'css/')), false);
-			}
-			echo "\t".'<script type="text/javascript" src="' .self::$availableAPI['lesscss']. '"></script>'.PHP_EOL;
-			//echo "\t".'<script type="text/javascript"> less.watch() </script>'.PHP_EOL;
-		}
-		
 		// CSS
 		if(self::$CSS['min'])
 		{
+			$minify = array_unique(array_filter(self::$CSS['min']));
 			if(config::get('minify', TRUE))
 			{
-				$minify = array_unique(array_filter(self::$CSS['min']));
 				if(self::$minify) { if($minify) self::$CSS['url'][] = 'min/?f=' .implode(',', $minify); }
 				else { if($minify) self::$CSS['url'] = array_merge(self::$CSS['url'], $minify); }
 			}
-			else self::$CSS['url'] = array_merge(self::$CSS['url'], self::$CSS['min']);
+			else self::$CSS['url'] = array_merge(self::$CSS['url'], $minify);
 		}
 		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
 		if(self::$CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']). '</style>'.PHP_EOL;
@@ -215,13 +202,13 @@ class dispatch extends Cerberus
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
 		if(self::$JS['min'])
 		{
+			$minify = array_unique(array_filter(self::$JS['min']));
 			if(config::get('minify', TRUE))
 			{
-				$minify = array_unique(array_filter(self::$JS['min']));	
 				if(self::$minify) { if($minify) self::$JS['url'][] = 'min/?f=' .implode(',', $minify); }
 				else if(self::$JS['url']) self::$JS['url'] = array_merge(self::$JS['url'], $minify);
 			}
-			else self::$JS['url'] = array_merge(self::$JS['url'], self::$JS['min']);
+			else self::$JS['url'] = array_merge(self::$JS['url'], $minify);
 		}
 		if(self::$JS['url'])
 		{
