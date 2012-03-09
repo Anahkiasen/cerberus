@@ -195,39 +195,5 @@ class update
 				break;
 		}
 	}
-	
-	// Génère les classes Iconic
-	static function iconic($format = true)
-	{
-		$fill = f::read(PATH_CERBERUS.'fonts/iconic_fill.json', 'json');
-		$stroke = f::read(PATH_CERBERUS.'fonts/iconic_stroke.json', 'json');
-		
-		$iconic = array_merge($fill, $stroke);
-		foreach($iconic as $icon => $unicode)
-		{
-			$icon_stroke = str_replace('_fill', '_stroke', $icon);
-			$icon_naked = str_replace('_fill', NULL, $icon);
-			if(isset($iconic[$icon_stroke]) and $iconic[$icon_stroke] == $unicode)
-			{
-				$iconic = a::remove($iconic, array($icon, $icon_stroke));
-				$iconic[$icon_naked] = $unicode;
-			}
-		}
-		ksort($iconic);
-		if(!$format) return $iconic;
-		
-		$space = 25;
-		$return = NULL;
-		foreach($iconic as $icon => $unicode)
-		{
-			$return .= "\t";
-			$return .= '.iconic-'.$icon. ':before';
-			$return .= str_repeat(' ', $space - strlen($icon));
-			$return .= '{ content: "\\' .$unicode. '" }';
-			$return .= PHP_EOL;
-		}
-		
-		return $return;		
-	}
 }
 ?>

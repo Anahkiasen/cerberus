@@ -111,7 +111,7 @@ class dispatch extends Cerberus
 				
 		// Fichiers par défaut
 		$scripts['*'][] = 'core';
-		if(config::get('bootstrap')) $scripts['*'] += array(98 => 'bootstrap');
+		if(config::get('bootstrap')) $scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
 		$scripts['*'] += array(99 => 'styles');
 		
 		$scripts[self::$current][] = self::$current;
