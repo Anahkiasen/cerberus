@@ -120,8 +120,8 @@ class dispatch extends Cerberus
 		// Préparation de l'array des scripts disponibles
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
 		$allowed_files = '{css/*.css,js/*.js}';
-		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,_cerberus' .$templates. '}/';
-		elseif(PATH_COMMON == 'assets/') $allowed_folders = '{assets,assets/_cerberus}/';
+		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,cerberus' .$templates. '}/';
+		elseif(PATH_COMMON == 'assets/') $allowed_folders = '{assets,assets/cerberus}/';
 		else $allowed_folders = '/';
 		
 		$files = glob($allowed_folders.$allowed_files, GLOB_BRACE);

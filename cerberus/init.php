@@ -62,7 +62,7 @@ $path_file =     config::get('path.file');
 if(!$path_common)
 {
 	$path_common =    f::path('assets/common/',f::path('assets/', '/'));
-	$path_cerberus =  f::path('assets/_cerberus/', f::path('assets/', '/'));
+	$path_cerberus =  f::path('assets/cerberus/', f::path('assets/', '/'));
 	$path_file =      f::path('assets/common/file/', f::path('assets/file/', f::path('file/')));
 	
 	config::hardcode('path.common', $path_common);

@@ -84,7 +84,7 @@
 // New image replacement
 // -------------------------
 // Source: http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/
-.hide-text
+=hide-text
   overflow: hidden
   text-indent: 100%
   white-space: nowrap
@@ -387,7 +387,7 @@ $diff: 5%
     > .span#{$index}
       +grid-fluid-span($index)
 
-=gruid-fluid-span($columns)
+=grid-fluid-span($columns)
   width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)
 
 // Input grid
@@ -403,5 +403,5 @@ $diff: 5%
     input.span#{$index}, textarea.span#{$index}, .uneditable-input.span#{$index}
       +grid-input-span($index)
 
-=grid-fluid-span($columns)
+=grid-input-span($columns)
   width: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) - 10
