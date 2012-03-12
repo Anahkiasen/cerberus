@@ -32,8 +32,10 @@ table
   thead th
     vertical-align: bottom
   // Remove top border from thead by default
-  thead:first-child tr th,
-  thead:first-child tr td
+  colgroup + thead tr:first-child th,
+  colgroup + thead tr:first-child td,
+  thead:first-child tr:first-child th,
+  thead:first-child tr:first-child td
     border-top: 0
   // Account for multiple tbody instances
   tbody + tbody
@@ -66,7 +68,6 @@ table
   tbody:first-child tr:first-child th,
   tbody:first-child tr:first-child td
     border-top: 0
-    border-bottom: 1px solid $tableBorder
   // For first th or td in the first row in the first thead or tbody
   thead:first-child tr:first-child th:first-child,
   tbody:first-child tr:first-child td:first-child

@@ -19,16 +19,12 @@
   display: inline-block
   width: 0
   height: 0
-  text-indent: -99999px
-  // IE7 won't do the border trick if there's a text indent, but it doesn't
-  // do the content that text-indent is hiding, either, so we're ok.
-  *text-indent: 0
   vertical-align: top
   border-left: 4px solid transparent
   border-right: 4px solid transparent
   border-top: 4px solid $black
   +opacity(30)
-  content: "\2193"
+  content: ""
 
 // Place the caret
 .dropdown .caret
@@ -38,10 +34,6 @@
 .dropdown:hover .caret,
 .open.dropdown .caret
   +opacity(100)
-
-// Small button dropdowns
-.btn-small .caret
-  margin-top: 6px
 
 // The dropdown menu (ul)
 // ----------------------
@@ -59,7 +51,7 @@
   // override default ul
   list-style: none
   background-color: $dropdownBackground
-  border-color: #ccc
+  border-color: #cccccc
   border-color: rgba(0, 0, 0, 0.2)
   border-style: solid
   border-width: 1px
@@ -105,7 +97,7 @@
   *z-index: $zindexDropdown
   .dropdown-toggle
     color: $white
-    background: #ccc
+    background: #cccccc
     background: rgba(0, 0, 0, 0.3)
   .dropdown-menu
     display: block
