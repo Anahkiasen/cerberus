@@ -43,6 +43,9 @@ $baseFontFamily: $sansserif !default
     background: $background
     color: $color
 
+=font-smoothing($smooth)
+  +experimental(font-smoothing, $smooth)
+
 =text-drop($color, $size: $default_size)
   color: $color
   $default_size: 2px
