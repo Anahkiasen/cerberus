@@ -20,7 +20,7 @@ class dispatch extends Cerberus
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider' => 'jquery.nivo.slider.pack',
-		'colorbox' => 'jquery.colorbox.min',
+		'colorbox' => 'jquery.colorbox-min',
 		'easing' => 'jquery.easing');
 	
 	// Initilisation de Dispatch
