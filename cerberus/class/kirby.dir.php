@@ -2,12 +2,28 @@
 class dir
 {
 	// Creates a new directory
-	static function make($dir)
+	static function make($directory, $recursive = FALSE)
 	{
-		if(is_dir($dir)) return true;
-		if(!@mkdir($dir, 0755)) return false;
-		@chmod($dir, 0755);
-		return true;
+		if($recursive)
+		{
+			if(is_dir($directory)) return true;
+			if(!@mkdir($directory, 0755)) return false;
+			@chmod($directory, 0755);
+			return true;	
+		}
+		else
+		{
+			$directories = explode('/', $directory);
+			$current = NULL;
+			foreach($directories as $directory)
+				if($directory !== '.' and $directory !== '..')
+				{
+					$current .= $directory.'/';
+					$make = self::make($current, TRUE);
+					if(!$make) return false;	
+				}
+			return true;
+		}
 	}
 
 	// Reads all files from a directory and returns them as an array. It skips unwanted invisible stuff. 

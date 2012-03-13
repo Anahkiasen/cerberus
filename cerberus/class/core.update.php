@@ -44,7 +44,7 @@ class update
 			self::codematch('global \$dispatch;', '');
 		}
 				
-		self::update(478);
+		self::update(494);
 	}
 	
 	// Retourne le numéro de révision

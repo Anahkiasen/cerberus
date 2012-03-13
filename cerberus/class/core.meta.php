@@ -2,15 +2,22 @@
 class meta
 {
 	public static $meta = NULL;
+	
+	private static $file;
 	private static $overwrite = array();
 	
-	// Fonction META 
+	/* 
+	########################################
+	############ INITIALISATION ############
+	########################################
+	*/
+	
 	static function build()
 	{
 		// Tableau des informations META
-		$metafile = 'cerberus/cache/meta-' .l::current(). '.php';
+		self::$file = 'cerberus/cache/meta-' .l::current(). '.php';
 		$db_exist = SQL ? db::is_table('cerberus_meta', 'cerberus_structure') : FALSE;
-		$meta = f::read($metafile, 'json');
+		$meta = f::read(self::$file, 'json');
 		
 		// Si aucune données META en cache, création du tableau
 		if(!is_array(self::$meta) and SQL and (config::get('meta', FALSE) or $db_exist))
@@ -43,18 +50,38 @@ class meta
 					self::$meta[$page][$v] = a::get($values, $v);
 				}
 			}
-			
-			// Mise en cache
-			if(CACHE) f::write($metafile, json_encode($meta));
 		}
 		else self::$meta = array();
 	}
+
+	/* 
+	########################################
+	######## MODIFIER LES DONNEES ##########
+	########################################
+	*/
 
 	// Modifier les données META
 	static function set($key, $value = NULL)
 	{
 		self::$overwrite[$key] = $value;
 	}
+	
+	// Créer un nuage de mots-clés
+	static function keywords($string)
+	{
+		$string = preg_replace('#([,\.\r\n\-])#', NULL, $string);
+		$string = explode(' ', $string);
+		shuffle($string);
+		$string = array_filter(array_unique($string));
+		$string = implode(', ', $string);
+		return $string;
+	}
+	
+	/* 
+	########################################
+	######## RENVOYER LES DONNEES ##########
+	########################################
+	*/
 
 	// Renvoit un type de données précis
 	static function get($get = NULL, $default = NULL)
@@ -81,6 +108,13 @@ class meta
 			: $default;
 	}
 	
+	// Renvoit les données meta d'une page
+	static function page($page)
+	{		
+		if(isset(self::$meta[$page]) and !empty(self::$meta[$page])) return self::$meta[$page];
+		else return array();
+	}
+	
 	// Renvoit une ou la totalité des balises META
 	static function head($key = NULL)
 	{
@@ -105,14 +139,12 @@ class meta
 			
 			return $return;
 		}
-		else echo PHP_EOL.'<head>'.PHP_EOL.self::head('titre').self::head('description');
+		else echo PHP_EOL.'<head>'.PHP_EOL.self::head('titre').self::head('description').self::head('keywords');
+		
+		// Mise en cache
+		if(CACHE) f::write(self::$file, json_encode(self::$meta));
 	}
 	
-	// Renvoit les données meta d'une page
-	static function page($page)
-	{		
-		if(isset(self::$meta[$page]) and !empty(self::$meta[$page])) return self::$meta[$page];
-		else return array();
-	}
+
 }
 ?>

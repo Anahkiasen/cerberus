@@ -19,7 +19,7 @@ class switcher
 	// Obtenir le chemin actuel
 	function path($getFolder = 'all')
 	{
-		$path = 'assets/' .$this->actual. '/';
+		$path = dispatch::$assets. '/' .$this->actual. '/';
 		switch($getFolder)
 		{
 			case 'css':

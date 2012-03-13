@@ -96,7 +96,9 @@ function backupSQL()
 			$filename = $filename. '-' .date('H-i-s'). '.sql';
 			f::write($folderName. '/' .$filename, $file);
 			
-			return 'Le fichier ' .$filename. ' a bien été crée<br />Tables : ' .implode(', ', $tables_base);
+			return 
+			'Le fichier ' .$filename. ' a bien été crée<br />
+			Tables : ' .implode(', ', $tables_base);
 		}
 		else return 'Une sauvegarde existe déjà pour cette date.';
 	}

@@ -22,16 +22,30 @@ class dispatch extends Cerberus
 		'nivoslider' => 'jquery.nivo.slider.pack',
 		'colorbox' => 'jquery.colorbox-min',
 		'easing' => 'jquery.easing');
+		
+	// Dossiers et fichiers
+	static public $assets = 'assets';
+	static public $compile = '_compile';
+	static public $cerberus = 'cerberus';
+	static public $common = 'common';
+	static public $images = 'img';
+	static public $css = 'css';
+	static public $sass = 'css';
+	static public $js = 'js';
+	static public $file = 'file';
 	
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
 	{			
-		// Page en cours
-		self::$current = (!empty($current)) ? $current : navigation::current();
-		self::$global = navigation::$page;
+		// Paramètres
 		self::$minify = is_dir('min');
-		self::$JS = self::$CSS = self::$LESS =
-			array('min' => array(), 'url' => array(), 'inline' => array());
+		self::$JS = self::$CSS =
+			array(
+			'min' => array(),
+			'url' => array(),
+			'inline' => array(
+				'before' => array(),
+				'after' => array()));
 	}
 		
 	/* 
@@ -43,6 +57,12 @@ class dispatch extends Cerberus
 	/* Tri et répartition des modules demandés */
 	static function dispatchArray($modules)
 	{
+		if(!isset(self::$global))
+		{
+			self::$current = (!empty($current)) ? $current : navigation::current();
+			self::$global = navigation::$page;
+		}	
+		
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
@@ -88,7 +108,7 @@ class dispatch extends Cerberus
 	{
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::dispatchArray($modules);
-		if($modules) new Cerberus($modules, navigation::$page);
+		if($modules) new Cerberus($modules, self::$global);
 	}
 	
 	/* Modules JS/CSS */
@@ -120,8 +140,8 @@ class dispatch extends Cerberus
 		// Préparation de l'array des scripts disponibles
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
 		$allowed_files = '{css/*.css,js/*.js}';
-		if(PATH_COMMON == 'assets/common/') $allowed_folders = 'assets/{common,cerberus' .$templates. '}/';
-		elseif(PATH_COMMON == 'assets/') $allowed_folders = '{assets,assets/cerberus}/';
+		if(PATH_COMMON == self::path('{assets}/{common}/')) $allowed_folders = dispatch::path('{assets}/{{common},{cerberus}' .$templates. '}/');
+		elseif(PATH_COMMON == self::path('{assets}/')) $allowed_folders = dispatch::path('{{assets},{assets}/{cerberus}}/');
 		else $allowed_folders = '/';
 		
 		$files = glob($allowed_folders.$allowed_files, GLOB_BRACE);
@@ -131,7 +151,7 @@ class dispatch extends Cerberus
 			if(!isset($dispath[$basename])) $dispath[$basename] = array();
 			array_push($dispath[$basename], $path);
 		}
-		$dispath['bootstrap'] = array(PATH_CERBERUS. 'less/bootstrap.less', PATH_CERBERUS. 'css/bootstrap.css');
+		$dispath['bootstrap'] = array(PATH_CERBERUS. 'css/bootstrap.css');
 		
 		// Récupération des différents scripts
 		self::$scripts = array_filter(self::dispatchArray($scripts));
@@ -172,86 +192,105 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
+	/* Calcule un chemin donné */
+	static function path($path)
+	{
+		preg_match_all('#\{([a-z]+)\}#', $path, $results);
+		if($results) foreach($results[0] as $id => $r)
+		{
+			$variable = a::get($results[1], $id);
+			$variable = self::${$variable};
+			
+			$path = str_replace($r, $variable, $path);
+		}
+		return $path;
+	}
+	
 	/* Script activé ou non */
 	static function isScript($script)
 	{
 		return (isset(self::$scripts) and in_array($script, self::$scripts));
 	}
 	
+	/* 
+	########################################
+	########## CSS ET JAVASCRIPT ###########
+	########################################
+	*/
+	
+	// Injecte du CSS/JS dans les ressources
+	static function inject($type, $scripts, $place = 'after')
+	{
+		$type = str::upper($type);
+		if(!is_array($scripts)) $scripts = array($scripts);
+		
+		foreach($scripts as $script)
+		{
+			$script = preg_replace('#(<script type="text/javascript">|</script>|<style type="text/css">|</style>)#', NULL, $script);
+			$is_http = str::find('http', substr($script, 0, 4));
+			if(in_array(f::extension($script), array('css', 'js')) or $is_http)
+			{
+				if($is_http) self::${$type}['url'][] = $script;
+				else self::${$type}['min'][] = $script;
+			}
+			else self::${$type}['inline'][$place][] = trim($script);
+		}
+	}
+	
+	// Nettoyage des tableaux de scripts
+	static function sanitize($array)
+	{
+		if(isset($array['min']) and !empty($array['min']))
+		{
+			$minify = array_unique(array_filter($array['min']));
+			if(!self::$minify or !$minify or !config::get('minify', TRUE))
+				$array['url'] = array_merge($array['url'], $minify);
+			
+			else $array['url'][] = 'min/?f=' .implode(',', $minify);	
+		}
+		$array['url'] = array_unique(array_filter($array['url']));
+		
+		return $array;
+	}
+	
 	/* Récupération des feuilles de style */
 	static function getCSS()
 	{
-		// CSS
-		if(self::$CSS['min'])
-		{
-			$minify = array_unique(array_filter(self::$CSS['min']));
-			if(config::get('minify', TRUE))
-			{
-				if(self::$minify) { if($minify) self::$CSS['url'][] = 'min/?f=' .implode(',', $minify); }
-				else { if($minify) self::$CSS['url'] = array_merge(self::$CSS['url'], $minify); }
-			}
-			else self::$CSS['url'] = array_merge(self::$CSS['url'], $minify);
-		}
+		self::$CSS = self::sanitize(self::$CSS);
+		
+		if(self::$CSS['inline']['before']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['before']). '</style>'.PHP_EOL;
 		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
-		if(self::$CSS['inline']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']). '</style>'.PHP_EOL;
+		if(self::$CSS['inline']['after']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['after']). '</style>'.PHP_EOL;
 	}
 
 	/* Récupération du Javascript */
 	static function getJS()
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
-		if(self::$JS['min'])
-		{
-			$minify = array_unique(array_filter(self::$JS['min']));
-			if(config::get('minify', TRUE))
-			{
-				if(self::$minify) { if($minify) self::$JS['url'][] = 'min/?f=' .implode(',', $minify); }
-				else if(self::$JS['url']) self::$JS['url'] = array_merge(self::$JS['url'], $minify);
-			}
-			else self::$JS['url'] = array_merge(self::$JS['url'], $minify);
-		}
-		if(self::$JS['url'])
-		{
-			self::$JS['url'] = array_unique(array_filter(self::$JS['url']));
-			foreach(self::$JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
-		}
-		if(self::$JS['inline']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", self::$JS['inline']).PHP_EOL. '</script>'.PHP_EOL;
+		self::$JS = self::sanitize(self::$JS);
+		
+		if(self::$JS['inline']['before']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", self::$JS['inline']['before']).PHP_EOL. '</script>'.PHP_EOL;
+		if(self::$JS['url']) foreach(self::$JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
+		if(self::$JS['inline']['after']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", self::$JS['inline']['after']).PHP_EOL. '</script>'.PHP_EOL;
 	}
 	
-	/* 
-	########################################
-	########## RAJOUT GLOBAL ###############
-	########################################
-	*/
+	// Raccourcis
 	
 	/* Ajoute une feuille de style */
-	static function addCSS($link, $min = true)
+	static function addCSS($stylesheets)
 	{
-		$array = str::find('.less', $link) ? 'LESS' : 'CSS';
-		
-		if(str::find('http', $link) or !$min) self::${$array}['url'][] = $link;
-		else self::${$array}['min'][] = $link;
+		self::inject('css', $stylesheets);
 	}
 	
 	/* Ajout de scripts à la volée */
-	static function addJS($javascript)
+	static function addJSBefore($javascript)
 	{
-		$javascript = func_get_args();	
-		
-		if(sizeof($javascript) == 1)
-		{
-			$javascript = a::get($javascript, 0);
-			$javascript = str_replace('<script type="text/javascript">', NULL, $javascript);
-			$javascript = str_replace('</script>', NULL, $javascript);
-			
-			if(f::extension($javascript) == 'js')
-			{
-				if(str::find('http', substr($javascript, 0, 4))) self::$JS['url'][] = $javascript;
-				else self::$JS['min'][] = $javascript;
-			}
-			else self::$JS['inline'][] = $javascript;
-		}
-		else foreach($javascript as $j) self::addJS($j);
+		self::inject('js', $javascript, 'before');
+	}
+	
+	static function addJS($javascript, $place = 'after')
+	{
+		self::inject('js', $javascript, $place);
 	}
 	
 	/* 
@@ -265,18 +304,25 @@ class dispatch extends Cerberus
 		if(!file_exists('config.rb'))
 		{
 			$array = array(
-				'css_dir' => PATH_COMMON.'css',
-				'images_dir' => PATH_COMMON.'img',
-				'images_dir' => PATH_COMMON.'img',
-				'fonts_dir' => PATH_CERBERUS.'fonts',
-				'javascripts_dir' => PATH_COMMON.'js',
-				'output_style' => 'expanded',
-				'additional_import_paths' => '[\'' .PATH_CERBERUS. 'scss\', \'' .PATH_COMMON. 'scss\']'
+				'project_path' => PATH_COMMON,
+				'images_dir' => 'img',
+				'css_dir' => 'css',
+				'javascripts_dir' => 'js',
+				'images_dir' => 'img',
+				'fonts_path' => PATH_CERBERUS.'fonts',
+				'output_style' => 'expanded'
 			);
 			$config = array_merge($config, $array);
 			
 			$file = NULL;
 			foreach($config as $k => $v) $file .= $k. ' = "' .$v. '"' .PHP_EOL;
+			content::start();
+			?>
+			add_import_path "<?= self::path('{assets}/{compile}/{cerberus}/{sass}') ?>"
+			add_import_path "<?= self::path('{assets}/{compile}/{common}/{sass}') ?>"
+			<?
+			$file .= content::end(true);
+			
 			f::write('config.rb', $file);
 		}	
 	}

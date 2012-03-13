@@ -52,6 +52,8 @@ set_error_handler('errorHandle');
 ########################################
 */
 
+$dispatch = new dispatch();
+
 // Chemins récurrents
 $path_common =   config::get('path.common');
 $path_cerberus = config::get('path.cerberus');
@@ -60,9 +62,9 @@ $path_file =     config::get('path.file');
 // Chemins par défaut
 if(!$path_common)
 {
-	$path_common =    f::path('assets/common/',f::path('assets/', '/'));
-	$path_cerberus =  f::path('assets/cerberus/', f::path('assets/', '/'));
-	$path_file =      f::path('assets/common/file/', f::path('assets/file/', f::path('file/')));
+	$path_common =    f::path(dispatch::path('{assets}/{common}/'), f::path(dispatch::path('{assets}/'), '/'));
+	$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'), f::path(dispatch::path('{assets}/'), '/'));
+	$path_file =      f::path(dispatch::path('{assets}/{common}/{file}/'), f::path(dispatch::path('{assets}/{file}/'), f::path(dispatch::path('{file}/'))));
 	
 	config::hardcode('path.common', $path_common);
 	config::hardcode('path.cerberus', $path_cerberus);
@@ -138,13 +140,12 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xh
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.PHP_EOL;
 
 // Fichiers manquants
-if(config::get('boostrap', true))
+if(config::get('boostrap', true) and LOCAL)
 {
 	$required = array(
-		str_replace('assets/', 'assets/_compile/', PATH_CERBERUS).'css/_custom.sass');
+		dispatch::path('{assets}/{compile}/{cerberus}/{sass}/_custom.sass'));
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
-dir::make('cerberus/cache');
 
 // Gestion des langues et de la navigation
 new l();
@@ -201,7 +202,6 @@ if(CACHE)
 
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
-$dispatch = new dispatch();
 if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 
 /*
