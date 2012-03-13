@@ -33,7 +33,6 @@ if(config::get('local'))
 }
 
 // Constantes
-if(!defined('SQL'))           define('SQL', 		   config::get('local.name',  FALSE));
 if(!defined('REWRITING'))     define('REWRITING',   config::get('rewriting',   FALSE));
 if(!defined('LOCAL'))         define('LOCAL', 	   config::get('local', 	  FALSE));
 if(!defined('MULTILANGUE'))   define('MULTILANGUE', config::get('multilangue', FALSE));
@@ -83,7 +82,7 @@ define('PATH_FILE', $path_file);
 */
 
 // Connexion à la base de données
-if(SQL)
+if(config::get('local.name',  FALSE))
 {
 	if(LOCAL) config::set(array(
 		'db.host' => 		config::get('local.host'),
@@ -91,6 +90,7 @@ if(SQL)
 		'db.password' => 	config::get('local.password'),
 		'db.name' => 		config::get('local.name')));
 	if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
+	if(!defined('SQL')) define('SQL', db::connection(), FALSE);
 }
 
 // Mise à jour du moteur

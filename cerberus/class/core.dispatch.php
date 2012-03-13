@@ -88,7 +88,7 @@ class dispatch extends Cerberus
 	{
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::dispatchArray($modules);
-		if($modules) new Cerberus($modules, get('page', 'home'));
+		if($modules) new Cerberus($modules, navigation::$page);
 	}
 	
 	/* Modules JS/CSS */
