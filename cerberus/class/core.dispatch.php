@@ -340,7 +340,7 @@ class dispatch extends Cerberus
 				'images_dir' => self::$images,
 				'css_dir' => self::$css,
 				'javascripts_dir' => self::$js,
-				'fonts_path' => self::$fonts,
+				'fonts_dir' => self::$fonts,
 				'output_style' => ':expanded',
 				'preferred_syntax' => ':sass',
 				'line_comments' => 'false',

@@ -162,7 +162,7 @@ if(CACHE)
 	$setCache['basename'] = a::get($setCache, 'basename', navigation::current());
 	$setCache['cachetime'] = a::get($setCache, 'cachetime', config::get('cachetime', 604800));
 	$setCache['getvar'] = a::get($setCache, 'getvar', true);
-	$setCache['cache'] = a::get($setCache, 'cache', false);
+	$setCache['cache'] = a::get($setCache, 'cache', null);
 	
 	// Démarrage de la mise en cache
 	$start = content::cache_start($setCache);

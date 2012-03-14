@@ -22,7 +22,7 @@ class content
 			: $params['cache'];
 		if(navigation::$page == 'admin') $cache = FALSE;
 		
-		if($params['cache'] or ($cache and CACHE))
+		if($params['cache'] !== false and ($cache and CACHE))
 		{			
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
