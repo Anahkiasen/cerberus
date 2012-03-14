@@ -23,22 +23,29 @@ class dispatch extends Cerberus
 		'colorbox' => 'jquery.colorbox-min',
 		'easing' => 'jquery.easing');
 		
-	// Dossiers et fichiers
+	/***************************
+	 ** RESSOURCES ET CHEMINS **
+	 ***************************/
+	
+	static public $compass = 'config.rb';
+	
 	static public $assets = 'assets';
-	static public $compile = '_compile';
 	static public $cerberus = 'cerberus';
 	static public $common = 'common';
+	
+	static public $fonts = 'fonts';
 	static public $images = 'img';
 	static public $css = 'css';
-	static public $sass = 'css';
+	static public $sass = 'sass';
 	static public $js = 'js';
+	static public $coffee = 'coffee';
 	static public $file = 'file';
 	
 	// Initilisation de Dispatch
 	function __construct($current = NULL)
 	{			
 		// Paramètres
-		self::$minify = is_dir('min');
+		self::$minify = (is_dir('min') and config::get('minify', TRUE));
 		self::$JS = self::$CSS =
 			array(
 			'min' => array(),
@@ -46,6 +53,31 @@ class dispatch extends Cerberus
 			'inline' => array(
 				'before' => array(),
 				'after' => array()));
+				
+		// Chemins récurrents
+		$path_common =   config::get('path.common');
+		$path_cerberus = config::get('path.cerberus');
+		$path_file =     config::get('path.file');
+		
+		// Chemins par défaut
+		if(!$path_common)
+		{
+			$path_common =    f::path(dispatch::path('{assets}/{common}/'), f::path(dispatch::path('{assets}/'), '/'));
+			$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'), f::path(dispatch::path('{assets}/'), '/'));
+			$path_file =      f::path(dispatch::path('{assets}/{common}/{file}/'), f::path(dispatch::path('{assets}/{file}/'), f::path(dispatch::path('{file}/'))));
+			
+			config::hardcode('path.common', $path_common);
+			config::hardcode('path.cerberus', $path_cerberus);
+			config::hardcode('path.file', $path_file);
+			
+			f::remove('config.rb');
+		}
+		
+		define('PATH_COMMON', $path_common);
+		define('PATH_CERBERUS', $path_cerberus);
+		define('PATH_FILE', $path_file);
+		
+		self::compass();
 	}
 		
 	/* 
@@ -243,7 +275,7 @@ class dispatch extends Cerberus
 		if(isset($array['min']) and !empty($array['min']))
 		{
 			$minify = array_unique(array_filter($array['min']));
-			if(!self::$minify or !$minify or !config::get('minify', TRUE))
+			if(!self::$minify or !$minify)
 				$array['url'] = array_merge($array['url'], $minify);
 			
 			else $array['url'][] = 'min/?f=' .implode(',', $minify);	
@@ -301,29 +333,28 @@ class dispatch extends Cerberus
 	
 	static function compass($config = array())
 	{
-		if(!file_exists('config.rb'))
+		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(PATH_COMMON.self::$compass))
 		{
+			$file = NULL;
 			$array = array(
-				'project_path' => PATH_COMMON,
-				'images_dir' => 'img',
-				'css_dir' => 'css',
-				'javascripts_dir' => 'js',
-				'images_dir' => 'img',
-				'fonts_path' => PATH_CERBERUS.'fonts',
-				'output_style' => 'expanded'
-			);
+				'images_dir' => self::$images,
+				'css_dir' => self::$css,
+				'javascripts_dir' => self::$js,
+				'fonts_path' => self::$fonts,
+				'output_style' => ':expanded',
+				'preferred_syntax' => ':sass',
+				'line_comments' => 'false',
+				'relative_assets' => 'true' );
 			$config = array_merge($config, $array);
 			
-			$file = NULL;
-			foreach($config as $k => $v) $file .= $k. ' = "' .$v. '"' .PHP_EOL;
-			content::start();
-			?>
-			add_import_path "<?= self::path('{assets}/{compile}/{cerberus}/{sass}') ?>"
-			add_import_path "<?= self::path('{assets}/{compile}/{common}/{sass}') ?>"
-			<?
-			$file .= content::end(true);
+			foreach($config as $k => $v)
+			{
+				if(!($v == 'true' or $v == 'false' or (substr($v, 0, 1) == ':'))) $v = '"' .$v. '"'; 
+				$file .= $k. ' = ' .$v.PHP_EOL;
+			}
 			
-			f::write('config.rb', $file);
+			f::write(PATH_CERBERUS.self::$compass, $file);
+			f::write(PATH_COMMON.self::$compass, $file);	
 		}	
 	}
 	

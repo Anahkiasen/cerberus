@@ -46,36 +46,8 @@ if(!defined('CACHE'))
 error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
 set_error_handler('errorHandle');
 
-/*
-########################################
-######### CHEMINS ET ASSETS ############
-########################################
-*/
-
+// Gestion des ressources et chemins
 $dispatch = new dispatch();
-
-// Chemins récurrents
-$path_common =   config::get('path.common');
-$path_cerberus = config::get('path.cerberus');
-$path_file =     config::get('path.file');
-
-// Chemins par défaut
-if(!$path_common)
-{
-	$path_common =    f::path(dispatch::path('{assets}/{common}/'), f::path(dispatch::path('{assets}/'), '/'));
-	$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'), f::path(dispatch::path('{assets}/'), '/'));
-	$path_file =      f::path(dispatch::path('{assets}/{common}/{file}/'), f::path(dispatch::path('{assets}/{file}/'), f::path(dispatch::path('{file}/'))));
-	
-	config::hardcode('path.common', $path_common);
-	config::hardcode('path.cerberus', $path_cerberus);
-	config::hardcode('path.file', $path_file);
-	
-	f::remove('config.rb');
-}
-
-define('PATH_COMMON', $path_common);
-define('PATH_CERBERUS', $path_cerberus);
-define('PATH_FILE', $path_file);
 
 /*
 ########################################
@@ -143,9 +115,10 @@ echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.
 if(config::get('boostrap', true) and LOCAL)
 {
 	$required = array(
-		dispatch::path('{assets}/{compile}/{cerberus}/{sass}/_custom.sass'));
+		dispatch::path(PATH_CERBERUS. '{sass}/_custom.sass'));
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
+if(!file_exists('ceberus/cache/')) dir::make('cerberus/cache/');
 
 // Gestion des langues et de la navigation
 new l();

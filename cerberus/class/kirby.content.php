@@ -15,9 +15,11 @@ class content
 		global $switcher;
 		
 		$basename = $CORE = $params['basename'];
-		if($params['cachetime'] == 0) $params['cachetime'] = 60 * 60 * 24 * 365;
+		if($params['cachetime'] == 0) $params['cachetime'] = config::get('cachetime', 60 * 60 * 24 * 365);
 		
-		$cache = (SQL and db::is_table('cerberus_structure')) ? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '"') : $params['cache'];
+		$cache = (SQL and db::is_table('cerberus_structure'))
+			? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '" OR parent = "' .$basename. '"')
+			: $params['cache'];
 		if(navigation::$page == 'admin') $cache = FALSE;
 		
 		if($params['cache'] or ($cache and CACHE))
