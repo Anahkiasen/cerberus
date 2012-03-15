@@ -11,7 +11,7 @@ class l
 				update::table('cerberus_langue');		
 		
 		// Langue du site
-		if(!s::get('langueSite')) s::set('langueSite', config::get('langue_default', 'fr'));
+		if(!session::get('langueSite')) session::set('langueSite', config::get('langue_default', 'fr'));
 		if(get('langue')) self::change(get('langue'));
 
 		// Langue de l'administration
@@ -92,21 +92,21 @@ class l
 	/* Changes the language currently used */
 	static function change($langue = 'fr')
 	{
-		s::set('langueSite', l::sanitize($langue));
-		return s::get('langueSite');
+		session::set('langueSite', l::sanitize($langue));
+		return session::get('langueSite');
 	}
 	
 	/* Returns the current language */
 	static function current()
 	{
-		if(s::get('langueSite')) return s::get('langueSite');
+		if(session::get('langueSite')) return session::get('langueSite');
 		else
 		{
 			$langue = str::split(server::get('http_accept_language'), '-');
 			$langue = str::trim(a::get($langue, 0));			
 			$langue = l::sanitize($langue);
 			
-			s::set('langueSite', $langue);
+			session::set('langueSite', $langue);
 			return $langue;
 		}
 	}

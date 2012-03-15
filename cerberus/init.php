@@ -8,9 +8,20 @@ ini_set('error_log', 'cerberus/cache/error.log');
 ini_set('log_errors', 'On');
 
 // Chargement du moteur Cerberus
-foreach(glob('cerberus/class/{kirby.*.php,core.*.php}', GLOB_BRACE) as $file) require_once($file);
-require_once('cerberus/class/class.navigation.php');
-s::start();
+include('cerberus/class/kirby.request.php');
+function __class_loader($class_name) 
+{
+	$file = glob('cerberus/class/{kirby,class,core,kirby.plugins}.' .strtolower($class_name). '*.php', GLOB_BRACE);
+	if($file and file_exists($file[0]) and !class_exists($class_name))
+	{
+		require_once($file[0]); 
+		if(method_exists($class_name, 'init')) 
+			call_user_func(array($class_name, 'init')); 
+		return true;
+	}
+}
+spl_autoload_register('__class_loader');
+session::start();
 
 /*
 ########################################
@@ -33,9 +44,9 @@ if(config::get('local'))
 }
 
 // Constantes
-if(!defined('REWRITING'))     define('REWRITING',   config::get('rewriting',   FALSE));
-if(!defined('LOCAL'))         define('LOCAL', 	   config::get('local', 	  FALSE));
-if(!defined('MULTILANGUE'))   define('MULTILANGUE', config::get('multilangue', FALSE));
+if(!defined('REWRITING'))     define('REWRITING',   	config::get('rewriting',   FALSE));
+if(!defined('LOCAL'))         define('LOCAL', 	   	config::get('local', 	  	FALSE));
+if(!defined('MULTILANGUE'))   define('MULTILANGUE', 	config::get('multilangue', FALSE));
 if(!defined('CACHE'))
 {
 	if(LOCAL)   define('CACHE', FALSE);

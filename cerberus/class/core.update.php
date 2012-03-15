@@ -7,7 +7,7 @@ class update
 	function __construct()
 	{
 		self::$revision = LOCAL ? config::get('revision.local') : config::get('revision.online');
-
+		
 		if(SQL)
 		{
 			// Mises à jour de la base
@@ -44,7 +44,7 @@ class update
 			self::codematch('global \$dispatch;', '');
 		}
 				
-		self::update(494);
+		self::update_core(494);
 	}
 	
 	// Retourne le numéro de révision
@@ -54,7 +54,7 @@ class update
 	}
 	
 	// Met à jour le numéro de révision
-	static function update($torev)
+	static function update_core($torev)
 	{
 		if(self::$revision < $torev)
 		{

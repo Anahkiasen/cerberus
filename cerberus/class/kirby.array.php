@@ -1,19 +1,35 @@
 <?php
 class a
 {
-	/* Gets an element of an array by key */
+	/***
+		* Gets an element of an array by key
+		*
+		* @param	array		$array The source array
+		* @param	mixed		$key The key to look for
+		* @param	mixed		$default Optional default value, which should be returned if no element has been found
+		* @return mixed
+		*/
 	static function get($array, $key, $default = NULL)
 	{
-		if(is_array($key)) return (isset($array[$key[0]][$key[1]])) ? $array[$key[0]][$key[1]] : $default;
-		else return (isset($array[$key])) ? $array[$key] : $default;
+		if(str::find(',', $key)) $key = explode(',', $key);
+		if(!is_array($key)) return (isset($array[$key])) ? $array[$key] : $default;
+		else
+		{
+			foreach($key as $k)
+			{
+				$array = self::get($array, $k, $default);
+				if($array == $default) break;
+			}
+			return $array;
+		}
 	}
 	
 	/* Gets all elements for an array of key */
 	static function getall($array, $keys)
 	{
 		$result = array();
-	    foreach($keys as $key) $result[$key] = a::get($array, $key);
-	    return $result;
+			foreach($keys as $key) $result[$key] = self::get($array, $key);
+			return $result;
 	}
 	
 	/* Removes an element from an array */
@@ -131,8 +147,8 @@ class a
 		shuffle($keys);
 		return array_merge(array_flip($keys), $array);
 	}
-  	
-	/* Fills an array up with additional elements to certain amount.  */
+		
+	/* Fills an array up with additional elements to certain amount.	*/
 	static function fill($array, $limit, $fill = 'placeholder')
 	{
 		if(count($array) < $limit)
@@ -190,13 +206,13 @@ class a
 			if(isset($value[$subkey]))
 			{
 				$output[$value[$subkey]] = $value;
-				if($remove) $output[$value[$subkey]] = a::remove($output[$value[$subkey]], $subkey);
+				if($remove) $output[$value[$subkey]] = self::remove($output[$value[$subkey]], $subkey);
 			}
 			else
 			{
 				$keys = array_keys($value);
 				$output[$value[$keys[0]]] = $value;
-				if($remove) a::remove($output[$value[$subkey]], $keys[0]);
+				if($remove) self::remove($output[$value[$subkey]], $keys[0]);
 			}
 		}
 		

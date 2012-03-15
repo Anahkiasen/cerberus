@@ -17,12 +17,12 @@ class content
 		$basename = $CORE = $params['basename'];
 		if($params['cachetime'] == 0) $params['cachetime'] = config::get('cachetime', 60 * 60 * 24 * 365);
 		
-		$cache = (SQL and db::is_table('cerberus_structure'))
+		$cache_allowed = (SQL and db::is_table('cerberus_structure'))
 			? db::field('cerberus_structure', 'cache', 'CONCAT_WS("-",parent,page) = "' .$basename. '" OR parent = "' .$basename. '"')
 			: $params['cache'];
 		if(navigation::$page == 'admin') $cache = FALSE;
 		
-		if($params['cache'] !== false and ($cache and CACHE))
+		if($params['cache'] !== false and $cache_allowed and CACHE)
 		{			
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;

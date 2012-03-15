@@ -1,7 +1,7 @@
 <?php
 /* The Kirby Session Class
  * Handles all session fiddling */
-class s
+class session
 {
 	/* Returns the current session id */
 	static function id()

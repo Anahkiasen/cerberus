@@ -159,6 +159,7 @@ class db
 			}
 			else $string = addslashes($string);
 		}
+		$string = str_replace('\_', '_', $string);
 		return $string;
 	}
 		

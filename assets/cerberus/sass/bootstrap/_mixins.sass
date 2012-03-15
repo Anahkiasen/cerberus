@@ -130,9 +130,12 @@
   display: block
   width: 100%
   min-height: 28px
-  /* Make inputs at least the height of their button counterpart
-  /* Makes inputs behave like true block-level elements
+  // Make inputs at least the height of their button counterpart
+  // Makes inputs behave like true block-level elements
   +box-sizing(border-box)
+  
+.input-block-level
+  +input-block-level
 
 // Mixin for form field states
 =formFieldState($textColor: #555555, $borderColor: #cccccc, $backgroundColor: whitesmoke)

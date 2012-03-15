@@ -220,16 +220,16 @@ class navigation
 	}
 	
 	// Altération des liens de la liste
-	static function alterTree($key, $newLink = NULL)
+	static function alterTree($key, $alter_value = NULL, $alter_key = 'link')
 	{
 		self::createTree();
 		
 		if(str::find('-', $key))
 		{
 			$key = explode('-', $key);
-			self::$data[$key[0]]['submenu'][$key[1]]['link'] = $newLink;
+			self::$data[$key[0]]['submenu'][$key[1]][$alter_key] = $alter_value;
 		}
-		else self::$data[$key]['link'] = $newLink;
+		else self::$data[$key][$alter_key] = $alter_value;
 	}
 	
 	// Rendu HTML des arbres de navigation

@@ -8,12 +8,12 @@ class switcher
 	function __construct()
 	{
 		$this->possible = func_get_args();
-		$sswitch = s::get('switch', $this->possible[0]);
+		$sswitch = session::get('switch', $this->possible[0]);
 		
 		// Définition de la variante actuelle
 		if(isset($sswitch)) $this->actual = $sswitch;
 		if(isset($_GET['switch']) and in_array($_GET['switch'], $this->possible)) $this->actual = $_GET['switch'];
-		s::set('switch', $this->actual);
+		session::set('switch', $this->actual);
 	}
 	
 	// Obtenir le chemin actuel

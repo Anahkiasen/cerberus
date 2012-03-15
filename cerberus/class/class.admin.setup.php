@@ -27,7 +27,7 @@ class AdminSetup
 		$this->defineMultilangue();
 			
 		// Identification	 
- 		if(isset($_GET['logoff'])) s::remove('admin');
+ 		if(isset($_GET['logoff'])) session::remove('admin');
 		$this->login_user = md5(config::get('admin.login', 'root'));
 		$this->login_password = md5(config::get('admin.password', 'root'));
 		$this->adminLogin();
