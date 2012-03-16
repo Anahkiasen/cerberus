@@ -50,7 +50,7 @@ if(!defined('LOCAL'))         define('LOCAL', 	   	config::get('local', 	  	FALS
 if(!defined('MULTILANGUE'))   define('MULTILANGUE', 	config::get('multilangue', FALSE));
 if(!defined('CACHE'))
 {
-	if(LOCAL)   define('CACHE', FALSE);
+	if(LOCAL)   define('CACHE', false);
 	else        define('CACHE', config::get('cache', TRUE));
 }
 
@@ -171,18 +171,22 @@ if(CACHE)
 {
 	// Paramètres préexistants
 	if(!isset($setCache)) $setCache = array();
-	$setCache['basename'] = a::get($setCache, 'basename', navigation::current());
-	$setCache['cachetime'] = a::get($setCache, 'cachetime', config::get('cachetime', 604800));
-	$setCache['getvar'] = a::get($setCache, 'getvar', true);
-	$setCache['cache'] = a::get($setCache, 'cache', null);
+	$setCache['name'] = a::get($setCache, 'name', navigation::current());
+	$setCache['cache_time'] = a::get($setCache, 'cache_time');
+	$setCache['cache_variables'] = a::get($setCache, 'cache_variables', true);
+	$setCache['cache_get_variables'] = a::get($setCache, 'cache_get_variables', true);
+	$setCache['get_remove'] = a::get($setCache, 'get_remove', array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
+	$setCache['type'] = 'html';
+	
+	// Autoriser le caching
+	if(navigation::$page == 'admin') $caching = FALSE;
+	elseif(SQL and db::is_table('cerberus_structure'))
+		$caching = db::field('cerberus_structure', 'cache', db::where(array('CONCAT_WS("-",parent,page)' => $setCache['name'], 'parent' => $setCache['name']), 'OR'));
+	else $caching = TRUE;
+	$setCache['caching'] = a::get($setCache, 'caching', $caching);
 	
 	// Démarrage de la mise en cache
-	$start = content::cache_start($setCache);
-	if(!$start)
-	{
-		content::cache_end();
-		exit();
-	}
+	$start = cache::page($setCache['name'], $setCache);
 }
 
 // Chargement des modules Cerberus

@@ -8,14 +8,17 @@
  * 
  * @package Kirby
  */
-class content {
+class content
+{
 	private static $cache_folder = 'cerberus/cache/';
+	private static $cachename = NULL;
 	
 	/**
 		* Starts the output buffer
 		* 
 		*/
-	static function start() {
+	static function start()
+	{
 		ob_start();
 	}
 
@@ -26,8 +29,10 @@ class content {
 		* @param	boolean	$return Pass true to return the content instead of flushing it 
 		* @return mixed
 		*/
-	static function end($return=false) {
-		if($return) {
+	static function end($return = false)
+	{
+		if($return)
+		{
 			$content = ob_get_contents();
 			ob_end_clean();
 			return $content;
@@ -42,7 +47,8 @@ class content {
 		* @param	boolean $return True: return the content of the file, false: echo the content
 		* @return mixed
 		*/
-	static function load($file, $return=true) {
+	static function load($file, $return = true)
+	{
 		self::start();
 		require_once($file);
 		$content = self::end(true);
@@ -56,7 +62,8 @@ class content {
 		* @param	string	$ctype The shortcut for the content type. See the keys of the $ctypes array for all available shortcuts
 		* @param	string	$charset The charset definition for the content type header. Default is "utf-8"
 		*/
-	static function type() {
+	static function type()
+	{
 		$args = func_get_args();
 
 		// shortcuts for content types

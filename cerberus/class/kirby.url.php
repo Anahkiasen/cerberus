@@ -103,9 +103,9 @@ class url
 	}
 	
 	/**** Recharger la page en ajoutant des paramètres supplémentaires */
-	static function reload($variables = array())
+	static function reload($variables = array(), $reset = FALSE)
 	{
-		if(is_array($variables))
+		if(is_array($variables) and !$reset)
 		{
 			$get = a::remove($_GET, array('page', 'pageSub', 'admin'));
 			$variables = array_merge($get, $variables);
