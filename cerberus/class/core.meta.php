@@ -108,10 +108,10 @@ class meta
 	}
 	
 	// Renvoit les données meta d'une page
-	static function page($page)
+	static function page($page = NULL)
 	{		
 		if(isset(self::$meta[$page]) and !empty(self::$meta[$page])) return self::$meta[$page];
-		else return array();
+		else return array(navigation::current());
 	}
 	
 	// Renvoit une ou la totalité des balises META

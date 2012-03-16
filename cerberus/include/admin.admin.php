@@ -6,13 +6,13 @@ if(isset($_POST['edit']))
 		
 	$_POST['droits'] = json_encode($droits);
 }
-$langueAdmin = new AdminPage();
+$langueAdmin = new admin();
 $langueAdmin->setPage('cerberus_admin');
 $langueAdmin->createList(array('Identifiant' => 'account'));
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
 
 $return = NULL;
-$return = a::array_flatten($langueAdmin->get('navigation'), $return);
+$return = a::simple($langueAdmin->get('navigation'), $return);
 
 if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 {

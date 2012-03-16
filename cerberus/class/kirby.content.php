@@ -1,14 +1,83 @@
 <?php
-class content
-{
-	static private $cachename = NULL;
+/**
+ * 
+ * Content
+ * 
+ * This class handles output buffering,
+ * content loading and setting content type headers. 
+ * 
+ * @package Kirby
+ */
+class content {
+	private static $cache_folder = 'cerberus/cache/';
+	
+	/**
+		* Starts the output buffer
+		* 
+		*/
+	static function start() {
+		ob_start();
+	}
 
-	/*
-	########################################
-	########## FONCTIONS CACHE #############
-	########################################
-	*/
-			
+	/**
+		* Stops the output buffer
+		* and flush the content or return it.
+		* 
+		* @param	boolean	$return Pass true to return the content instead of flushing it 
+		* @return mixed
+		*/
+	static function end($return=false) {
+		if($return) {
+			$content = ob_get_contents();
+			ob_end_clean();
+			return $content;
+		}
+		ob_end_flush();
+	}
+
+	/**
+		* Loads content from a passed file
+		* 
+		* @param	string	$file The path to the file
+		* @param	boolean $return True: return the content of the file, false: echo the content
+		* @return mixed
+		*/
+	static function load($file, $return=true) {
+		self::start();
+		require_once($file);
+		$content = self::end(true);
+		if($return) return $content;
+		echo $content;				
+	}
+
+	/**
+		* Simplifies setting content type headers
+		* 
+		* @param	string	$ctype The shortcut for the content type. See the keys of the $ctypes array for all available shortcuts
+		* @param	string	$charset The charset definition for the content type header. Default is "utf-8"
+		*/
+	static function type() {
+		$args = func_get_args();
+
+		// shortcuts for content types
+		$ctypes = array(
+			'html' => 'text/html',
+			'css'	=> 'text/css',
+			'js'	 => 'text/javascript',
+			'jpg'	=> 'image/jpeg',
+			'png'	=> 'image/png',
+			'gif'	=> 'image/gif',
+			'json' => 'application/json'
+		);
+
+		$ctype	 = a::get($args, 0, c::get('content_type', 'text/html'));
+		$ctype	 = a::get($ctypes, $ctype, $ctype);
+		$charset = a::get($args, 1, c::get('charset', 'utf-8'));
+
+		header('Content-type: ' . $ctype . '; charset=' . $charset);
+
+	}
+
 	/**** Mise en cache de la page */
 	static function cache_start($params)
 	{
@@ -27,7 +96,7 @@ class content
 			// Variables en cache
 			if($switcher) $basename = $switcher->current(). '-' .$basename;
 			if($params['getvar']) $basename = l::current(). '-' .$basename;
-			$basename = 'cerberus/cache/' .$basename;
+			$basename = self::$cache_folder.$basename;
 			
 			if($params['getvar'])
 			{
@@ -84,75 +153,5 @@ class content
 		if(config::get('timer', false)) timer::get();
 	}
 	
-	/**** Vide le cache */
-	static function uncache($page = NULL)
-	{
-		if($page == 'meta') $captcha ='{meta-*,lang-*}';
-		else $captcha = ($page)
-			? '*-' .$page. '-*.html'
-			: '*.*';
-
-		foreach(glob('cerberus/cache/' .$captcha, GLOB_BRACE) as $file)
-			f::remove($file);	
-	}
-	
-	/*
-	########################################
-	############ MOTEUER CACHE #############
-	########################################
-	*/
-	
-	/* Starts the output buffer */
-	static function start()
-	{
-		ob_start();
-	}
-
-	/* Stops the output buffer and flush the content or return it. */
-	static function end($return = FALSE)
-	{
-		if($return)
-		{
-			$content = ob_get_contents();
-			ob_end_clean();
-			$content = str::accents($content);
-			return $content;
-		}
-		ob_end_flush();
-	}
-	
-	/* Loads content from a passed file */
-	static function load($file, $return = true)
-	{
-		self::start();
-		require_once ($file);
-		$content = self::end(true);
-		if($return)
-			return $content;
-		echo $content;
-	}
-		
-	/* Simplifies setting content type headers */
-	static function type()
-	{
-		$args = func_get_args();
-
-		// Raccourics content_type
-		$ctypes	= array(
-			'html' => 'text/html',
-			'css'	=> 'text/css',
-			'js'	 => 'text/javascript',
-			'jpg'	=> 'image/jpeg',
-			'png'	=> 'image/png',
-			'gif'	=> 'image/gif',
-			'json' => 'application/json'
-		);
-
-		$ctype	 = a::get($args, 0, c::get('content_type', 'text/html'));
-		$ctype	 = a::get($ctypes, $ctype, $ctype);
-
-		$charset = a::get($args, 1, c::get('charset', 'utf-8'));
-		header('Content-type: ' .$ctype. '; charset=' .$charset);
-	}
 }
 ?>

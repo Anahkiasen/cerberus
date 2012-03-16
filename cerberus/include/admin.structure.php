@@ -1,7 +1,7 @@
 <?php
 if(get('meta_structure'))
 {
-	$metaAdmin = new AdminPage();
+	$metaAdmin = new admin();
 	$metaAdmin->setPage('cerberus_meta', array('titre', 'url', 'description'));
 
 	// Si formulaire META
@@ -12,8 +12,8 @@ if(get('meta_structure'))
 // Sinon
 if(isset($_POST['traduction_titre']))
 {
-	content::uncache('meta');
-	content::uncache($_POST['parent'].'-'.$_POST['page']);
+	cache::delete('{meta-*,lang-*}');
+	cache::delete($_POST['parent'].'-'.$_POST['page'], true);
 
 	// Page actuelle
 	$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
@@ -28,7 +28,7 @@ if(isset($_POST['traduction_titre']))
 	else db::insert('cerberus_langue', array('tag' => $index, l::admin_current() => $_POST['traduction_parent_titre']));
 }
 
-$strucAdmin = new AdminPage();
+$strucAdmin = new admin();
 $strucAdmin->setPage('cerberus_structure', array('external_link'));
 
 if(db::is_table('cerberus_meta'))

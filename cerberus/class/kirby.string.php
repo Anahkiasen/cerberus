@@ -343,7 +343,7 @@ class str
 			$attributes = NULL;
 			$attr['src'] = $src;
 			$attr['alt'] = $alt;
-			foreach($attr as $a)
+			foreach($attr as $key => $value)
 				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
 		}	
 		return '<img ' .trim($attributes). ' />';
@@ -365,15 +365,17 @@ class str
 		{
 			$attributes = NULL;
 			$attr['href'] = $link;
-			$attr['title'] = $text;
+			if(!isset($attr['title'])) 
+				$attr['title'] = self::unhtml($text);
+			
 			foreach($attr as $key => $value)
 				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
 		}	
-		return '<a ' .$attributes. '>' . str::html($text) . '</a>';
+		return '<a ' .trim($attributes). '>' . str::html($text) . '</a>';
 	}
 	
 	/**** Utilise la fonction link en combinisaison avec url::rewrite() */
-	static function slink($link, $text = NULL, $params = NULL, $attr = NULL)
+	static function slink($link, $text = NULL, $params = array(), $attr = NULL)
 	{
 		$page = meta::page($link);
 		$page = a::get($page, 'titre');

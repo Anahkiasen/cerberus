@@ -117,7 +117,7 @@ class url
 	static function rewrite($page = NULL, $params = array())
 	{		
 		// Création du tableau des paramètres
-		if(!is_array($params))
+		if(!is_array($params) and $params)
 		{
 			$explode_params = explode('&', $params);
 			$params = array();
@@ -172,26 +172,27 @@ class url
 		}
 		else
 		{
-			if($page0) $lien .= $page0. '/';
-			if($page1) $lien .= $page1. '/';
-		
+			$this_page = $page0.'-'.$page1;
+			if(isset($params['page'])) $lien .= $params['page']. '/';
+			if(isset($params['pageSub'])) $lien .= $params['pageSub']. '/';
+			$params = a::remove($params, array('page', 'pageSub'));
+			
 			if(!empty($params))
 			{
-				if(is_array($params)) $lien .= a::simplode('-', '/', $params);
+				if(is_array($params))
+					foreach($params as $k => $v) $lien .= $k.'-'.$v.'/';
 				else $lien .= $params;
-				if($lien[strlen($lien)-1] != '/') $lien .= '/';
+				if(substr($lien, -1, 1) != '/') $lien .= '/';
 			}
-			$lien = str_replace($page0. '-', '', $lien);
+			$lien = str_replace($page0. '-', NULL, $lien);
 					
 			// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
-			$thisPage = $page0. '-' .$page1;
-			$meta = meta::page($thisPage);
-			
+			$meta = meta::page($this_page);			
 			if(!isset($pageHTML))
 				$pageHTML =
 					a::get($meta, 'url',
 					a::get($meta, 'titre',
-					l::get('menu-'.$thisPage,
+					l::get('menu-'.navigation::current(),
 					NULL)));
 			
 			if($pageHTML)

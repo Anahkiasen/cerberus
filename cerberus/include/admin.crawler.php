@@ -51,7 +51,7 @@ if(isset($_POST['nofollow']))
 	if($_POST['type'] == 'sitemap') content::start();
 	else
 	{
-		content::uncache();
+		cache::delete();
 		f::remove_folder(PATH_FILE. 'cache');
 	}
 	

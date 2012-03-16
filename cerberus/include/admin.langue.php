@@ -67,7 +67,7 @@ if(get('bdd'))
 	}
 }
 
-$langueAdmin = new AdminPage();
+$langueAdmin = new admin();
 $langueAdmin->setPage('cerberus_langue');
 $langueAdmin->createList(
 	array_merge(array('Identifiant' => 'tag'), $LANGUES),

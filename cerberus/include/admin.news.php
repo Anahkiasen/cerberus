@@ -1,11 +1,11 @@
 <?php
-$newsAdmin = new AdminPage();
+$newsAdmin = new admin();
 $newsAdmin->setPage('cerberus_news');
 $newsAdmin->createList(array('titre', 'date'));
 $newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 
 // Vidage du cache
-content::uncache('{news,actualite}');
+cache::delete('{news,actualite}', true);
 
 // Formulaire
 $forms = new forms();
