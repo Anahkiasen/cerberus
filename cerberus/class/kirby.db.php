@@ -457,8 +457,7 @@ class db
 	static function showtables()
 	{
 		$tables = self::query('SHOW TABLES', TRUE);
-		$tables = a::simple($tables);
-		if(!is_array($tables)) $tables = array($tables);
+		$tables = a::simple($tables, FALSE);
 		return $tables;
 	}
 
@@ -482,8 +481,16 @@ class db
 		else return array();
 	}
 
-	/**** Checks if one or more tables exists */
-	static function is_table($tables)
+	/**
+	 * Checks if one or more given tables exist in the database
+	 * 
+	 * @param array 		$tables The tables to search for
+	 * @param boolean 	$detail In case of multiple tables in the first parameter
+	 *                            true: returns the existence of each table false: returns
+	 *                            a boolean stating if all or none of the table exist
+	 * @return mixed		A boolean if $detail is false, an array of booleans if it's true
+	 */
+	static function is_table($tables, $detail = false)
 	{
 		$tables = func_get_args();
 		if(sizeof($tables) == 1)
@@ -492,11 +499,16 @@ class db
 		else
 		{
 			$found = 0;
+			$return = array();
+		
 			foreach($tables as $table)
-				if(in_array($table, self::showtables()))
-					$found++;
+			{
+				$exists = in_array($table, self::showtables());
+				if($detail) $return[$table] = $exists;
+				else if($exists) $found++;
+			}
 	
-			return ($found == sizeof($tables));
+			return $detail ? $return : ($found == sizeof($tables));
 		}
 	}
 	
@@ -573,8 +585,9 @@ class db
 	/**** Returns the next value of the table key */
 	static function increment($table)
 	{
-		$result = mysql_fetch_array(mysql_query('SHOW TABLE STATUS LIKE "' .$table. '"'));
-		return $result['Auto_increment'];
+		$result = db::query('SHOW TABLE STATUS LIKE "' .$table. '"');
+		$result = $result[0];
+		return a::get($result, 'Auto_increment');
 	}
 	
 	/*
@@ -621,70 +634,63 @@ class db
 		return '\'' .implode('\',\'', $array). '\'';
 	}
 	
-	/** A handler to convert key/value arrays to an where clause */
-	static function where($array, $method = 'AND')
+	/**
+    * A handler to convert key/value arrays to an where clause
+    *
+    * You can specify modifiers appened to the keys to use special SQL functions.
+    * The syntax is the following : 'key1[MODIFIER]' => 'value1', ie: 'key1>=' => '5' will output key1 >= 5
+    * Most modifiers will just come and replace the =, with the exception of ? and ?? that will
+    * invoke a LIKE comparaison, with ?? being for using a Regex as value (it will prevent escaping it)
+    *  
+    * @param  array   $array keys/values for the where clause
+    * @param  string  $method AND or OR
+    * @return string  The MySQL string for the where clause
+    */  
+	static function where($array, $method='AND')
 	{
 		if(!is_array($array)) return $array;
 
 		$output = array();
 		foreach($array as $field => $value)
 		{
-			$operand = '=';
-			$operand2 = 'IN';
+			$modifiers = array('!=', '>', '<', '?', '!=', '>=', '<=', '??');
+			$modifier = '=';
+			$modifier_multiple = 'IN';
 			
-			// Modifiers
-			if(substr($field, -1) == '!')
+			foreach($modifiers as $m)
+				if(str::find($m, $field)) $modifier = $m;
+			$field = str_replace($modifier, NULL, $field);
+		
+			switch($modifier)
 			{
-				$operand = '!=';
-				$operand2 = 'NOT IN';
-				$field = substr($field, 0, -1);
-			}
-			elseif(substr($field, -1) == '>')
-			{
-				$operand = '>';
-				$field = substr($field, 0, -1);
-			}
-			elseif(substr($field, -1) == '<')
-			{
-				$operand = '<';
-				$field = substr($field, 0, -1);
-			}
-			elseif(substr($field, -2) == '>=')
-			{
-				$operand = '>=';
-				$field = substr($field, 0, -2);
-			}
-			elseif(substr($field, -2) == '<=')
-			{
-				$operand = '<=';
-				$field = substr($field, 0, -2);
-			}
-			elseif(substr($field, -2) == '??')
-			{
+				case '!=':
+				$modifier_multiple = 'NOT IN';
+				break;
+			
+				case '??':
 				$regex = TRUE;
-				$operand = 'LIKE';
-				$field = substr($field, 0, -2);
-			}
-			elseif(substr($field, -1) == '?')
-			{
-				$operand = 'LIKE';
-				$field = substr($field, 0, -1);
-			}
+				$modifier = 'LIKE';
+				break;
 			
-			// Nettoyage de la requête
+				case '?':
+				$modifier = 'LIKE';
+				break;
+			}
+					
+			// Escaping
 			if(!is_array($value))
 				if(!isset($regex)) $value = self::escape($value);
 			
-			// Construction
-			$field = (str::find('.', $field) or str::find('(', $field)) ? $field :  '`' .$field. '`';
+			// Exceptions for aliases and SQL functions
+			$field = (str::find('.', $field) or str::find('(', $field)) ? $field :	'`' .$field. '`';
 			
-			if(is_string($value)) $output[] = $field. ' ' .$operand. ' \'' .$value. '\'';
-			else if(is_array($value)) $output[] = $field. ' ' .$operand2. ' ("' .implode('","', $value). '")';
-			else $output[] = $field. ' ' .$operand. ' ' .$value. '';
+			if(is_string($value)) $output[] = $field. ' ' .$modifier. ' \'' .$value. '\'';
+			else if(is_array($value)) $output[] = $field. ' ' .$modifier_multiple. ' ("' .implode('","', $value). '")';
+			else $output[] = $field. ' ' .$modifier. ' ' .$value. '';
 			
 			$separator = ' ' .$method. ' ';
 		}
-		return implode(' ' .$method. ' ', $output);
+		return implode(' ' . $method . ' ', $output);
 	}	
 			
 	/* Makes it possible to use arrays for inputs instead of MySQL strings  */

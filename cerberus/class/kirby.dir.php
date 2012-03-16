@@ -1,10 +1,17 @@
 <?php
 class dir
 {
-	// Creates a new directory
-	static function make($directory, $recursive = FALSE)
+	/**
+	 * Creates a new directory. 
+	 * If the folders containing the end folder don't exist, they will be created too
+	 * 
+	 * @param	 string	$directory The path for the new directory
+	 * @param	 boolean $recursive Tells the function to act recursively or not
+	 * @return	boolean True: the dir has been created, false: creating failed
+	 */
+	static function make($directory, $recursive = TRUE)
 	{
-		if($recursive)
+		if(!$recursive)
 		{
 			if(is_dir($directory)) return true;
 			if(!@mkdir($directory, 0755)) return false;
@@ -14,12 +21,13 @@ class dir
 		else
 		{
 			$directories = explode('/', $directory);
-			$current = NULL;
+			$current_path = NULL;
+			
 			foreach($directories as $directory)
 				if($directory !== '.' and $directory !== '..')
 				{
-					$current .= $directory.'/';
-					$make = self::make($current, TRUE);
+					$current_path .= $directory.'/';
+					$make = self::make($current_path, FALSE);
 					if(!$make) return false;	
 				}
 			return true;

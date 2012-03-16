@@ -1,7 +1,19 @@
 <?php
 class t
 {
-	/**** Format a number of seconds to any given format */
+	/**
+	 * Returns a number of seconds to any given format
+	 * 
+	 * Very similar to the date function to the exeption that the number of seconds doesn't need to be a timestamp
+	 * Useful for basic conversions and formating
+	 * 
+	 * @param int		$secs The number of seconds
+	 * @param string 	$format The format to apply, with units placed into brackets, ie. {h}:{m}:{s}
+	 * @param boolean	$modulus Wether or not the function returns the total number
+	 *                  of any unit, or what's left for each one in ascending order
+	 *                  Per example, 90 seconds to the format {m}:{s} will return 01:30 with modulus on TRUE and 01:90 on FALSE
+	 * @return string	A formated time string
+	 */
 	static function format($secs, $format = NULL, $modulus = true) 
 	{
 		if($modulus)
@@ -32,14 +44,26 @@ class t
 		return $format;
 	}
 	
-	/**** Calculates the difference between two dates */
-	static function difference($debut, $fin, $pattern = '{d}')
+	/**
+	 * Calculates the different between two dates, in any format (default in days)
+	 * 
+	 * @param string	$start The beginning date
+	 * @param string	$end The ending date
+	 * @param string	$pattern The format to apply on the result
+	 * @return string	A time difference
+	 */
+	static function difference($start, $end, $pattern = '{d}')
 	{
-		$time = strtotime($fin) - strtotime($debut);
-		return self::format($time, $pattern, true);
+		$difference = strtotime($end) - strtotime($start);
+		return self::format($difference, $pattern, TRUE);
 	}
 	
-	/**** Calculates the exact age from birthday */
+	/**
+	 * Calculates the exact age (taking into account current month and day) from a birthday
+	 * 
+	 * @param string	$date A birthday in the format YYYY-MM-DD
+	 * @return int		A number of years
+	 */
 	static function age($date)
 	{
  		list($year, $month, $day) = explode('-', $date);
@@ -54,19 +78,21 @@ class t
 		return $yearDiff;
 	}
 	
-	/*
-	########################################
-	############## RACCOURCIS ##############
-	########################################
-	*/
-	
-	/**** 00:00:00 */
+	/**
+	 * Shortcut to h:i:s
+	 * @param int		$s A number of seconds
+	 * @return string	A number of seconds converted to h:i:s
+	 */
 	static function hms($s)
 	{
 		return self::format($s, '{h}:{i}:{s}');
 	}
 	
-	/**** 00:00 */
+	/**
+	 * Shortcut to i:s
+	 * @param int		$s A number of seconds
+	 * @return string	A number of seconds converted to i:s
+	 */
 	static function ms($s)
 	{
 		return self::format($s, '{i}:{s}');

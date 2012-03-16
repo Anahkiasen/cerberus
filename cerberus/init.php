@@ -75,8 +75,8 @@ if(config::get('local.name',  FALSE))
 		'db.password' => 	config::get('local.password'),
 		'db.name' => 		config::get('local.name')));
 	if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
-	if(!defined('SQL')) define('SQL', db::connection(), FALSE);
 }
+if(!defined('SQL')) define('SQL', db::connection(), FALSE);
 
 // Mise à jour du moteur
 new update();

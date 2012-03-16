@@ -85,9 +85,9 @@ class a
 	}
 	
 	/**** Returns the medium value of an array */
-	static function medium($array)
+	static function average($array, $decimals = 0)
 	{
-		return round(array_sum($array), 0) / sizeof($array); 
+		return round(array_sum($array), $decimals) / sizeof($array); 
 	}
 
 	/* Search for elements in an array by regular expression */
@@ -128,8 +128,7 @@ class a
 	/**** Force an element to be an array */
 	static function force_array(&$variable)
 	{
-		$return = !is_array($variable) ? array($variable) : $variable;
-		return $return;
+		return !is_array($variable) ? array($variable) : $variable;
 	}
 	
 	/* Injects an element into an array */
@@ -188,7 +187,7 @@ class a
 			foreach($array as $key => $value)
 			{
 				if(is_array($value) and sizeof($value) == 1)
-					$output[$key] = self::get(array_values($value), 0);
+					$output[$key] = self::simple($value);
 				else $output[$key] = $value;
 			}
 		}
@@ -249,29 +248,6 @@ class a
 		foreach($array AS $a)
 			if(isset($a[$key])) $output[] = $a[$key];
 		return $output;
-	}
-	
-	/**** Get a precise path inside a multidimensionnal array */
-	static function get_path($array, $path, $default = NULL)
-	{
-		if(!is_array($path)) $path = explode(' ', $path);
-		foreach($path as $pat)
-		{
-			if(isset($array[$pat])) $array = $array[$pat];
-			
-		}	
-		return $array;
-	}
-		
-	/**** Flatten an array */
-	static function array_flatten($array, $return)
-	{
-		foreach($array as $key => $value)
-		{
-			if(is_array($value)) $return = self::array_flatten($value, $return);
-			else if(!is_null($value)) $return[$key] = $value;
-		}
-		return $return;
 	}
 		
 	/*

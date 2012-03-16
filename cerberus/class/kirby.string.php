@@ -268,19 +268,30 @@ class str
 	########################################
 	*/
 	
-	/**** Finds a string in another */
+	/**
+	 * Find one or more needles in one or more haystacks
+	 * 
+	 * Also avoid the retarded counter-intuitive original
+	 * strpos syntax that makes you put haystack before needle
+	 * 
+	 * @param mixed		$needle	The needle(s) to search for
+	 * @param mixed		$haystack The haystack(s) to search in
+	 * @param boolean	$absolute If true all the needle(s) need to be found in all the haystack(s), otherwise one found is enough
+	 * @param boolean	$case_sensitive Wether the function is case sensitive or not
+	 * @return boolean	Found or not
+	 */
 	static function find($needle, $haystack, $absolute = FALSE, $case_sensitive = FALSE)
 	{
 		if(is_array($needle))
 		{
 			$found = 0;
-			foreach($needle as $need) if(self::find($need, $haystack)) $found++;
+			foreach($needle as $need) if(self::find($need, $haystack, $absolute, $case_sensitive)) $found++;
 			return ($absolute) ? count($needle) == $found : $found > 0;
 		}
 		elseif(is_array($haystack))
 		{
 			$found = 0;
-			foreach($haystack as $hay) if(self::find($needle, $hay)) $found++;
+			foreach($haystack as $hay) if(self::find($needle, $hay, $absolute, $case_sensitive)) $found++;
 			return ($absolute) ? count($haystack) == $found : $found > 0;
 		}
 		else
@@ -298,10 +309,15 @@ class str
 		}
 	}
 	
-	/**** Affiche la valeur d'un booléen */
+	/**
+	 * Displays the value of a boolean, for debugging
+	 * 
+	 * @param boolean	$boolean The boolean to display
+	 * @return string	TRUE or FALSE
+	 */
 	static function boolprint($boolean)
 	{
-		return ($boolean) ? 'TRUE' : 'FALSE';
+		return $boolean ? 'TRUE' : 'FALSE';
 	}
 	
 	/*
@@ -310,46 +326,50 @@ class str
 	########################################
 	*/
 	
-	/**** Displays a picture */
+	/**
+	 * Displays a picture and ensures there is always an alt tag
+	 * 
+	 * @param string	$src The source of the image
+	 * @param string	$alt The alternative text
+	 * @param array 	$attr The picture attributes
+	 * @return string	The <img> tag
+	 */
 	static function img($src, $alt = NULL, $attr = NULL)
 	{
-		if(!$attr) $attributes = 'src="' .$src. '"';
+		$alt = $alt ? $alt : f::filename($src);
+		if(!is_array($attr)) $attributes = 'src="' .$src. '" alt="' .$alt. '" '.$attr;
 		else
 		{
-			if(!is_array($attr)) $attributes = $attr;
-			else
-			{
-				$attr['src'] = $src;
-				if(!isset($attr['alt']))
-					$attr['alt'] = pathinfo($src, PATHINFO_FILENAME);
-				
-				$attributes = NULL;
-				foreach($attr as $key => $value)
-					if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
-			}
-		}
-	
+			$attributes = NULL;
+			$attr['src'] = $src;
+			$attr['alt'] = $alt;
+			foreach($attr as $a)
+				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
+		}	
 		return '<img ' .trim($attributes). ' />';
 	}
 	
-	/** Creates a link tag */
-	static function link($link, $text = NULL, $attr = NULL)
+  /**
+    * Creates a link tag
+    *
+    * @param  string  $link The URL
+    * @param  string  $text Specify a text for the link tag. If false the URL will be used
+    * @param  string  $attr The link tag attributes
+    * @return string  
+    */  
+	static function link($link, $text = false, $attr = NULL)
 	{
-		if(!$attr) $attributes = 'href="' .$link. '"';
+		$text = ($text) ? $text : $link;
+		if(!is_array($attr)) $attributes = 'href="' .$link. '" '.$attr;
 		else
 		{
-			if(!is_array($attr)) $attributes = $attr;
-			else
-			{
-				$attr['href'] = $link;
-				$attributes = NULL;
-				foreach($attr as $key => $value)
-					if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
-			}
-		}
-		
-		$text = ($text) ? $text : $link;
-		return '<a ' .trim($attributes). '>' . str::html($text) . '</a>';
+			$attributes = NULL;
+			$attr['href'] = $link;
+			$attr['title'] = $text;
+			foreach($attr as $a)
+				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
+		}	
+		return '<a ' .$attributes. '>' . str::html($text) . '</a>';
 	}
 	
 	/**** Utilise la fonction link en combinisaison avec url::rewrite() */

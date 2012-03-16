@@ -78,7 +78,11 @@ class url
 		exit();
 	}
 	
-	/**** Renvoit le domaine du site actuel */
+	/**
+	 * Returns the current domain
+	 * 
+	 * @return string	The current domain
+	 */
 	static function domain()
 	{
 		$base = explode('/', self::short());
@@ -87,7 +91,12 @@ class url
 		return $url.'/';
 	}
 
-	/**** Vérifie la présence de HTTP:// au début d'une URL */
+	/**
+	 * Ensures that HTTP:// is present at the beginning of a link. Avoid unvoluntary relative paths
+	 * 
+	 * @param string	$url The URL to check
+	 * @return string	The corrected URL
+	 */
 	static function http($url = NULL)
 	{
 		return 'http://' .str_replace('http://', NULL, ($url));
