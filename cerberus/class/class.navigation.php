@@ -43,7 +43,7 @@ class navigation
 		
 		// Créations des tables requises		
 		if(!$navigation)
-		{
+		{			
 			if(SQL and db::is_table('cerberus_structure'))
 				self::$data = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
 		}
@@ -306,9 +306,7 @@ class navigation
 					break;
 				
 				case 'admin':
-					global $cerberus;
-					$cerberus->injectModule('class.admin.setup', 'class.admin', 'class.form', 'class.forms');
-					new AdminSetup();
+					new admin_setup();
 					break;
 					
 				case NULL:

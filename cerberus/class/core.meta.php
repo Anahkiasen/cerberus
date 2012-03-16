@@ -16,14 +16,13 @@ class meta
 	{
 		// Tableau des informations META
 		self::$file = 'cerberus/cache/meta-' .l::current(). '.php';
-		$db_exist = SQL ? db::is_table('cerberus_meta', 'cerberus_structure') : FALSE;
+		$db_exist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : FALSE;
 		$meta = f::read(self::$file, 'json');
-		
 		// Si aucune données META en cache, création du tableau
 		if(!is_array(self::$meta) and SQL and (config::get('meta', FALSE) or $db_exist))
 		{
 			// Création des tables
-			if(!db::is_table('cerberus_structure', 'cerberus_meta'))
+			if(!$db_exist)
 			{
 				update::table('cerberus_meta');
 				update::table('cerberus_structure');

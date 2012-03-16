@@ -1,5 +1,5 @@
 <?php
-class AdminSetup
+class admin_setup
 {
 	// Options
 	protected $multilangue; // Site multilangue ou pas
@@ -162,7 +162,9 @@ class AdminSetup
 	*/
 	function admin_navigation()
 	{
-		echo '<div class="navbar" style="position:relative">';
+		echo '<div id="admin-navigation"><h4>Tableau de bord</h4>
+		<div class="btn-group">
+		<button class="btn category">Pages du site</button>';
 		
 		// Langue de l'admin
 		if(MULTILANGUE and $this->multilangue)
@@ -181,19 +183,24 @@ class AdminSetup
 		if(!empty(self::$navigation))
 		foreach(self::$navigation as $sections => $pages)
 		{
-			if($sections == 'systeme') echo '</div><div class="navbar bottom">';
+			// Séparation
+			if($sections == 'systeme') 
+				echo '</div>
+				<div class="btn-group bottom"><button class="btn category">Pages système</button>';
+				
+			// Enumération des liens
 			foreach($pages as $titre => $page)
 			{
 				if(!empty($page) and self::$droits[$page])
 				{
 					// Texte
 					$texte_lien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE); 
-					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? array('class' => 'active') : NULL;
-					echo str::slink('admin-' .$page, $texte_lien, NULL, $thisActive);
+					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? 'btn-inverse' : NULL;
+					echo '<a class="btn ' .$thisActive. '" href="' .url::rewrite('admin-' .$page). '">' .ucfirst($texte_lien). '</a>';
 				}
 			}
 		}
-		echo str::slink('admin', 'Déconnexion', 'logoff').'</div><br />';
+		echo '<a class="btn btn-warning" href="' .url::rewrite('admin', 'logoff'). '">Déconnexion</a></div></div>';
 	}
 	
 	function get($variable)

@@ -366,7 +366,7 @@ class str
 			$attributes = NULL;
 			$attr['href'] = $link;
 			$attr['title'] = $text;
-			foreach($attr as $a)
+			foreach($attr as $key => $value)
 				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
 		}	
 		return '<a ' .$attributes. '>' . str::html($text) . '</a>';

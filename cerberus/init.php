@@ -11,7 +11,8 @@ ini_set('log_errors', 'On');
 include('cerberus/class/kirby.request.php');
 function __class_loader($class_name) 
 {
-	$file = glob('cerberus/class/{kirby,class,core,kirby.plugins}.' .strtolower($class_name). '*.php', GLOB_BRACE);
+	$class_name = str_replace('_', '.', strtolower($class_name));
+	$file = glob('cerberus/class/{kirby,class,core,kirby.plugins}.' .$class_name. '*.php', GLOB_BRACE);
 	if($file and file_exists($file[0]) and !class_exists($class_name))
 	{
 		require_once($file[0]); 

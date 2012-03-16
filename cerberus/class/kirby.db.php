@@ -492,7 +492,9 @@ class db
 	 */
 	static function is_table($tables, $detail = false)
 	{
-		$tables = func_get_args();
+		// $tables = func_get_args();
+		if(!is_array($tables)) $tables = array($tables);
+		
 		if(sizeof($tables) == 1)
 			return in_array($tables[0], self::showtables());
 		
