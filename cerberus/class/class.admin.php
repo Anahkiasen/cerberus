@@ -211,7 +211,7 @@ class admin extends admin_setup
 			}
 		}
 
-		$query = a::simplode(' ', ' ', $orderedQuery);
+		$query = a::glue($orderedQuery, ' ', ' ');
 		$items = a::rearrange(db::query($query));
 		
 		/* ######## AFFICHAGE DU TABLEAU ########## */
@@ -361,7 +361,7 @@ class admin extends admin_setup
 				break;
 				
 			case 'default':
-				$image = a::simple(glob(PATH_FILE.$this->usable. '/' .$idpic. '.*'));
+				$image = a::simplify(glob(PATH_FILE.$this->usable. '/' .$idpic. '.*'));
 				break;
 		}
 		return $image;

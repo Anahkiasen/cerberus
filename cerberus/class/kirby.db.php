@@ -457,7 +457,7 @@ class db
 	static function showtables()
 	{
 		$tables = self::query('SHOW TABLES', TRUE);
-		$tables = a::simple($tables, FALSE);
+		$tables = a::simplify($tables, FALSE);
 		return $tables;
 	}
 
@@ -541,7 +541,7 @@ class db
 		return @mysql_insert_id($connection);
 	}
 	
-	/****
+	/**
 	 * Returns the last query exectued
 	 * 
 	 * @return string
@@ -550,7 +550,6 @@ class db
 	{
 		str::display(end(self::$trace));
 	}
-	
 	
 	/*****
 	 * Display a different message according to the last query status

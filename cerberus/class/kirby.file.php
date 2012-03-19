@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * File
+ * 
+ * This class makes it easy to 
+ * create/edit/delete files
+ * 
+ * @package Kirby
+ */
 class f
 {
 	/*
@@ -7,7 +16,15 @@ class f
 	########################################
 	*/
 
-	/** Creates a new file */
+	/**
+	 * Creates a new file, and the folders containing it if they don't exist
+	 * [CERBERUS-EDIT]
+	 *  
+	 * @param	string	$file The path for the new file
+	 * @param	mixed	 $content Either a string or an array. Arrays will be converted to JSON. 
+	 * @param	boolean $append true: append the content to an exisiting file if available. false: overwrite. 
+	 * @return boolean 
+	 */	
 	static function write($file, $content = NULL, $append = false)
 	{
 		$folder = dirname($file);
@@ -21,39 +38,60 @@ class f
 		{
 			if(is_array($content))
 				$content = a::json($content);
-		    	$mode = ($append) ? FILE_APPEND : false;
-		    	$write = @file_put_contents($file, $content, $mode);
-	    
+					$mode = ($append) ? FILE_APPEND : false;
+					$write = @file_put_contents($file, $content, $mode);
+			
 			if(file_exists($file)) @chmod($file, 0666);
-	    	return $write;
+				return $write;
 		}
 	}
 	
-	/* Appends new content to an existing file */
+	/**
+	 * Appends new content to an existing file
+	 * 
+	 * @param	string	$file The path for the file
+	 * @param	mixed	 $content Either a string or an array. Arrays will be converted to JSON. 
+	 * @return boolean 
+	 */ 
 	static function append($file, $content)
 	{
 		return self::write($file, $content, true);
 	}
 	
-	/* Reads the content of a file */
+	/**
+	 * Reads the content of a file
+	 * 
+	 * @param	string	$file The path for the file
+	 * @param	mixed	 $parse if set to true, parse the result with the passed method. See: "str::parse()" for more info about available methods. 
+	 * @return mixed 
+	 */	
 	static function read($file, $parse = false)
 	{
-		if(file_exists($file))
-		{
-			$content = @file_get_contents($file);
-			return ($parse) ? str::parse($content, $parse) : $content;
-		}
-		else return false;
+		if(!file_exists($file)) return false;
+		$content = @file_get_contents($file);
+		return ($parse) ? str::parse($content, $parse) : $content;
 	}
 
-	/* Moves a file to a new location */
+	/**
+	 * Moves a file to a new location
+	 * 
+	 * @param	string	$old The current path for the file
+	 * @param	string	$new The path to the new location
+	 * @return boolean 
+	 */	
 	static function move($old, $new)
 	{
 		if(!file_exists($old)) return false;
 		else return (@rename($old, $new) && file_exists($new));
 	}
 
-	/** Deletes a file */
+	/**
+	 * Gets the extension of a file
+	 * [CERBERUS-EDIT]
+	 * 
+	 * @param	string	$file The filename or path
+	 * @return string 
+	 */ 
 	static function remove($file)
 	{
 		if(is_array($file))
@@ -74,7 +112,15 @@ class f
 	########################################
 	*/
 
-	/**** Returns the path of a file only if it exists */
+	/**
+	 * Returns the path of a file if it exists, or a default given value
+	 * [CERBERUS-ADD]
+	 * 
+	 * @param string 	$file The file wanted
+	 * @param string 	$default The path to returns if the file doesn't exist
+	 * @return string A file path/file name
+	 * 
+	 */
 	static function path($file, $default = NULL)
 	{
 		return (file_exists($file)) ? $file : $default;
@@ -86,13 +132,24 @@ class f
 		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
 	
-	/* Extracts the filename from a file path */
+	/**
+	 * Extracts the filename from a file path
+	 * 
+	 * @param	string	$file The path
+	 * @return string 
+	 */	
 	static function filename($name)
 	{
 		return basename($name);
 	}
 
-	/* Extracts the name from a file path or filename without extension */
+	/**
+	 * Extracts the name from a file path or filename without extension
+	 * 
+	 * @param	string	$file The path or filename
+	 * @param	boolean $remove_path remove the path from the name
+	 * @return string 
+	 */	
 	static function name($name, $remove_path = false)
 	{
 		if($remove_path == true)
@@ -103,13 +160,35 @@ class f
 		return $name;
 	}
 
-	/* Just an alternative for dirname() to stay consistent */
+	/**
+	 * Sanitize a filename to strip unwanted special characters
+	 * 
+	 * @param	string $string The file name
+	 * @return string
+	 */		
+	static function safe_name($string)
+	{
+		return str::urlify($string);
+	}
+
+	/**
+	 * Just an alternative for dirname() to stay consistent
+	 * 
+	 * @param	string	$file The path
+	 * @return string 
+	 */	
 	static function dirname($file = __FILE__)
 	{
 		return dirname($file);
 	}
 	
-	/* Returns the size of a file. */
+	/**
+	 * Returns the size of a file.
+	 * 
+	 * @param	string	$file The path
+	 * @param	boolean $nice True: return the size in a human readable format
+	 * @return mixed
+	 */	
 	static function size($file, $nice = false)
 	{
 		@clearstatcache();
@@ -118,7 +197,12 @@ class f
 		else return ($nice) ? self::nice_size($size) : $size;
 	}
 
-	/* Converts an integer size into a human readable format */
+	/**
+	 * Converts an integer size into a human readable format
+	 * 
+	 * @param	int $size The file size
+	 * @return string
+	 */	 
 	static function nice_size($size)
 	{
 		$size = str::sanitize($size, 'int');
@@ -128,7 +212,13 @@ class f
 		return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2). ' ' .$unit[$i];
 	}
 	
-	/* Convert the filename to a new extension */
+	/**
+	 * Convert the filename to a new extension
+	 * 
+	 * @param	string $name The file name
+	 * @param	string $type The new extension
+	 * @return string
+	 */		
 	static function convert($name, $type = 'jpg')
 	{
 		return self::name($name).$type;
@@ -156,6 +246,7 @@ class f
 
 	/**
 	 * Returns the type of a file according to its extension
+	 * [CERBERUS-ADD]
 	 * 
 	 * @param string 	$file The file to analyze
 	 * @return string The filetype

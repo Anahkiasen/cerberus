@@ -24,7 +24,7 @@ class form
 		self::$multilangue = (isset($multilangue)) ? $multilangue : MULTILANGUE;
 
 		$this->render = '<form method="post"';
-		if(is_array($params) and !empty($params)) $this->render .= a::simplode(array('="', '"'), ' ', $params);
+		if(is_array($params) and !empty($params)) $this->render .= a::glue($params, ' ', '="', '"');
 		$this->render .= '>';
 	}
 	

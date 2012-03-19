@@ -29,6 +29,6 @@ function timthumb($file, $width = NULL, $height = NULL, $params = array())
 			: PATH_FILE.$file;
 	}
 		
-	return 'cerberus/class/svn.timthumb.php?src=' .$file. '&' .a::simplode('=', '&', $params);
+	return 'cerberus/class/svn.timthumb.php?src=' .$file. '&' .a::glue($params, '&', '=');
 }
 ?>

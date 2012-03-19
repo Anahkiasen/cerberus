@@ -1,6 +1,20 @@
 <?php
+/**
+ * 
+ * Language
+ * 
+ * Some handy methods to handle multi-language support
+ * 
+ * @todo rework all but set() and get()
+ * @package Kirby
+ */
 class l
 {
+	/**
+	 * The global language array
+	 * 
+	 * @var array
+	 */
 	public static $lang = array();
 
 	//// Initialise le fonctionnement des langues du site
@@ -11,12 +25,12 @@ class l
 				update::table('cerberus_langue');		
 		
 		// Langue du site
-		if(!session::get('langueSite')) session::set('langueSite', config::get('langue_default', 'fr'));
+		if(!session::get('langue_site')) session::set('langue_site', config::get('langue_default', 'fr'));
 		if(get('langue')) self::change(get('langue'));
 
 		// Langue de l'administration
 		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
-		if(isset($_GET['adminLangue']) && in_array($_GET['adminLangue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['adminLangue'];
+		if(isset($_GET['langue_admin']) && in_array($_GET['langue_admin'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['langue_admin'];
 		
 		self::locale();
 	
@@ -33,7 +47,7 @@ class l
 			{
 				// Récupération de la base de langues
 				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
-				$index = a::simple(a::rearrange($index, 'tag', true), false);
+				$index = a::simplify(a::rearrange($index, 'tag', true), false);
 				
 				if(isset($index) and !empty($index))
 				{
@@ -48,7 +62,9 @@ class l
 		self::load('cerberus/include/cerberus.{langue}.json');
 	}
 
-	/* Loads a language file */
+	/**
+		* Loads a language file
+		*/	
 	static function load($fileraw)
 	{
 		$file = str_replace('{langue}', l::current(), $fileraw);
@@ -89,36 +105,45 @@ class l
 		}
 	}
 	
-	/* Changes the language currently used */
+	/**
+		* Change the current website language
+		*/	
 	static function change($langue = 'fr')
 	{
-		session::set('langueSite', l::sanitize($langue));
-		return session::get('langueSite');
+		session::set('langue_site', l::sanitize($langue));
+		return session::get('langue_site');
 	}
 	
-	/* Returns the current language */
+	/**
+		* Returns the current website language
+		*/	
 	static function current()
 	{
-		if(session::get('langueSite')) return session::get('langueSite');
+		if(session::get('langue_site')) return session::get('langue_site');
 		else
 		{
 			$langue = str::split(server::get('http_accept_language'), '-');
 			$langue = str::trim(a::get($langue, 0));			
 			$langue = l::sanitize($langue);
 			
-			session::set('langueSite', $langue);
+			session::set('langue_site', $langue);
 			return $langue;
 		}
 	}
 	
-	/**** Langue en cours dans l'administration */
+	/**
+	 * Returns the current language in the website administration
+	 * 
+	 * @return string 	The current language ID
+	 */
 	static function admin_current()
 	{
-		if(isset($_SESSION['admin']['langue'])) return $_SESSION['admin']['langue'];
-		else return NULL;
+		return session::get('admin,langue');
 	}
 	
-	/* Sets the language according to the environnement language */
+	/**
+		* Sets the language according to the user locale environnement
+		*/	
 	static function locale($language = FALSE)
 	{
 		if(!$language) $language = l::current();
@@ -137,7 +162,9 @@ class l
 		return setlocale(LC_ALL, 0);
 	}
 
-	/* Sanitize a wanted language according to existing ones */
+	/**
+		* Checks if a given language can be used in the current website
+		*/	
 	static function sanitize($langue)
 	{
 		$default = config::get('langue_default', 'fr');
@@ -153,14 +180,26 @@ class l
 	########################################
 	*/
 	
-	/* Sets a language value by key */
+	/** 
+		* Sets a language value by key
+		*
+		* @param	mixed	 $key The key to define
+		* @param	mixed	 $value The value for the passed key
+		*/	
 	static function set($key, $value = NULL)
 	{
 		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
 		else self::$lang[$key] = $value;
 	}
 	
-	/* Gets a language value by key */
+	/**
+		* Gets a language value by key
+		* [CERBERUS-EDIT]
+		*
+		* @param	mixed		$key The key to look for. Pass false or null to return the entire language array. 
+		* @param	mixed		$default Optional default value, which should be returned if no element has been found
+		* @return mixed
+		*/
 	static function get($key = NULL, $default = NULL)
 	{
 		if(empty($key)) return self::$lang;

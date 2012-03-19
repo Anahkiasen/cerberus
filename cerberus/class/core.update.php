@@ -43,8 +43,12 @@ class update
 			self::codematch('dispatch::getAPI', 'dispatch::assets');
 			self::codematch('global \$dispatch;', '');
 		}
+		if(self::$revision < 505)
+		{
+			self::codematch('a::simple\(', 'a::simplify\(');
+		}
 				
-		self::update_core(494);
+		self::update_core(505);
 	}
 	
 	// Retourne le numéro de révision

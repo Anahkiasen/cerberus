@@ -1,6 +1,9 @@
 <?php
 function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue', $errorFile = __FILE__, $errorLine = __LINE__)
-{	
+{
+	// Exceptions pour les fonctions appelées via @
+	if(error_reporting() == 0) return true;
+		
 	// Récupération du chemin du fichier
 	$path = array_reverse(debug_backtrace());
 	$indentation = 0;
@@ -42,8 +45,8 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		break;
 	}
 		
-	//f::append('cerberus/cache/error.log', f::filename($errorFile). '::' .$errorLine. ' - ' .$DEBUG['error']. ': ' .$error.PHP_EOL);
-	$DEBUG['error'] = '<h3>[' .$DEBUG['error']. '] ' .$error. '</h3>
+	$DEBUG['error'] = '
+	<h3>[' .$DEBUG['error']. '] ' .$error. '</h3>
 	<h4>' .f::filename($errorFile). ':' .$errorLine. '</h4>';
 	
 	foreach($path as $id_file => $info)
@@ -87,10 +90,9 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	
 	// Rassemblement des informations sur l'erreur
 	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
-	$current = navigation::$page;
 
 	// Si local affichage de l'erreur, sinon envoi d'un mail
-	if(!LOCAL and $current != 'admin')
+	if(!LOCAL and navigation::$page != 'admin')
 	{
 		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
 		$titre_email = config::get('sitename');

@@ -109,7 +109,7 @@ class content
 			{
 				$getvar = a::remove($_GET, array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
 				foreach($getvar as $key => $value) if(str::find('http://', $value)) $getvar = a::remove($getvar, $key); // Sécurité f::write
-				if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::simplode('-', '-', $getvar);
+				if(isset($getvar) and !empty($getvar)) $basename .= '-' .a::glue($getvar, '-', '-');
 			}
 			
 			// Date de modification du fichier de base

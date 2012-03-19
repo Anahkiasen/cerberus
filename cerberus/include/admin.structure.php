@@ -59,13 +59,13 @@ else
 if(isset($_GET['meta_structure']))
 {
 	$meta = 
-		a::simple(db::join(
+		a::simplify(db::join(
 			'cerberus_meta M',
 			'cerberus_structure S',
 			'S.id = M.page', 'S.page, S.parent, M.id, M.page AS idx, M.titre, M.description, M.url',
 			array('M.page' => $_GET['meta_structure'], 'M.langue' => l::admin_current())));
 
-	$availablePages = a::simple(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
+	$availablePages = a::simplify(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
 	if(!isset($meta['id']))
 	{
 		$last = db::insert('cerberus_meta', array('page' => $_GET['meta_structure'], 'langue' => l::admin_current()));

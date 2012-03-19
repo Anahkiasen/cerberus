@@ -32,7 +32,7 @@ foreach(glob('./cerberus/cache/sql/*') as $file)
 	if(is_dir($file))
 	{
 		$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
-		$filesql = a::simple(glob($file. '/*.sql'));
+		$filesql = a::simplify(glob($file. '/*.sql'));
 
 		echo 
 		'<tr>

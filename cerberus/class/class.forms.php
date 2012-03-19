@@ -82,7 +82,7 @@ class forms
 				if(is_array($value)) 
 				{
 					$mailbody .= '<br />';
-					$value = a::simplode(' : ', '<br />', $value);
+					$value = a::glue($value, '<br/>', ':');
 				}
 				$mailbody .= stripslashes($value). '<br />';
 			}

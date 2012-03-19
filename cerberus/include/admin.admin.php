@@ -12,7 +12,7 @@ $langueAdmin->createList(array('Identifiant' => 'account'));
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
 
 $return = NULL;
-$return = a::simple($langueAdmin->get('navigation'), $return);
+$return = a::simplify($langueAdmin->get('navigation'), $return);
 
 if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 {
