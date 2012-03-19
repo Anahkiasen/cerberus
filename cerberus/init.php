@@ -183,10 +183,9 @@ if(CACHE)
 	elseif(SQL and db::is_table('cerberus_structure'))
 		$caching = db::field('cerberus_structure', 'cache', db::where(array('CONCAT_WS("-",parent,page)' => $setCache['name'], 'parent' => $setCache['name']), 'OR'));
 	else $caching = TRUE;
-	$setCache['caching'] = a::get($setCache, 'caching', $caching);
 	
 	// Démarrage de la mise en cache
-	$start = cache::page($setCache['name'], $setCache);
+	if($caching) $start = cache::page($setCache['name'], $setCache);
 }
 
 // Chargement des modules Cerberus

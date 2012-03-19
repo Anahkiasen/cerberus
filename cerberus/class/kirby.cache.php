@@ -46,8 +46,6 @@ class cache
 	static function fetch($name, $content = NULL, $params = array())
 	{
 		self::init();
-		
-		if(!a::get($params, 'caching')) return false;
 				
 		$time = a::get($params, 'cache_time', self::$time);
 		$cache_get_variables = a::get($params, 'cache_get_variables', self::$cache_get_variables);
@@ -61,7 +59,7 @@ class cache
 			$array_var = a::remove($array_var, $get_remove);
 			
 			$forbidden_var = array('http', '/', '\\');
-			foreach($array_var as $var)
+			if($array_var) foreach($array_var as $var)
 			{
 				$var = a::get($array_var, $var);
 				if(!str::find($forbidden_var, $var) and !empty($var)) $name .= '-' .$var;
@@ -88,13 +86,12 @@ class cache
 		
 		// If no cached file found, we create one
 		if(!isset($cached))
-			$cached = self::$folder.$name.'-'.$modified_source.'.'.$extension;		
-			self::$cached_file = $cached;
+			$cached = self::$folder.$name.'-'.$modified_source.'.'.$extension;				
 		
 		// Caching of a page or data
-		if($params['type'] == 'html' and !$content)
+		if(a::get($params, 'type') == 'html' and !$content)
 		{
-			//content::start();
+			self::$cached_file = $cached;
 			if(file_exists(self::$cached_file))
 			{
 				content::load(self::$cached_file, false);
@@ -105,8 +102,8 @@ class cache
 		}
 		else
 		{
-			if(file_exists(self::$cached_file)) $content = f::read(self::$cached_file, 'json');
-			else f::write(self::$cached_file, json_encode($content));
+			if(file_exists($cached)) $content = f::read($cached, 'json');
+			else f::write($cached, json_encode($content));
 			return $content;
 		}
 	}
