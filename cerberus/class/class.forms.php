@@ -278,7 +278,7 @@ class forms
 						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>');
 						foreach($array_entries as $index => $label)
 						{
-							if(is_numeric($index)) $index = $label;
+							if(is_numeric($index) and !isset($params['force_index'])) $index = $label;
 							
 							$selected = $array_value == $index ? ' selected="selected"' : NULL;	
 							$this_option = $index == $label ? NULL : ' value="' .$index. '"';
@@ -379,7 +379,7 @@ class forms
 		$additionalParams['select'] = $select;
 		$this->addField($name, $label, 'select', $value, $additionalParams);
 	}
-	function addDate($name = NULL, $label = NULL, $value = '0000-00-00', $additionalParams = NULL)
+	function addDate($name = 'date', $label = NULL, $value = '0000-00-00', $additionalParams = NULL)
 	{
 		$value = explode('-', $value);
 		$additionalParams['class'] = 'dateForm';

@@ -314,6 +314,13 @@ class dispatch extends Cerberus
 		self::inject('css', $stylesheets);
 	}
 	
+	/* Enlève une feuille de style */
+	static function removeCSS($stylesheets)
+	{
+		if(in_array($stylesheets, self::$CSS['min'])) self::$CSS['min'] = a::remove(self::$CSS['min'], $stylesheets, false);
+		if(in_array($stylesheets, self::$CSS['url'])) self::$CSS['url'] = a::remove(self::$CSS['url'], $stylesheets, false);
+	}
+	
 	/* Ajout de scripts à la volée */
 	static function addJSBefore($javascript)
 	{

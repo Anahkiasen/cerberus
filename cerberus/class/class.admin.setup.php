@@ -162,21 +162,24 @@ class admin_setup
 	*/
 	function admin_navigation()
 	{
-		echo '<div id="admin-navigation"><h4>Tableau de bord</h4>
-		<div class="btn-group">
-		<button class="btn category">Pages du site</button>';
+		echo '<div id="admin-navigation"><h4>Tableau de bord</h4>';
 		
-		// Langue de l'admin
 		if(MULTILANGUE and $this->multilangue)
 		{
-			echo '<p style="position: absolute; right: 5px; top: -7px">';
+			echo '<div class="btn-group"><button class="btn category">Langue</button>';
 			foreach($this->multilangue as $langue)
 			{
 				$flag_state = (l::admin_current() == $langue) ? NULL : '_off';
-				echo str::slink(NULL, str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue), array('adminLangue' => $langue));
+				$active = ($langue == l::admin_current()) ? 'btn-inverse' : NULL;
+				echo '<a class="btn ' .$active. '" href="' .url::reload(array('adminLangue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue). '</a>';
 			}
-			echo '</p>';
-		}
+			echo '</div>';
+		}		
+		
+		echo '<div class="btn-group">
+		<button class="btn category">Pages du site</button>';
+		
+		// Langue de l'admin
 		
 		// Navigation de l'admin
 		asort(self::$navigation);
