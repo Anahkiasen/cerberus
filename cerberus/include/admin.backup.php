@@ -2,12 +2,12 @@
 // Suppression et chargement
 if(isset($_GET['delete']))
 {
-	if(f::remove('cerberus/cache/sql/' .$_GET['delete']. '/')) str::display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
+	if(f::remove(PATH_CACHE. 'sql/' .$_GET['delete']. '/')) str::display('La sauvegarde du ' .$_GET['delete']. ' a bien été supprimée');
 	else str::display('Sauvegarde introuvable', 'error');
 }
 if(isset($_GET['load']))
 {
-	foreach(glob('cerberus/cache/sql/' .$_GET['load']. '/*.sql') as $file)
+	foreach(glob(PATH_CACHE. 'sql/' .$_GET['load']. '/*.sql') as $file)
 		$fichier = $file;
 		
 	multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.password'), config::get('db.name')));
@@ -27,11 +27,11 @@ echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
 	<tbody>';
 	
 // Liste des sauvegardes
-foreach(glob('./cerberus/cache/sql/*') as $file)
+foreach(glob('./' .PATH_CACHE. 'sql/*') as $file)
 {
 	if(is_dir($file))
 	{
-		$folderDate = str_replace('./cerberus/cache/sql/', '', $file);
+		$folderDate = str_replace('./' .PATH_CACHE. 'sql/', '', $file);
 		$filesql = a::simplify(glob($file. '/*.sql'));
 
 		echo 

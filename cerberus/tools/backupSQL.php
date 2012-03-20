@@ -2,7 +2,7 @@
 /*
 	Fonction backupSQL
 	# Effectue une sauvegarde de la base de donnée
-	# Créer un dossier par date dans le dossier cerberus/cache/sql par défaut
+	# Créer un dossier par date dans le dossier PATH_CACHEsql par défaut
 	# Ne garde que les sauvegardes du mois en cours et celles du mois précédent
 	# aux dates du 1er et du 15
 	
@@ -16,14 +16,14 @@ function backupSQL()
 	if(empty($tables_base))
 	{
 		// Si la base de données est vide, chargement de dernière la sauvegarde
-		foreach(glob('cerberus/cache/sql/*') as $file) 
+		foreach(glob(PATH_CACHE. 'sql/*') as $file) 
 			$fichier = $file;
 			
 		if(isset($fichier))
 		{	
 			$fichier = a::get(explode('/', $fichier), 3);
 			
-			foreach(glob('cerberus/cache/sql/' .$fichier. '/*.sql') as $file)
+			foreach(glob(PATH_CACHE. 'sql/' .$fichier. '/*.sql') as $file)
 				$fichier = $file;
 				
 			multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.mdp'), config::get('db.name')));
@@ -34,7 +34,7 @@ function backupSQL()
 		$filename = str::slugify(config::get('sitename', config::get('db.name')));
 
 		// Définition du nom du dossier
-		$path = 'cerberus/cache/sql/';
+		$path = PATH_CACHE. 'sql/';
 		$folderName = $path.date('Y-m-d');
 			
 		// Création du dossier à la date si inexistant

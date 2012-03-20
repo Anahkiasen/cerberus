@@ -15,7 +15,7 @@ class meta
 	static function build()
 	{
 		// Tableau des informations META
-		self::$file = 'cerberus/cache/meta-' .l::current(). '.php';
+		self::$file = PATH_CACHE. 'meta-' .l::current(). '.php';
 		$db_exist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : FALSE;
 		$meta = f::read(self::$file, 'json');
 		// Si aucune données META en cache, création du tableau

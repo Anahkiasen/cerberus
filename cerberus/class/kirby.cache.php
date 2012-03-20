@@ -14,7 +14,7 @@ class cache
 	{
 		if(!self::$folder)
 		{
-			self::$folder = config::get('cache_folder', 'cerberus/cache/');
+			self::$folder = config::get('cache_folder', PATH_CACHE);
 			self::$time = config::get('cache_time', 60 * 60 * 24 * 365);
 			self::$cache_get_variables = config::get('cache_variables', TRUE);			
 		}

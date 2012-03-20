@@ -6,7 +6,7 @@ Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du cr
 
 <?php
 // Valeurs par défaut
-$xml_name = 'cerberus/cache/sitemap_crawler.xml';
+$xml_name = PATH_CACHE. 'sitemap_crawler.xml';
 $domain = a::get($_POST, 'domain', url::domain());
 $pageLimit = a::get($_POST, 'pagelimit', 0);
 $trafficLimit = a::get($_POST, 'trafficlimit', 0);

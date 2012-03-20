@@ -26,14 +26,14 @@ class Cerberus
 		$this->mode = $mode;
 		
 		// Création ou non du fichier
-		if(!file_exists('cerberus/cache/' .$this->mode. '.php'))
+		if(!file_exists(PATH_CACHE.$this->mode. '.php'))
 		{
 			$this->unpackModules($modules);
 			$this->generate();
 		}
 		
 		// Include du fichier
-		f::inclure('cerberus/cache/' .$this->mode. '.php');
+		f::inclure(PATH_CACHE .$this->mode. '.php');
 	}	
 	
 	/* 
@@ -148,7 +148,7 @@ class Cerberus
 		
 		else
 			if(!empty($this->render))
-				f::write('cerberus/cache/' .$this->mode. '.php', '<?php' .$this->render. '?>');
+				f::write(PATH_CACHE .$this->mode. '.php', '<?php' .$this->render. '?>');
 	}
 }
 ?>

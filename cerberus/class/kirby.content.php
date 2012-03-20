@@ -10,7 +10,7 @@
  */
 class content
 {
-	private static $cache_folder = 'cerberus/cache/';
+	private static $cache_folder = PATH_CACHE;
 	private static $cachename = NULL;
 	
 	/**

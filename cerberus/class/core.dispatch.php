@@ -59,9 +59,10 @@ class dispatch extends Cerberus
 				'after' => array()));
 				
 		// Chemins récurrents
-		$path_common =   config::get('path.common');
-		$path_cerberus = config::get('path.cerberus');
-		$path_file =     config::get('path.file');
+		$path_common =    config::get('path.common');
+		$path_cerberus =  config::get('path.cerberus');
+		$path_file =      config::get('path.file');
+		$path_cache =     'cerberus/cache/';
 		
 		// Chemins par défaut
 		if(!$path_common)
@@ -80,6 +81,7 @@ class dispatch extends Cerberus
 		define('PATH_COMMON', $path_common);
 		define('PATH_CERBERUS', $path_cerberus);
 		define('PATH_FILE', $path_file);
+		define('PATH_CACHE', $path_cache);
 		
 		self::compass();
 	}
@@ -311,8 +313,8 @@ class dispatch extends Cerberus
 			$minify = array_unique(array_filter($array['min']));
 			if(!self::$minify or !$minify)
 				$array['url'] = array_merge($array['url'], $minify);
-			
-			else $array['url'][] = 'min/?f=' .implode(',', $minify);	
+			else
+				$array['url'][] = 'min/?f=' .implode(',', $minify);	
 		}
 		$array['url'] = array_unique(array_filter($array['url']));
 		
