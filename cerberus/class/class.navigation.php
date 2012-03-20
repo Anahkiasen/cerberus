@@ -41,114 +41,64 @@ class navigation
 	{
 		$navigation = config::get('navigation');
 		
-		// Créations des tables requises		
-		if(!$navigation)
-		{			
-			if(SQL and db::is_table('cerberus_structure'))
-				self::$data = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
-		}
-		else
+		$data = cache::fetch('navigation');
+		if($data) self::$data = $data;
+		
+		// Créations des tables requises
+		if(!self::$data)
 		{
-			foreach($navigation as $page)
-			self::$data[] = array(
-				'page' => $page,
-				'parent' => NULL,
-				'cache' => 0,
-				'hidden' => 0,
-				'external_link' => NULL);
-		}
-		if(self::$data)
-		{
-			// Pages système
-			foreach(self::$system as $sys)
+			if(!$navigation)
+			{			
+				if(SQL and db::is_table('cerberus_structure'))
+					$data_raw = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
+			}
+			else
 			{
-				self::$data[] = array(
-					'page' => $sys,
+				foreach($navigation as $page)
+				$data_raw[] = array(
+					'page' => $page,
 					'parent' => NULL,
-					'cache' => 1,
-					'hidden' => 1,
+					'cache' => 0,
+					'hidden' => 0,
 					'external_link' => NULL);
-			}
+			}			
+			self::build($data_raw);
+		}		
 	
-			// CERBERUS_STRUCTURE
-			foreach(self::$data as $key => $values)
-			{
-				// MENU
-				$index = !empty($values['parent']) ? $values['parent'] : $values['page']; // Cas d'une arborescence simple
-				if(!isset(self::$data[$index]))
-				{
-					$lien = NULL;
-					$external = 0;
-					$subcount = db::count('cerberus_structure', array('parent' => $index));
-					if($subcount == 1)
-					{
-						$hidden = $values['hidden'];
-						if(!empty($values['external_link']))
-						{
-							$lien = $values['external_link'];
-							$external = 1;
-						}
-					}
-					else $hidden = $subcount > 1 ? 0 : 1;
-						
-					self::$data[$index] = array(
-						'text' => l::get('menu-' .$index, ucfirst($index)),
-						'hidden' => $hidden,
-						'external' => $external,
-						'link' => $lien);
-				}
-				
-				// SOUS-MENU					
-				if(!empty($values['parent']))
-				{
-					$index = $values['parent'].'-'.$values['page'];
-					$lien = (!empty($values['external_link'])) 
-						? $values['external_link']
-						: NULL;
-						
-					self::$data[$values['parent']]['submenu'][$values['page']] = array(
-						'hidden' => $values['hidden'],
-						'text' => l::get('menu-' .$index, ucfirst($values['page'])),
-						'link' => $lien);						
-				}
-					
-				self::$data = a::remove(self::$data, $key);
-			}
-			if(!LOCAL) self::$data['admin']['hidden'] = 1;
-			
-			// Page en cours
-			$default_page = key(self::$data);
-			
-			$page = isset(self::$data[get('page')]) ? get('page') : $default_page;
-			$sousMenu = isset(self::$data[$page]) ? a::get(self::$data[$page], 'submenu', a::get(self::$data[$default_page], 'submenu', NULL)) : NULL;
-			if($sousMenu) $sousPage = isset($sousMenu[get('pageSub')]) ? get('pageSub') : key($sousMenu);
-			else $sousPage = NULL;
-	
-			// Détection du chemin vers le fichier à inclure
-			if(!in_array($page, self::$system))
-			{
-				if($page != 'admin') self::$filepath = self::extension($page, $sousPage);
-				else if(get('admin')) $sousPage = get('admin');
-			}
-			
-			// Page externe
-			$path = array_reverse(debug_backtrace());
-			$path = f::name($path[0]['file'], true);
-			if($page == $default_page and 
-			   a::get($_GET, 'page') != $default_page and 
-			   $path != config::get('index', 'index'))
-			{
-				$page = $path;
-				$sousPage = NULL;
-				$external = true;
-			}
-			else $external = false;
-			define('EXTERNAL', $external);
-			
-			// Enregistrement des variables
-			self::$page = $page;
-			self::$sousPage = $sousPage;
+		// Page en cours
+		$default_page = key(self::$data);
+		
+		$page = isset(self::$data[get('page')]) ? get('page') : $default_page;
+		$sousMenu = isset(self::$data[$page]) ? a::get(self::$data[$page], 'submenu', a::get(self::$data[$default_page], 'submenu', NULL)) : NULL;
+		if($sousMenu) $sousPage = isset($sousMenu[get('pageSub')]) ? get('pageSub') : key($sousMenu);
+		else $sousPage = NULL;
+
+		// Détection du chemin vers le fichier à inclure
+		if(!in_array($page, self::$system))
+		{
+			if($page != 'admin') self::$filepath = self::extension($page, $sousPage);
+			else if(get('admin')) $sousPage = get('admin');
 		}
+		
+		// Page externe
+		$path = array_reverse(debug_backtrace());
+		$path = f::name($path[0]['file'], true);
+		if($page == $default_page and 
+		   a::get($_GET, 'page') != $default_page and 
+		   $path != config::get('index', 'index'))
+		{
+			$page = $path;
+			$sousPage = NULL;
+			$external = true;
+		}
+		else $external = false;
+		define('EXTERNAL', $external);
+		
+		// Enregistrement des variables
+		self::$page = $page;
+		self::$sousPage = $sousPage;
+		
+		self::active();
 	}
 	
 	// Vérification de l'existence d'une page
@@ -186,44 +136,110 @@ class navigation
 	######################################## 
 	*/
 	
-	// Création des arrays de liens
-	static function createTree()
+	// Création de l'arbre de navigation
+	static function build($data_raw)
 	{
-		if(!self::$rendered)
+		// Ajout des pages système à l'arbre
+		foreach(self::$system as $sys)
 		{
-			foreach(self::$data as $key => $value)
+			$data_raw[] = array(
+				'page' => $sys,
+				'parent' => NULL,
+				'cache' => 1,
+				'hidden' => 1,
+				'external_link' => NULL);
+		}
+
+		// Création de l'arbre de navigation
+		foreach($data_raw as $key => $values)
+		{
+			$simple_tree = empty($values['parent']);
+			
+			// MENU
+			$index = !$simple_tree ? $values['parent'] : $values['page']; // Cas d'une arborescence simple
+			if(!isset($data_raw[$index]))
 			{
-				// Page
-				if($key == self::$page)
-					self::$data[$key]['class'][] = 'active';
-				
-				self::$data[$key]['class'] = implode(' ', a::get(self::$data[$key], 'class', array()));
-				
-				if(!a::get($value, 'link'))
-					self::$data[$key]['link'] = url::rewrite($key);
-				
-				// Sous-page
-				if(isset($value['submenu']))
-					foreach($value['submenu'] as $subkey => $subvalue)
+				$lien = NULL;
+				$external = 0;
+				$subcount = db::count('cerberus_structure', array('parent' => $index));
+				if($subcount == 1)
+				{
+					$hidden = $values['hidden'];
+					if(!empty($values['external_link']))
 					{
-						if($key == self::$page and $subkey == self::$sousPage)
-							self::$data[$key]['submenu'][$subkey]['class'][] = 'active';
-						
-						self::$data[$key]['submenu'][$subkey]['class'] = implode(' ', a::get(self::$data[$key]['submenu'][$subkey], 'class', array()));
-						
-						if(!$subvalue['link'])
-							self::$data[$key]['submenu'][$subkey]['link'] = url::rewrite($key.'-'.$subkey);
+						$lien = $values['external_link'];
+						$external = 1;
 					}
+				}
+				else $hidden = $subcount > 1 ? 0 : 1;
+					
+				$data_raw[$index] = array(
+					'text' => l::get('menu-' .$index, ucfirst($index)),
+					'hidden' => $hidden,
+					'external' => $external,
+					'link' => $lien);
 			}
-			self::$rendered = TRUE;
+			
+			// SOUS-MENU					
+			if(!$simple_tree and $external != '1' and $hidden != '1')
+			{
+				$index_sub = $values['parent'].'-'.$values['page'];
+				$lien = (!empty($values['external_link'])) 
+					? $values['external_link']
+					: NULL;
+		
+				$data_raw[$index]['submenu'][$values['page']] = array(
+					'hidden' => $values['hidden'],
+					'text' => l::get('menu-' .$index_sub, ucfirst($values['page'])),
+					'link' => $lien);		
+							
+				// Calculs des liens des sous-pages
+				if(isset($data_raw[$index]['submenu']))
+					foreach($data_raw[$index]['submenu'] as $subkey => $subvalue)
+						if(!a::get($subvalue, 'link'))
+							$data_raw[$index]['submenu'][$subkey]['link'] = url::rewrite($values['parent'].'-'.$values['page']);
+			}
+			
+			a::show($data_raw[$index]);
+			
+			if(!a::get($values, 'link'))
+				$data_raw[$index]['link'] = ($data_raw[$index]['external'] == 1)
+				? $values['external_link']
+				: url::rewrite($index);
+			
+			$data_raw = a::remove($data_raw, $key);
+		}
+		if(!LOCAL) $data_raw['admin']['hidden'] = 1;
+		
+		self::$data = $data_raw;
+		cache::fetch('navigation', self::$data);
+	}
+
+	// Détermine quels liens sont actifs
+	static private function active()
+	{
+		// Active pages
+		foreach(self::$data as $key => $value)
+		{
+			// Page
+			if($key == self::$page)
+				self::$data[$key]['class'][] = 'active';
+				self::$data[$key]['class'] = implode(' ', a::get(self::$data[$key], 'class', array()));
+			
+			// Sous-page
+			if(isset($value['submenu']))
+				foreach($value['submenu'] as $subkey => $subvalue)
+				{
+					if($key == self::$page and $subkey == self::$sousPage)
+						self::$data[$key]['submenu'][$subkey]['class'][] = 'active';
+						self::$data[$key]['submenu'][$subkey]['class'] = implode(' ', a::get(self::$data[$key]['submenu'][$subkey], 'class', array()));
+				}
 		}
 	}
 	
 	// Altération des liens de la liste
 	static function alterTree($key, $alter_value = NULL, $alter_key = 'link')
-	{
-		self::createTree();
-		
+	{		
 		if(str::find('-', $key))
 		{
 			$key = explode('-', $key);
@@ -237,9 +253,7 @@ class navigation
 	{		
 		$glue .= PHP_EOL;
 		if(empty(self::$renderNavigation))
-		{
-			self::createTree();
-			
+		{			
 			foreach(self::$data as $key => $value)
 			{
 				if(isset($value['hidden']) and $value['hidden'] != 1)

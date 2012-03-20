@@ -46,14 +46,15 @@ class cache
 	static function fetch($name, $content = NULL, $params = array())
 	{
 		self::init();
-				
+		
 		$time = a::get($params, 'cache_time', self::$time);
 		$cache_get_variables = a::get($params, 'cache_get_variables', self::$cache_get_variables);
 		$name = l::current(). '-' .str::slugify($name);
 		$get_remove = a::get($params, 'get_remove', self::$get_remove);
+		$cache_page = (a::get($params, 'type') == 'html');
 		
 		// Cache GET variables to allow for caching of dynamic pages
-		if($cache_get_variables)
+		if($cache_get_variables and $cache_page)
 		{
 			$array_var = is_array($cache_get_variables) ? $cache_get_variables : $_GET;
 			$array_var = a::remove($array_var, $get_remove);
@@ -67,7 +68,8 @@ class cache
 		
 		// Looking for a cached file
 		$modified_source = time();
-		$extension = ($content and (a::get($params, 'type') != 'html')) ? 'json' : 'html';
+		$extension = ($content and !$cache_page) ? 'json' : 'html';
+		
 		$file = self::search($name. '-[0-9]*');
 		if($file)
 		{
@@ -88,7 +90,7 @@ class cache
 			$cached = self::$folder.$name.'-'.$modified_source.'.'.$extension;				
 		
 		// Caching of a page or data
-		if(a::get($params, 'type') == 'html' and !$content)
+		if($cache_page and !$content)
 		{
 			self::$cached_file = $cached;
 			if(file_exists(self::$cached_file))
@@ -99,12 +101,13 @@ class cache
 			else content::start();
 			return file_exists($cached);
 		}
-		else
+		elseif($content or file_exists($cached))
 		{
 			if(file_exists($cached)) $content = f::read($cached, 'json');
 			else f::write($cached, json_encode($content));
 			return $content;
 		}
+		else return false;
 	}
 
 	/**
