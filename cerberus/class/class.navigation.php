@@ -199,9 +199,7 @@ class navigation
 						if(!a::get($subvalue, 'link'))
 							$data_raw[$index]['submenu'][$subkey]['link'] = url::rewrite($values['parent'].'-'.$values['page']);
 			}
-			
-			a::show($data_raw[$index]);
-			
+						
 			if(!a::get($values, 'link'))
 				$data_raw[$index]['link'] = ($data_raw[$index]['external'] == 1)
 				? $values['external_link']
