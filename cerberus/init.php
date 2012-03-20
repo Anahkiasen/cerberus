@@ -53,7 +53,7 @@ if(!defined('LOCAL'))         define('LOCAL', 	   	config::get('local', 	  	FALS
 if(!defined('MULTILANGUE'))   define('MULTILANGUE', 	config::get('multilangue', FALSE));
 if(!defined('CACHE'))
 {
-	if(LOCAL)   define('CACHE', false);
+	if(LOCAL or PATH_MAIN != NULL)   define('CACHE', false);
 	else        define('CACHE', config::get('cache', TRUE));
 }
 
@@ -133,7 +133,7 @@ if(config::get('boostrap', true) and LOCAL)
 		dispatch::path(PATH_CERBERUS. '{sass}/_custom.sass'));
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
-if(!file_exists(PATH_CACHE)) dir::make(PATH_CACHE);
+if(!file_exists(PATH_CACHE) and CACHE) dir::make(PATH_CACHE);
 
 // Gestion des langues et de la navigation
 new l();
@@ -203,7 +203,7 @@ if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 if(update::revision() < 478) meta::head();
 
 // Balise base
-if(REWRITING)
+if(REWRITING and PATH_MAIN == NULL)
 {
 	$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
 	echo '<base href="' .config::get('http').$baseref. '" />';

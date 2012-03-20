@@ -23,6 +23,7 @@ class forms
 	function __construct($params = NULL, $multilangue = NULL)
 	{
 		// Création de l'élément <form>
+		if(!is_array($params)) $params = array('class' => $params);
 		if(!isset($params['method'])) $params['method'] = 'post';
 		if(!isset($params['class'])) $params['class'] = 'form-horizontal';
 		
