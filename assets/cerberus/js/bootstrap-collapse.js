@@ -1,5 +1,5 @@
 /* =============================================================
- * bootstrap-collapse.js v2.0.1
+ * bootstrap-collapse.js v2.0.2
  * http://twitter.github.com/bootstrap/javascript.html#collapse
  * =============================================================
  * Copyright 2012 Twitter, Inc.
@@ -44,7 +44,7 @@
   , show: function () {
       var dimension = this.dimension()
         , scroll = $.camelCase(['scroll', dimension].join('-'))
-        , actives = this.$parent && this.$parent.find('.in')
+        , actives = this.$parent && this.$parent.find('> .accordion-group > .in')
         , hasData
 
       if (actives && actives.length) {
@@ -56,7 +56,6 @@
       this.$element[dimension](0)
       this.transition('addClass', 'show', 'shown')
       this.$element[dimension](this.$element[0][scroll])
-
     }
 
   , hide: function () {
@@ -74,7 +73,7 @@
         [dimension](size || 'auto')
         [0].offsetWidth
 
-      this.$element[size ? 'addClass' : 'removeClass']('collapse')
+      this.$element[size != null ? 'addClass' : 'removeClass']('collapse')
 
       return this
     }

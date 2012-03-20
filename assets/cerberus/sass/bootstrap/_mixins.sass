@@ -81,14 +81,6 @@
   text-overflow: ellipsis
   white-space: nowrap
 
-// New image replacement
-// -------------------------
-// Source: http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/
-=hide-text
-  overflow: hidden
-  text-indent: 100%
-  white-space: nowrap
-
 // FONTS
 // --------------------------------------------------
 
@@ -348,14 +340,20 @@ $diff: 5%
 // Fixed grid
 
 =grid-core-generate($gridColumnWidth, $gridGutterWidth)
+  .row
+    margin-left: $gridGutterWidth * -1
+    +clearfix
+  
   [class*="span"]
     float: left
     margin-left: $gridGutterWidth
+  
   // Set the container width, and override it for fixed navbars in media queries
   .container,
   .navbar-fixed-top .container,
   .navbar-fixed-bottom .container
     +grid-core-span($gridColumns)
+    
   // generate .spanX and .offsetX
   @for $index from 1 through $gridColumns
     .span#{$index}
@@ -363,9 +361,6 @@ $diff: 5%
   @for $index from 1 through $gridColumns
     .offset#{$index}
       +grid-core-offset($index)
-  .row
-    margin-left: $gridGutterWidth * -1
-    +clearfix
 
 // Span and offsets functions
 =grid-core-offset($columns)
@@ -385,10 +380,10 @@ $diff: 5%
       margin-left: $fluidGridGutterWidth
     > [class*="span"]:first-child
       margin-left: 0
-  // generate .spanX and .offsetX
-  @for $index from 1 through $gridColumns
-    > .span#{$index}
-      +grid-fluid-span($index)
+    // generate .spanX and .offsetX
+    @for $index from 1 through $gridColumns
+      > .span#{$index}
+        +grid-fluid-span($index)
 
 =grid-fluid-span($columns)
   width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)

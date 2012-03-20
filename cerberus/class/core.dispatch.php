@@ -41,7 +41,11 @@ class dispatch extends Cerberus
 	static public $coffee = 'coffee';
 	static public $file = 'file';
 	
-	// Initilisation de Dispatch
+	/**
+	 * Initializes the dispatch module
+	 * 
+	 * @param string	$current	The current batch identifier, if not specified, uses the current page
+	 */
 	function __construct($current = NULL)
 	{			
 		// Paramètres
@@ -86,7 +90,12 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
-	/* Tri et répartition des modules demandés */
+	/**
+	 * Sort and filters an array of asked modules
+	 * 
+	 * @param array 	$modules An array containing the wanted modules globally
+	 * @return array  Only the needed modules in all those given
+	 */
 	static function dispatchArray($modules)
 	{
 		if(!isset(self::$global))
@@ -135,7 +144,11 @@ class dispatch extends Cerberus
 		else return FALSE;
 	}
 
-	/* Modules PHP */
+	/**
+	 * Sets the different PHP scripts for the different pages
+	 * 
+	 * @param array 	$modules The wanted modules
+	 */
 	static function setPHP($modules)
 	{
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
@@ -143,7 +156,12 @@ class dispatch extends Cerberus
 		if($modules) new Cerberus($modules, self::$global);
 	}
 	
-	/* Modules JS/CSS */
+	/**
+	 * Sets the different JS and CSS scripts for the different pages
+	 * 
+	 * @param array 	$modules The wanted scripts and styles
+	 * @return array  The scripts that were used in the current page
+	 */
 	static function assets($scripts = array())
 	{
 		global $switcher;
@@ -238,7 +256,12 @@ class dispatch extends Cerberus
 		return $path;
 	}
 	
-	/* Script activé ou non */
+	/**
+	 * Tells if a given script is used on the current page or not
+	 * 
+	 * @param string 	 The name of a script
+	 * @return boolean Wether or not the script is used on this page
+	 */
 	static function isScript($script)
 	{
 		return (isset(self::$scripts) and in_array($script, self::$scripts));
@@ -250,7 +273,13 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
-	// Injecte du CSS/JS dans les ressources
+	/**
+	 * Injects scripts or styles in the page
+	 * 
+	 * @param string 	$type The type of the injected asset, css or js
+	 * @param array   $scripts Either an array of assets or a single asset
+	 * @param string  $place Wether to put the new ressources before or after the usual calls
+	 */
 	static function inject($type, $scripts, $place = 'after')
 	{
 		$type = str::upper($type);
@@ -269,7 +298,12 @@ class dispatch extends Cerberus
 		}
 	}
 	
-	// Nettoyage des tableaux de scripts
+	/**
+	 * Cleans an array of asset from duplicates and empty strings
+	 * 
+	 * @param array 	$array The array to sanitize
+	 * @return array 	The sanitized array
+	 */
 	static function sanitize($array)
 	{
 		if(isset($array['min']) and !empty($array['min']))
@@ -285,7 +319,9 @@ class dispatch extends Cerberus
 		return $array;
 	}
 	
-	/* Récupération des feuilles de style */
+	/**
+	 * Fetch the current CSS styles for the page
+	 */
 	static function getCSS()
 	{
 		self::$CSS = self::sanitize(self::$CSS);
@@ -295,7 +331,9 @@ class dispatch extends Cerberus
 		if(self::$CSS['inline']['after']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['after']). '</style>'.PHP_EOL;
 	}
 
-	/* Récupération du Javascript */
+	/**
+	 * Fetch the current JS scripts for the page
+	 */
 	static function getJS()
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');

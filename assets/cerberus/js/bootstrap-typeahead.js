@@ -1,5 +1,5 @@
 /* =============================================================
- * bootstrap-typeahead.js v2.0.1
+ * bootstrap-typeahead.js v2.0.2
  * http://twitter.github.com/bootstrap/javascript.html#typeahead
  * =============================================================
  * Copyright 2012 Twitter, Inc.
@@ -39,8 +39,9 @@
 
   , select: function () {
       var val = this.$menu.find('.active').attr('data-value')
-      this.$element.val(val)
-      this.$element.change();
+      this.$element
+        .val(val)
+        .change()
       return this.hide()
     }
 
@@ -109,7 +110,8 @@
     }
 
   , highlighter: function (item) {
-      return item.replace(new RegExp('(' + this.query + ')', 'ig'), function ($1, match) {
+      var query = this.query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+      return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
         return '<strong>' + match + '</strong>'
       })
     }

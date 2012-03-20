@@ -1,5 +1,5 @@
 /* =============================================================
- * bootstrap-scrollspy.js v2.0.1
+ * bootstrap-scrollspy.js v2.0.2
  * http://twitter.github.com/bootstrap/javascript.html#scrollspy
  * =============================================================
  * Copyright 2012 Twitter, Inc.
@@ -57,10 +57,17 @@
 
     , process: function () {
         var scrollTop = this.$scrollElement.scrollTop() + this.options.offset
+          , scrollHeight = this.$scrollElement[0].scrollHeight || this.$body[0].scrollHeight
+          , maxScroll = scrollHeight - this.$scrollElement.height()
           , offsets = this.offsets
           , targets = this.targets
           , activeTarget = this.activeTarget
           , i
+
+        if (scrollTop >= maxScroll) {
+          return activeTarget != (i = targets.last()[0])
+            && this.activate ( i )
+        }
 
         for (i = offsets.length; i--;) {
           activeTarget != targets[i]
@@ -85,8 +92,10 @@
           .addClass('active')
 
         if ( active.parent('.dropdown-menu') )  {
-          active.closest('li.dropdown').addClass('active')
+          active = active.closest('li.dropdown').addClass('active')
         }
+
+        active.trigger('activate')
       }
 
   }
