@@ -1,5 +1,4 @@
 <?php
-$config_file = 'cerberus/conf.php';
 $arrays = array('cerberus', 'langues');
 $bool = array('rewriting', 'minify', 'bootstrap', 'multi_admin', 'cache', 'logs', 'multilangue');
 
@@ -62,7 +61,7 @@ array(
 		'base.online' => 'Sous-dossier en ligne (facultatif)')
 );
 
-if(file_exists($config_file)) include($config_file);
+if(file_exists(PATH_CONF)) include(PATH_CONF);
 if(!isset($config)) $config = array();
 	
 // Création du formulaire

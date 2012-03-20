@@ -1,18 +1,21 @@
 <?php
 // Gestion des erreurs
 include('tools/errorHandle.php');
-$config_file = 'cerberus/conf.php';
 header('Content-type: text/html; charset=utf-8');
 date_default_timezone_set('Europe/Paris');
 ini_set('error_log', 'cerberus/cache/error.log');
 ini_set('log_errors', 'On');
 
+// Chemins principaux
+if(!defined('PATH_MAIN')) define('PATH_MAIN', '');
+if(!defined('PATH_CONF')) define('PATH_CONF', PATH_MAIN.'cerberus/conf.php');
+
 // Chargement du moteur Cerberus
-include('cerberus/class/kirby.request.php');
+include(PATH_MAIN.'cerberus/class/kirby.request.php');
 function __class_loader($class_name) 
 {
 	$class_name = str_replace('_', '.', strtolower($class_name));
-	$file = glob('cerberus/class/{kirby,class,core,kirby.plugins}.' .$class_name. '*.php', GLOB_BRACE);
+	$file = glob(PATH_MAIN.'cerberus/class/{kirby,class,core,kirby.plugins}.' .$class_name. '*.php', GLOB_BRACE);
 	if($file and file_exists($file[0]) and !class_exists($class_name))
 	{
 		require_once($file[0]); 
@@ -31,8 +34,8 @@ session::start();
 */
 
 // Configuration du site
-if(!file_exists($config_file)) f::write($config_file, NULL);
-else config::load($config_file);
+if(!file_exists(PATH_CONF)) f::write(PATH_CONF, NULL);
+else config::load(PATH_CONF);
 config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
 
 // Paramètres si LOCAL
@@ -173,7 +176,6 @@ if(CACHE)
 	if(!isset($setCache)) $setCache = array();
 	$setCache['name'] = a::get($setCache, 'name', navigation::current());
 	$setCache['cache_time'] = a::get($setCache, 'cache_time');
-	$setCache['cache_variables'] = a::get($setCache, 'cache_variables', true);
 	$setCache['cache_get_variables'] = a::get($setCache, 'cache_get_variables', true);
 	$setCache['get_remove'] = a::get($setCache, 'get_remove', array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
 	$setCache['type'] = 'html';

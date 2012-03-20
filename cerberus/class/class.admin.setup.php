@@ -171,7 +171,7 @@ class admin_setup
 			{
 				$flag_state = (l::admin_current() == $langue) ? NULL : '_off';
 				$active = ($langue == l::admin_current()) ? 'btn-inverse' : NULL;
-				echo '<a class="btn ' .$active. '" href="' .url::reload(array('adminLangue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue). '</a>';
+				echo '<a class="btn ' .$active. '" href="' .url::reload(array('get_admin_langue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue). '</a>';
 			}
 			echo '</div>';
 		}		

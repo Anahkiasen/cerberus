@@ -16,7 +16,7 @@ class cache
 		{
 			self::$folder = config::get('cache_folder', PATH_CACHE);
 			self::$time = config::get('cache_time', 60 * 60 * 24 * 365);
-			self::$cache_get_variables = config::get('cache_variables', TRUE);			
+			self::$cache_get_variables = config::get('cache_get_variables', TRUE);			
 		}
 	}
 
@@ -59,11 +59,10 @@ class cache
 			$array_var = a::remove($array_var, $get_remove);
 			
 			$forbidden_var = array('http', '/', '\\');
-			if($array_var) foreach($array_var as $var)
-			{
-				$var = a::get($array_var, $var);
-				if(!str::find($forbidden_var, $var) and !empty($var)) $name .= '-' .$var;
-			}
+			if($array_var)
+				foreach($array_var as $var_key => $var_val)
+					if(!str::find($forbidden_var, $var_val) and !empty($var_val))
+						$name .= '-'.$var_key .'-' .$var_val;
 		}
 		
 		// Looking for a cached file

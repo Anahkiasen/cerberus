@@ -23,7 +23,7 @@ class config
 	 * 
 	 * @var string
 	 */
-	private static $config_file = 'cerberus/conf.php';
+	private static $config_file = PATH_CONF;
  
 	/** 
 		* Gets a config value by key

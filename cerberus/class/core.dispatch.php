@@ -65,15 +65,18 @@ class dispatch extends Cerberus
 		$path_cache =     'cerberus/cache/';
 		
 		// Chemins par défaut
-		if(!$path_common)
+		if(!$path_common or !file_exists($path_common))
 		{
-			$path_common =    f::path(dispatch::path('{assets}/{common}/'), f::path(dispatch::path('{assets}/'), '/'));
-			$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'), f::path(dispatch::path('{assets}/'), '/'));
+			$path_common =    f::path(dispatch::path('{assets}/{common}/'), f::path(dispatch::path('{assets}/'), ''));
+			$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'), f::path(dispatch::path('{assets}/'), ''));
 			$path_file =      f::path(dispatch::path('{assets}/{common}/{file}/'), f::path(dispatch::path('{assets}/{file}/'), f::path(dispatch::path('{file}/'))));
 			
-			config::hardcode('path.common', $path_common);
-			config::hardcode('path.cerberus', $path_cerberus);
-			config::hardcode('path.file', $path_file);
+			if(PATH_MAIN == NULL)
+			{
+				config::hardcode('path.common', $path_common);
+				config::hardcode('path.cerberus', $path_cerberus);
+				config::hardcode('path.file', $path_file);
+			}
 			
 			f::remove('config.rb');
 		}

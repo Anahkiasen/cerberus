@@ -43,12 +43,13 @@ class update
 			self::codematch('dispatch::getAPI', 'dispatch::assets');
 			self::codematch('global \$dispatch;', '');
 		}
-		if(self::$revision < 505)
+		if(self::$revision < 508)
 		{
 			self::codematch('a::simple\(', 'a::simplify\(');
+			self::codematch('AdminPage\(', 'admin\(');
 		}
 				
-		self::update_core(505);
+		self::update_core(508);
 	}
 	
 	// Retourne le numéro de révision
@@ -62,11 +63,10 @@ class update
 	{
 		if(self::$revision < $torev)
 		{
-			$config_file = 'cerberus/conf.php';
 			$rev = LOCAL ? 'revision.local' : 'revision.online';
 			
 			// Fichier config
-			$confphp = f::read($config_file);
+			$confphp = f::read(PATH_CONF);
 			if(!empty($confphp)) $confphp = trim(substr($confphp, 5, -2));
 			
 			$confphp = 
@@ -79,7 +79,7 @@ class update
 						$confphp);
 			$confphp = '<?php' .PHP_EOL.$confphp.PHP_EOL. '?>';
 			
-			if(f::write($config_file, $confphp)) str::display('Mise à jour ' .$torev. ' effectuée', 'success');
+			if(f::write(PATH_CONF, $confphp)) str::display('Mise à jour ' .$torev. ' effectuée', 'success');
 			else str::display('Erreur lors de la mise-à-jour vers ' .$torev, 'error');
 		}
 	}

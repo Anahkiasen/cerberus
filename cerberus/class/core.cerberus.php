@@ -86,8 +86,8 @@ class Cerberus
 	function getFile($module)
 	{
 		$cheminsValides = array(
-			'cerberus/tools/',
-			'cerberus/class/',
+			PATH_MAIN.'cerberus/tools/',
+			PATH_MAIN.'cerberus/class/',
 			PATH_COMMON.'php/');
 		
 		foreach($cheminsValides as $chemin)
