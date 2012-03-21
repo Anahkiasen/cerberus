@@ -45,7 +45,7 @@ class update
 		}
 		if(self::$revision < 508)
 		{
-			self::codematch('a::simple\(', 'a::simplify\(');
+			self::codematch('a::simple\(', 'a::simplify(');
 			self::codematch('AdminPage\(', 'admin\(');
 		}
 				

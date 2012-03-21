@@ -45,6 +45,7 @@ class cache
 	 */
 	static function fetch($name, $content = NULL, $params = array())
 	{
+		if(!CACHE) return false;
 		self::init();
 		
 		$time = a::get($params, 'cache_time', self::$time);

@@ -184,7 +184,7 @@ if(CACHE)
 	if(navigation::$page == 'admin') $caching = FALSE;
 	elseif(SQL and db::is_table('cerberus_structure'))
 		$caching = db::field('cerberus_structure', 'cache', db::where(array('CONCAT_WS("-",parent,page)' => $setCache['name'], 'parent' => $setCache['name']), 'OR'));
-	else $caching = TRUE;
+	if(!isset($caching)) $caching = TRUE;
 	
 	// Démarrage de la mise en cache
 	if($caching) $start = cache::page($setCache['name'], $setCache);

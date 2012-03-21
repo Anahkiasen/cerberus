@@ -181,7 +181,7 @@ class navigation
 			}
 			
 			// SOUS-MENU					
-			if(!$simple_tree and $external != '1' and $hidden != '1')
+			if(!$simple_tree and $external != '1')
 			{
 				$index_sub = $values['parent'].'-'.$values['page'];
 				$lien = (!empty($values['external_link'])) 
@@ -387,7 +387,7 @@ class navigation
 	
 	static function getSubmenu($render = TRUE)
 	{
-		$submenu = a::get(a::get(self::$data, self::$page), 'submenu');
+		$submenu = a::get(self::$data, self::$page.',submenu');
 		if($render)
 		{
 			self::render();
