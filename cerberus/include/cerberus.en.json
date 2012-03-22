@@ -6,11 +6,12 @@
 	"form.incomplete":			"One or more fields are incomplete or incorrect",
 	"form.cancel":				"Cancel",
 	
-	"error.filepath":			"The file {filepath} couldn\'t be found",
+	"error.filepath":			"The file {filepath} couldn't be found",
 	
 	"news.none":				"No news to display",
 	"news.readmore":			"Read more",
 	"news.archives":			"Archives",
+	"news.last":				"Last news",
 	
 	"mail.sent":				"Your message was correctly sent",
 	"mail.error":				"An error occured during the sending of the message",

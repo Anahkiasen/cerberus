@@ -77,7 +77,7 @@ class r
 		* @param	mixed		$default Optional default value, which should be returned if no element has been found
 		* @return mixed
 		*/	
-	static function get($key = FALSE, $default = NULL)
+	static function request($key = FALSE, $default = NULL)
 	{
 		$request = (self::method() == 'GET') ? self::data() : array_merge(self::data(), self::body());
 		if(empty($key)) return $request;
@@ -89,8 +89,20 @@ class r
 	 */
 	static function post($key = NULL, $default = NULL)
 	{
+		if(!isset($_POST)) return FALSE;
+		
 		if(!$key) return $_POST;
 		else return a::get($_POST, $key, $default);
+	}
+	
+	/**
+	 * Gets a request value by key, only in the GET array
+	 */
+	static function get($key = NULL, $default = NULL)
+	{
+		if(!isset($_GET)) return FALSE;
+		if(!$key) return $_GET;
+		else return a::get($_GET, $key, $default);
 	}
 
 	/**

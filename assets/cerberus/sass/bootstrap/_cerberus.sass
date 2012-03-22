@@ -45,8 +45,12 @@ p.readmore
 
 .btn-cerberus
 	color: white
-	text-shadow: 0 1px 1px fadeout($black, 25)
-	+gradientBar($main, darken($main, 15))
+	+buttonBackground($main, darken($main, 15))
+	+single-text-shadow(fade(black, 50), 1px, 1px)
+	&:hover,
+	&:active
+		color: white
+		+single-text-shadow(fade(black, 50), -1px, -1px)
 
 .btn-wide
 	+box-sizing(border-box)

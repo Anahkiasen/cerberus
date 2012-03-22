@@ -95,6 +95,16 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
+	// Configure les indexs current et global
+	function indexes()
+	{
+		if(!isset(self::$global))
+		{
+			self::$current = (!empty($current)) ? $current : navigation::current();
+			self::$global = navigation::$page;
+		}
+	}	
+	
 	/**
 	 * Sort and filters an array of asked modules
 	 * 
@@ -103,12 +113,6 @@ class dispatch extends Cerberus
 	 */
 	static function dispatchArray($modules)
 	{
-		if(!isset(self::$global))
-		{
-			self::$current = (!empty($current)) ? $current : navigation::current();
-			self::$global = navigation::$page;
-		}	
-		
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
@@ -156,6 +160,8 @@ class dispatch extends Cerberus
 	 */
 	static function setPHP($modules)
 	{
+		self::indexes();
+		
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::dispatchArray($modules);
 		if($modules) new Cerberus($modules, self::$global);
@@ -170,6 +176,7 @@ class dispatch extends Cerberus
 	static function assets($scripts = array())
 	{
 		global $switcher;
+		self::indexes();
 		
 		// Bootstrap
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');

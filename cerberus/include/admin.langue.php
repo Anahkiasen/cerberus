@@ -10,8 +10,8 @@
 .admin-langue a p.infoblock { text-align:center !important; }
 </style>
 
-<a href="<?= url::rewrite('admin-langue', array('bdd' => 'import')) ?>"><p id="left" class="infoblock">Importer des traductions</p></a>
-<a href="<?= url::rewrite('admin-langue', array('bdd' => 'export')) ?>"><p id="right" class="infoblock">Exporter des traductions</p></a>
+<a href="<?= url::rewrite('admin-langue', array('bdd' => 'import')) ?>"><p id="left" class="btn"><i class="icon-signin"></i> Importer des traductions</p></a>
+<a href="<?= url::rewrite('admin-langue', array('bdd' => 'export')) ?>"><p id="right" class="btn"><i class="icon-signout"></i> Exporter des traductions</p></a>
 <p class="clear"></p>
 
 <?php

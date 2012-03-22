@@ -58,7 +58,7 @@ class forms
 			$default			= a::get($params, 2, NULL);
 			$value 			= $type == 'file'
 									? a::get($_FILES, $key)
-									: str::sanitize(r::get($key, $default), $type);
+									: str::sanitize(r::request($key, $default), $type);
 								
 			$status 					= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
 			$this->status[$key] 	= $status ? 'success' : 'error';
@@ -131,6 +131,10 @@ class forms
 	{
 		foreach($array as $key => $val) $this->values[$key] = $val;
 	}
+	function setValue($key, $value)
+	{
+		$this->values[$key] = $value;
+	}
 	
 	/*
 	########################################
@@ -185,6 +189,7 @@ class forms
 		
 		// Listes
 		$checkboxes = a::get($params, 'checkboxes');
+		$radio = a::get($params, 'radio');
 		
 		// Add-ons
 		$prepend = a::get($params, 'prepend');
@@ -258,9 +263,9 @@ class forms
 					break;
 										
 				case 'radio':
-					foreach($deploy['value'] as $radio_index => $radio_label)
+					foreach($radio as $radio_index => $radio_label)
 					{
-						$checked = r::get($deploy['name']) == $radio_index ? ' checked="checked"' : NULL;	
+						$checked = ($deploy['value'] == $radio_index) ? ' checked="checked"' : NULL;	
 						$this->rend('<label class="radio ' .$deploy['class']. '">');
 						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$radio_index. '" /> '.$radio_label);
 						$this->rend('</label>');
@@ -274,7 +279,7 @@ class forms
 					foreach($deploy['select'] as $array_label => $array_entries)
 					{
 						$array_label = sizeof($deploy['select']) > 1 ? $deploy['name']. '_' .$array_label : $deploy['name'];
-						$array_value = a::get($deploy, 'value', a::get($this->values, $array_label, r::get($array_label)));
+						$array_value = a::get($deploy, 'value', a::get($this->values, $array_label, r::post($array_label)));
 						
 						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>');
 						foreach($array_entries as $index => $label)
@@ -366,14 +371,15 @@ class forms
 	///// LISTES /////
 	//////////////////
 	
-	function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $additionalParams = NULL)
+	function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['checkboxes'] = $checkboxes;
 		$this->addField($name, $label, 'checkboxes', NULL, $additionalParams);
 	}
-	function addRadio($name = NULL, $label = NULL, $radio, $additionalParams = NULL)
+	function addRadio($name = NULL, $label = NULL, $radio, $value = NULL, $additionalParams = NULL)
 	{
-		$this->addField($name, $label, 'radio', $radio, $additionalParams);
+		$additionalParams['radio'] = $radio;
+		$this->addField($name, $label, 'radio', NULL, $additionalParams);
 	}
 	function addSelect($name = NULL, $label = NULL, $select, $value = NULL, $additionalParams = NULL)
 	{
@@ -407,7 +413,7 @@ class forms
 	}	
 	function addSubmit($name = 'Valider', $additionalParams = NULL)
 	{
-		if(!$additionalParams) $additionalParams['class'] = 'btn-primary';
+		if(!$additionalParams) $additionalParams['class'] = 'btn-cerberus';
 		$this->addField($name, NULL, 'submit', NULL, $additionalParams);
 	}
 	

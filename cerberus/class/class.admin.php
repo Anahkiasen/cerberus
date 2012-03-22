@@ -278,7 +278,7 @@ class admin extends admin_setup
 		// Ajouter un élément
 		echo '
 		<tr class="additem"><td colspan="50">'
-			.str::slink(NULL, l::get('admin.add'), 'add_'.$this->usable, array('class' => 'btn btn-wide btn-primary')).'
+			.str::slink(NULL, l::get('admin.add'), 'add_'.$this->usable, array('class' => 'btn btn-wide btn-cerberus')).'
 		</td></tr>
 		</tbody></table><br /><br />';
 	}

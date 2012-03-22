@@ -95,7 +95,7 @@ class pager
 		{
 			content::start();
 			?>
-			<div class="pagination">
+			<div class="pagination pagination-centered">
 				<ul>
 					<?php
 					echo '<li><a href="' .url::reload(array(self::$get_var => self::previous())). '">&laquo;</a></li>';

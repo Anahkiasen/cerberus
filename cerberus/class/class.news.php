@@ -1,5 +1,5 @@
 <?php
-class getNews
+class news
 {
 	/* 
 	###############################
@@ -32,6 +32,9 @@ class getNews
 		
 	function __construct()
 	{
+		global $cerberus;
+		$cerberus->injectModule('bbcode');
+		
 		if(!db::is_table('cerberus_news')) update::table('cerberus_news');
 		$this->multiWhere = (MULTILANGUE)
 			? array('langue' => l::current())
@@ -50,7 +53,7 @@ class getNews
 			$entries = db::count($this->table, $this->multiWhere);
 			if($entries != 0)
 			{
-				pager::set($entries, 1, $limit);
+				pager::set($entries, 1, $limit, 'pagenews');
 				
 				if(isset($_GET['pagenews']))
 					pager::set($entries, $_GET['pagenews'], $limit);
@@ -146,7 +149,7 @@ class getNews
 			$contenu = $value['contenu'];
 			if($this->truncateNews != FALSE and empty($id)) $contenu = str::truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
 			$contenu = nl2br(bbcode(stripslashes($contenu)));
-			if($this->displayLink and empty($id)) $contenu .= '<p><a href="' .$thisLink. '" class="btn wide">' .l::get('news.readmore'). '</a></p>';
+			if($this->displayLink and empty($id)) $contenu .= '<p class="readmore"><a href="' .$thisLink. '" class="btn wide">' .l::get('news.readmore'). '</a></p>';
 			
 			 if(!empty($id)) $alt = 'wide';
 			else $alt = (isset($alt) and $alt == 'alt') ? NULL : 'alt';
@@ -211,22 +214,7 @@ class getNews
 	// Pagination
 	function paginate()
 	{			
-		if($this->newsPaginate)
-		{
-			// Pagination
-			echo '<div class="pagination pagination-centered"><ul>';
-			echo '<li>' .str::slink(NULL, '←', array('pagenews' => pager::previous())). '</li>';
-				
-			for($i = 1; $i <= pager::$pages; $i++)
-			{
-				$class = (!isset($_GET['actualite']) and $i == pager::get())
-					? 'class="active"' : NULL;
-				echo '<li ' .$class. '>' .str::slink(NULL, $i, array('pagenews' => $i)). '</li>';
-			}
-			
-			echo '<li>' .str::slink(NULL, '→', array('pagenews' => pager::next())). '</li>';
-			echo '</ul></div>';
-		}
+		if($this->newsPaginate) pager::pagination();
 	}
 }
 ?>

@@ -56,7 +56,8 @@ class l
 			// Clés de langue par défaut
 			self::load('cerberus/include/cerberus.{langue}.json');
 			cache::fetch('lang', self::$lang);
-		}			
+		}
+		else self::$lang = $index;		
 	}
 
 	/**
