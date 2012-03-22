@@ -133,7 +133,7 @@ if(config::get('boostrap', true) and LOCAL)
 		dispatch::path(PATH_CERBERUS. '{sass}/_custom.sass'));
 	foreach($required as $f) if(!file_exists($f)) f::write($f);
 }
-if(!file_exists(PATH_CACHE) and CACHE) dir::make(PATH_CACHE);
+if(!file_exists(PATH_CACHE)) dir::make(PATH_CACHE);
 
 // Gestion des langues et de la navigation
 new l();

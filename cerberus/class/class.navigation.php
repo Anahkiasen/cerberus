@@ -177,6 +177,7 @@ class navigation
 					'text' => l::get('menu-' .$index, ucfirst($index)),
 					'hidden' => $hidden,
 					'external' => $external,
+					'class' => array('menu-'.$index),
 					'link' => $lien);
 			}
 			
@@ -191,6 +192,7 @@ class navigation
 				$data_raw[$index]['submenu'][$values['page']] = array(
 					'hidden' => $values['hidden'],
 					'text' => l::get('menu-' .$index_sub, ucfirst($values['page'])),
+					'class' => array('menu-'.$index.'-'.$values['page']),
 					'link' => $lien);		
 							
 				// Calculs des liens des sous-pages
@@ -306,7 +308,6 @@ class navigation
 		// Chargement de l'admin ou d'une page
 		if(self::$page)
 		{
-			echo '<div class="' .self::current(). '-content ' .self::$page. '-content">';
 			switch(self::$page)
 			{
 				case '404';
@@ -334,7 +335,6 @@ class navigation
 					}
 					break;
 			}
-			echo '</div>';	
 		}
 	}
 	

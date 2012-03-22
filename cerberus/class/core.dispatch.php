@@ -49,7 +49,6 @@ class dispatch extends Cerberus
 	function __construct($current = NULL)
 	{			
 		// Paramètres
-		self::$minify = (is_dir('min') and config::get('minify', TRUE));
 		self::$JS = self::$CSS =
 			array(
 			'min' => array(),
@@ -96,7 +95,7 @@ class dispatch extends Cerberus
 	*/
 	
 	// Configure les indexs current et global
-	function indexes()
+	static function indexes()
 	{
 		if(!isset(self::$global))
 		{
@@ -182,7 +181,7 @@ class dispatch extends Cerberus
 		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		foreach($bootstrap as $bs) self::$availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
 		
-		// Swotcher
+		// Switcher
 		$path = (isset($switcher)) ? $switcher->current() : NULL;
 				
 		// Mise en array des différents scripts
@@ -194,6 +193,7 @@ class dispatch extends Cerberus
 		// Fichiers par défaut
 		$scripts['*'][] = 'core';
 		if(config::get('bootstrap')) $scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
+		if(config::get('modernizr', true)) $scripts['*'] = a::inject($scripts['*'], 0, 'modernizr');
 		$scripts['*'] += array(99 => 'styles');
 		
 		$scripts[self::$current][] = self::$current;
@@ -321,7 +321,7 @@ class dispatch extends Cerberus
 		if(isset($array['min']) and !empty($array['min']))
 		{
 			$minify = array_unique(array_filter($array['min']));
-			if(!self::$minify or !$minify)
+			if(!is_dir('min') or !config::get('minify', TRUE) or !$minify)
 				$array['url'] = array_merge($array['url'], $minify);
 			else
 				$array['url'][] = 'min/?f=' .implode(',', $minify);	
