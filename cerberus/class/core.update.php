@@ -43,14 +43,17 @@ class update
 			self::codematch('dispatch::getAPI', 'dispatch::assets');
 			self::codematch('global \$dispatch;', '');
 		}
-		if(self::$revision < 515)
+		if(self::$revision < 518)
 		{
 			self::codematch('a::simple\(', 'a::simplify(');
 			self::codematch('AdminPage\(', 'admin(');
 			self::codematch('class getNews', 'class news');
+			
+			self::codematch('content::uncache', 'cache::delete');
+			self::codematch('content::end_cache', 'cache::save');
 		}
 				
-		self::update_core(515);
+		self::update_core(518);
 	}
 	
 	// Retourne le numéro de révision
