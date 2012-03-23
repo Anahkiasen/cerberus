@@ -20,38 +20,42 @@ class meta
 		$meta = cache::fetch('meta');
 		
 		// Si aucune données META en cache, création du tableau
-		if(!$meta and SQL and (config::get('meta', FALSE) or $db_exist))
+		if($meta) self::$meta = $meta;
+		else
 		{
-			// Création des tables
-			if(!$db_exist)
+			if(SQL and (config::get('meta', FALSE) or $db_exist))
 			{
-				update::table('cerberus_meta');
-				update::table('cerberus_structure');
-			}
-			
-			// Récupération des Metadata
-			$metadata = db::left_join(
-				'cerberus_meta M',
-				'cerberus_structure S',
-				'M.page = S.id',
-				'S.page, S.parent, M.titre, M.description, M.url',
-				array('langue' => l::current()));
-			
-			// Analyse et tri
-			foreach($metadata as $values)
-			{
-				if(empty($values['description'])) $values['description'] = $values['titre'];
-				if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
-				
-				$variables = array('titre', 'description', 'url');
-				foreach($variables as $v)
+				// Création des tables
+				if(!$db_exist)
 				{
-					$page = $values['parent'].'-'.$values['page'];
-					self::$meta[$page][$v] = a::get($values, $v);
+					update::table('cerberus_meta');
+					update::table('cerberus_structure');
+				}
+				
+				// Récupération des Metadata
+				$metadata = db::left_join(
+					'cerberus_meta M',
+					'cerberus_structure S',
+					'M.page = S.id',
+					'S.page, S.parent, M.titre, M.description, M.url',
+					array('langue' => l::current()));
+				
+				// Analyse et tri
+				foreach($metadata as $values)
+				{
+					if(empty($values['description'])) $values['description'] = $values['titre'];
+					if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
+					
+					$variables = array('titre', 'description', 'url');
+					foreach($variables as $v)
+					{
+						$page = $values['parent'].'-'.$values['page'];
+						self::$meta[$page][$v] = a::get($values, $v);
+					}
 				}
 			}
+			else self::$meta = array();			
 		}
-		else self::$meta = array();
 	}
 
 	/* 
@@ -88,7 +92,6 @@ class meta
 	{
 		// Affichage du titre
 		$current = navigation::current();
-		
 		if(!$get) return self::$meta;
 		if($get == 'titre')
 		{
