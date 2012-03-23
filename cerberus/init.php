@@ -42,6 +42,7 @@ config::set('local', (in_array(server::get('http_host'), array('localhost:8888',
 if(config::get('local'))
 {
 	config::set(array(
+		'minify' =>    false,
 		'cache' =>     false,
 		'rewriting' => false,
 		'db.debug' =>  true));
