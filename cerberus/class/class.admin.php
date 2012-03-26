@@ -376,7 +376,7 @@ class admin extends admin_setup
 			$errorDisplay = NULL;
 			$extension = f::extension($_FILES[$field]['name']);
 			if($_FILES[$field]['error'] != 0) $errorDisplay .= 'Une erreur est survenue lors du transfert.';
-			if(f::filecat($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
+			if(f::type($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';
 					
 			// Si aucune erreur
 			if(empty($errorDisplay))
