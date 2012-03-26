@@ -88,7 +88,7 @@
 
 // Give the tabs something to sit on
 .nav-tabs
-  border-bottom: 1px solid #dddddd
+  border-bottom: 1px solid #ddd
 
 // Make the list-items overlay the bottom border
 .nav-tabs > li
@@ -110,7 +110,7 @@
 .nav-tabs > .active > a:hover
   color: $gray
   background-color: $white
-  border: 1px solid #dddddd
+  border: 1px solid #ddd
   border-bottom-color: transparent
   cursor: default
 
@@ -148,7 +148,7 @@
   border-bottom: 0
 
 .nav-tabs.nav-stacked > li > a
-  border: 1px solid #dddddd
+  border: 1px solid #ddd
   +border-radius(0)
 
 .nav-tabs.nav-stacked > li:first-child > a
@@ -158,7 +158,7 @@
   +border-radius(0 0 4px 4px)
 
 .nav-tabs.nav-stacked > li > a:hover
-  border-color: #dddddd
+  border-color: #ddd
   z-index: 2
 
 // Pills
@@ -172,15 +172,13 @@
 // DROPDOWNS
 // ---------
 
-// Position the menu
-
-.nav-tabs .dropdown-menu,
-.nav-pills .dropdown-menu
-  margin-top: 1px
-  border-width: 1px
+.nav-tabs .dropdown-menu
+  +border-radius(0 0 5px 5px)
+  // remove the top rounded corners here since there is a hard edge above the menu
 
 .nav-pills .dropdown-menu
   +border-radius(4px)
+  // make rounded corners match the pills
 
 // Default dropdown links
 // -------------------------
@@ -226,7 +224,7 @@
 .nav .open a:hover .caret
   border-top-color: $white
   border-bottom-color: $white
-  +opacity(.100)
+  +opacity(1)
 
 // Dropdowns in stacked tabs
 .tabs-stacked .open > a:hover
@@ -268,7 +266,7 @@
 // ------
 
 .tabs-below .nav-tabs
-  border-top: 1px solid #dddddd
+  border-top: 1px solid #ddd
 
 .tabs-below .nav-tabs > li
   margin-top: -1px
@@ -278,16 +276,20 @@
   +border-radius(0 0 4px 4px)
   &:hover
     border-bottom-color: transparent
-    border-top-color: #dddddd
+    border-top-color: #ddd
 
 .tabs-below .nav-tabs .active > a,
 .tabs-below .nav-tabs .active > a:hover
-  border-color: transparent #dddddd #dddddd #dddddd
+  border-color: transparent #ddd #ddd #ddd
 
 // LEFT & RIGHT
 // ------------
 
 // Common styles
+
+.tabs-left .tab-content,
+.tabs-right .tab-content
+  width: auto
 
 .tabs-left .nav-tabs > li,
 .tabs-right .nav-tabs > li
@@ -303,7 +305,7 @@
 .tabs-left .nav-tabs
   float: left
   margin-right: 19px
-  border-right: 1px solid #dddddd
+  border-right: 1px solid #ddd
 
 .tabs-left .nav-tabs > li > a
   margin-right: -1px
@@ -314,14 +316,14 @@
 
 .tabs-left .nav-tabs .active > a,
 .tabs-left .nav-tabs .active > a:hover
-  border-color: #dddddd transparent #dddddd #dddddd
+  border-color: #ddd transparent #ddd #ddd
   *border-right-color: $white
 
 // Tabs on the right
 .tabs-right .nav-tabs
   float: right
   margin-left: 19px
-  border-left: 1px solid #dddddd
+  border-left: 1px solid #ddd
 
 .tabs-right .nav-tabs > li > a
   margin-left: -1px
@@ -332,5 +334,5 @@
 
 .tabs-right .nav-tabs .active > a,
 .tabs-right .nav-tabs .active > a:hover
-  border-color: #dddddd #dddddd #dddddd transparent
+  border-color: #ddd #ddd #ddd transparent
   *border-left-color: $white

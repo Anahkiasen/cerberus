@@ -32,6 +32,8 @@ table
   thead th
     vertical-align: bottom
   // Remove top border from thead by default
+  caption + thead tr:first-child th,
+  caption + thead tr:first-child td,
   colgroup + thead tr:first-child th,
   colgroup + thead tr:first-child td,
   thead:first-child tr:first-child th,
@@ -64,6 +66,12 @@ table
   td
     border-left: 1px solid $tableBorder
   // Prevent a double border
+  caption + thead tr:first-child th,
+  caption + tbody tr:first-child th,
+  caption + tbody tr:first-child td,
+  colgroup + thead tr:first-child th,
+  colgroup + tbody tr:first-child th,
+  colgroup + tbody tr:first-child td,
   thead:first-child tr:first-child th,
   tbody:first-child tr:first-child th,
   tbody:first-child tr:first-child td

@@ -17,7 +17,8 @@
  * limitations under the License.
  * ========================================================== */
 
-!function( $ ) {
+
+!function ( $ ) {
 
   $(function () {
 
@@ -38,6 +39,8 @@
           	transitionEnd = "webkitTransitionEnd"
           } else if ( $.browser.mozilla ) {
           	transitionEnd = "transitionend"
+          } else if ( $.browser.msie ) {
+            transitionEnd = "MSTransitionEnd"
           } else if ( $.browser.opera ) {
           	transitionEnd = "oTransitionEnd"
           }

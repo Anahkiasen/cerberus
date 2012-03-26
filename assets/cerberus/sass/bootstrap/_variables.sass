@@ -38,10 +38,14 @@ $linkColorHover: 	darken($linkColor, 15%) !default
 
 // Typography
 // -------------------------
-$baseFontSize: 	13px !default
-$baseFontFamily: 	"Helvetica Neue", Helvetica, Arial, sans-serif !default
-$baseLineHeight: 	18px !default
-$altFontFamily: 	Georgia, "Times New Roman", Times, serif !default
+$sansFontFamily:  "Helvetica Neue", Helvetica, Arial, sans-serif !default
+$serifFontFamily: Georgia, "Times New Roman", Times, serif !default
+$monoFontFamily:  Menlo, Monaco, "Courier New", monospace !default
+
+$baseFontSize:    13px !default
+$baseFontFamily:  $sansFontFamily !default
+$baseLineHeight:  18px !default
+$altFontFamily:   $serifFontFamily !default
 
 // Empty default headings properties
 $headingsFontFamily: inherit !default
@@ -84,14 +88,15 @@ $btnInverseBackgroundHighlight: 	$grayDarker !default
 // -------------------------
 $inputBackground: $white !default
 $inputBorder: 		#ccc !default
-
 $inputDisabledBackground: $grayLighter !default
+$formActionsBackground: whitesmoke !default
 
 // Dropdowns
 // -------------------------
-$dropdownBackground: 			$white !default
-$dropdownLinkColor: 				$grayDark !default
-$dropdownLinkColorHover: 		$white !default
+$dropdownBackground: $white !default
+$dropdownBorder: rgba(0, 0, 0, 0.2) !default
+$dropdownLinkColor: $grayDark !default
+$dropdownLinkColorHover: $white !default
 $dropdownLinkBackgroundHover: $linkColor !default
 
 // COMPONENT VARIABLES
@@ -138,6 +143,7 @@ $navbarSearchBackground: 		lighten($navbarBackground, 25%) !default
 $navbarSearchBackgroundFocus: $white !default
 $navbarSearchBorder: 			darken($navbarSearchBackground, 30%) !default
 $navbarSearchPlaceholderColor: #ccc !default
+$navbarBrandColor: $navbarLinkColor !default
 
 // Hero unit
 // -------------------------

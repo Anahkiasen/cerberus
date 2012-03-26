@@ -16,6 +16,12 @@
     content: ""
   &:after
     clear: both
+    
+.clearfix
+  +clearfix
+  
+.hide-text
+  +hide-text
 
 // Webkit-style focus
 // ------------------
@@ -85,13 +91,13 @@
 // --------------------------------------------------
 
 =font-family-serif
-  font-family: $serif
+  font-family: $serifFontFamily
 
 =font-family-sans-serif
-  font-family: $sansserif
+  font-family: $sansFontFamily
 
 =font-family-monospace
-  font-family: Menlo, Monaco, "Courier New", monospace
+  font-family: $monoFontFamily
 
 =font-custom($font, $size: $baseFontSize, $weight: normal, $lineHeight: normal)
   font-family: $font, $sansserif
@@ -352,22 +358,22 @@ $diff: 5%
   .container,
   .navbar-fixed-top .container,
   .navbar-fixed-bottom .container
-    +grid-core-span($gridColumns)
+    +grid-core-span($gridColumns, $gridColumnWidth, $gridGutterWidth)
     
   // generate .spanX and .offsetX
   @for $index from 1 through $gridColumns
     .span#{$index}
-      +grid-core-span($index)
+      +grid-core-span($index, $gridColumnWidth, $gridGutterWidth)
   @for $index from 1 through $gridColumns
     .offset#{$index}
-      +grid-core-offset($index)
+      +grid-core-offset($index, $gridColumnWidth, $gridGutterWidth)
 
 // Span and offsets functions
-=grid-core-offset($columns)
-  margin-left: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) + $gridGutterWidth * 2
+=grid-core-offset($columns, $columnWidth: $gridColumnWidth, $gutterWidth: $gridGutterWidth)
+  margin-left: $columnWidth * $columns + $gutterWidth * ($columns - 1) + $gutterWidth * 2
 
-=grid-core-span($columns)
-  width: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1)
+=grid-core-span($columns, $columnWidth: $gridColumnWidth, $gutterWidth: $gridGutterWidth)
+  width: $columnWidth * $columns + $gutterWidth * ($columns - 1)
 
 // Fluid grid
 
@@ -375,17 +381,17 @@ $diff: 5%
   .row-fluid
     width: 100%
     +clearfix
-    > [class*="span"]
+    [class*="span"]
       float: left
       margin-left: $fluidGridGutterWidth
-    > [class*="span"]:first-child
+    [class*="span"]:first-child
       margin-left: 0
     // generate .spanX and .offsetX
     @for $index from 1 through $gridColumns
       > .span#{$index}
-        +grid-fluid-span($index)
+        +grid-fluid-span($index, $gridColumnWidth, $gridGutterWidth)
 
-=grid-fluid-span($columns)
+=grid-fluid-span($columns, $columnWidth: $fluidGridColumnWidth, $gutterWidth: $fluidGridGutterWidth)
   width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)
 
 // Input grid
@@ -399,7 +405,7 @@ $diff: 5%
   // generate .spanX and .offsetX
   @for $index from 1 through $gridColumns
     input.span#{$index}, textarea.span#{$index}, .uneditable-input.span#{$index}
-      +grid-input-span($index)
+      +grid-input-span($index, $gridColumnWidth, $gridGutterWidth)
 
-=grid-input-span($columns)
-  width: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1) - 10
+=grid-input-span($columns, $columnWidth: $gridColumnWidth, $gutterWidth: $gridGutterWidth)
+  width: $columnWidth * $columns + $gutterWidth * ($columns - 1) - 10

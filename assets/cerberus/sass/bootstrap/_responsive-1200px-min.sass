@@ -1,0 +1,15 @@
+// LARGE DESKTOP & UP
+// ------------------
+
+@media (min-width: 1200px)
+  // Fixed grid
+  +grid-core-generate(70px, 30px)
+  // Fluid grid
+  +grid-fluid-generate(5.983%, 2.564%)
+  // Input grid
+  +grid-input-generate(70px, 30px)  
+  // Thumbnails
+  .thumbnails
+    margin-left: -30px
+  .thumbnails > li
+    margin-left: 30px
