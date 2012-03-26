@@ -284,11 +284,13 @@ class forms
 						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>');
 						foreach($array_entries as $index => $label)
 						{
-							if(is_numeric($index) and !isset($params['force_index'])) $index = $label;
-							
-							$selected = $array_value == $index ? ' selected="selected"' : NULL;	
-							$this_option = $index == $label ? NULL : ' value="' .$index. '"';
-							$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
+							if(is_array($label))
+							{
+								$this->rend('<optgroup label="' .$index. '">');
+								foreach($label as $opt_index => $opt_label) $this->option($opt_index, $opt_label);
+								$this->rend('</optgroup>');
+							}
+							else $this->option($index, $label);
 						}
 						$this->rend('</select>');
 					}
@@ -324,6 +326,16 @@ class forms
 		if($openDiv)
 			$this->rend('</div>', 'UNTAB');
 	}
+	
+	function option($index, $label)
+	{
+		global $array_value, $params;
+		
+		if(is_numeric($index) and !isset($params['force_index'])) $index = $label;					
+		$selected = $array_value == $index ? ' selected="selected"' : NULL;	
+		$this_option = $index == $label ? NULL : ' value="' .$index. '"';
+		$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
+	}	
 	
 	/*
 	########################################

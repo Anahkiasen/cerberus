@@ -20,6 +20,7 @@ class dispatch extends Cerberus
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider' => 'jquery.nivo.slider.pack',
+		'chosen' => 'chosen.jquery.min',
 		'colorbox' => 'jquery.colorbox-min',
 		'easing' => 'jquery.easing');
 		
@@ -336,6 +337,7 @@ class dispatch extends Cerberus
 	 */
 	static function getCSS()
 	{
+		if(a::array_empty(self::$CSS)) self::assets();
 		self::$CSS = self::sanitize(self::$CSS);
 		
 		if(self::$CSS['inline']['before']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['before']). '</style>'.PHP_EOL;

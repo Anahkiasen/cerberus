@@ -193,6 +193,25 @@ class a
 		return !ctype_digit(implode(NULL, array_keys($array)));
 	}
 	
+	/**
+	 * Checks if an array is truly empty
+	 * Casual empty will return FALSE on multidimensionnal arrays if it has levels, even if they are all empty
+	 * 
+	 * @param array		 $array The array to check
+	 * @return boolean	Empty or not
+	 */
+	static function array_empty($array)
+	{
+		if(is_array($array))
+		{
+			foreach($array as $value)
+				if(!self::array_empty($value)) return false;
+		}
+		elseif(!empty($array)) return false;
+		
+		return true;
+	}
+	
 	/*
 	########################################
 	########## ACTIONS SUR ARRAY ###########
