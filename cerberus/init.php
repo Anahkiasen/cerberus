@@ -33,6 +33,7 @@ session::start();
 */
 
 // Configuration du site
+config::set(config::$defaults);
 if(!file_exists(PATH_CONF)) f::write(PATH_CONF, NULL);
 else config::load(PATH_CONF);
 config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));

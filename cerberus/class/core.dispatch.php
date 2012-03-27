@@ -328,7 +328,7 @@ class dispatch extends Cerberus
 		{
 			$minify = array_unique(array_filter($array['min']));
 			if(!is_dir('min') or !config::get('minify', TRUE) or !$minify)
-				$array['url'] = array_merge($minify, $array['url']);
+				$array['url'] = array_merge($array['url'], $minify);
 			else
 				$array['url'][] = 'min/?f=' .implode(',', $minify);	
 		}

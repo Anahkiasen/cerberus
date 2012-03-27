@@ -24,6 +24,16 @@ class config
 	 * @var string
 	 */
 	private static $config_file = PATH_CONF;
+	
+	/**
+	 * The default values for most configuration options
+	 * 
+	 * @var array
+	 */	 
+	 public static $defaults = array(
+	 	'bootstrap' => true,
+	 	'modernizr' => true,
+	 );
  
 	/** 
 		* Gets a config value by key
