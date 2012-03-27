@@ -215,8 +215,8 @@ $diff: 5%
 
 =gradient-directional($startColor: #555555, $endColor: #333333, $deg: 45deg)
   background-color: $endColor
-  background-repeat: repeat-x
-  +background-image(linear-gradient($deg, $startColor, $endColor))
+  +filter-gradient($startColor, $endColor, horizontal)
+  +background-image(linear-gradient(left bottom, $startColor 0%, $endColor 100%))
 
 =gradient-vertical-three-colors($startColor: #00b3ee, $midColor: #7a43b6, $colorStop: 50%, $endColor: #c3325f)
   background-color: mix($midColor, $endColor, 80%)

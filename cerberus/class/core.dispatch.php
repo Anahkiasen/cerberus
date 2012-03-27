@@ -9,13 +9,12 @@ class dispatch extends Cerberus
 	/* Tableaux des ressources	 */
 	static private $CSS;
 	static private $JS;
-	static private $LESS;
 		
 	/* API disponibles */
 	static private $typekit;
+	static private $paths = array();
 	static private $availableAPI = array(
-		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
-		'lesscss' => 'https://raw.github.com/cloudhead/less.js/master/dist/less-1.2.2.min.js',
+		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
@@ -67,36 +66,28 @@ class dispatch extends Cerberus
 		// Chemins par défaut
 		if(!$path_common or !file_exists($path_common))
 		{
-			$path_common =    f::path(dispatch::path('{assets}/{common}/'), f::path(dispatch::path('{assets}/'), ''));
-			$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'), f::path(dispatch::path('{assets}/'), ''));
+			$path_common =    f::path(dispatch::path('{assets}/{common}/'),        f::path(dispatch::path('{assets}/'), ''));
+			$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'),      f::path(dispatch::path('{assets}/'), ''));
 			$path_file =      f::path(dispatch::path('{assets}/{common}/{file}/'), f::path(dispatch::path('{assets}/{file}/'), f::path(dispatch::path('{file}/'))));
 			
 			if(PATH_MAIN == NULL)
 			{
-				config::hardcode('path.common', $path_common);
+				config::hardcode('path.common',   $path_common);
 				config::hardcode('path.cerberus', $path_cerberus);
-				config::hardcode('path.file', $path_file);
+				config::hardcode('path.file',     $path_file);
 			}
-			
-			f::remove('config.rb');
 		}
 		
-		define('PATH_COMMON', $path_common);
+		define('PATH_COMMON',   $path_common);
 		define('PATH_CERBERUS', $path_cerberus);
-		define('PATH_FILE', $path_file);
-		define('PATH_CACHE', $path_cache);
+		define('PATH_FILE',     $path_file);
+		define('PATH_CACHE',    $path_cache);
 		
 		self::compass();
 	}
-		
-	/* 
-	########################################
-	###### TRI DES DIFFERENTS ARRAYS #######
-	########################################
-	*/
 	
-	// Configure les indexs current et global
-	static function indexes()
+	// Configure les indexs
+	static function index()
 	{
 		if(!isset(self::$global))
 		{
@@ -105,53 +96,11 @@ class dispatch extends Cerberus
 		}
 	}	
 	
-	/**
-	 * Sort and filters an array of asked modules
-	 * 
-	 * @param array 	$modules An array containing the wanted modules globally
-	 * @return array  Only the needed modules in all those given
-	 */
-	static function dispatchArray($modules)
-	{
-		// Séparation des groupes
-		foreach($modules as $key => $value)
-		{
-			$modules[$key] = $value = a::force_array($modules[$key]);
-			if(str::find(',', $key))
-			{
-				$keys = explode(',', $key);
-				foreach($keys as $pages)
-				{
-					$modules[$pages] = (isset($modules[$pages]))
-						? array_merge($value, $modules[$pages])
-						: $value;
-				}
-				unset($modules[$key]);
-			}
-		}
-		
-		// Récupération des scripts concernés
-		$modules['*'] = a::force_array($modules['*']);
-		$modules[self::$global] = a::force_array($modules[self::$global]);
-		$modules[self::$current] = a::force_array($modules[self::$current]);
-		$arrayModules = array_merge($modules['*'], $modules[self::$global], $modules[self::$current]);
-		
-		// Suppressions des fonctions non voulues
-		foreach($arrayModules as $key => $value)
-		{
-			if(str::find('!', $value))
-			{
-				unset($arrayModules[array_search(substr($value, 1), $arrayModules)]);
-				unset($arrayModules[$key]);
-			}
-		}
-		
-		// Distinction avec les modules coeur
-		if(isset(self::$cacheCore)) $arrayModules = array_values(array_diff($arrayModules, self::$cacheCore));
-
-		if(!empty($arrayModules)) return $arrayModules;
-		else return FALSE;
-	}
+	/* 
+	########################################
+	####### CONFIGURATION DES ASSETS #######
+	########################################
+	*/
 
 	/**
 	 * Sets the different PHP scripts for the different pages
@@ -160,10 +109,10 @@ class dispatch extends Cerberus
 	 */
 	static function setPHP($modules)
 	{
-		self::indexes();
+		self::index();
 		
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
-		$modules = self::dispatchArray($modules);
+		$modules = self::unpack($modules);
 		if($modules) new Cerberus($modules, self::$global);
 	}
 	
@@ -176,77 +125,120 @@ class dispatch extends Cerberus
 	static function assets($scripts = array())
 	{
 		global $switcher;
-		self::indexes();
+		self::index();
 		
-		// Bootstrap
-		$bootstrap = glob(PATH_CERBERUS.'js/bootstrap-*.js');
-		foreach($bootstrap as $bs) self::$availableAPI['bs' .substr(basename($bs), 9, -3)] = $bs;
+		##################
+		# INITIALIZATION #
+		##################
 		
-		// Switcher
-		$path = (isset($switcher)) ? $switcher->current() : NULL;
-				
 		// Mise en array des différents scripts
 		if(!is_array($scripts)) $scripts = array('*' => func_get_args());
 		$scripts['*'] = a::force_array($scripts['*']);
 		$scripts[self::$current] = a::force_array($scripts[self::$current]);
 		$scripts[self::$global] = a::force_array($scripts[self::$global]);
-				
+		
 		// Fichiers par défaut
 		$scripts['*'][] = 'core';
-		if(config::get('bootstrap')) $scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
-		if(config::get('modernizr', true)) $scripts['*'] = a::inject($scripts['*'], 0, 'modernizr');
-		$scripts['*'] += array(99 => 'styles');
-		
+		$scripts['*'] += array(99 => 'styles');	
 		$scripts[self::$current][] = self::$current;
 		$scripts[self::$global][] = self::$global;
-
-		// Préparation de l'array des scripts disponibles
-		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
-		$allowed_files = '{css/*.css,js/*.js}';
-		if(PATH_COMMON == self::path('{assets}/{common}/')) $allowed_folders = dispatch::path('{assets}/{{common},{cerberus}' .$templates. '}/');
-		elseif(PATH_COMMON == self::path('{assets}/')) $allowed_folders = dispatch::path('{{assets},{assets}/{cerberus}}/');
-		else $allowed_folders = '/';
 		
-		$files = glob($allowed_folders.$allowed_files, GLOB_BRACE);
+		// Modules intégrés
+		if(config::get('bootstrap'))
+		{	
+			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
+			$bootstrap_modules = glob(PATH_CERBERUS.'js/bootstrap-*.js');
+			//foreach($bootstrap_modules as $bs) self::$availableAPI[str_replace('bootstrap', 'bs', f::name($bs, true))] = $bs;
+		}
+		if(config::get('modernizr')) $scripts['*'] = a::inject($scripts['*'], 0, 'modernizr');
+		
+		##################
+		# GETTING ASSETS #
+		##################		
+				
+		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
+		$allowed_files = '{' .self::$css. '/*.css,' .self::$js. '/*.js}';
+		$files = glob('{' .PATH_COMMON. ',' .PATH_CERBERUS. '}' .$allowed_files, GLOB_BRACE);
+		
 		foreach($files as $path)
 		{
 			$basename = f::name($path, true);
-			if(!isset($dispath[$basename])) $dispath[$basename] = array();
-			array_push($dispath[$basename], $path);
+			self::$paths[$basename][] = $path;
 		}
-		$dispath['bootstrap'] = array(PATH_CERBERUS. 'css/bootstrap.css');
+		foreach(self::$availableAPI as $s => $p)
+		{
+			if(isset(self::$paths[$p], self::$paths[$s])) self::$paths[$s] = array_merge(self::$paths[$s], self::$paths[$p]);
+			elseif(isset(self::$paths[$p]) and !isset(self::$paths[$s])) self::$paths[$s] = self::$paths[$p];
+			else self::$paths[$s][] = $p;
+			self::$paths = a::remove(self::$paths, $p);
+		}
+		
+		################
+		# ASKED ASSETS #
+		################		
 		
 		// Récupération des différents scripts
-		self::$scripts = array_filter(self::dispatchArray($scripts));
+		self::$scripts = self::unpack($scripts);
 		if(self::$scripts) foreach(self::$scripts as $key => $value)
 		{
-			if(!empty($value))
-			{
-				// Bootstrap
-				if($value == 'bootstrapjs')
-					self::$JS['url'] = array_merge(self::$JS['url'], $bootstrap);
-				
-				// API
-				if(isset(self::$availableAPI[$value]))
+			// Bootstrap
+			if($value == 'bsjs')
+				self::$JS['url'] = array_merge(self::$JS['url'], $bootstrap_modules);
+			
+			if(isset(self::$paths[$value]))
+				foreach(self::$paths[$value] as $script)
 				{
-					$API = self::$availableAPI[$value];
-					if(isset($dispath[$value])) self::$CSS['min'] = array_merge(self::$CSS['min'], $dispath[$value]); // CSS annexe
-					if(str::find(array('http', 'bootstrap'), $API)) self::$JS['url'][] = $API;
-					else self::$JS['min'][] = f::path(PATH_CERBERUS. 'js/' .$API. '.js', f::path(PATH_COMMON.'js/'.$API.'.js', $API));
+					$extension = strtoupper(f::extension($script));
+					if(str::find(array('http', self::$js.'/bootstrap-'), $script)) self::${$extension}['url'][] = $script;
+					else self::${$extension}['min'][] = $script;
 				}
-				else
-				{
-					if(isset($dispath[$value]))
-						foreach($dispath[$value] as $script)
-						{
-							$extension = strtoupper(f::extension($script));
-							self::${$extension}['min'][] = $script;
-						}
-				}
-			}
-			else unset(self::$scripts[$key]);
 		}
 		return self::$scripts;
+	}
+
+	/**
+	 * Sort and filters an array of asked modules
+	 * 
+	 * @param array 	$modules An array containing the wanted modules globally
+	 * @return array  Only the needed modules in all those given
+	 */
+	static function unpack($modules)
+	{
+		// Séparation des groupes
+		foreach($modules as $key => $value)
+		{
+			$modules[$key] = a::force_array($modules[$key]);
+			if(str::find(',', $key))
+			{
+				$keys = explode(',', $key);
+				foreach($keys as $pages)
+				{
+					$modules[$pages] = (isset($modules[$pages]))
+						? array_merge($value, $modules[$pages])
+						: $value;
+				}
+				$modules = a::remove($modules, $key);
+			}
+		}
+		
+		// Récupération des scripts concernés
+		$modules['*'] = a::force_array($modules['*']);
+		$modules[self::$global] = a::force_array($modules[self::$global]);
+		$modules[self::$current] = a::force_array($modules[self::$current]);
+		
+		$assets = array_merge($modules['*'], $modules[self::$global], $modules[self::$current]);
+		$assets = array_unique(array_filter($assets));
+		
+		// Suppressions des fonctions non voulues
+		foreach($assets as $key => $value)
+		{
+			if(str::find('!', $value))
+			{
+				$assets = a::remove_value($assets,  substr($value, 1));
+				$assets = a::remove($assets, $key);
+			}
+		}
+		return !empty($assets) ? $assets : FALSE;
 	}
 	
 	/* 
@@ -255,7 +247,13 @@ class dispatch extends Cerberus
 	########################################
 	*/
 	
-	/* Calcule un chemin donné */
+	/**
+	 * Returns a given path, replacing all keys (ex: {assets}) by their configured path
+	 * Example : {assets}/{common}/{css}/ => assets/my_theme/stylesheets
+	 * 
+	 * @param string    $path The path to format
+	 * @return string   The formatted path
+	 */
 	static function path($path)
 	{
 		preg_match_all('#\{([a-z]+)\}#', $path, $results);
@@ -272,8 +270,8 @@ class dispatch extends Cerberus
 	/**
 	 * Tells if a given script is used on the current page or not
 	 * 
-	 * @param string 	 The name of a script
-	 * @return boolean Wether or not the script is used on this page
+	 * @param string 	  The name of a script
+	 * @return boolean  Whether or not the script is used on this page
 	 */
 	static function isScript($script)
 	{
@@ -291,7 +289,7 @@ class dispatch extends Cerberus
 	 * 
 	 * @param string 	$type The type of the injected asset, css or js
 	 * @param array   $scripts Either an array of assets or a single asset
-	 * @param string  $place Wether to put the new ressources before or after the usual calls
+	 * @param string  $place Whether to put the new ressources before or after the usual calls
 	 */
 	static function inject($type, $scripts, $place = 'after')
 	{
@@ -300,6 +298,13 @@ class dispatch extends Cerberus
 		
 		foreach($scripts as $script)
 		{
+			if(isset(self::$paths[$script]))
+				foreach(self::$paths[$script] as $s)
+				{
+					$extension = strtoupper(f::extension($s));
+					self::${$extension}['min'][] = $s;
+				}
+			
 			$script = preg_replace('#(<script type="text/javascript">|</script>|<style type="text/css">|</style>)#', NULL, $script);
 			$is_http = str::find('http', substr($script, 0, 4));
 			if(in_array(f::extension($script), array('css', 'js')) or $is_http)
@@ -323,7 +328,7 @@ class dispatch extends Cerberus
 		{
 			$minify = array_unique(array_filter($array['min']));
 			if(!is_dir('min') or !config::get('minify', TRUE) or !$minify)
-				$array['url'] = array_merge($array['url'], $minify);
+				$array['url'] = array_merge($minify, $array['url']);
 			else
 				$array['url'][] = 'min/?f=' .implode(',', $minify);	
 		}
@@ -403,14 +408,16 @@ class dispatch extends Cerberus
 				'output_style' => ':expanded',
 				'preferred_syntax' => ':sass',
 				'line_comments' => 'false',
-				'relative_assets' => 'true' );
+				'relative_assets' => 'true');
 			$config = array_merge($config, $array);
 			
 			foreach($config as $k => $v)
 			{
-				if(!($v == 'true' or $v == 'false' or (substr($v, 0, 1) == ':'))) $v = '"' .$v. '"'; 
+				if(is_array($v)) $v = json_encode($v);
+				elseif(!($v == 'true' or $v == 'false' or (substr($v, 0, 1) == ':'))) $v = '"' .$v. '"';
 				$file .= $k. ' = ' .$v.PHP_EOL;
 			}
+			$file .= "require 'compass-recipes'";
 			
 			f::write(PATH_CERBERUS.self::$compass, $file);
 			f::write(PATH_COMMON.self::$compass, $file);	

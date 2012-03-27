@@ -68,7 +68,17 @@ class a
 		}
 		return $array;
 	}
-
+	
+	/**
+	 * Shortcut for a::remove by value
+	 * @param array    $array Entry array
+	 * @param mixed    $search Values to look for
+	 * @return array   The cleaned array
+	 */
+	static function remove_value($array, $search)
+	{
+		return self::remove($array, $search, false);
+	}
 
   /**
     * Shows an entire array or object in a human readable way
@@ -182,7 +192,7 @@ class a
 	}
 	
   /**
-   * Checks wether an array is associative or not (experimental)
+   * Checks whether an array is associative or not (experimental)
    * [CERBERUS-ADD]
    * 
    * @param  array 		$array The array to analyze

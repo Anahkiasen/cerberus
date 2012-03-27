@@ -9,7 +9,7 @@ class t
 	 * 
 	 * @param int		$secs The number of seconds
 	 * @param string 	$format The format to apply, with units placed into brackets, ie. {h}:{m}:{s}
-	 * @param boolean	$modulus Wether or not the function returns the total number
+	 * @param boolean	$modulus Whether or not the function returns the total number
 	 *                  of any unit, or what's left for each one in ascending order
 	 *                  Per example, 90 seconds to the format {m}:{s} will return 01:30 with modulus on TRUE and 01:90 on FALSE
 	 * @return string	A formated time string

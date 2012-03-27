@@ -277,7 +277,7 @@ class str
 	 * @param mixed		$needle	The needle(s) to search for
 	 * @param mixed		$haystack The haystack(s) to search in
 	 * @param boolean	$absolute If true all the needle(s) need to be found in all the haystack(s), otherwise one found is enough
-	 * @param boolean	$case_sensitive Wether the function is case sensitive or not
+	 * @param boolean	$case_sensitive Whether the function is case sensitive or not
 	 * @return boolean	Found or not
 	 */
 	static function find($needle, $haystack, $absolute = FALSE, $case_sensitive = FALSE)

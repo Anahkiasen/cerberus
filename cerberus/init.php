@@ -91,7 +91,7 @@ new update();
 ########################################
 */
 
-$ip = server::get('remote_addr');
+$ip = server::ip();
 if(SQL)
 {
 	if(config::get('logs', FALSE)) if(db::is_table('cerberus_logs'))

@@ -54,7 +54,7 @@ class f
 	 * 
 	 * @param string     $old The old file _with_ its path
 	 * @param string     $new The new name for the file, and new extension if wanted (if not, old extension will be used)
-	 * @return boolean   Returns wether renaming the file succeeded or not
+	 * @return boolean   Returns whether renaming the file succeeded or not
 	 */
 	static function rename($old, $new)
 	{
