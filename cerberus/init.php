@@ -1,7 +1,6 @@
 <?php
 // Gestion des erreurs
 include('tools/errorHandle.php');
-header('Content-type: text/html; charset=utf-8');
 date_default_timezone_set('Europe/Paris');
 ini_set('error_log', 'cerberus/cache/error.log');
 ini_set('log_errors', 'On');

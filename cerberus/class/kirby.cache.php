@@ -24,22 +24,26 @@ class cache
 	 * Puts data into a cache
 	 * 
 	 * Can cache data
-	 * 	$array = cache_fetch('data');
-	 * 	if(!$array) $array = cache_fetch('data', $data)
+	 * 	$array = cache::fetch('data');
+	 * 	if(!$array) $array = cache::fetch('data', $data)
 	 * 
 	 * Or pages
-	 * 	cache_fetch('gallery');
+	 * 	cache::fetch('gallery');
 	 * 		[your page]
-	 * 	cache_save();
+	 * 	cache::save();
 	 * 
 	 * @param string 		$name The name of the cached file
 	 * @param mixed 		$content Facultative; a piece of data to cache, can be a variable, an array etc.
 	 * 						If left NULL, the cache function will start caching everything that is outputed after its call
 	 * 						To save this output, call cache_save
 	 * @param array 		$params Additional parameters to pass the function
-	 * 						cache_folder: The folder where the cached file will be
-	 * 						cache_time: How long you want to keep the cached version
-	 * 						cache_variables: Appends the current $_GET variables to the name of the file, allowing caching of dynamic pages
+	 *                      -- cache_type: if set to 'output', cache::fetch will initialize a content::start,
+	 *                         and will save everything that comes after cache::fetch, until you do a cache::save
+	 *                         If set to anything else (or not set), cache::fetch will
+	 *                         save the given data on the spot without using an output buffer
+	 * 						-- cache_folder: The folder where the cached file will be
+	 * 						-- cache_time: How long you want to keep the cached version
+	 * 						-- cache_variables: Appends the current $_GET variables to the name of the file, allowing caching of dynamic pages
 	 * @return mixed 		If you're caching a piece of data, it will return the said piece of data.
 	 * 						If you're caching the page, it will return a boolean stating if the file was cached or not
 	 */
@@ -52,10 +56,10 @@ class cache
 		$cache_get_variables = a::get($params, 'cache_get_variables', self::$cache_get_variables);
 		$name = l::current(). '-' .str::slugify($name);
 		$get_remove = a::get($params, 'get_remove', self::$get_remove);
-		$cache_page = (a::get($params, 'type') == 'html');
+		$cache_output = (a::get($params, 'type') == 'output');
 		
 		// Cache GET variables to allow for caching of dynamic pages
-		if($cache_get_variables and $cache_page)
+		if($cache_get_variables and $cache_output)
 		{
 			$array_var = is_array($cache_get_variables) ? $cache_get_variables : $_GET;
 			$array_var = a::remove($array_var, $get_remove);
@@ -69,7 +73,7 @@ class cache
 		
 		// Looking for a cached file
 		$modified_source = time();
-		$extension = ($content and !$cache_page) ? 'json' : 'html';
+		$extension = ($content and !$cache_output) ? 'json' : 'html';
 		
 		$file = self::search($name. '-[0-9]*');
 		if($file)
@@ -91,7 +95,7 @@ class cache
 			$cached = self::$folder.$name.'-'.$modified_source.'.'.$extension;				
 		
 		// Caching of a page or data
-		if($cache_page and !$content)
+		if($cache_output and !$content)
 		{
 			self::$cached_file = $cached;
 			if(file_exists(self::$cached_file))
@@ -114,36 +118,38 @@ class cache
 	/**
 	 * Shortcut to cache a page
 	 * 
-	 * @return mixed 	The result of the cache
+	 * @return mixed   The result of the cache
 	 */
 	static function page($page, $params = array())
 	{
-		$params = array_merge($params, array('type' => 'html'));
+		$params = array_merge($params, array('type' => 'output'));
 		return self::fetch($page, NULL, $params);
 	}
 
 	/**
-	 * Saves an output initiated with cache_fetch
+	 * Saves an output buffer initiated with cache::fetch
 	 * 
-	 * @return mixed 		Echoes all the data that was just cached
+	 * @param boolean  $return Return the saved data or echoes it
+	 * @return mixed   Echoes or return all the data that was just cached
 	 */
-	static function save()
+	static function save($return = false)
 	{
 		if(self::$cached_file)
 		{
 			$content = content::end(TRUE);
 			f::write(self::$cached_file, $content);
 			self::$cached_file = NULL;
-			echo $content;
+			if($return) return $content;
+			else echo $content;
 		}		
 	}
 
 	/**
 	 * Search for files inside the cache
 	 * 
-	 * @param string 		$search The key to look for
-	 * @param boolean 	If false returns the first file found, if true returns all files found
-	 * @return mixed 		FALSE if the file hasn't been found, the path if it has
+	 * @param string    $search The key to look for
+	 * @param boolean   If false returns the first file found, if true returns all files found
+	 * @return mixed    FALSE if the file hasn't been found, the path if it has
 	 */
 	static function search($search, $all_files = false)
 	{
@@ -157,9 +163,9 @@ class cache
 	/**
 	 * Deletes file(s) from the cache. The key passed can contain * and braces as it's parsed by glob()
 	 * 
-	 * @param string 		$delete The keys to look for. If NULL, the function empties the cache folder
-	 * @param boolean 	$sloppy If true if will look for all files containing the key, if not it will search an exact match
-	 * @return boolean 	True if the file(s) have been correctly removed, false if not found
+	 * @param string    $delete The keys to look for. If NULL, the function empties the cache folder
+	 * @param boolean   $sloppy If true if will look for all files containing the key, if not it will search an exact match
+	 * @return boolean  True if the file(s) have been correctly removed, false if not found
 	 */
 	static function delete($delete = NULL, $sloppy = FALSE)
 	{

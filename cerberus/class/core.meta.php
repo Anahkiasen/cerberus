@@ -142,7 +142,17 @@ class meta
 			
 			return $return;
 		}
-		else echo PHP_EOL.'<head>'.PHP_EOL.self::head('titre').self::head('description').self::head('keywords');
+		else
+		{
+			echo
+			PHP_EOL.'<head>'.PHP_EOL.'
+			<meta charset="utf-8">' .PHP_EOL;
+			if(file_exists('sitemap.xml')) echo '<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />' .PHP_EOL;
+			if(dispatch::isScript('jquery')) echo '<link rel="dns-prefetch" href="//ajax.googleapis.com" />'.PHP_EOL;
+			echo self::head('titre').
+			self::head('description').
+			self::head('keywords');
+		}
 		
 		// Mise en cache
 		cache::fetch('meta', self::$meta);

@@ -38,22 +38,23 @@ class navigation
 	
 	// Fonctions moteur
 	function __construct()
-	{
-		$navigation = config::get('navigation');
-		
+	{		
 		$data = cache::fetch('navigation');
 		if($data) self::$data = $data;
 		
 		// Créations des tables requises
 		if(!self::$data)
 		{
-			if(!$navigation)
-			{			
-				if(SQL and db::is_table('cerberus_structure'))
-					$data_raw = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
-			}
+			// Navigation via la base de données	
+			if(SQL and db::is_table('cerberus_structure'))
+				$data_raw = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
+			
 			else
 			{
+				// Navigation via fichier config
+				$navigation = config::get('navigation');
+				if(!$navigation) $navigation = array('home');
+				
 				foreach($navigation as $page)
 				$data_raw[] = array(
 					'page' => $page,
@@ -61,7 +62,7 @@ class navigation
 					'cache' => 0,
 					'hidden' => 0,
 					'external_link' => NULL);
-			}			
+			}
 			self::build($data_raw);
 		}		
 	
@@ -161,17 +162,16 @@ class navigation
 			{
 				$lien = NULL;
 				$external = 0;
-				$subcount = db::count('cerberus_structure', array('parent' => $index));
+				$hidden = $values['hidden'];
+				$subcount = SQL ? db::count('cerberus_structure', array('parent' => $index)) : NULL;
 				if($subcount == 1)
 				{
-					$hidden = $values['hidden'];
 					if(!empty($values['external_link']))
 					{
 						$lien = $values['external_link'];
 						$external = 1;
 					}
 				}
-				else $hidden = $subcount > 1 ? 0 : 1;
 					
 				$data_raw[$index] = array(
 					'text' => l::get('menu-' .$index, ucfirst($index)),
