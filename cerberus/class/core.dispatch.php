@@ -83,7 +83,7 @@ class dispatch extends Cerberus
 		define('PATH_FILE',     $path_file);
 		define('PATH_CACHE',    $path_cache);
 		
-		self::compass();
+		if(LOCAL) self::compass();
 	}
 	
 	// Configure les indexs

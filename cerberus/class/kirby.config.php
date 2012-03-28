@@ -33,6 +33,7 @@ class config
 	 public static $defaults = array(
 	 	'bootstrap' => true,
 	 	'modernizr' => true,
+	 	'minify'    => true
 	 );
  
 	/** 
