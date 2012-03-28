@@ -52,6 +52,7 @@ $min_allowDebugFlag = false;
 //$min_cachePath = 'c:\\WINDOWS\\Temp';
 //$min_cachePath = '/tmp';
 //$min_cachePath = preg_replace('/^\\d+;/', '', session_save_path());
+
 /**
  * To use APC/Memcache/ZendPlatform for cache storage, require the class and
  * set $min_cachePath to an instance. Example below:
@@ -109,7 +110,7 @@ $min_serveOptions['maxAge'] = 1800;
  * To use Google's Closure Compiler API to minify Javascript (falling back to JSMin
  * on failure), uncomment the following line:
  */
-//$min_serveOptions['minifiers']['application/x-javascript'] = array('Minify_JS_ClosureCompiler', 'minify');
+$min_serveOptions['minifiers']['application/x-javascript'] = array('Minify_JS_ClosureCompiler', 'minify');
 
 
 /**
@@ -136,7 +137,7 @@ $min_serveOptions['minApp']['groupsOnly'] = false;
  * To minify all files, set this option to null. You could also specify your
  * own pattern that is matched against the filename.
  */
-//$min_serveOptions['minApp']['noMinPattern'] = '@[-\\.]min\\.(?:js|css)$@i';
+$min_serveOptions['minApp']['noMinPattern'] = '@[-\\.]min\\.(?:js|css)$@i';
 
 
 /**
@@ -192,3 +193,5 @@ list($sitePrefix) = explode('/min/index.php', $_SERVER['SCRIPT_NAME'], 2);
 // Prepend $sitePrefix to the rewritten URIs in CSS files
 $min_symlinks['//' . ltrim($sitePrefix, '/')] = $min_documentRoot;
 $min_serveOptions['rewriteCssUris'] = true;
+
+$min_serveOptions['minifiers']['text/css'] = 'yuiCssPort';
