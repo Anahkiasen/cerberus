@@ -287,10 +287,10 @@ class forms
 							if(is_array($label))
 							{
 								$this->rend('<optgroup label="' .$index. '">');
-								foreach($label as $opt_index => $opt_label) $this->option($opt_index, $opt_label);
+								foreach($label as $opt_index => $opt_label) $this->option($opt_index, $opt_label, $array_value);
 								$this->rend('</optgroup>');
 							}
-							else $this->option($index, $label);
+							else $this->option($index, $label, $array_value);
 						}
 						$this->rend('</select>');
 					}
@@ -327,12 +327,13 @@ class forms
 			$this->rend('</div>', 'UNTAB');
 	}
 	
-	function option($index, $label)
+	function option($index, $label, $value = NULL)
 	{
 		global $array_value, $params;
+		if(!$value) $value = $array_value;
 		
 		if(is_numeric($index) and !isset($params['force_index'])) $index = $label;					
-		$selected = $array_value == $index ? ' selected="selected"' : NULL;	
+		$selected = $value == $index ? ' selected="selected"' : NULL;	
 		$this_option = $index == $label ? NULL : ' value="' .$index. '"';
 		$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
 	}	
