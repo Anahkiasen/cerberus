@@ -43,7 +43,7 @@
 // ----------------
 =ie7-inline-block
   *display: inline
-  /* IE7 inline-block hack
+  // IE7 inline-block hack
   *zoom: 1
 
 // IE7 likes to collapse whitespace on either side of the inline-block elements.
@@ -74,19 +74,9 @@
 // Placeholder text
 // -------------------------
 =placeholder($color: $placeholderText)
-  \:-moz-placeholder
+  +input-placeholder
     color: $color
-  \::-webkit-input-placeholder
-    color: $color
-
-// Text overflow
-// -------------------------
-// Requires inline-block or block for proper styling
-=text-overflow
-  overflow: hidden
-  text-overflow: ellipsis
-  white-space: nowrap
-
+    
 // FONTS
 // --------------------------------------------------
 
@@ -160,14 +150,6 @@
 
 // CSS3 PROPERTIES
 // --------------------------------------------------
-
-// User select
-// For selecting text on the page
-=user-select($select)
-  -webkit-user-select: $select
-  -moz-user-select: $select
-  -o-user-select: $select
-  user-select: $select
 
 // Resize anything
 =resizable($direction: both)
