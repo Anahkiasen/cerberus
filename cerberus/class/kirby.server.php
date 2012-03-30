@@ -30,7 +30,7 @@ class server
 	 */
 	static function ip()
 	{
-		self::get('remote_addr');
+		return self::get('REMOTE_ADDR');
 	}
 }
 ?>

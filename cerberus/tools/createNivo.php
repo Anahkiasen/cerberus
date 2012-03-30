@@ -20,8 +20,6 @@
 */
 function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 {
-	global $dispatch;
-		
 	if(str::find('%', $largeur))
 	{
 		$largeur = str_replace('%', '', $largeur);
@@ -45,6 +43,6 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 	}
 	echo '</div>'.PHP_EOL;
 	
-	$dispatch->addJS('$("#' .$idblock. '").nivoSlider(' .$options. ');');
+	dispatch::plugin('nivoSlider', $options, '#'.$idblock);
 }
 ?>

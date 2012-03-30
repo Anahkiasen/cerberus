@@ -21,7 +21,8 @@ class dispatch extends Cerberus
 		'nivoslider' => 'jquery.nivo.slider.pack',
 		'chosen' => 'chosen.jquery.min',
 		'colorbox' => 'jquery.colorbox-min',
-		'easing' => 'jquery.easing');
+		'easing' => 'jquery.easing',
+		'noty' => 'jquery.noty');
 		
 	/***************************
 	 ** RESSOURCES ET CHEMINS **
@@ -424,6 +425,15 @@ class dispatch extends Cerberus
 			f::write(PATH_CERBERUS.self::$compass, $file);
 			f::write(PATH_COMMON.self::$compass, $file);	
 		}	
+	}
+	
+	// Ajoute un plugin quelconque
+	function plugin($plugin, $params = array(), $selector = NULL)
+	{
+		if(is_array($params)) $options = json_encode($params);
+		$string = $plugin. '(' .$options. ')';
+		if($selector) $string = '$("' .$selector.'").'.$string;
+		dispatch::addJS($string);
 	}
 	
 	/* Ajout un élément Google Analytics */
