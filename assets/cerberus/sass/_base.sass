@@ -13,17 +13,38 @@ $default-transition-function: ease-in-out
 // Cerberus variables
 $cerberus: #006699
 $main: $cerberus
-$serifFontFamily: "Droid Serif", "Georgia", "Times New Roman", Times, serif
-$sansFontFamily: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 
 // Bootstrap variables
 @import _custom
 @import bootstrap/variables
 @import bootstrap/mixins
 
+$serifFontFamily: "Droid Serif", $serifFontFamily
+$sansFontFamily: "Open Sans", $sansFontFamily
+
 // Variantes de couleur
 $mainLight: lighten($main, 15)
 $mainDark: darken($main, 15)
+
+///////////////////////////////////////////////
+//////////////////// SUSY ///////////////////// 
+///////////////////////////////////////////////
+
+// Vertical Rythm
+$base-font-size       : $baseFontSize !default
+$base-line-height     : $baseLineHeight !default
+$relative-font-sizing : false !default
+
+// Susy
+$layout                 : fixed !default
+$col-width              : $gridColumnWidth
+$gutter-width           : $gridGutterWidth       
+@if $layout != fixed
+  $col-width            : $fluidGridColumnWidth
+  $gutter-width         : $fluidGridGutterWidth
+    
+$total-cols             : $gridColumns
+$side-gutter-width      : $gutter-width !default
 
 ///////////////////////////////////////////////
 ////////////////// FONCTIONS ////////////////// 
@@ -31,12 +52,6 @@ $mainDark: darken($main, 15)
 
 @function fade($color, $opacity)
   @return rgba($color, $opacity / 100)
-
-@function fadein($color, $opacity)
-  @return fade-in($color, $opacity / 100)
-
-@function fadeout($color, $opacity)
-  @return fade-out($color, $opacity / 100)
   
 @function light($lightness)
   @return lighten(black, $lightness)
@@ -44,9 +59,6 @@ $mainDark: darken($main, 15)
 ///////////////////////////////////////////////
 ////////////////// MIXINS ///////////////////// 
 ///////////////////////////////////////////////
-
-=fonts($fontFamily, $fileName, $style: normal, $weight: normal)
-  +font-face($fontFamily, font-files(font-url("#{$fileName}.woff"), woff, font-url("#{$fileName}.ttf"), truetype, font-url("#{$fileName}.otf"), opentype), font-url("#{$fileName}.eot"), normal, normal)
 
 =selection($background, $color: white)
   ::selection

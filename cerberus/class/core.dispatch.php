@@ -417,7 +417,9 @@ class dispatch extends Cerberus
 				elseif(!($v == 'true' or $v == 'false' or (substr($v, 0, 1) == ':'))) $v = '"' .$v. '"';
 				$file .= $k. ' = ' .$v.PHP_EOL;
 			}
-			$file .= "require 'compass-recipes'";
+
+			$file .= "require 'compass-recipes'".PHP_EOL;
+			$file .= "require 'susy'";
 			
 			f::write(PATH_CERBERUS.self::$compass, $file);
 			f::write(PATH_COMMON.self::$compass, $file);	
