@@ -411,7 +411,7 @@ class dispatch extends Cerberus
 				'line_comments' => 'false',
 				'relative_assets' => 'true');
 			$configuration = array_merge($config, $configuration);
-			$extensions = array('compass-recipes', 'susy', 'animation');
+			$extensions = array('compass-recipes', 'susy', 'animation', 'rgbapng');
 			
 			// Configuration
 			foreach($configuration as $k => $v)
@@ -431,10 +431,10 @@ class dispatch extends Cerberus
 	}
 	
 	// Ajoute un plugin quelconque
-	function plugin($plugin, $params = array(), $selector = NULL)
+	static function plugin($plugin, $params = array(), $selector = NULL)
 	{
-		if(is_array($params)) $options = json_encode($params);
-		$string = $plugin. '(' .$options. ')';
+		if(is_array($params)) $params = json_encode($params);
+		$string = $plugin. '(' .$params. ')';
 		if($selector) $string = '$("' .$selector.'").'.$string;
 		dispatch::addJS($string);
 	}
