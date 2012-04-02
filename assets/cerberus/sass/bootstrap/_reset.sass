@@ -109,19 +109,17 @@ input[type="reset"],
 input[type="submit"]
   cursor: pointer
   // Cursors on all buttons applied consistently
-  -webkit-appearance: button
+  +appearance(button)
   // Style clickable inputs in iOS
 
 input[type="search"]
   // Appearance in Safari/Chrome
-  -webkit-appearance: textfield
-  -webkit-box-sizing: content-box
-  -moz-box-sizing: content-box
-  box-sizing: content-box
+  +appearance(textfield)
+  +box-sizing(content-box)
 
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button
-  -webkit-appearance: none
+  +appearance(none)
   // Inner-padding issues in Chrome OSX, Safari 5
 
 textarea

@@ -134,9 +134,7 @@
     +box-shadow($shadow)
     +transition(none)
     // Placeholder text gets special styles; can't be a grouped selector
-    &:-moz-placeholder
-      color: $navbarSearchPlaceholderColor
-    &::-webkit-input-placeholder
+    +input-placeholder
       color: $navbarSearchPlaceholderColor
     // Focus states (we use .focused since IE7-8 and down doesn't support :focus)
     &:focus,

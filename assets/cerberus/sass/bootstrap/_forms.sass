@@ -91,12 +91,12 @@ input[type="radio"]
   padding: 0
   margin: 3px 0
   *margin-top: 0
-  /* IE7
+  // IE7
   line-height: normal
   cursor: pointer
   +border-radius(0)
   border: 0 \9
-  /* IE9 and down
+  // IE9 and down
 
 input[type="image"]
   border: 0
@@ -124,9 +124,9 @@ input[type="submit"]
 select,
 input[type="file"]
   height: 28px
-  /* In IE7, the height of the select element cannot be changed by height, only font-size
+  // In IE7, the height of the select element cannot be changed by height, only font-size
   *margin-top: 4px
-  /* For IE7, add top margin to align select with labels
+  // For IE7, add top margin to align select with labels
   line-height: 28px
 
 // Reset line-height for IE
@@ -209,7 +209,7 @@ textarea:focus
   +box-shadow($shadow)
   outline: 0
   outline: thin dotted \9
-  /* IE6-9
+  // IE6-9
 
 input[type="file"]:focus,
 input[type="radio"]:focus,
@@ -420,7 +420,7 @@ select:focus:required:invalid
   padding-left: 14px
   padding-right: 14px
   padding-left: 4px \9
-  /* IE7-8 doesn't have border-radius, so don't indent the padding
+  // IE7-8 doesn't have border-radius, so don't indent the padding
   padding-right: 4px \9
   margin-bottom: 0
   // remove the default margin on all inputs
@@ -507,7 +507,7 @@ legend + .control-group
   // Move over all input controls and content
   .controls
     margin-left: 160px
-    /* Super jank IE7 fix to ensure the inputs in .input-append and input-prepend don't inherit the margin of the parent, in this case .controls
+    // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend don't inherit the margin of the parent, in this case .controls
     *display: inline-block
     *margin-left: 0
     *padding-left: 20px

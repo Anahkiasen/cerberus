@@ -208,12 +208,12 @@ class dispatch extends Cerberus
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
-			$modules[$key] = a::force_array($modules[$key]);
 			if(str::find(',', $key))
 			{
 				$keys = explode(',', $key);
 				foreach($keys as $pages)
 				{
+					if(!is_array($value)) $value = array($value);
 					$modules[$pages] = (isset($modules[$pages]))
 						? array_merge($value, $modules[$pages])
 						: $value;
