@@ -401,7 +401,7 @@ class dispatch extends Cerberus
 		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(PATH_COMMON.self::$compass))
 		{
 			$file = NULL;
-			$array = array(
+			$configuration = array(
 				'images_dir' => self::$images,
 				'css_dir' => self::$css,
 				'javascripts_dir' => self::$js,
@@ -410,17 +410,20 @@ class dispatch extends Cerberus
 				'preferred_syntax' => ':sass',
 				'line_comments' => 'false',
 				'relative_assets' => 'true');
-			$config = array_merge($config, $array);
+			$configuration = array_merge($config, $configuration);
+			$extensions = array('compass-recipes', 'susy', 'animation');
 			
-			foreach($config as $k => $v)
+			// Configuration
+			foreach($configuration as $k => $v)
 			{
 				if(is_array($v)) $v = json_encode($v);
 				elseif(!($v == 'true' or $v == 'false' or (substr($v, 0, 1) == ':'))) $v = '"' .$v. '"';
 				$file .= $k. ' = ' .$v.PHP_EOL;
 			}
 
-			$file .= "require 'compass-recipes'".PHP_EOL;
-			$file .= "require 'susy'";
+			// Extensions
+			$file .= PHP_EOL.'# Extensions'.PHP_EOL;
+			foreach($extensions as $e) $file .= "require '" .$e. "'".PHP_EOL;
 			
 			f::write(PATH_CERBERUS.self::$compass, $file);
 			f::write(PATH_COMMON.self::$compass, $file);	
