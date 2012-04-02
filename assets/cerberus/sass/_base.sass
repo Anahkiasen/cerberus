@@ -9,6 +9,11 @@ $default-text-shadow-blur: 0
 $default-transition-function: ease-in-out
 
 @import compass
+@import rgbapng
+
+///////////////////////////////////////////////
+////////////////// BOOTSTRAP ////////////////// 
+///////////////////////////////////////////////
 
 // Cerberus variables
 $cerberus: #006699
@@ -58,6 +63,9 @@ $side-gutter-width      : $gutter-width !default
 ///////////////////////////////////////////////
 ////////////////// MIXINS ///////////////////// 
 ///////////////////////////////////////////////
+
+=background-fade($color, $opacity)
+  +rgba-background(fade($color, $opacity))
 
 =selection($background, $color: white)
   ::selection
