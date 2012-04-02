@@ -52,7 +52,7 @@ if(isset($_POST['nofollow']))
 	else
 	{
 		cache::delete();
-		f::remove_folder(PATH_FILE. 'cache');
+		dir::remove(PATH_FILE. 'cache');
 	}
 	
 	if($_POST['type'] != 'empty')
