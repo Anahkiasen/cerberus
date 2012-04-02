@@ -65,7 +65,7 @@ $side-gutter-width      : $gutter-width !default
 ///////////////////////////////////////////////
 
 =background-fade($color, $opacity)
-  +rgba-background(fade($color, $opacity))
+  +rgba-background($color, $opacity/100)
 
 =selection($background, $color: white)
   ::selection
