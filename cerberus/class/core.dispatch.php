@@ -398,7 +398,7 @@ class dispatch extends Cerberus
 	
 	static function compass($config = array())
 	{
-		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(PATH_COMMON.self::$compass))
+		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(self::$compass))
 		{
 			$file = NULL;
 			$configuration = array(
@@ -426,7 +426,7 @@ class dispatch extends Cerberus
 			foreach($extensions as $e) $file .= "require '" .$e. "'".PHP_EOL;
 			
 			f::write(PATH_CERBERUS.self::$compass, $file);
-			f::write(PATH_COMMON.self::$compass, $file);	
+			f::write(self::$compass, 'project_path = "' .substr(PATH_COMMON, 0, -1). '"'.PHP_EOL.$file);	
 		}	
 	}
 	
@@ -442,15 +442,7 @@ class dispatch extends Cerberus
 	/* Ajout un élément Google Analytics */
 	static function analytics($analytics = 'XXXXX-X')
 	{
-		self::addJS(
-		"var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-" .$analytics. "']);
-		_gaq.push(['_trackPageview']);
-		
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();");
+		self::addJS("var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))");
 	}
 	
 	/* Ajoute de polices via @font-face */
