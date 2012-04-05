@@ -17,6 +17,7 @@ class navigation
 	static private $optionListedSub = FALSE;
 
 	// Paramètres
+	static private $homepage;
 	static public $page;
 	static public $sousPage;
 	static private $filepath;
@@ -67,10 +68,10 @@ class navigation
 		}		
 	
 		// Page en cours
-		$default_page = key(self::$data);
+		self::$homepage = key(self::$data);
 		
-		$page = isset(self::$data[get('page')]) ? get('page') : $default_page;
-		$sousMenu = isset(self::$data[$page]) ? a::get(self::$data[$page], 'submenu', a::get(self::$data[$default_page], 'submenu', NULL)) : NULL;
+		$page = isset(self::$data[get('page')]) ? get('page') : self::$homepage;
+		$sousMenu = isset(self::$data[$page]) ? a::get(self::$data[$page], 'submenu', a::get(self::$data[self::$homepage], 'submenu', NULL)) : NULL;
 		if($sousMenu) $sousPage = isset($sousMenu[get('pageSub')]) ? get('pageSub') : key($sousMenu);
 		else $sousPage = NULL;
 
@@ -81,11 +82,12 @@ class navigation
 			else if(get('admin')) $sousPage = get('admin');
 		}
 		
+		
 		// Page externe
 		$path = array_reverse(debug_backtrace());
 		$path = f::name($path[0]['file'], true);
-		if($page == $default_page and 
-		   a::get($_GET, 'page') != $default_page and 
+		if($page == self::$homepage and 
+		   a::get($_GET, 'page') != self::$homepage and 
 		   $path != config::get('index', 'index'))
 		{
 			$page = $path;
@@ -118,9 +120,12 @@ class navigation
 		if(isset($return)) return basename($return);
 		else
 		{
-			$page = 404;
-			$sousPage = NULL;
-			return 'FALSE';	
+			if(sizeof(self::$data) != 1 and $page != self::$homepage)
+			{
+				$page = 404;
+				$sousPage = NULL;			
+			}
+			return FALSE;
 		}
 	}
 	

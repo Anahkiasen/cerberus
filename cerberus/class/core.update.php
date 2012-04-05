@@ -68,22 +68,8 @@ class update
 		if(self::$revision < $torev)
 		{
 			$rev = LOCAL ? 'revision.local' : 'revision.online';
-			
-			// Fichier config
-			$confphp = f::read(PATH_CONF);
-			if(!empty($confphp)) $confphp = trim(substr($confphp, 5, -2));
-			
-			$confphp = 
-				(!str::find($rev, $confphp))
-					? $confphp . '$config[\'' .$rev. '\'] = ' .$torev. ';'
-					
-					: preg_replace(
-						'#\$config\[\'(' .$rev. ')\'\] = (.+);#',
-						'$config[\'$1\'] = ' .$torev. ';',
-						$confphp);
-			$confphp = '<?php' .PHP_EOL.$confphp.PHP_EOL. '?>';
-			
-			if(f::write(PATH_CONF, $confphp)) str::display('Mise à jour ' .$torev. ' effectuée', 'success');
+			$hardcode = config::hardcode($rev, $torev);
+			if($hardcode) str::display('Mise à jour ' .$torev. ' effectuée', 'success');
 			else str::display('Erreur lors de la mise-à-jour vers ' .$torev, 'error');
 		}
 	}
@@ -122,6 +108,18 @@ class update
 			}
 		}
 		echo '</div>';
+	}
+
+	static function mysql($local_name = NULL, $online_host = NULL, $online_user = NULL, $online_password = NULL, $online_name = NULL)
+	{
+		if($local_name) config::hardcode('local.name', $local_name);
+		if($online_password and $online_host and $online_name and $online_user)
+		{
+			config::hardcode('db.host', $online_host);
+			config::hardcode('db.user', $online_user);
+			config::hardcode('db.password', $online_password);
+			config::hardcode('db.name', $online_name);
+		}
 	}
 
 	// Créer des tables manquantes

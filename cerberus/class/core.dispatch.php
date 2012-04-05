@@ -16,7 +16,7 @@ class dispatch extends Cerberus
 	static private $availableAPI = array(
 		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
 		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider' => 'jquery.nivo.slider.pack',
 		'chosen' => 'chosen.jquery.min',
@@ -431,11 +431,11 @@ class dispatch extends Cerberus
 	}
 	
 	// Ajoute un plugin quelconque
-	static function plugin($plugin, $params = array(), $selector = NULL)
+	static function plugin($plugin, $selector = NULL, $params = NULL)
 	{
 		if(is_array($params)) $params = json_encode($params);
 		$string = $plugin. '(' .$params. ')';
-		if($selector) $string = '$("' .$selector.'").'.$string;
+		if($selector) $string = '$("' .$selector.'").'.$string.';';
 		dispatch::addJS($string);
 	}
 	
