@@ -38,10 +38,12 @@
 		top: 0
 		left: 0
 		width: 100%
+		+border-radius(0px)
 	&.noty_layout_bottom
 		bottom: 0
 		left: 0
 		width: 100%
+		+border-radius(0px)
 	&.noty_layout_center
 		top: 40%
 	&.noty_layout_topLeft,
@@ -51,6 +53,8 @@
 		width: 100%
 		clear: both
 		position: relative
+		.noty_message
+			text-align: left
 	&.noty_layout_topCenter
 		top: 20px
 	&.noty_layout_center,
@@ -101,7 +105,7 @@
 	left: 0
 	top: 0
 
-ul.noty_container
+ul.noty_cont
 	position: fixed
 	z-index: 9999999
 	margin: 0px

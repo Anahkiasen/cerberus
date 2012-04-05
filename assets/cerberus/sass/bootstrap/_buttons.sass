@@ -15,18 +15,17 @@
   line-height: $baseLineHeight
   color: $grayDark
   text-align: center
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75)
+  text-shadow: 0 1px 1px rgba(white, 0.75)
   vertical-align: middle
   +buttonBackground($btnBackground, $btnBackgroundHighlight)
   border: 1px solid $btnBorder
   border-bottom-color: darken($btnBorder, 10%)
   +border-radius(4px)
-  $shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05)
-  +box-shadow($shadow)
+  +box-shadow(inset 0 1px 0 rgba(white, 0.2), 0 1px 2px rgba(black, 0.05))
   cursor: pointer
   // Give IE7 some love
   +ie7-restore-left-whitespace
-  /* Remove the border to prevent IE7's black border on input:focus
+  // Remove the border to prevent IE7's black border on input:focus
   *border: 0
   *line-height: 20px
 
@@ -36,7 +35,7 @@
   text-decoration: none
   background-color: darken($white, 10%)
   *background-color: darken($white, 15%)
-  /* Buttons in IE7 don't get borders, so darken on hover
+  // Buttons in IE7 don't get borders, so darken on hover
   background-position: 0 -15px
   // transition is only when going to hover, otherwise the background
   // behind the gradient (there for IE<=9 fallback) gets mismatched
@@ -51,8 +50,7 @@
 .btn.active,
 .btn:active
   background-image: none
-  $shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05)
-  +box-shadow($shadow)
+  +box-shadow(inset 0 2px 4px rgba(black, 0.15), 0 1px 2px rgba(black, 0.05))
   background-color: darken($white, 10%)
   background-color: darken($white, 15%) \9
   outline: 0
@@ -113,7 +111,7 @@
 .btn-info:hover,
 .btn-inverse,
 .btn-inverse:hover
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25)
+  text-shadow: 0 -1px 0 rgba(black, 0.25)
   color: $white
 
 // Provide *some* extra contrast for those who can get it
@@ -124,7 +122,7 @@
 .btn-success.active,
 .btn-info.active,
 .btn-inverse.active
-  color: rgba(255, 255, 255, 0.75)
+  color: rgba(white, 0.75)
 
 // Set the backgrounds
 // -------------------------

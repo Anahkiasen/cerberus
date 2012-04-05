@@ -64,11 +64,11 @@
 
 // Sizing shortcuts
 // -------------------------
-=size($height: 5px, $width: 5px)
+=size($height, $width)
   width: $width
   height: $height
 
-=square($size: 5px)
+=square($size)
   +size($size, $size)
 
 // Placeholder text
@@ -153,7 +153,7 @@
 // --------------------------------------------------
 
 // Resize anything
-=resizable($direction: both)
+=resizable($direction)
   resize: $direction
   // Options: horizontal, vertical, both
   overflow: auto
@@ -166,7 +166,7 @@
 =gradientBar($primaryColor, $secondaryColor)
   +gradient-vertical($primaryColor, $secondaryColor)
   border-color: $secondaryColor $secondaryColor darken($secondaryColor, 15%)
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%)
+  border-color: rgba(black, 0.1) rgba(black, 0.1) fadein(rgba(black, 0.1), 15%)
 
 // Gradients
 $diff: 5%
@@ -213,7 +213,7 @@ $diff: 5%
 
 =gradient-striped($color, $angle: -45deg)
   background-color: $color
-  +background-image(linear, 0 100%, 100% 0, color-stop($angle 25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent))
+  +background-image(linear, 0 100%, 100% 0, color-stop($angle 25, rgba(white, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(white, 0.15)), color-stop(0.75, rgba(white, 0.15)), color-stop(0.75, transparent), to(transparent))
 
 // Reset filters for IE
 =reset-filter

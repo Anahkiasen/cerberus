@@ -241,14 +241,28 @@ class db
 		return self::query($sql, $fetch);
 	}
 	
-	/* Runs a INSERT query */
+	/** 
+    * Runs a INSERT query
+    *
+    * @param  string  $table The table name
+    * @param  mixed   $input Either a key/value array or a valid MySQL insert string 
+    * @param  boolean $ignore Set this to true to ignore duplicates
+    * @return mixed   The last inserted id if everything went fine or an error response. 
+    */
 	static function insert($table, $input, $ignore = false)
 	{
 		$ignore = ($ignore) ? ' IGNORE' : NULL;
 		return self::execute('INSERT' .($ignore). ' INTO ' .self::prefix($table). ' SET ' .self::values($input));
 	}
 	
-	/** Runs a INSERT query with values */
+	/** 
+    * Runs a INSERT query with values
+    *
+    * @param  string  $table The table name
+    * @param  array   $fields an array of field names
+    * @param  array   $values an array of array of keys and values. 
+    * @return mixed   The last inserted id if everything went fine or an error response. 
+    */
 	static function insert_all($table, $fields, $values)
 	{
 		$fields = ($fields) ? '(' .implode(',', $fields). ')' : NULL; 
@@ -271,6 +285,7 @@ class db
 		}
 		
 		$query .= implode(',', $rows);
+		//echo $query;
 		return self::execute($query);
 	}	
 	

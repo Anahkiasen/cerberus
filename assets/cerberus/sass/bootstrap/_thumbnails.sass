@@ -1,22 +1,28 @@
 // THUMBNAILS
 // ----------
 
+// Make wrapper ul behave like the grid
 .thumbnails
   margin-left: -$gridGutterWidth
   list-style: none
   +clearfix
 
+  // Float li to make thumbnails appear in a row
   & > li
-    float: left
-    margin: 0 0 $baseLineHeight $gridGutterWidth
+    margin-bottom: $baseLineHeight
+	  
+// Fluid rows have no left margin
+.row-fluid .thumbnails
+  margin-left: 0
 
+// The actual thumbnail (can be `a` or `div`)
 .thumbnail
   display: block
   padding: 4px
   line-height: 1
   border: 1px solid #ddd
   +border-radius(4px)
-  +box-shadow(0 1px 1px rgba(0, 0, 0, 0.075))
+  +box-shadow(0 1px 1px rgba(black, 0.075))
   
   // Images and captions
   & > img

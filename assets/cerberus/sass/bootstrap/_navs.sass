@@ -29,7 +29,7 @@
   font-weight: bold
   line-height: $baseLineHeight
   color: $grayLight
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
+  text-shadow: 0 1px 0 rgba(white, 0.5)
   text-transform: uppercase
 
 // Space them out when they follow another list item (link)
@@ -48,7 +48,7 @@
 .nav-list .nav-header
   margin-left: -15px
   margin-right: -15px
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
+  text-shadow: 0 1px 0 rgba(white, 0.5)
 
 .nav-list > li > a
   padding: 3px 15px
@@ -56,7 +56,7 @@
 .nav-list > .active > a,
 .nav-list > .active > a:hover
   color: $white
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2)
+  text-shadow: 0 -1px 0 rgba(black, 0.2)
   background-color: $linkColor
 
 .nav-list [class^="icon-"]
@@ -245,19 +245,15 @@
   +clearfix
 
 .tab-content
-  display: table
-  // prevent content from running below tabs
-  width: 100%
+  overflow: auto // prevent content from running below tabs
 
 // Remove border on bottom, left, right
-
 .tabs-below .nav-tabs,
 .tabs-right .nav-tabs,
 .tabs-left .nav-tabs
   border-bottom: 0
 
 // Show/hide tabbable areas
-
 .tab-content > .tab-pane,
 .pill-content > .pill-pane
   display: none
@@ -290,10 +286,6 @@
 // ------------
 
 // Common styles
-
-.tabs-left .tab-content,
-.tabs-right .tab-content
-  width: auto
 
 .tabs-left .nav-tabs > li,
 .tabs-right .nav-tabs > li
