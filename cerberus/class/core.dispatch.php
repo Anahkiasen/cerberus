@@ -359,12 +359,20 @@ class dispatch extends Cerberus
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
 		self::$JS = self::sanitize(self::$JS);
 		
-		if(self::$JS['inline']['before']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", self::$JS['inline']['before']).PHP_EOL. '</script>'.PHP_EOL;
+		if(self::$JS['inline']['before']) self::inline_js(self::$JS['inline']['before']);
 		if(self::$JS['url']) foreach(self::$JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
-		if(self::$JS['inline']['after']) echo '<script type="text/javascript">' .PHP_EOL.implode("\n", self::$JS['inline']['after']).PHP_EOL. '</script>'.PHP_EOL;
+		if(self::$JS['inline']['after']) self::inline_js(self::$JS['inline']['after']);
 	}
 	
 	// Raccourcis
+	private static function inline_js($scripts)
+	{
+		?>
+		<script type="text/javascript">
+			$(window).load(function() { <?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?> });
+		</script>
+		<?
+	}
 	
 	/* Ajoute une feuille de style */
 	static function addCSS($stylesheets)

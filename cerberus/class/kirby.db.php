@@ -669,7 +669,7 @@ class db
 		$output = array();
 		foreach($array as $field => $value)
 		{
-			$modifiers = array('!=', '>', '<', '?', '!=', '>=', '<=', '??');
+			$modifiers = array('>', '<', '?', '!=', '>=', '<=', '??');
 			$modifier = '=';
 			$modifier_multiple = 'IN';
 			

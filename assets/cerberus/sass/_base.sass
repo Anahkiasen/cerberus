@@ -17,6 +17,11 @@ $default-animation-duration				: 1s
 $default-animation-timing-function	   : ease-in-out
 $default-animation-fill-mode				: both
 
+// Contraste
+$contrasted-dark-default: lighten(black, 20)
+$contrasted-light-default: darken(white, 20)
+$contrasted-lightness-threshold: 40%
+
 @import compass
 @import rgbapng
 
@@ -36,6 +41,7 @@ $serifFontFamily: "Droid Serif", Georgia, "Times New Roman", Times, serif
 @import bootstrap/mixins
 
 // Variantes de couleur
+$textColor: contrast-color($main) !default
 $mainLight: lighten($main, 15)
 $mainDark: darken($main, 15)
 
