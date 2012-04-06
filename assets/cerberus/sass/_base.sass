@@ -3,19 +3,19 @@
 ///////////////////////////////////////////////
 
 // Text-shadow
-$default-text-shadow-color          : fade(black, 75)
-$default-text-shadow-h-offset       : 1px
-$default-text-shadow-v-offset       : $default-text-shadow-h-offset
-$default-text-shadow-blur           : 0
+$default-text-shadow-color             : fade(black, 75)
+$default-text-shadow-h-offset          : 1px
+$default-text-shadow-v-offset          : $default-text-shadow-h-offset
+$default-text-shadow-blur              : 0
 
 // Transitions
-$default-transition-function        : ease-in-out
+$default-transition-function           : ease-in-out
 
 // Animations
-$default-animation-name             : fadeIn
-$default-animation-duration         : 1s
-$default-animation-timing-function  : ease-in-out
-$default-animation-fill-mode        : both
+$default-animation-name                : fadeIn
+$default-animation-duration				: 1s
+$default-animation-timing-function	   : ease-in-out
+$default-animation-fill-mode				: both
 
 @import compass
 @import rgbapng
@@ -27,7 +27,7 @@ $default-animation-fill-mode        : both
 // Cerberus variables
 $cerberus: #006699
 $main: $cerberus
-$sansFontFamily:  "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
+$sansFontFamily:	"Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 $serifFontFamily: "Droid Serif", Georgia, "Times New Roman", Times, serif
 
 // Bootstrap variables
@@ -44,71 +44,91 @@ $mainDark: darken($main, 15)
 ///////////////////////////////////////////////
 
 // Vertical Rythm
-$base-font-size       : $baseFontSize !default
-$base-line-height     : $baseLineHeight !default
-$relative-font-sizing : false !default
+$base-font-size            : $baseFontSize !default
+$base-line-height          : $baseLineHeight !default
+$relative-font-sizing      : false !default
 
 // Susy
-$layout                 : fixed !default
-$col-width              : $gridColumnWidth
-$gutter-width           : $gridGutterWidth       
-@if $layout != fixed
-  $col-width            : $fluidGridColumnWidth
-  $gutter-width         : $fluidGridGutterWidth
-    
-$total-cols             : $gridColumns
-$side-gutter-width      : $gutter-width !default
+$fluid                     : false !default
+$col-width                 : $gridColumnWidth
+$gutter-width              : $gridGutterWidth			 
+@if $fluid == true
+	$col-width              : $fluidGridColumnWidth
+	$gutter-width           : $fluidGridGutterWidth
+		
+$total-cols                : $gridColumns
+$side-gutter-width         : $gutter-width !default
 
 ///////////////////////////////////////////////
 ////////////////// FONCTIONS ////////////////// 
 ///////////////////////////////////////////////
 
 @function fade($color, $opacity)
-  @return rgba($color, $opacity / 100)
-  
+	@return rgba($color, $opacity / 100)
+	
 @function light($lightness)
-  @return lighten(black, $lightness)
+	@return lighten(black, $lightness)
 
 ///////////////////////////////////////////////
 ////////////////// MIXINS ///////////////////// 
 ///////////////////////////////////////////////
 
-=background-fade($color, $opacity)
-  +rgba-background($color, $opacity/100)
+/* CSS3 -------------------------------------------------------------- */
 
 =selection($background, $color: white)
-  ::selection
-    background: $background
-    color: $color
-  ::-moz-selection
-    background: $background
-    color: $color
+	::selection
+		background: $background
+		color: $color
+	::-moz-selection
+		background: $background
+		color: $color
 
 =font-smoothing($smooth)
-  +experimental(font-smoothing, $smooth)
+	+experimental(font-smoothing, $smooth)
 
 =text-drop($color, $size: $default_size)
-  color: $color
-  $default_size: 2px
-  $default_opacity: 75
-  @if lightness($color) >= 50
-    +text-shadow($size $size 0 fadeout(black, $default_opacity))
-  @else
-    +text-shadow($size $size 0 fadeout(white, $default_opacity))
+	color: $color
+	@if lightness($color) >= 50
+		+text-shadow($size $size 0 fadeout(black, $default_opacity))
+	@else
+		+text-shadow($size $size 0 fadeout(white, $default_opacity))
+
+/* Mixins -------------------------------------------------------------- */
 
 =bouton($color: $main)
-  $bordure: 5px
-  cursor: pointer
-  border: 1px solid darken($color, 10)
-  padding: 5px
-  +single-text-shadow(darken($color, 25), 0, 2px, 0)
-  +gradient-auto-vertical($color, 5%)
-  +box-shadow(0 $bordure 0 0 darken($color, 20))
-  +single-transition(all, 0.1s)
-  &:hover
-    +gradient-auto-vertical(lighten($color, 5%), 5%)
-    +box-shadow(0, $bordure, 0, 0, lighten(darken($color, 20%), 10))
-  &:active
-    +gradient-auto-vertical(darken($color, 10%), 5%)
-    +box-shadow(none)
-    margin-bottom: 5px
+	$bordure: 5px
+	cursor: pointer
+	border: 1px solid darken($color, 10)
+	padding: 5px
+	+single-text-shadow(darken($color, 25), 0, 2px, 0)
+	+gradient-auto-vertical($color, 5%)
+	+box-shadow(0 $bordure 0 0 darken($color, 20))
+	+single-transition(all, 0.1s)
+	&:hover
+		+gradient-auto-vertical(lighten($color, 5%), 5%)
+		+box-shadow(0, $bordure, 0, 0, lighten(darken($color, 20%), 10))
+	&:active
+		+gradient-auto-vertical(darken($color, 10%), 5%)
+		+box-shadow(none)
+		margin-bottom: 5px
+
+/* Utilities -------------------------------------------------------------- */
+
+=background-fade($color, $opacity)
+	+rgba-background($color, $opacity / 100)
+
+=padding-h($padding)
+	padding-left: $padding
+	padding-right: $padding
+	
+=padding-v($padding)
+	padding-top: $padding
+	padding-bottom: $padding
+		
+=margin-h($margin)
+	margin-left: $margin
+	margin-right: $margin
+	
+=margin-v($margin)
+	margin-top: $margin
+	margin-bottom: $margin
