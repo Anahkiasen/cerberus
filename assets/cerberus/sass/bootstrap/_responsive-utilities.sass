@@ -20,7 +20,7 @@
   display: none !important
 
 // Phones only
-@media (max-width: 767px)
++at-breakpoint(0px ($landscape - 1px))
   // Show
   .visible-phone
     display: inherit !important
@@ -35,7 +35,7 @@
     display: none !important
 
 // Tablets & small desktops only
-@media (min-width: 768px) and (max-width: 979px)
++at-breakpoint($landscape ($desktop - 1px))
   // Show
   .visible-tablet
     display: inherit !important

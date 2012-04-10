@@ -208,6 +208,7 @@ class dispatch extends Cerberus
 		// Séparation des groupes
 		foreach($modules as $key => $value)
 		{
+			$value = a::force_array($value);
 			if(str::find(',', $key))
 			{
 				$keys = explode(',', $key);
@@ -215,7 +216,7 @@ class dispatch extends Cerberus
 				{
 					if(!is_array($value)) $value = array($value);
 					$modules[$pages] = (isset($modules[$pages]))
-						? array_merge($value, $modules[$pages])
+						? array_merge($value, a::force_array($modules[$pages]))
 						: $value;
 				}
 				$modules = a::remove($modules, $key);
