@@ -290,15 +290,26 @@ class dispatch extends Cerberus
 	 * 
 	 * @param string 	$type The type of the injected asset, css or js
 	 * @param array   $scripts Either an array of assets or a single asset
-	 * @param string  $place Whether to put the new ressources before or after the usual calls
+	 * @param array   $params Parameters to pass to the current given scripts
+	 *                -- place[before/after] : Place the script before or after including stylesheets/scripts (default after)
+	 *                -- alias : An alias to give the given script
+	 *                -- wrap[window/ready] : Wraps the script with (window).load or (document).ready
 	 */
-	static function inject($type, $scripts, $place = 'after')
+	static function inject($type, $scripts, $params = array())
 	{
-		$type = str::upper($type);
 		if(!is_array($scripts)) $scripts = array($scripts);
+		if(!is_array($params)) json_decode($params);
 		
+		// Paramètres par défaut du script inclus
+		$type  = str::upper($type);
+		$alias = a::get($params, 'alias');
+		$place = a::get($params, 'place', 'after');
+		$wrap  = a::get($params, 'wrap');
+		
+		// Lecture des scripts fournis
 		foreach($scripts as $script)
 		{
+			// Si l'on demande un script connu de Cerberus
 			if(isset(self::$paths[$script]))
 				foreach(self::$paths[$script] as $s)
 				{
@@ -306,6 +317,7 @@ class dispatch extends Cerberus
 					self::${$extension}['min'][] = $s;
 				}
 			
+			// Si l'on demande une URL vers un script externe
 			$script = preg_replace('#(<script type="text/javascript">|</script>|<style type="text/css">|</style>)#', NULL, $script);
 			$is_http = str::find('http', substr($script, 0, 4));
 			if(in_array(f::extension($script), array('css', 'js')) or $is_http)
@@ -313,7 +325,15 @@ class dispatch extends Cerberus
 				if($is_http) self::${$type}['url'][] = $script;
 				else self::${$type}['min'][] = $script;
 			}
-			else self::${$type}['inline'][$place][] = trim($script);
+			
+			// Si l'on demande l'ajout d'un script à la page
+			else
+			{
+				$script = trim($script);
+				
+				if($alias) self::${$type}['inline'][$place][$alias] = trim($script);
+				else self::${$type}['inline'][$place][] = trim($script);
+			}	
 		}
 	}
 	
@@ -369,7 +389,7 @@ class dispatch extends Cerberus
 	{
 		?>
 		<script type="text/javascript">
-			$(window).load(function() { <?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?> });
+		<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
 		</script>
 		<?
 	}
@@ -388,14 +408,15 @@ class dispatch extends Cerberus
 	}
 	
 	/* Ajout de scripts à la volée */
-	static function addJSBefore($javascript)
+	static function addJSBefore($javascript, $params = NULL)
 	{
-		self::inject('js', $javascript, 'before');
+		$params = array_merge($params, array('place' => 'before'));
+		self::inject('js', $javascript, $params);
 	}
 	
-	static function addJS($javascript, $place = 'after')
+	static function addJS($javascript, $params = array())
 	{
-		self::inject('js', $javascript, $place);
+		self::inject('js', $javascript, $params);
 	}
 	
 	/* 

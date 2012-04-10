@@ -1,7 +1,17 @@
 <?php
 class v
 {
-	/**** Vérifie si une chaîne est valide à un type de chaîne donné */
+	/*
+	Fonction checkString
+	# Vérifie l'authenticité d'une chaîne donnée
+	
+	$string
+		Chaîne à vérifier
+	$type
+		Type de chaîne, peut être une adresse email, un numéro
+		de téléphone, un nom ou un chiffre.
+		Dans tous les cas vérifie si la chaîne n'est pas vide.
+	*/
 	static function check($string, $type)
 	{
 		switch($type)
@@ -106,7 +116,7 @@ class v
 	/**** Vérifie qu'un numéro de téléphone est valide */
 	static function phone($phone)
 	{
-		$regex = '#^0[1-78]([-. ]?[0-9]{2}){4}$#';
+		$regex = '#^[\d \+\(\)\-]+$#';
 		return (preg_match($regex, $phone));
 	}
 }

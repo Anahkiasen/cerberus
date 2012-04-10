@@ -53,7 +53,7 @@ class update
 			self::codematch('content::end_cache', 'cache::save');
 		}
 				
-		self::update_core(518);
+		self::update_core(547);
 	}
 	
 	// Retourne le numéro de révision

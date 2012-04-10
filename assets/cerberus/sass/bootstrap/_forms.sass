@@ -68,7 +68,7 @@ select,
   line-height: $baseLineHeight
   color: $gray
   border: 1px solid $inputBorder
-  +border-radius(3px)
+  +border-radius($inputBorderRadius)
 
 .uneditable-textarea
   width: auto
@@ -357,7 +357,7 @@ select:focus:required:invalid
     // prevent bottom margin from screwing up alignment in stacked forms
     *margin-left: 0
     vertical-align: middle
-    +border-radius(0 3px 3px 0)
+    +border-radius(0 $inputBorderRadius $inputBorderRadius 0)
     // Make input on top when focused so blue border and shadow always show
     &:focus
       position: relative
@@ -379,7 +379,8 @@ select:focus:required:invalid
     border: 1px solid #ccc
   .add-on,
   .btn
-    +border-radius(3px 0 0 3px)
+    margin-left: -1px
+    +border-radius(0)
   .active
     background-color: lighten($green, 30)
     border-color: $green
@@ -388,19 +389,22 @@ select:focus:required:invalid
   .add-on,
   .btn
     margin-right: -1px
+    &:first-child
+      +border-radius($inputBorderRadius 0 0 $inputBorderRadius)
 
 .input-append
   input,
   select,
   .uneditable-input
-    +border-radius(3px 0 0 3px)
+    +border-radius($inputBorderRadius 0 0 $inputBorderRadius)
   .uneditable-input
     border-left-color: #eee
     border-right-color: #ccc
   .add-on,
   .btn
     margin-left: -1px
-    +border-radius(0 3px 3px 0)
+    &:last-child
+      +border-radius(0 $inputBorderRadius $inputBorderRadius 0)
 
 // Remove all border-radius for inputs with both prepend and append
 .input-prepend.input-append
@@ -411,11 +415,11 @@ select:focus:required:invalid
   .add-on:first-child,
   .btn:first-child
     margin-right: -1px
-    +border-radius(3px 0 0 3px)
+    +border-radius($inputBorderRadius 0 0 $inputBorderRadius)
   .add-on:last-child,
   .btn:last-child
     margin-left: -1px
-    +border-radius(0 3px 3px 0)
+    +border-radius(0 $inputBorderRadius $inputBorderRadius 0)
 
 // SEARCH FORM
 // -----------

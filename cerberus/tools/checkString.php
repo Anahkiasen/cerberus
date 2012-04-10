@@ -1,51 +1,5 @@
 <?php
 /*
-	Fonction checkString
-	# Vérifie l'authenticité d'une chaîne donnée
-	
-	$string
-		Chaîne à vérifier
-	$type
-		Type de chaîne, peut être une adresse email, un numéro
-		de téléphone, un nom ou un chiffre.
-		Dans tous les cas vérifie si la chaîne n'est pas vide.
-*/
-function checkString($string, $type = NULL)
-{
-	switch($type)
-	{
-		case 'email':
-			return (!empty($string) and preg_match("#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix", $string));
-			break;
-		
-		case 'url':
-			return (!empty($string) and v::url($string));
-			break;
-		
-		case 'phone':
-		case 'telephone':
-			return (!empty($string) and preg_match("#^[\d +\(\)\-]+$#", $string));
-			break;
-		
-		case 'name':
-		case 'nom':
-		case 'prenom':
-			return (!empty($string) and preg_match("#^\D+$#", $string));
-			break;
-		
-		case 'number':
-			return (!empty($string) and preg_match("#^\d+$#", $string));
-			break;
-			
-		case 'facultative':
-			return true;
-			break;
-		
-		default:
-			return (!empty($string));
-	}
-}
-/*
 	Fonction checkFields
 	# Vérifie si un formulaire a été correctement rempli
 	
