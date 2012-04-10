@@ -24,7 +24,7 @@ function checkString($string, $type = NULL)
 		
 		case 'phone':
 		case 'telephone':
-			return (!empty($string) and preg_match("#^0[1-78]([-. ]?[0-9]{2}){4}$#", $string));
+			return (!empty($string) and preg_match("#^[\d +\(\)\-]+$#", $string));
 			break;
 		
 		case 'name':
