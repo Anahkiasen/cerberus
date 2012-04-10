@@ -79,7 +79,7 @@ $side-gutter-width         : $gutter-width !default
 ////////////////// MIXINS ///////////////////// 
 ///////////////////////////////////////////////
 
-/* CSS3 -------------------------------------------------------------- */
+// CSS3 -------------------------------------------------------------- */
 
 =selection($background, $color: white)
 	::selection
@@ -99,7 +99,7 @@ $side-gutter-width         : $gutter-width !default
 	@else
 		+text-shadow($size $size 0 fadeout(white, $default_opacity))
 
-/* Mixins -------------------------------------------------------------- */
+// Mixins -------------------------------------------------------------- */
 
 =bouton($color: $main)
 	$bordure: 5px
@@ -118,7 +118,7 @@ $side-gutter-width         : $gutter-width !default
 		+box-shadow(none)
 		margin-bottom: 5px
 
-/* Utilities -------------------------------------------------------------- */
+// Utilities -------------------------------------------------------------- */
 
 =background-fade($color, $opacity)
 	+rgba-background($color, $opacity / 100)

@@ -43,6 +43,6 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 	}
 	echo '</div>'.PHP_EOL;
 	
-	dispatch::plugin('nivoSlider', $options, '#'.$idblock);
+	dispatch::plugin('nivoSlider', '#'.$idblock, $options);
 }
 ?>
