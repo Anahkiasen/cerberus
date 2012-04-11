@@ -3,10 +3,10 @@ class upload
 {
 	static function file($field, $destination, $params = array())
 	{
-		$allowed = a::get($params, 'allowed', config::get('upload.allowed', array('image/jpeg', 'image/png', 'image/pjpeg', 'image/gif')));
+		$allowed = a::get($params, 'allowed', config::get('upload.allowed'));
 		if(!is_array($allowed)) $allowed = array($allowed);
 		$maxsize = a::get($params, 'maxsize', config::get('upload.maxsize', self::max_size()));
-		$overwrite = a::get($params, 'overwrite', config::get('upload.overwrite', true));
+		$overwrite = a::get($params, 'overwrite', config::get('upload.overwrite'));
 		$sanitize = a::get($params, 'sanitize', true);
 		$file = a::get($_FILES, $field);
 		

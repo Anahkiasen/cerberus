@@ -23,7 +23,7 @@ class meta
 		if($meta) self::$meta = $meta;
 		else
 		{
-			if(SQL and (config::get('meta', FALSE) or $db_exist))
+			if(SQL and (config::get('meta') or $db_exist))
 			{
 				// Création des tables
 				if(!$db_exist)
@@ -144,11 +144,11 @@ class meta
 		}
 		else
 		{
-			echo
-			PHP_EOL.'<head>'.PHP_EOL.'
-			<meta charset="utf-8">' .PHP_EOL;
-			if(file_exists('sitemap.xml')) echo '<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />' .PHP_EOL;
-			if(dispatch::isScript('jquery')) echo '<link rel="dns-prefetch" href="//ajax.googleapis.com" />'.PHP_EOL;
+			echo PHP_EOL.'<head>'.PHP_EOL;
+			echo "\t".'<meta charset="utf-8">' .PHP_EOL;
+			if(file_exists('sitemap.xml')) echo "\t".'<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />' .PHP_EOL;
+			if(dispatch::isScript('jquery')) echo "\t".'<link rel="dns-prefetch" href="https://ajax.googleapis.com/" />'.PHP_EOL;
+			
 			echo self::head('titre').
 			self::head('description').
 			self::head('keywords');

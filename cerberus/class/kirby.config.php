@@ -31,10 +31,36 @@ class config
 	 * @var array
 	 */	 
 	 public static $defaults = array(
-	 	'bootstrap' => true,
-	 	'modernizr' => true,
-	 	'minify'    => true
-	 );
+	 	'db.charset' => 'utf8',
+	 
+		/* Modules */
+		'bootstrap'   => true,
+		'modernizr'   => true,
+		'minify'      => true,
+		'logs'        => false,
+		
+		/* Options */
+		'cache'       => true,		
+		'rewriting'   => false,
+		'local'       => false,
+		'meta'        => false,
+		'multilangue' => false,
+		
+		/* Upload */
+		'upload.overwrite' => true,
+		'upload.allowed'   => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif'),
+		
+		/* MySQL */
+		'admin.login'    => 'root',
+		'admin.password' => 'root',
+		'local.name'     => false,
+		
+		/* Cache */
+		'cache.time' => null,
+		'cache.get_variables' => true,
+		
+		/* Navigation */
+		'index' => 'index');
  
 	/** 
 		* Gets a config value by key

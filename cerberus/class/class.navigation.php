@@ -88,7 +88,7 @@ class navigation
 		$path = f::name($path[0]['file'], true);
 		if($page == self::$homepage and 
 		   a::get($_GET, 'page') != self::$homepage and 
-		   $path != config::get('index', 'index'))
+		   $path != config::get('index'))
 		{
 			$page = $path;
 			$sousPage = NULL;

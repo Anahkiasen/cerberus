@@ -15,8 +15,8 @@ class cache
 		if(!self::$folder)
 		{
 			self::$folder = config::get('cache_folder', PATH_CACHE);
-			self::$time = config::get('cache_time', 60 * 60 * 24 * 365);
-			self::$cache_get_variables = config::get('cache_get_variables', TRUE);			
+			self::$time = config::get('cache.time', 60 * 60 * 24 * 365);
+			self::$cache_get_variables = config::get('cache.get_variables');			
 		}
 	}
 
@@ -42,7 +42,7 @@ class cache
 	 *                         If set to anything else (or not set), cache::fetch will
 	 *                         save the given data on the spot without using an output buffer
 	 * 						-- cache_folder: The folder where the cached file will be
-	 * 						-- cache_time: How long you want to keep the cached version
+	 * 						-- cache.time: How long you want to keep the cached version
 	 * 						-- cache_variables: Appends the current $_GET variables to the name of the file, allowing caching of dynamic pages
 	 * @return mixed 		If you're caching a piece of data, it will return the said piece of data.
 	 * 						If you're caching the page, it will return a boolean stating if the file was cached or not
@@ -52,8 +52,8 @@ class cache
 		if(!CACHE) return false;
 		self::init();
 		
-		$time = a::get($params, 'cache_time', self::$time);
-		$cache_get_variables = a::get($params, 'cache_get_variables', self::$cache_get_variables);
+		$time = a::get($params, 'cache.time', self::$time);
+		$cache_get_variables = a::get($params, 'cache.get_variables', self::$cache_get_variables);
 		$name = l::current(). '-' .str::slugify($name);
 		$get_remove = a::get($params, 'get_remove', self::$get_remove);
 		$cache_output = (a::get($params, 'type') == 'output');

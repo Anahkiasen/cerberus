@@ -20,13 +20,13 @@ class update
 					self::table('cerberus_admin');
 					db::insert('cerberus_admin', $utilisateur);
 				}
-				self::update(353);
+				self::update_core(353);
 			}
 			if(self::$revision < 355 and db::is_table('cerberus_structure'))
 			{
 				db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
 				db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
-				self::update(355);
+				self::update_core(355);
 			}
 		}
 		if(self::$revision < 449)
@@ -51,6 +51,11 @@ class update
 			
 			self::codematch('content::uncache', 'cache::delete');
 			self::codematch('content::end_cache', 'cache::save');
+		}
+		if(self::$revision < 551)
+		{
+			db::execute('ALTER TABLE  `cerberus_logs` ADD  `locale` VARCHAR( 10 ) NOT NULL AFTER  `mobile`');
+			self::update_core(551);
 		}
 				
 		self::update_core(547);
@@ -157,6 +162,7 @@ class update
 				  `version` varchar(10) collate utf8_unicode_ci NOT NULL,
 				  `engine` varchar(10) collate utf8_unicode_ci NOT NULL,
 				  `mobile` enum(\'0\',\'1\') collate utf8_unicode_ci NOT NULL,
+				  `locale` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
 				  `domaine` varchar(255) collate utf8_unicode_ci NOT NULL,
 				  PRIMARY KEY  (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');

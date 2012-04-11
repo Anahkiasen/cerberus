@@ -1,7 +1,7 @@
 // UP TO LANDSCAPE PHONE
 // ---------------------
 
-+at-breakpoint(0px $phone)
++at-breakpoint($gridColumns $phone)
   // Smooth out the collapsing/expanding nav
   .nav-collapse
     +translate3d(0, 0, 0) // activate the GPU
@@ -60,7 +60,7 @@
 // LANDSCAPE PHONE TO SMALL DESKTOP & PORTRAIT TABLET
 // --------------------------------------------------
 
-+at-breakpoint(0px $landscape)
++at-breakpoint($gridColumns $landscape)
   // Padding to set content in a bit
   body
     padding-left: 20px

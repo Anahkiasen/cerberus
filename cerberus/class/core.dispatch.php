@@ -349,7 +349,7 @@ class dispatch extends Cerberus
 		if(isset($array['min']) and !empty($array['min']))
 		{
 			$minify = array_unique(array_filter($array['min']));
-			if(!is_dir('min') or !config::get('minify', TRUE) or !$minify)
+			if(!is_dir('min') or !config::get('minify') or !$minify)
 				$array['url'] = array_merge($array['url'], $minify);
 			else
 				$array['url'][] = 'min/?f=' .implode(',', $minify). '&12345';	
@@ -362,27 +362,31 @@ class dispatch extends Cerberus
 	/**
 	 * Fetch the current CSS styles for the page
 	 */
-	static function getCSS()
+	static function getCSS($return = false)
 	{
 		if(a::array_empty(self::$CSS)) self::assets();
 		self::$CSS = self::sanitize(self::$CSS);
 		
+		content::start();
 		if(self::$CSS['inline']['before']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['before']). '</style>'.PHP_EOL;
 		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
 		if(self::$CSS['inline']['after']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['after']). '</style>'.PHP_EOL;
+		return content::end($return);
 	}
 
 	/**
 	 * Fetch the current JS scripts for the page
 	 */
-	static function getJS()
+	static function getJS($return = false)
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
 		self::$JS = self::sanitize(self::$JS);
 		
+		content::start();
 		if(self::$JS['inline']['before']) self::inline_js(self::$JS['inline']['before']);
 		if(self::$JS['url']) foreach(self::$JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
 		if(self::$JS['inline']['after']) self::inline_js(self::$JS['inline']['after']);
+		return content::end($return);
 	}
 	
 	// Raccourcis

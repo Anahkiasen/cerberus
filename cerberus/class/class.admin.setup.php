@@ -28,8 +28,8 @@ class admin_setup
 			
 		// Identification	 
  		if(isset($_GET['logoff'])) session::remove('admin');
-		$this->login_user = md5(config::get('admin.login', 'root'));
-		$this->login_password = md5(config::get('admin.password', 'root'));
+		$this->login_user = md5(config::get('admin.login'));
+		$this->login_password = md5(config::get('admin.password'));
 		$this->adminLogin();
 		
 		if($this->granted)

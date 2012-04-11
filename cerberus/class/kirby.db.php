@@ -1,12 +1,12 @@
 <?php
 class db
 {
-	private static 	$connection = false;
-	private static 	$database	= false;
-	private static 	$charset	= false;
-	private static	$last_query = false;
-	public	static 	$trace		= array();
-	private static 	$affected 	= 0;
+	private static $connection = false;
+	private static $database	= false;
+	private static $charset	   = false;
+	private static $last_query = false;
+	public  static $trace		= array();
+	private static $affected 	= 0;
 
 	/*
 	########################################
@@ -52,23 +52,23 @@ class db
 				// Stappler
 				$dbhost = 'hostingmysql51';
 				$dbuser = '859841_maxime';
-				$dbmdp = 'MAXSTA001';
+				$dbmdp  = 'MAXSTA001';
 				$dbname = NULL;
 			}
 			else
 			{
 				$dbhost =
 				$dbuser =
-				$dbmdp =
+				$dbmdp  =
 				$dbname = NULL;
 			}
 
-			$args		= func_get_args();
-			$host		= a::get($args, 0, config::get('db.host', $dbhost));
-			$user		= a::get($args, 1, config::get('db.user', $dbuser));
-			$password	= a::get($args, 2, config::get('db.password', $dbmdp));
-			$database	= a::get($args, 3, config::get('db.name', $dbname));
-			$charset    = a::get($args, 4, config::get('db.charset', 'utf8'));
+			$args       = func_get_args();
+			$host       = a::get($args, 0, config::get('db.host',     $dbhost));
+			$user       = a::get($args, 1, config::get('db.user',     $dbuser));
+			$password   = a::get($args, 2, config::get('db.password', $dbmdp));
+			$database   = a::get($args, 3, config::get('db.name',     $dbname));
+			$charset    = a::get($args, 4, config::get('db.charset'));
 			
 			if(LOCAL) $password = $dbmdp;
 			

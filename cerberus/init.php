@@ -49,13 +49,13 @@ if(config::get('local'))
 }
 
 // Constantes
-if(!defined('REWRITING'))     define('REWRITING',   	config::get('rewriting',   FALSE));
-if(!defined('LOCAL'))         define('LOCAL', 	   	config::get('local', 	  	FALSE));
-if(!defined('MULTILANGUE'))   define('MULTILANGUE', 	config::get('multilangue', FALSE));
+if(!defined('REWRITING'))     define('REWRITING',   	config::get('rewriting'));
+if(!defined('LOCAL'))         define('LOCAL', 	   	config::get('local'));
+if(!defined('MULTILANGUE'))   define('MULTILANGUE', 	config::get('multilangue'));
 if(!defined('CACHE'))
 {
 	if(LOCAL or PATH_MAIN != NULL)   define('CACHE', false);
-	else        define('CACHE', config::get('cache', TRUE));
+	else        define('CACHE', config::get('cache'));
 }
 
 // Affichage et gestion des erreurs
@@ -72,7 +72,7 @@ $dispatch = new dispatch();
 */
 
 // Connexion à la base de données
-if(config::get('local.name',  FALSE))
+if(config::get('local.name'))
 {
 	if(LOCAL) config::set(array(
 		'db.host' => 		config::get('local.host'),
@@ -93,25 +93,27 @@ new update();
 */
 
 $ip = server::ip();
-if(SQL)
+if(SQL and config::get('logs'))
 {
-	if(config::get('logs', FALSE)) if(db::is_table('cerberus_logs'))
+	if(db::is_table('cerberus_logs'))
 	{
 		if(!db::field('cerberus_logs', 'ip', array('ip' => $ip)) and ($ip))
 		{
 			$ua = browser::detect();
 			$domaine = url::domain();
 			$mobile = (browser::mobile() or browser::ios()) ? 1 : 0;
+			
 			if(!empty($ua['name']) and !empty($ua['platform']))
 				db::insert('cerberus_logs', array(
-					'ip' => 		$ip,
-					'date' => 		'NOW()',
+					'ip'       =>  $ip,
+					'date'     =>  'NOW()',
 					'platform' => 	$ua['platform'],
-					'browser' => 	$ua['name'],
-					'version' => 	$ua['version'],
-					'engine' => 	$ua['engine'],
-					'mobile' => 	$mobile,
-					'domaine' => 	$domaine));
+					'browser'  => 	$ua['name'],
+					'version'  => 	$ua['version'],
+					'engine'   => 	$ua['engine'],
+					'mobile'   => 	$mobile,
+					'locale'   =>  l::locale(),
+					'domaine'  => 	$domaine));
 		}
 	}
 	else update::table('cerberus_logs');
@@ -126,9 +128,11 @@ if(SQL)
 // Ajout des balises HTML averc leur selecteur correct
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.PHP_EOL;
+content::start();
+echo '<head>';
 
 // Fichiers manquants
-if(config::get('boostrap', true) and LOCAL)
+if(config::get('boostrap') and LOCAL)
 {
 	$required = array(
 		dispatch::path(PATH_CERBERUS. '{sass}/_custom.sass'));
