@@ -54,11 +54,11 @@ class update
 		}
 		if(self::$revision < 551)
 		{
-			db::execute('ALTER TABLE  `cerberus_logs` ADD  `locale` VARCHAR( 10 ) NOT NULL AFTER  `mobile`');
-			self::update_core(551);
+			if(db::is_table('cerberus_logs'))
+				db::execute('ALTER TABLE `cerberus_logs` ADD `locale` VARCHAR( 10 ) NOT NULL AFTER  `mobile`');
 		}
 				
-		self::update_core(547);
+		self::update_core(551);
 	}
 	
 	// Retourne le numéro de révision
