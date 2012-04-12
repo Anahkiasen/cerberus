@@ -132,30 +132,21 @@ class meta
 			
 			if($value)
 			{
-				$return .= "\t";
-				
 				if($key == 'titre' and $value) $return .= '<title>' .$value. '</title>';
-				else $return .= '<meta name="' .$key. '" content="' .$value. '" />';
-				
-				$return .= PHP_EOL;
+				else $return .= '<meta name="' .$key. '" content="' .$value. '" />';		
 			}
-			
-			return $return;
 		}
 		else
 		{
-			echo PHP_EOL.'<head>'.PHP_EOL;
-			echo "\t".'<meta charset="utf-8">' .PHP_EOL;
-			if(file_exists('sitemap.xml')) echo "\t".'<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />' .PHP_EOL;
-			if(dispatch::isScript('jquery')) echo "\t".'<link rel="dns-prefetch" href="https://ajax.googleapis.com/" />'.PHP_EOL;
-			
-			echo self::head('titre').
-			self::head('description').
-			self::head('keywords');
+			$head = array('<head>', '<meta charset="utf-8">', self::head('titre'), self::head('description'), self::head('keywords'));
+			if(file_exists('sitemap.xml'))   $head[] = '<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />';
+			if(dispatch::isScript('jquery')) $head[] = '<link rel="dns-prefetch" href="https://ajax.googleapis.com/" />';
+			$return = implode(PHP_EOL."\t", $head).PHP_EOL;
 		}
 		
 		// Mise en cache
 		cache::fetch('meta', self::$meta);
+		return $return;
 	}
 }
 ?>

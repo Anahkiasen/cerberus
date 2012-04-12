@@ -25,6 +25,7 @@ function __class_loader($class_name)
 }
 spl_autoload_register('__class_loader');
 session::start();
+content::start();
 
 /*
 ########################################
@@ -129,7 +130,6 @@ if(SQL and config::get('logs'))
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
 echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.PHP_EOL;
 content::start();
-echo '<head>';
 
 // Fichiers manquants
 if(config::get('boostrap') and LOCAL)
@@ -190,6 +190,7 @@ if(CACHE)
 	elseif(SQL and db::is_table('cerberus_structure'))
 		$caching = db::field('cerberus_structure', 'cache', db::where(array('CONCAT_WS("-",parent,page)' => $setCache['name'], 'parent' => $setCache['name']), 'OR'));
 	if(!isset($caching)) $caching = TRUE;
+	if(isset($setCache['cache'])) $caching = $setCache['cache'];
 	
 	// Démarrage de la mise en cache
 	if($caching) $start = cache::page($setCache['name'], $setCache);

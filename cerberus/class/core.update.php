@@ -28,6 +28,10 @@ class update
 				db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
 				self::update_core(355);
 			}
+			if(self::$revision < 551 and !db::is_table('cerberus_logs'))
+			{
+				db::execute('ALTER TABLE `cerberus_logs` ADD `locale` VARCHAR( 10 ) NOT NULL AFTER  `mobile`');
+			}
 		}
 		if(self::$revision < 449)
 		{
@@ -52,12 +56,7 @@ class update
 			self::codematch('content::uncache', 'cache::delete');
 			self::codematch('content::end_cache', 'cache::save');
 		}
-		if(self::$revision < 551)
-		{
-			if(db::is_table('cerberus_logs'))
-				db::execute('ALTER TABLE `cerberus_logs` ADD `locale` VARCHAR( 10 ) NOT NULL AFTER  `mobile`');
-		}
-				
+
 		self::update_core(551);
 	}
 	

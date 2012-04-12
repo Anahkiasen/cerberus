@@ -1,17 +1,12 @@
 <?php
-$page = content::end(true);
+$body = content::end(true);
 
-// Ressources
-$page = str_replace('</body>', dispatch::getJS(true).'</body>', $page);
+// Modifications Cerberus
+$modified_body = str_replace('</body>', dispatch::getJS(true).'</body>', $body);
+$modified_body = preg_replace('#<body( class="(.+)")?>#', '<body class="' .navigation::css(). ' $2">', $modified_body);
+$modified_body = str_replace('<head>', NULL, $modified_body);
+$modified_body = meta::head().dispatch::getCSS(true).$modified_body;
 
-// Classe en fonction de la page
-$page = str_replace('<body>', '<body class="">', $page);
-$page = str_replace('<body class="', '<body class="' .navigation::css(). ' ', $page);
-
-// Balises META
-$page = str_replace('<head>', '<head>'.dispatch::getCSS(true), $page);
-$page = str_replace('<head>', meta::head(), $page);
-
-echo $page;
-cache::save();
+echo $modified_body; $cached = cache::save(true); // Page en cache
+echo $cached; content::end(); // Page réelle
 ?>

@@ -281,7 +281,7 @@ class forms
 						$array_label = sizeof($deploy['select']) > 1 ? $deploy['name']. '_' .$array_label : $deploy['name'];
 						$array_value = a::get($deploy, 'value', a::get($this->values, $array_label, r::post($array_label)));
 						
-						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>');
+						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>', 'TAB');
 						foreach($array_entries as $index => $label)
 						{
 							if(is_array($label))
@@ -292,7 +292,7 @@ class forms
 							}
 							else $this->option($index, $label, $array_value);
 						}
-						$this->rend('</select>');
+						$this->rend('</select>', 'UNTAB');
 					}
 					break;
 								

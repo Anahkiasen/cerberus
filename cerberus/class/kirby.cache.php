@@ -139,6 +139,7 @@ class cache
 			$content = content::end(TRUE);
 			f::write(self::$cached_file, $content);
 			self::$cached_file = NULL;
+			
 			if($return) return $content;
 			else echo $content;
 		}		

@@ -366,12 +366,15 @@ class dispatch extends Cerberus
 	{
 		if(a::array_empty(self::$CSS)) self::assets();
 		self::$CSS = self::sanitize(self::$CSS);
+		$head = array();
 		
-		content::start();
-		if(self::$CSS['inline']['before']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['before']). '</style>'.PHP_EOL;
-		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) echo "\t".'<link rel="stylesheet" type="text/css" href="' .$url. '" />'.PHP_EOL;	
-		if(self::$CSS['inline']['after']) echo "\t".'<style type="text/css">' .implode("\n", self::$CSS['inline']['after']). '</style>'.PHP_EOL;
-		return content::end($return);
+		if(self::$CSS['inline']['before']) $head[] = '<style type="text/css">' .implode("\n", self::$CSS['inline']['before']). '</style>';
+		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) $head[] = '<link rel="stylesheet" type="text/css" href="' .$url. '" />';	
+		if(self::$CSS['inline']['after']) $head[] = '<style type="text/css">' .implode("\n", self::$CSS['inline']['after']). '</style>';
+	
+		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;
+		if($return) return $head;
+		else echo $head;
 	}
 
 	/**
@@ -381,22 +384,26 @@ class dispatch extends Cerberus
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
 		self::$JS = self::sanitize(self::$JS);
+		$head = array();
 		
-		content::start();
-		if(self::$JS['inline']['before']) self::inline_js(self::$JS['inline']['before']);
-		if(self::$JS['url']) foreach(self::$JS['url'] as $url) echo '<script type="text/javascript" src="' .$url. '"></script>' .PHP_EOL;
-		if(self::$JS['inline']['after']) self::inline_js(self::$JS['inline']['after']);
-		return content::end($return);
+		if(self::$JS['inline']['before']) $head[] = self::inline_js(self::$JS['inline']['before']);
+		if(self::$JS['url']) foreach(self::$JS['url'] as $url) $head[] = '<script type="text/javascript" src="' .$url. '"></script>';
+		if(self::$JS['inline']['after']) $head[] = self::inline_js(self::$JS['inline']['after']);
+		
+		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;
+		if($return) return $head;
+		else echo $head;
 	}
 	
 	// Raccourcis
 	private static function inline_js($scripts)
 	{
-		?>
+		content::start(); ?>
 		<script type="text/javascript">
 		<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
 		</script>
 		<?
+		return content::end(true);
 	}
 	
 	/* Ajoute une feuille de style */
