@@ -66,7 +66,7 @@ class navigation
 			}
 			self::build($data_raw);
 		}		
-	
+		
 		// Page en cours
 		self::$homepage = key(self::$data);
 		
@@ -208,9 +208,18 @@ class navigation
 			}
 						
 			if(!a::get($values, 'link'))
-				$data_raw[$index]['link'] = ($data_raw[$index]['external'] == 1)
-				? $values['external_link']
-				: url::rewrite($index);
+			{
+				// Lien externe
+				if($data_raw[$index]['external'] == 1)
+					$data_raw[$index]['link'] = $data_raw[$index]['link'];
+				
+				else
+				{
+					$submenu = a::get(a::get($data_raw, $index), 'submenu');
+					$link = $submenu ? $index.'-'.key($submenu) : $index;
+					$data_raw[$index]['link'] = url::rewrite($link);
+				}
+			}
 			
 			$data_raw = a::remove($data_raw, $key);
 		}

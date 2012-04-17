@@ -71,11 +71,10 @@ sub
 // -------------------------
 
 img
-  max-width: 100%
-  // Make images inherently responsive
+  max-width: 100% // Make images inherently responsive
+  vertical-align: middle
   border: 0
   -ms-interpolation-mode: bicubic
-  vertical-align: middle
 
 // Forms
 // -------------------------
@@ -92,10 +91,8 @@ textarea
 
 button,
 input
-  *overflow: visible
-  // Inner spacing ie IE6/7
-  line-height: normal
-  // FF3/4 have !important on line-height in UA stylesheet
+  *overflow: visible // Inner spacing ie IE6/7
+  line-height: normal // FF3/4 have !important on line-height in UA stylesheet
 
 button::-moz-focus-inner,
 input::-moz-focus-inner
@@ -107,10 +104,8 @@ button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"]
-  cursor: pointer
-  // Cursors on all buttons applied consistently
-  +appearance(button)
-  // Style clickable inputs in iOS
+  cursor: pointer // Cursors on all buttons applied consistently
+  +appearance(button) // Style clickable inputs in iOS
 
 input[type="search"]
   // Appearance in Safari/Chrome

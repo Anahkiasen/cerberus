@@ -112,10 +112,8 @@
 =input-block-level
   display: block
   width: 100%
-  min-height: 28px
-  // Make inputs at least the height of their button counterpart
-  // Makes inputs behave like true block-level elements
-  +box-sizing(border-box)
+  min-height: 28px        // Make inputs at least the height of their button counterpart
+  +box-sizing(border-box) // Makes inputs behave like true block-level elements
 
 // Mixin for form field states
 =formFieldState($textColor: #555555, $borderColor: #cccccc, $backgroundColor: whitesmoke)
@@ -217,37 +215,31 @@ $diff: 5%
 // -------------------------
 // Dividers (basically an hr) within dropdowns and nav lists
 =nav-divider
-  height: 1px
-  margin: $baseLineHeight / 2 - 1 1px
-  // 8px 1px
-  overflow: hidden
-  background-color: #e5e5e5
-  border-bottom: 1px solid $white
   // IE7 needs a set width since we gave a height. Restricting just
   // to IE7 to keep the 1px left/right space in other browsers.
   // It is unclear where IE is getting the extra space that we need
   // to negative-margin away, but so it goes.
   *width: 100%
+  height: 1px
+  margin: (($baseLineHeight / 2) - 1) 1px // 8px 1px
   *margin: -5px 0 5px
+  overflow: hidden
+  background-color: #e5e5e5
+  border-bottom: 1px solid $white
 
 // Button backgrounds
 // ------------------
+
 =buttonBackground($startColor, $endColor)
   // gradientBar will set the background to a pleasing blend of these, to support IE<=9
   +gradientBar($startColor, $endColor)
+  *background-color: $endColor /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   +reset-filter
-  // in these cases the gradient won't cover the background, so we override
-  &:hover, &:active, &.active, &.disabled, &[disabled]
-    background-color: $endColor
-  // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
-  &:active,
-  &.active
-    background-color: darken($endColor, 10%) \9
 
 // Navbar vertical align
 // -------------------------
 // Vertically center elements in the navbar.
-// Example: an element has a height of 30px, so write out `@include navbarVerticalAlign(30px);` to calculate the appropriate top margin.
+// Example: an element has a height of 30px, so write out `@include navbarVerticalAlign(30px)` to calculate the appropriate top margin.
 =navbarVerticalAlign($elementHeight)
   margin-top: ($navbarHeight - $elementHeight) / 2
 
@@ -291,8 +283,8 @@ $diff: 5%
 
 // Centered container element
 =container-fixed
-  margin-left: auto
   margin-right: auto
+  margin-left: auto
   +clearfix
 
 // Table columns
@@ -310,9 +302,9 @@ $diff: 5%
   margin-left: $gridGutterWidth * -1
   +clearfix
 
-=makeColumn($columns: 1)
+=makeColumn($columns: 1, $offset: 0)
   float: left
-  margin-left: $gridGutterWidth
+  margin-left: ($gridColumnWidth * $offset) + ($gridGutterWidth * ($offset - 1)) + ($gridGutterWidth * 2)
   width: $gridColumnWidth * $columns + $gridGutterWidth * ($columns - 1)
 
 // The Grid
@@ -344,22 +336,24 @@ $diff: 5%
 
 // Span and offsets functions
 =grid-core-offset($columns, $columnWidth: $gridColumnWidth, $gutterWidth: $gridGutterWidth)
-  margin-left: $columnWidth * $columns + $gutterWidth * ($columns - 1) + $gutterWidth * 2
+  margin-left: ($gridColumnWidth * $columns) + ($gridGutterWidth * ($columns + 1))
 
 =grid-core-span($columns, $columnWidth: $gridColumnWidth, $gutterWidth: $gridGutterWidth)
   width: $columnWidth * $columns + $gutterWidth * ($columns - 1)
 
 // Fluid grid
-
 =grid-fluid-generate($gridColumnWidth, $gridGutterWidth)
   .row-fluid
     width: 100%
     +clearfix
+    
     [class*="span"]
+      +input-block-level
       float: left
       margin-left: $fluidGridGutterWidth
-    [class*="span"]:first-child
-      margin-left: 0
+      &:first-child
+        margin-left: 0
+      
     // generate .spanX and .offsetX
     @for $index from 1 through $gridColumns
       > .span#{$index}

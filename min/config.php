@@ -193,5 +193,3 @@ list($sitePrefix) = explode('/min/index.php', $_SERVER['SCRIPT_NAME'], 2);
 // Prepend $sitePrefix to the rewritten URIs in CSS files
 $min_symlinks['//' . ltrim($sitePrefix, '/')] = $min_documentRoot;
 $min_serveOptions['rewriteCssUris'] = true;
-
-//$min_serveOptions['minifiers']['text/css'] = 'yuiCssPort';

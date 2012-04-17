@@ -207,11 +207,4 @@ if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 */
 
 if(update::revision() < 478) meta::head();
-
-// Balise base
-if(REWRITING and PATH_MAIN == NULL)
-{
-	$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
-	echo '<base href="' .config::get('http').$baseref. '" />';
-}
 ?>

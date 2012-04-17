@@ -8,9 +8,9 @@
 
 table
   max-width: 100%
+  background-color: $tableBackground
   border-collapse: collapse
   border-spacing: 0
-  background-color: $tableBackground
 
 // BASELINE STYLES
 // ---------------
@@ -56,11 +56,9 @@ table
 
 .table-bordered
   border: 1px solid $tableBorder
+  border-collapse: separate // Done so we can round those corners!
+  *border-collapse: collapsed // IE7 can't round corners anyway
   border-left: 0
-  border-collapse: separate
-  // Done so we can round those corners!
-  *border-collapse: collapsed
-  // IE7 can't round corners anyway
   +border-radius(4px)
   th,
   td
@@ -79,17 +77,17 @@ table
   // For first th or td in the first row in the first thead or tbody
   thead:first-child tr:first-child th:first-child,
   tbody:first-child tr:first-child td:first-child
-    +border-radius(4px 0 0 0)
+    +border-top-left-radius(4px)
   thead:first-child tr:first-child th:last-child,
   tbody:first-child tr:first-child td:last-child
-    +border-radius(0 4px 0 0)
+    +border-top-right-radius(4px)
   // For first th or td in the first row in the first thead or tbody
   thead:last-child tr:last-child th:first-child,
   tbody:last-child tr:last-child td:first-child
-    +border-radius(0 0 0 4px)
+    +border-bottom-left-radius(4px)
   thead:last-child tr:last-child th:last-child,
   tbody:last-child tr:last-child td:last-child
-    +border-radius(0 0 4px 0)
+    +border-bottom-right-radius(4px)
 
 // ZEBRA-STRIPING
 // --------------

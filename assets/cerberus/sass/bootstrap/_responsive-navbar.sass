@@ -1,11 +1,11 @@
 // TABLETS AND BELOW
 // -----------------
-
 +at-breakpoint($gridColumns ($desktop - 1px))
+
   // UNFIX THE TOPBAR
   // ----------------
-  // Remove any padding from the body
   
+  // Remove any padding from the body
   body
     padding-top: 0
     
@@ -26,25 +26,27 @@
       padding-left: 10px
       padding-right: 10px
       margin: 0 0 0 -5px
-      
-    // Nav collapse clears brand
-    .nav-collapse
-      clear: left
-      
+    
+  // COLLAPSIBLE NAVBAR
+  // ------------------
+  
+  // Nav collapse clears brand
+  .nav-collapse
+    clear: both
     // Block-level the nav
     .nav
       float: none
-      margin: 0 0 ($baseLineHeight / 2)
+      margin: 0 0 $baseLineHeight / 2
       & > li
         float: none
-        & > a
-          margin-bottom: 2px
+      & > li > a
+        margin-bottom: 2px
       & > .divider-vertical
         display: none
       .nav-header
         color: $navbarText
         text-shadow: none
-        
+    
     // Nav and dropdown links in navbar
     .nav > li > a,
     .dropdown-menu a
@@ -52,14 +54,23 @@
       font-weight: bold
       color: $navbarLinkColor
       +border-radius(3px)
-      
+    
+    // Buttons
+    .btn
+      padding: 4px 10px 4px
+      font-weight: normal
+      +border-radius(4px)
     .dropdown-menu li + li a
       margin-bottom: 2px
-      
     .nav > li > a:hover,
     .dropdown-menu a:hover
       background-color: $navbarBackground
-      
+    
+    // Buttons in the navbar
+    &.in .btn-group
+      margin-top: 5px
+      padding: 0
+    
     // Dropdowns in the navbar
     .dropdown-menu
       position: static
@@ -74,41 +85,42 @@
       border: none
       +border-radius(0)
       +box-shadow(none)
-      
       &:before,
-      &:after,
+      &:after
+        display: none
       .divider
         display: none
-        
+    
     // Forms in navbar
-  .navbar-form,
-  .navbar-search
-    float: none
-    padding: ($baseLineHeight / 2) 15px
-    margin: ($baseLineHeight / 2) 0
-    border-top: 1px solid $navbarBackground
-    border-bottom: 1px solid $navbarBackground
-    +box-shadow(inset 0 1px 0 rgba(white, 0.1), 0 1px 0 rgba(white, 0.1))
+    .navbar-form,
+    .navbar-search
+      float: none
+      padding: $baseLineHeight / 2 15px
+      margin: $baseLineHeight / 2 0
+      border-top: 1px solid $navbarBackground
+      border-bottom: 1px solid $navbarBackground
+      +box-shadow(inset 0 1px 0 rgba(white, 0.1), 0 1px 0 rgba(white, 0.1))
     
   // Pull right (secondary) nav content
-  .navbar .nav.pull-right
+  .navbar .nav-collapse .nav.pull-right
     float: none
     margin-left: 0
-    
-  // Static navbar
-  .navbar-static .navbar-inner
-    padding-left: 10px
-    padding-right: 10px
-    
-  // Navbar button
-  .btn-navbar
-    display: block
     
   // Hide everything in the navbar save .brand and toggle button */
   .nav-collapse,
   .nav-collapse.collapse
     overflow: hidden
     height: 0
+    
+  // Navbar button
+  .navbar .btn-navbar
+    display: block
+    
+  // STATIC NAVBAR
+  // -------------
+  .navbar-static .navbar-inner
+    padding-left: 10px
+    padding-right: 10px
 
 // DEFAULT DESKTOP
 // ---------------

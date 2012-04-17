@@ -140,7 +140,7 @@ class url
 		if(!is_array($page)) $page = explode('-', $page);
 		$page0 = a::get($page, 0);
 		
-		$submenu = a::get(navigation::get($page0), 'submenu');	
+		$submenu = a::get(navigation::get($page0), 'submenu');
 		$page1 = $submenu ? key($submenu) : NULL;
 		$page1 = a::get($page, 1, $page1);
 		
@@ -187,14 +187,14 @@ class url
 			$lien = str_replace($page0. '-', NULL, $lien);
 					
 			// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
-			$meta = meta::page($this_page);			
+			$meta = meta::page($this_page);
 			if(!isset($pageHTML))
 				$pageHTML =
 					a::get($meta, 'url',
 					a::get($meta, 'titre',
 					l::get('menu-'.navigation::current(),
 					NULL)));
-			
+					
 			if($pageHTML)
 				$lien .= str::slugify($pageHTML). '.html';
 		}
