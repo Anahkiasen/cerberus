@@ -14,33 +14,33 @@ class dispatch extends Cerberus
 	static private $typekit;
 	static private $paths = array();
 	static private $availableAPI = array(
-		'jqueryui' => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
-		'swfobject' => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+		'jqueryui' =>    'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
+		'swfobject' =>   'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+		'jquery' =>      'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
-		'nivoslider' => 'jquery.nivo.slider.pack',
-		'chosen' => 'chosen.jquery.min',
-		'colorbox' => 'jquery.colorbox-min',
-		'easing' => 'jquery.easing',
-		'noty' => 'jquery.noty');
+		'nivoslider' =>  'jquery.nivo.slider.pack',
+		'chosen' =>      'chosen.jquery.min',
+		'colorbox' =>    'jquery.colorbox-min',
+		'easing' =>      'jquery.easing',
+		'noty' =>        'jquery.noty');
 		
 	/***************************
 	 ** RESSOURCES ET CHEMINS **
 	 ***************************/
 	
-	static public $compass = 'config.rb';
+	static public $compass =  'config.rb';
 	
-	static public $assets = 'assets';
+	static public $assets =   'assets';
 	static public $cerberus = 'cerberus';
-	static public $common = 'common';
+	static public $common =   'common';
 	
-	static public $fonts = 'fonts';
-	static public $images = 'img';
-	static public $css = 'css';
-	static public $sass = 'sass';
-	static public $js = 'js';
-	static public $coffee = 'coffee';
-	static public $file = 'file';
+	static public $fonts =    'fonts';
+	static public $images =   'img';
+	static public $css =      'css';
+	static public $sass =     'sass';
+	static public $js =       'js';
+	static public $coffee =   'coffee';
+	static public $file =     'file';
 	
 	/**
 	 * Initializes the dispatch module
@@ -88,7 +88,7 @@ class dispatch extends Cerberus
 	}
 	
 	// Configure les indexs
-	static function index()
+	private static function index()
 	{
 		if(!isset(self::$global))
 		{
@@ -149,7 +149,6 @@ class dispatch extends Cerberus
 		{	
 			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
 			$bootstrap_modules = glob(PATH_CERBERUS.'js/bootstrap-*.js');
-			//foreach($bootstrap_modules as $bs) self::$availableAPI[str_replace('bootstrap', 'bs', f::name($bs, true))] = $bs;
 		}
 		if(config::get('modernizr')) $scripts['*'] = a::inject($scripts['*'], 0, 'modernizr');
 		
@@ -161,17 +160,26 @@ class dispatch extends Cerberus
 		$allowed_files = '{' .self::$css. '/*.css,' .self::$js. '/*.js}';
 		$files = glob('{' .PATH_COMMON. ',' .PATH_CERBERUS. '}' .$allowed_files, GLOB_BRACE);
 		
+		// Creating the path list
 		foreach($files as $path)
 		{
 			$basename = f::name($path, true);
 			self::$paths[$basename][] = $path;
 		}
-		foreach(self::$availableAPI as $s => $p)
+		
+		// Getting preset aliases
+		foreach(self::$availableAPI as $s => $paths)
 		{
-			if(isset(self::$paths[$p], self::$paths[$s])) self::$paths[$s] = array_merge(self::$paths[$s], self::$paths[$p]);
-			elseif(isset(self::$paths[$p]) and !isset(self::$paths[$s])) self::$paths[$s] = self::$paths[$p];
-			else self::$paths[$s][] = $p;
-			self::$paths = a::remove(self::$paths, $p);
+			if(!is_array($paths)) $paths = array($paths);
+			foreach($paths as $p)
+			{
+				if(!str::find('http', $p) and !file_exists($p) and !file_exists(a::get(self::$paths, $p.',0'))) continue;
+				
+				if(isset(self::$paths[$p], self::$paths[$s])) self::$paths[$s] = array_merge(self::$paths[$s], self::$paths[$p]);
+				elseif(isset(self::$paths[$p]) and !isset(self::$paths[$s])) self::$paths[$s] = self::$paths[$p];
+				else self::$paths[$s][] = $p;
+				self::$paths = a::remove(self::$paths, $p);
+			}
 		}
 		
 		################
@@ -203,7 +211,7 @@ class dispatch extends Cerberus
 	 * @param array 	$modules An array containing the wanted modules globally
 	 * @return array  Only the needed modules in all those given
 	 */
-	static function unpack($modules)
+	private static function unpack($modules)
 	{
 		// Séparation des groupes
 		foreach($modules as $key => $value)
@@ -267,6 +275,16 @@ class dispatch extends Cerberus
 			$path = str_replace($r, $variable, $path);
 		}
 		return $path;
+	}
+	
+	static function currentCSS()
+	{
+		return self::$CSS['url'];
+	}
+	
+	static function currentJS()
+	{
+		return self::$JS['url'];
 	}
 	
 	/**
@@ -338,26 +356,6 @@ class dispatch extends Cerberus
 		}
 	}
 	
-	/**
-	 * Cleans an array of asset from duplicates and empty strings
-	 * 
-	 * @param array 	$array The array to sanitize
-	 * @return array 	The sanitized array
-	 */
-	static function sanitize($array)
-	{
-		if(isset($array['min']) and !empty($array['min']))
-		{
-			$minify = array_unique(array_filter($array['min']));
-			if(!is_dir('min') or !config::get('minify') or !$minify)
-				$array['url'] = array_merge($array['url'], $minify);
-			else
-				$array['url'][] = 'min/?f=' .implode(',', $minify). '&12345';	
-		}
-		$array['url'] = array_unique(array_filter($array['url']));
-		
-		return $array;
-	}
 	
 	/**
 	 * Fetch the current CSS styles for the page
@@ -395,16 +393,38 @@ class dispatch extends Cerberus
 		else echo $head;
 	}
 	
-	// Raccourcis
+	/**
+	 * Cleans an array of asset from duplicates and empty strings
+	 * 
+	 * @param  array 	$array The array to sanitize
+	 * @return array 	The sanitized array
+	 */
+	private static function sanitize($array)
+	{
+		if(isset($array['min']) and !empty($array['min']))
+		{
+			$minify = array_unique(array_filter($array['min']));
+			if(!is_dir('min') or !config::get('minify') or !$minify)
+				$array['url'] = array_merge($array['url'], $minify);
+			else
+				$array['url'][] = 'min/?f=' .implode(',', $minify). '';	
+		}
+		$array['url'] = array_unique(array_filter($array['url']));
+		
+		return $array;
+	}
+	
 	private static function inline_js($scripts)
 	{
 		content::start(); ?>
 		<script type="text/javascript">
-		<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
+			<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
 		</script>
 		<?
 		return content::end(true);
 	}
+	
+	/* Raccourcis ---------------------------------------------- */
 	
 	/* Ajoute une feuille de style */
 	static function addCSS($stylesheets)
@@ -498,6 +518,8 @@ class dispatch extends Cerberus
 		
 		$fonts = implode('|', $fonts);
 		$fonts = str_replace(' ' , '+', $fonts);
+		$fonts = str_replace('*' , '100,200,300,400,500,600,700,800,900', $fonts);
+		
 		self::addCSS('http://fonts.googleapis.com/css?family=' .$fonts);
 	}
 }

@@ -34,29 +34,25 @@ content::start();
 */
 
 // Configuration du site
-config::set(config::$defaults);
-if(!file_exists(PATH_CONF)) f::write(PATH_CONF, NULL);
+if(!defined('LOCAL')) define('LOCAL', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
+if(!file_exists(PATH_CONF)) f::write(PATH_CONF, '<?'.PHP_EOL.'?>');
 else config::load(PATH_CONF);
-config::set('local', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
+config::set(config::$defaults);
 
-// Paramètres si LOCAL
-if(config::get('local'))
-{
-	config::set(array(
-		'minify' =>    false,
-		'cache' =>     false,
-		'rewriting' => false,
-		'db.debug' =>  true));
-}
-
+// Paramètres local/production
+config::set(array(
+	'minify' =>    !LOCAL,
+	'cache' =>     !LOCAL,
+	'rewriting' => !LOCAL,
+	'local' =>      LOCAL));
+		
 // Constantes
 if(!defined('REWRITING'))     define('REWRITING',   	config::get('rewriting'));
-if(!defined('LOCAL'))         define('LOCAL', 	   	config::get('local'));
 if(!defined('MULTILANGUE'))   define('MULTILANGUE', 	config::get('multilangue'));
 if(!defined('CACHE'))
 {
-	if(LOCAL or PATH_MAIN != NULL)   define('CACHE', false);
-	else        define('CACHE', config::get('cache'));
+	if(LOCAL or PATH_MAIN != NULL)  define('CACHE', false);
+	else                            define('CACHE', config::get('cache'));
 }
 
 // Affichage et gestion des erreurs
@@ -64,7 +60,7 @@ error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
 set_error_handler('errorHandle');
 
 // Gestion des ressources et chemins
-$dispatch = new dispatch();
+new dispatch();
 
 /*
 ########################################
@@ -126,13 +122,15 @@ if(SQL and config::get('logs'))
 ########################################
 */
 
+$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest')) ? 'manifest="cache.manifest"' : NULL;
+
 // Ajout des balises HTML averc leur selecteur correct
-echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.PHP_EOL;
-echo '<html xmlns="http://www.w3.org/1999/xhtml" class="' .browser::css(). '">'.PHP_EOL;
+echo '<!DOCTYPE html>'.PHP_EOL;
+echo '<html ' .$manifest. ' class="' .browser::css(). '">'.PHP_EOL;
 content::start();
 
 // Fichiers manquants
-if(config::get('boostrap') and LOCAL)
+if(config::get('bootstrap') and LOCAL)
 {
 	$required = array(
 		dispatch::path(PATH_CERBERUS. '{sass}/_custom.sass'));

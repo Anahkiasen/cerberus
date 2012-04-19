@@ -8,5 +8,6 @@ $modified_body = str_replace('<head>', NULL, $modified_body);
 $modified_body = meta::head().dispatch::getCSS(true).$modified_body;
 
 echo $modified_body; $cached = cache::save(true); // Page en cache
-echo $cached; content::end(); // Page réelle
+echo $cached; $cached = content::end(true); // Page réelle
+echo $cached;
 ?>

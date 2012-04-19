@@ -177,5 +177,51 @@ class cache
 		if($files) foreach($files as $file) f::remove($file);
 		else return FALSE;
 	}
+	
+	/**
+	 * Creates an Application Cache manifest according to a list of given ressources and fallbacks
+	 * 
+	 * @param array     $cache
+	 * @param mixed     $network
+	 * @param array     $fallback
+	 * @return
+	 */
+	static function manifest($cache = array('img', 'fonts', 'video'), $network = '*', $fallback = NULL)
+	{
+		if(!file_exists('cache.manifest'))
+		{
+			$manifest = 'CACHE MANIFEST'.PHP_EOL.PHP_EOL;
+			
+			// CSS/JS
+			$manifest .= 'CACHE:'.PHP_EOL;
+			$manifest .= PHP_EOL.'# JS'.PHP_EOL.implode(PHP_EOL, dispatch::currentJS()).PHP_EOL;
+			$manifest .= PHP_EOL.'# CSS'.PHP_EOL.implode(PHP_EOL, dispatch::currentCSS()).PHP_EOL;
+			
+			// Cache
+			$glob = glob('{assets/{common}/{' .implode(',', $cache). '}/{*,*/*},pages/*.html}', GLOB_BRACE);
+				foreach($glob as $g)
+					if(!is_dir($g)) $files_sorted[dirname($g)][] = $g;
+				foreach($files_sorted as $t => $files)
+				{
+					$manifest .= PHP_EOL.'# '.strtoupper($t).PHP_EOL;
+					foreach($files as $f) $manifest .= $f.PHP_EOL;
+				}
+				
+			// Network	
+			$manifest .= PHP_EOL.'NETWORK:'.PHP_EOL.PHP_EOL;
+			if(!is_array($network)) $manifest .= $network;
+			else foreach($network as $n) $manifest .= $n.PHP_EOL;
+			
+			// Network	
+			if($fallback)
+			{
+				$manifest .= PHP_EOL.'FALLBACK:'.PHP_EOL.PHP_EOL;
+				if(!is_array($fallback)) $manifest .= $fallback;
+				else foreach($fallback as $from => $to) $manifest .= $to.' '.$to.PHP_EOL;
+			}
+				
+			return f::write('cache.manifest', $manifest);
+		}
+	}	
 }
 ?>

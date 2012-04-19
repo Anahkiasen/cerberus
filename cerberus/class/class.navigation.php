@@ -363,11 +363,10 @@ class navigation
 	// Pied de page
 	static function footer($links = array())
 	{
-		$footer =
-			'&copy;Copyright ' .date('Y'). ' - 
-			' .config::get('sitename'). ' - 
-			' .str::slink('sitemap', l::get('menu-sitemap')). ' - 
-			Conception : ' .str::link('http://www.stappler.fr/', 'Le Principe de Stappler');
+		$footer = '&copy;Copyright ' .date('Y');
+		if(config::get('sitename')) $footer .= ' - ' .config::get('sitename');
+		if(SQL and db::is_table('cerberus_structure')) $footer .= ' - ' .str::slink('sitemap', l::get('menu-sitemap'));
+		$footer .= ' - Conception : ' .str::link('http://www.stappler.fr/', 'Le Principe de Stappler');
 		if(isset(self::$data['contact']['submenu']['legales'])) $footer .= ' - ' .str::slink('contact-legales', l::get('menu-contact-legales'));
 		if(isset(self::$data['contact']['submenu']['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact'));
 		if(!empty($links))

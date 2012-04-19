@@ -44,11 +44,7 @@
 		{
 			margin-right: 26px;
 			display: block;
-			overflow: hidden;
-			white-space: nowrap;
-			-o-text-overflow: ellipsis;
-			-ms-text-overflow: ellipsis;
-			text-overflow: ellipsis;
+			@include ellipsis
 		}
 		abbr
 		{
@@ -214,6 +210,7 @@
 	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 	
 	li
 	{

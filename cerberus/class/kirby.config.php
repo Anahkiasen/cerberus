@@ -40,11 +40,12 @@ class config
 		'logs'        => false,
 		
 		/* Options */
-		'cache'       => true,		
-		'rewriting'   => false,
-		'local'       => false,
-		'meta'        => false,
-		'multilangue' => false,
+		'cache'          => true,
+		'cache.manifest' => false,
+		'rewriting'      => false,
+		'local'          => false,
+		'meta'           => false,
+		'multilangue'    => false,
 		
 		/* Upload */
 		'upload.overwrite' => true,

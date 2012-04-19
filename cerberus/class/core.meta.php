@@ -146,6 +146,7 @@ class meta
 				$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
 				$baseref = '<base href="' .config::get('http').$baseref. '" />';
 			}
+			else $baseref = NULL;
 			
 			$head = array(
 			'<head>',
@@ -160,6 +161,7 @@ class meta
 			if(dispatch::isScript('jquery')) $head[] = '<link rel="dns-prefetch" href="https://ajax.googleapis.com/" />';
 			
 			$return = implode(PHP_EOL."\t", $head).PHP_EOL;
+			$return = str_replace(PHP_EOL."\t".PHP_EOL, NULL, $return);
 		}
 		
 		// Mise en cache
