@@ -116,8 +116,8 @@ class update
 
 	static function mysql($local_name = NULL, $online_host = NULL, $online_user = NULL, $online_password = NULL, $online_name = NULL)
 	{
-		if($local_name) config::hardcode('local.name', $local_name);
-		if($online_password and $online_host and $online_name and $online_user)
+		if($local_name and !config::get('local.name')) config::hardcode('local.name', $local_name);
+		if(!config::get('db.host') and $online_password and $online_host and $online_name and $online_user)
 		{
 			config::hardcode('db.host', $online_host);
 			config::hardcode('db.user', $online_user);

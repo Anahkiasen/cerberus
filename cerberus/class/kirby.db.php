@@ -62,7 +62,7 @@ class db
 				$dbmdp  =
 				$dbname = NULL;
 			}
-
+			
 			$args       = func_get_args();
 			$host       = a::get($args, 0, config::get('db.host',     $dbhost));
 			$user       = a::get($args, 1, config::get('db.user',     $dbuser));

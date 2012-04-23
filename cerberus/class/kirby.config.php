@@ -79,12 +79,12 @@ class config
 	/** 
 		* Sets a config value by key
 		*
-		* @param	string	$key The key to define
-		* @param	mixed	 $value The value for the passed key
+		* @param string	 $key The key to define
+		* @param mixed	 $value The value for the passed key
 		*/	
 	static function set($key, $value = NULL)
 	{
-		if(is_array($key)) self::$config = array_merge(self::$config, $key);
+		if(is_array($key)) self::$config = array_merge($key, self::$config);
 		else self::$config[$key] = $value;
 	}
 
@@ -92,8 +92,8 @@ class config
 		* Loads an additional config file 
 		* Returns the entire configuration array
 		*
-		* @param	string	$file The path to the config file
-		* @return array	 The entire config array
+		* @param  string  $file The path to the config file
+		* @return array   The entire config array
 		*/	
 	static function load($file)
 	{
@@ -105,8 +105,8 @@ class config
 	/**
 	 * Adds a value to the config file
 	 * 
-	 * @param string 	$key The parameter to add
-	 * @param string 	$value Its value
+	 * @param  string 	$key The parameter to add
+	 * @param  string 	$value Its value
 	 * @return boolean 	The success of writing into the file
 	 */
 	static function hardcode($key, $value = NULL)
@@ -115,6 +115,7 @@ class config
 		if(is_array($value)) $value = 'array(\'' .implode("', '", $formatted_value). '\')';
 		elseif(is_bool($value)) $value = str::boolprint($value);
 		elseif(is_null($value)) $value = 'NULL';
+		else $value = '"' .$value. '"';
 		
 		$config = f::read(self::$config_file);
 		
@@ -126,7 +127,7 @@ class config
 				'$config[\'$1\'] = ' .$value. ';',
 				$config);
 		}
-		else if(!empty($value)) $config = str_replace('?>', '$config[\'' .$key. '\'] = "' .$value. "\";\n?>", $config);
+		else if(!empty($value)) $config = str_replace('?>', '$config[\'' .$key. '\'] = ' .$value. ";\n?>", $config);
 		
 		return f::write(self::$config_file, $config);
 	}
