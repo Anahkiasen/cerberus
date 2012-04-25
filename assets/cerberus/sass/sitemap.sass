@@ -17,7 +17,7 @@
     padding: 0
     list-style-type: none
   h2
-    +gradient-auto-vertical($main, 5%)
+    +gradient-auto($main, 5)
     text-shadow: 0 2px 0 fade(black, 50)
     color: white
     font-weight: bold
@@ -25,7 +25,7 @@
     margin: 0
     padding: 5px 10px
     &:hover
-      +gradient-auto-vertical(lighten($main, 10), 5%)
+      +gradient-auto(lighten($main, 10), 5)
   ul
     text-align: center
     +background-fade(white, 10)

@@ -194,28 +194,33 @@ class cache
 			
 			// CSS/JS
 			$manifest .= 'CACHE:'.PHP_EOL;
-			$manifest .= PHP_EOL.'# JS';
+			$manifest .= PHP_EOL.'# JS'.PHP_EOL;
 				foreach(dispatch::currentJS() as $js)
 				{
 					if(str::find('http', $js)) $network[] = $js;
-					else $manifest = $js.PHP_EOL;
+					else $manifest .= $js.PHP_EOL;
 				}
-			$manifest .= PHP_EOL.'# CSS';
+			$manifest .= PHP_EOL.'# CSS'.PHP_EOL;
 				foreach(dispatch::currentCSS() as $css)
 				{
 					if(str::find('http', $css)) $network[] = $css;
-					else $manifest = $css.PHP_EOL;
+					else $manifest .= $css.PHP_EOL;
 				}
 			
-			// Cache
+			// Détermination des ressources
 			$glob = glob('{assets/{common}/{' .implode(',', $cache). '}/{*,*/*},pages/*.html}', GLOB_BRACE);
-				foreach($glob as $g)
-					if(!is_dir($g)) $files_sorted[dirname($g)][] = $g;
-				foreach($files_sorted as $t => $files)
-				{
-					$manifest .= PHP_EOL.'# '.strtoupper($t).PHP_EOL;
-					foreach($files as $f) $manifest .= $f.PHP_EOL;
-				}
+			$glob = array_merge($glob, glob('assets/cerberus/img/rgbapng/*'));
+			if(dispatch::isScript('iconic'))
+				$glob = array_merge($glob, glob('assets/cerberus/fonts/*'));
+			
+			// Listing des ressources
+			foreach($glob as $g)
+				if(!is_dir($g)) $files_sorted[dirname($g)][] = $g;
+			foreach($files_sorted as $t => $files)
+			{
+				$manifest .= PHP_EOL.'# '.strtoupper($t).PHP_EOL;
+				foreach($files as $f) $manifest .= $f.PHP_EOL;
+			}
 				
 			// Network	
 			$manifest .= PHP_EOL.'NETWORK:'.PHP_EOL.PHP_EOL;

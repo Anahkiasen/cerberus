@@ -157,7 +157,7 @@ class dispatch extends Cerberus
 		##################		
 				
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
-		$allowed_files = '{' .self::$css. '/*.css,' .self::$js. '/*.js}';
+		$allowed_files = '{' .self::$css. '{/,/plugins/}*.css,' .self::$js. '/*.js}';
 		$files = glob('{' .PATH_COMMON. ',' .PATH_CERBERUS. '}' .$allowed_files, GLOB_BRACE);
 		
 		// Creating the path list
@@ -472,7 +472,7 @@ class dispatch extends Cerberus
 				'line_comments' => 'false',
 				'relative_assets' => 'true');
 			$configuration = array_merge($config, $configuration);
-			$extensions = array('compass-recipes', 'susy', 'animation', 'rgbapng');
+			$extensions = array('compass-recipes', 'susy', 'animation', 'rgbapng', 'modular-scale');
 			
 			// Configuration
 			foreach($configuration as $k => $v)

@@ -133,8 +133,9 @@ content::start();
 if(config::get('bootstrap') and LOCAL)
 {
 	$required = array(
-		dispatch::path(PATH_CERBERUS. '{sass}/_custom.sass'));
-	foreach($required as $f) if(!file_exists($f)) f::write($f);
+		dispatch::path(PATH_CERBERUS. '{sass}/base/_custom.sass') => '@import ../../../../' .PATH_COMMON. 'sass/custom'
+		);
+	foreach($required as $f => $content) if(!file_exists($f)) f::write($f, $content);
 }
 if(!file_exists(PATH_CACHE)) dir::make(PATH_CACHE);
 
