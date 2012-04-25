@@ -3,24 +3,27 @@
 ///////////////////////////////////////////////
 
 // Text-shadow
-$default-text-shadow-color             : fade(black, 75)
-$default-text-shadow-h-offset          : 1px
-$default-text-shadow-v-offset          : $default-text-shadow-h-offset
-$default-text-shadow-blur              : 0
+$default-text-shadow-color           : fade(black, 75)
+$default-text-shadow-h-offset        : 1px
+$default-text-shadow-v-offset        : $default-text-shadow-h-offset
+$default-text-shadow-blur            : 0
 
 // Transitions
-$default-transition-function           : ease-in-out
+$default-transition-function         : ease-in-out
 
 // Animations
-$default-animation-name                : fadeIn
-$default-animation-duration				: 1s
-$default-animation-timing-function	   : ease-in-out
-$default-animation-fill-mode				: both
+$default-animation-name              : fadeIn
+$default-animation-duration          : 1s
+$default-animation-timing-function   : ease-in-out
+$default-animation-fill-mode           : both
 
 // Contraste
-$contrasted-dark-default: lighten(black, 20)
-$contrasted-light-default: darken(white, 20)
-$contrasted-lightness-threshold: 40%
+$contrasted-dark-default             : lighten(black, 20)
+$contrasted-light-default            : darken(white, 20)
+$contrasted-lightness-threshold      : 40%
+
+// Dégradés
+$cerberus-gradient-span              : 5%
 
 @import compass
 @import rgbapng
@@ -30,20 +33,20 @@ $contrasted-lightness-threshold: 40%
 ///////////////////////////////////////////////
 
 // Cerberus variables
-$cerberus: #006699
-$main: $cerberus
-$sansFontFamily:	'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif
-$serifFontFamily: "Droid Serif", Georgia, "Times New Roman", Times, serif
+$cerberus        : #006699
+$main            : $cerberus
+$sansFontFamily  : 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif
+$serifFontFamily : "Droid Serif", Georgia, "Times New Roman", Times, serif
 
 // Bootstrap variables
 @import _custom
 @import bootstrap/variables
 @import bootstrap/mixins
 
-// Variantes de couleur
-$textColor: contrast-color($main) !default
-$mainLight: lighten($main, 15)
-$mainDark: darken($main, 15)
+// CERBERUS
+$textColor : contrast-color($main) !default
+$mainLight : lighten($main, 15)
+$mainDark  : darken($main, 15)
 
 ///////////////////////////////////////////////
 //////////////////// SUSY ///////////////////// 
@@ -57,11 +60,11 @@ $relative-font-sizing      : false !default
 // Susy
 $fluid                     : false !default
 $col-width                 : $gridColumnWidth
-$gutter-width              : $gridGutterWidth			 
+$gutter-width              : $gridGutterWidth       
 @if $fluid == true
-	$col-width              : $fluidGridColumnWidth
-	$gutter-width           : $fluidGridGutterWidth
-		
+  $col-width               : $fluidGridColumnWidth
+  $gutter-width            : $fluidGridGutterWidth
+    
 $total-cols                : $gridColumns
 $side-gutter-width         : $gutter-width !default
 
@@ -70,10 +73,10 @@ $side-gutter-width         : $gutter-width !default
 ///////////////////////////////////////////////
 
 @function fade($color, $opacity)
-	@return rgba($color, $opacity / 100)
-	
+  @return rgba($color, $opacity / 100)
+  
 @function light($lightness)
-	@return lighten(black, $lightness)
+  @return lighten(black, $lightness)
 
 ///////////////////////////////////////////////
 ////////////////// MIXINS ///////////////////// 
@@ -82,59 +85,79 @@ $side-gutter-width         : $gutter-width !default
 // CSS3 -------------------------------------------------------------- */
 
 =selection($background, $color: white)
-	::selection
-		background: $background
-		color: $color
-	::-moz-selection
-		background: $background
-		color: $color
+  ::selection
+    background: $background
+    color: $color
+  ::-moz-selection
+    background: $background
+    color: $color
 
 =font-smoothing($smooth)
-	+experimental(font-smoothing, $smooth)
+  +experimental(font-smoothing, $smooth)
 
 =text-drop($color, $size: $default_size)
-	color: $color
-	@if lightness($color) >= 50
-		+text-shadow($size $size 0 fadeout(black, $default_opacity))
-	@else
-		+text-shadow($size $size 0 fadeout(white, $default_opacity))
+  color: $color
+  @if lightness($color) >= 50
+    +text-shadow($size $size 0 fadeout(black, $default_opacity))
+  @else
+    +text-shadow($size $size 0 fadeout(white, $default_opacity))
 
 // Mixins -------------------------------------------------------------- */
 
 =bouton($color: $main)
-	$bordure: 5px
-	cursor: pointer
-	border: 1px solid darken($color, 10)
-	padding: 5px
-	+single-text-shadow(darken($color, 25), 0, 2px, 0)
-	+gradient-auto-vertical($color, 5%)
-	+box-shadow(0 $bordure 0 0 darken($color, 20))
-	+single-transition(all, 0.1s)
-	&:hover
-		+gradient-auto-vertical(lighten($color, 5%), 5%)
-		+box-shadow(0, $bordure, 0, 0, lighten(darken($color, 20%), 10))
-	&:active
-		+gradient-auto-vertical(darken($color, 10%), 5%)
-		+box-shadow(none)
-		margin-bottom: 5px
+  $bordure: 5px
+  cursor: pointer
+  border: 1px solid darken($color, 10)
+  padding: 5px
+  +single-text-shadow(darken($color, 25), 0, 2px, 0)
+  +gradient-auto-vertical($color, 5%)
+  +box-shadow(0 $bordure 0 0 darken($color, 20))
+  +single-transition(all, 0.1s)
+  &:hover
+    +gradient-auto-vertical(lighten($color, 5%), 5%)
+    +box-shadow(0, $bordure, 0, 0, lighten(darken($color, 20%), 10))
+  &:active
+    +gradient-auto-vertical(darken($color, 10%), 5%)
+    +box-shadow(none)
+    margin-bottom: 5px
+    
+// Dégradés
+=gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical)
+  @if $type == vertical
+    +gradient-vertical(lighten($color, $difference), darken($color, $difference))
+  @else if $type == horizontal
+    +gradient-horizontal(lighten($color, $difference), darken($color, $difference))
+  @else if $type == radial
+    +gradient-radial(lighten($color, $difference), darken($color, $difference))
+  border-top: 1px solid lighten($color, $difference + 10)
+  border-bottom: 1px solid darken($color, $difference + 10)
+
+=gradient-auto-vertical($color, $difference: $cerberus-gradient-span)
+  +gradient-auto($color, $difference, vertical)
+
+=gradient-auto-horizontal($color, $difference: $cerberus-gradient-span)
+  +gradient-auto($color, $difference, horizontal)
+
+=gradient-auto-radial($color, $difference: $cerberus-gradient-span)
+  +gradient-auto($color, $difference, radial)
 
 // Utilities -------------------------------------------------------------- */
 
 =background-fade($color, $opacity)
-	+rgba-background($color, $opacity / 100)
+  +rgba-background($color, $opacity / 100)
 
 =padding-h($padding)
-	padding-left: $padding
-	padding-right: $padding
-	
+  padding-left: $padding
+  padding-right: $padding
+  
 =padding-v($padding)
-	padding-top: $padding
-	padding-bottom: $padding
-		
+  padding-top: $padding
+  padding-bottom: $padding
+    
 =margin-h($margin)
-	margin-left: $margin
-	margin-right: $margin
-	
+  margin-left: $margin
+  margin-right: $margin
+  
 =margin-v($margin)
-	margin-top: $margin
-	margin-bottom: $margin
+  margin-top: $margin
+  margin-bottom: $margin

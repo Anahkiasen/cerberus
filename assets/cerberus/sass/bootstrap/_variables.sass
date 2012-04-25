@@ -64,7 +64,7 @@ $tableBorder: 				#ddd !default
 // -------------------------
 $btnBackground: 						$white !default
 $btnBackgroundHighlight: 			darken($white, 10%) !default
-$btnBorder: 							darken($white, 20%) !default
+$btnBorder: 							#ccc !default
 
 $btnPrimaryBackground: 				$linkColor !default
 $btnPrimaryBackgroundHighlight: 	adjust-hue($btnPrimaryBackground, 15%) !default
@@ -178,6 +178,7 @@ $infoBorder: 			darken(adjust-hue($infoBackground, -10), 7%) !default
 $gridColumns: 		12 !default
 $gridColumnWidth: 60px !default
 $gridGutterWidth: 20px !default
+$gridRowWidth:    ($gridColumns * $gridColumnWidth) + ($gridGutterWidth * ($gridColumns - 1)) !default
 
 // Fluid grid
 // -------------------------

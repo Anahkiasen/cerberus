@@ -1,5 +1,6 @@
 // THUMBNAILS
 // ----------
+// Note: `.thumbnails` and `.thumbnails > li` are overriden in responsive files
 
 // Make wrapper ul behave like the grid
 .thumbnails
@@ -10,6 +11,7 @@
   // Float li to make thumbnails appear in a row
   & > li
     margin-bottom: $baseLineHeight
+    margin-left: $gridGutterWidth
 	  
 // Fluid rows have no left margin
 .row-fluid .thumbnails

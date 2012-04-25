@@ -329,6 +329,8 @@ class forms
 	
 	function option($index, $label, $value = NULL, $params = NULL)
 	{
+		global $array_value;
+		
 		if(!$value) $value = $array_value;
 		if(is_numeric($index) and !isset($params['force_index'])) $index = $label;					
 		$selected = $value == $index ? ' selected="selected"' : NULL;	

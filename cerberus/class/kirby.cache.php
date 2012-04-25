@@ -194,8 +194,18 @@ class cache
 			
 			// CSS/JS
 			$manifest .= 'CACHE:'.PHP_EOL;
-			$manifest .= PHP_EOL.'# JS'.PHP_EOL.implode(PHP_EOL, dispatch::currentJS()).PHP_EOL;
-			$manifest .= PHP_EOL.'# CSS'.PHP_EOL.implode(PHP_EOL, dispatch::currentCSS()).PHP_EOL;
+			$manifest .= PHP_EOL.'# JS';
+				foreach(dispatch::currentJS() as $js)
+				{
+					if(str::find('http', $js)) $network[] = $js;
+					else $manifest = $js.PHP_EOL;
+				}
+			$manifest .= PHP_EOL.'# CSS';
+				foreach(dispatch::currentCSS() as $css)
+				{
+					if(str::find('http', $css)) $network[] = $css;
+					else $manifest = $css.PHP_EOL;
+				}
 			
 			// Cache
 			$glob = glob('{assets/{common}/{' .implode(',', $cache). '}/{*,*/*},pages/*.html}', GLOB_BRACE);

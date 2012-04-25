@@ -84,7 +84,7 @@ class config
 		*/	
 	static function set($key, $value = NULL)
 	{
-		if(is_array($key)) self::$config = array_merge($key, self::$config);
+		if(is_array($key)) self::$config = array_merge(self::$config, $key);
 		else self::$config[$key] = $value;
 	}
 

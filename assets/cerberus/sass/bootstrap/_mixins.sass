@@ -36,8 +36,7 @@
 // IE7 inline-block
 // ----------------
 =ie7-inline-block
-  *display: inline
-  // IE7 inline-block hack
+  *display: inline // IE7 inline-block hack
   *zoom: 1
 
 // IE7 likes to collapse whitespace on either side of the inline-block elements.
@@ -77,16 +76,12 @@
 
 =font-family-serif
   font-family: $serifFontFamily
-
+  
 =font-family-sans-serif
   font-family: $sansFontFamily
-
+  
 =font-family-monospace
   font-family: $monoFontFamily
-
-=font-custom($font, $size: $baseFontSize, $weight: normal, $lineHeight: normal)
-  font-family: $font, $sansFontFamily
-  +font-shorthand($size, $weight, $lineHeight)
 
 =font-shorthand($size: $baseFontSize, $weight: normal, $lineHeight: $baseLineHeight)
   font-size: $size
@@ -117,11 +112,13 @@
 
 // Mixin for form field states
 =formFieldState($textColor: #555555, $borderColor: #cccccc, $backgroundColor: whitesmoke)
+  
   // Set the text color
   > label,
   .help-block,
   .help-inline
     color: $textColor
+    
   // Style inputs accordingly
   input,
   select,
@@ -131,6 +128,7 @@
     &:focus
       border-color: darken($borderColor, 10%)
       +box-shadow(0 0 6px lighten($borderColor, 20%))
+      
   // Give a small background color for input-prepend/-append
   .input-prepend .add-on,
   .input-append .add-on
@@ -143,10 +141,8 @@
 
 // Resize anything
 =resizable($direction)
-  resize: $direction
-  // Options: horizontal, vertical, both
-  overflow: auto
-  // Safari fix
+  resize: $direction // Options: horizontal, vertical, both
+  overflow: auto // Safari fix
 
 // BACKGROUNDS
 // --------------------------------------------------
@@ -158,23 +154,6 @@
   border-color: rgba(black, 0.1) rgba(black, 0.1) fadein(rgba(black, 0.1), 15%)
 
 // Gradients
-$diff: 5%
-
-=gradient-auto-vertical($color, $difference: $diff)
-  +gradient-vertical(lighten($color, $difference), darken($color, $difference))
-  border-top: 1px solid lighten($color, $difference + 20)
-  border-bottom: 1px solid darken($color, $difference + 20)
-
-=gradient-auto-horizontal($color, $difference: $diff)
-  +gradient-horizontal(lighten($color, $difference), darken($color, $difference))
-  border-top: 1px solid lighten($color, $difference + 20)
-  border-bottom: 1px solid darken($color, $difference + 20)
-
-=gradient-auto-radial($color, $difference: $diff)
-  +gradient-radial(lighten($color, $difference), darken($color, $difference))
-  border-top: 1px solid lighten($color, $difference + 20)
-  border-bottom: 1px solid darken($color, $difference + 20)
-
 =gradient-horizontal($startColor: #555555, $endColor: #333333)
   background-color: $endColor
   +background-image(linear-gradient(left, $startColor, $endColor))
@@ -289,12 +268,9 @@ $diff: 5%
 
 // Table columns
 =tableColumns($columnSpan: 1)
-  float: none
-  // undo default grid column styles
-  width: $gridColumnWidth * $columnSpan + $gridGutterWidth * ($columnSpan - 1) - 16
-  // 16 is total padding on left and right of table cells
-  margin-left: 0
-  // undo default grid column styles
+  float: none // undo default grid column styles
+  width: $gridColumnWidth * $columnSpan + $gridGutterWidth * ($columnSpan - 1) - 16 // 16 is total padding on left and right of table cells
+  margin-left: 0 // undo default grid column styles
 
 // Make a Grid
 // Use .makeRow and .makeColumn to assign semantic layouts grid system behavior
@@ -351,6 +327,7 @@ $diff: 5%
       +input-block-level
       float: left
       margin-left: $fluidGridGutterWidth
+      *margin-left: $fluidGridGutterWidth
       &:first-child
         margin-left: 0
       
@@ -361,6 +338,7 @@ $diff: 5%
 
 =grid-fluid-span($columns, $columnWidth: $fluidGridColumnWidth, $gutterWidth: $fluidGridGutterWidth)
   width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)
+  *width: ($fluidGridColumnWidth * $columns) + ($fluidGridGutterWidth * ($columns - 1))
 
 // Input grid
 
@@ -368,8 +346,8 @@ $diff: 5%
   input,
   textarea,
   .uneditable-input
-    margin-left: 0
-    // override margin-left from core grid system
+    margin-left: 0 // override margin-left from core grid system
+  
   // generate .spanX and .offsetX
   @for $index from 1 through $gridColumns
     input.span#{$index}, textarea.span#{$index}, .uneditable-input.span#{$index}

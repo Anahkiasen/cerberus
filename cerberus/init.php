@@ -35,9 +35,9 @@ content::start();
 
 // Configuration du site
 if(!defined('LOCAL')) define('LOCAL', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
+config::set(config::$defaults);
 if(!file_exists(PATH_CONF)) f::write(PATH_CONF, '<?'.PHP_EOL.'?>');
 else config::load(PATH_CONF);
-config::set(config::$defaults);
 
 // Paramètres local/production
 config::set(array(
