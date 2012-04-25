@@ -2,3 +2,7 @@
 @import compass/css3
 @import animation/animate
 @import animation/animate/classes
+
+@for $i from 1 through 10
+	.duration#{$i}
+		+animation-duration(#{$i+'s'})

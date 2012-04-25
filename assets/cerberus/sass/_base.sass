@@ -22,7 +22,7 @@ $contrasted-dark-default             : lighten(black, 20)
 $contrasted-light-default            : darken(white, 20)
 $contrasted-lightness-threshold      : 40%
 
-// Dégradés
+// Gradients
 $cerberus-gradient-span              : 5%
 
 @import compass
@@ -121,7 +121,8 @@ $side-gutter-width         : $gutter-width !default
     +box-shadow(none)
     margin-bottom: 5px
     
-// Dégradés
+// Gradients
+
 =gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical)
   @if $type == vertical
     +gradient-vertical(lighten($color, $difference), darken($color, $difference))
