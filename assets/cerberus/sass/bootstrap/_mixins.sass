@@ -315,7 +315,7 @@
   margin-left: ($gridColumnWidth * $columns) + ($gridGutterWidth * ($columns + 1))
 
 =grid-core-span($columns, $columnWidth: $gridColumnWidth, $gutterWidth: $gridGutterWidth)
-  width: $columnWidth * $columns + $gutterWidth * ($columns - 1)
+  width: ($columnWidth * $columns) + ($gutterWidth * ($columns - 1))
 
 // Fluid grid
 =grid-fluid-generate($gridColumnWidth, $gridGutterWidth)
@@ -337,7 +337,7 @@
         +grid-fluid-span($index, $gridColumnWidth, $gridGutterWidth)
 
 =grid-fluid-span($columns, $columnWidth: $fluidGridColumnWidth, $gutterWidth: $fluidGridGutterWidth)
-  width: $fluidGridColumnWidth * $columns + $fluidGridGutterWidth * ($columns - 1)
+  width: ($fluidGridColumnWidth * $columns) + ($fluidGridGutterWidth * ($columns - 1)) - 1%
   *width: ($fluidGridColumnWidth * $columns) + ($fluidGridGutterWidth * ($columns - 1))
 
 // Input grid

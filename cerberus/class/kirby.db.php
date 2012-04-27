@@ -285,7 +285,6 @@ class db
 		}
 		
 		$query .= implode(',', $rows);
-		//echo $query;
 		return self::execute($query);
 	}	
 	

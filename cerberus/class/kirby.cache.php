@@ -1,15 +1,43 @@
 <?php
+/**
+ * 
+ * Cache
+ * 
+ * Use for the caching of data, pieces of pages or complete pages
+ * It can stock variables, arrays, and use the Content class to stock anything else
+ * 
+ * @package Kirby
+ */
 class cache
 {
-	// Cache parameters
-	static private $cached_file = NULL;
-	static private $folder = NULL;
-	static private $time = NULL;
-	
-	static private $cache_get_variables = NULL;
-	static private $get_remove = array('PHPSESSID', 'gclid');
+  /**
+   * The name of the current output buffer being cache, initialized by fetch() and retrieved by save()
+   */
+  static private $cached_file = NULL;
+  
+  /**
+   * The folder where cached files go
+   */
+  static private $folder = NULL;
+  
+  /**
+   * The amount of time in seconds to cache files
+   */
+  static private $time = NULL;
+  
+  /**
+   * Cache current GET variables or not (useful to cache dynamic pages)
+   */
+  static private $cache_get_variables = NULL;
+  
+  /**
+   * The GET variables to avoid caching
+   */
+  static private $get_remove = array('PHPSESSID', 'gclid');
 
-	// Initialization
+  /**
+   * Initialize the cache class, will go fetch the cache parameters in the config once
+   */
 	static function init()
 	{
 		if(!self::$folder)
@@ -28,7 +56,7 @@ class cache
 	 * 	if(!$array) $array = cache::fetch('data', $data)
 	 * 
 	 * Or pages
-	 * 	cache::fetch('gallery');
+	 * 	cache::page('gallery');
 	 * 		[your page]
 	 * 	cache::save();
 	 * 
@@ -232,7 +260,7 @@ class cache
 			{
 				$manifest .= PHP_EOL.'FALLBACK:'.PHP_EOL.PHP_EOL;
 				if(!is_array($fallback)) $manifest .= $fallback;
-				else foreach($fallback as $from => $to) $manifest .= $to.' '.$to.PHP_EOL;
+				else foreach($fallback as $from => $to) $manifest .= $from.' '.$to.PHP_EOL;
 			}
 				
 			return f::write('cache.manifest', $manifest);

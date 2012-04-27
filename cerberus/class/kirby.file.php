@@ -106,23 +106,23 @@ class f
 	}
 
 	/**
-	 * Gets the extension of a file
-	 * [CERBERUS-EDIT]
-	 * 
-	 * @param	string	$file The filename or path
-	 * @return string 
-	 */ 
-	static function remove($file)
+   * Deletes one or more files
+   * 
+   * @param  mixed         $file The path for the file or an array of path
+   * @return boolean 
+   */  
+	static function remove()
 	{
+		$file = func_get_args();
+		if(sizeof($file) == 1) $file = a::get($file, 0);
+	
 		if(is_array($file))
-			foreach($file as $infile) self::remove($infile);
+			foreach($file as $f) self::remove($f);
 		else
 		{
-			if(is_dir($file)) return dir::remove($file);
-			else 
-				return (file_exists($file) and is_file($file) and !empty($file))
-					? @unlink($file)
-					: false;
+			return (file_exists($file) and is_file($file) and !empty($file))
+				? @unlink($file)
+				: false;
 		}
 	}
 
