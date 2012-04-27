@@ -32,6 +32,9 @@
   @else
     +text-shadow($size $size 0 fadeout(white, $default_opacity))
 
+=bevel($size, $opacity: 20)
+  +text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
+
 // Mixins ----------------------------------------------------------------------
 
 =bouton($color: $main)
