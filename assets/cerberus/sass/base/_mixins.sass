@@ -25,15 +25,16 @@
 =font-smoothing($smooth)
   +experimental(font-smoothing, $smooth)
 
-=text-drop($color, $size: $default_size)
+=text-drop($color, $size: 2px)
   color: $color
-  @if lightness($color) >= 50
-    +text-shadow($size $size 0 fadeout(black, $default_opacity))
-  @else
-    +text-shadow($size $size 0 fadeout(white, $default_opacity))
+  +text-shadow(0 $size 0 rgba(contrast-color($color), 0.5))
 
 =bevel($size, $opacity: 20)
   +text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
+
+=webfont($name, $font_path, $weight)
+  +font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, normal)
+
 
 // Mixins ----------------------------------------------------------------------
 
@@ -56,24 +57,27 @@
     
 // Gradients --------------------------------------------------------------------
 
-=gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical)
+=gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical, $borders: $cerberus-gradient-borders)
   @if $type == vertical
     +gradient-vertical(lighten($color, $difference), darken($color, $difference))
   @else if $type == horizontal
     +gradient-horizontal(lighten($color, $difference), darken($color, $difference))
   @else if $type == radial
     +gradient-radial(lighten($color, $difference), darken($color, $difference))
-  border-top: 1px solid lighten($color, $difference + 10)
-  border-bottom: 1px solid darken($color, $difference + 10)
+    
+  // Bordures
+  @if $borders > 0
+    border-top: $borders solid lighten($color, $difference + 10)
+    border-bottom: $borders solid darken($color, $difference + 10)
 
-=gradient-auto-vertical($color, $difference: $cerberus-gradient-span)
-  +gradient-auto($color, $difference, vertical)
+=gradient-auto-vertical($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
+  +gradient-auto($color, $difference, vertical, $borders)
 
-=gradient-auto-horizontal($color, $difference: $cerberus-gradient-span)
-  +gradient-auto($color, $difference, horizontal)
+=gradient-auto-horizontal($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
+  +gradient-auto($color, $difference, horizontal, $borders)
 
-=gradient-auto-radial($color, $difference: $cerberus-gradient-span)
-  +gradient-auto($color, $difference, radial)
+=gradient-auto-radial($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
+  +gradient-auto($color, $difference, radial, $borders)
 
 // Utilities --------------------------------------------------------------------
 

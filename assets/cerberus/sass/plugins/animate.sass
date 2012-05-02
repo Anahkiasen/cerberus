@@ -3,9 +3,6 @@
 @import animation/animate
 @import animation/animate/classes
 
-body
-	-webkit-transform: translate3d(0,0,0)
-
 @for $i from 1 through 10
 	.duration#{$i}
 		+animation-duration(#{$i+'s'})
