@@ -14,15 +14,15 @@ class dispatch extends Cerberus
 	static private $typekit;
 	static private $paths = array();
 	static private $availableAPI = array(
-		'jqueryui' =>    'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
-		'swfobject' =>   'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'jquery' =>      'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
+		'swfobject'   => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
+		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'tablesorter' => 'jquery.tablesorter.min',
-		'nivoslider' =>  'jquery.nivo.slider.pack',
-		'chosen' =>      'chosen.jquery.min',
-		'colorbox' =>    'jquery.colorbox-min',
-		'easing' =>      'jquery.easing',
-		'noty' =>        'jquery.noty');
+		'nivoslider'  => 'jquery.nivo.slider.pack',
+		'chosen'      => 'chosen.jquery.min',
+		'colorbox'    => 'jquery.colorbox-min',
+		'easing'      => 'jquery.easing',
+		'noty'        => 'jquery.noty');
 		
 	/***************************
 	 ** RESSOURCES ET CHEMINS **
@@ -506,12 +506,16 @@ class dispatch extends Cerberus
 		self::addJS("var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))");
 	}
 	
-	/* Ajoute de polices via @font-face */
+	/* ---------- WEBFONTS ---------- */
+	
+	// Typekit
 	static function typekit($kit = 'xky6uxx')
 	{
 		self::$typekit = $kit;
 		self::addJS('try{Typekit.load();}catch(e){}');
 	}
+	
+	// GoogleFonts
 	static function googleFonts()
 	{
 		$fonts = func_get_args();

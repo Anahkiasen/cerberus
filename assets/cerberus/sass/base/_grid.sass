@@ -1,14 +1,18 @@
-// ---------------------------------------------------------------------------
-// Imports
+//////////////////////////////////////////////////////////////
+//////////////////// GRID SYSTEM AND SUSY //////////////////// 
+//////////////////////////////////////////////////////////////
+
+// SUSY import --------------------------------------------- /
 
 @import susy
 
-// ---------------------------------------------------------------------------
-// Grid Settings
+// Grid settings ------------------------------------------- /
 
+// Grid type
 $cerberus-fluid            : false !default
 
+// Various widths
+$total-cols                : $gridColumns
 $col-width                 : if($cerberus-fluid, $fluidGridColumnWidth, $gridColumnWidth)
 $gutter-width              : if($cerberus-fluid, $fluidGridGutterWidth, $gridGutterWidth)
-$total-cols                : $gridColumns
 $side-gutter-width         : $gutter-width

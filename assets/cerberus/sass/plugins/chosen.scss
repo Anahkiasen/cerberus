@@ -1,5 +1,11 @@
-/* @group Base */
-@import "base";
+//////////////////////////////////////////////////////////////
+/////////////////////// CHOSEN PLUGIN //////////////////////// 
+//////////////////////////////////////////////////////////////
+
+// Compass core
+@import "compass";
+
+// Container ------------------------------------------------ /
 
 .chzn-container
 {
@@ -115,6 +121,8 @@
 	left: -9000px;
 }	
 
+// Multiple choices box --------------------------------------------- /
+
 .chzn-container-multi
 {
 	.chzn-choices
@@ -201,7 +209,7 @@
 	}
 }
 
-/* @group Results */
+// Query results --------------------------------------------- /
 
 .chzn-container .chzn-results
 {
@@ -280,6 +288,7 @@
 		position: absolute;
 		text-align: center;
 		width: 321px;
+		
 		/* This should by dynamic with js */
 		z-index: 1;
 		span
@@ -303,9 +312,9 @@
 		background: image-url("chosen-sprite.png") no-repeat -22px -3px;
 	}
 }
-/* @end */
 
-/* @group Active	*/
+// Active container --------------------------------------------- /
+
 .chzn-container-active
 {
 	.chzn-single
@@ -339,9 +348,9 @@
 		}
 	}
 }
-/* @end */
 
-/* @group Disabled Support */
+// Disabled container --------------------------------------------- /
+
 .chzn-disabled
 {
 	cursor: default;
@@ -353,7 +362,8 @@
 	}
 }
 
-/* @group Right to Left */
+// Right to left support ------------------------------------------- /
+
 .chzn-rtl
 {
 	text-align: right;
@@ -421,4 +431,3 @@
 		direction: rtl;
 	}
 }
-/* @end */

@@ -1,5 +1,8 @@
-// ---------------------------------------------------------------------------
-// Override default variables
+//////////////////////////////////////////////////////////////
+////////////// CERBERUS VARIABLES AND OVERRIDES ////////////// 
+//////////////////////////////////////////////////////////////
+
+// COMPASS variables --------------------------------------- /
 
 // Text-shadows
 $default-text-shadow-color           : fade(black, 75)
@@ -16,27 +19,32 @@ $default-animation-duration          : 1s
 $default-animation-timing-function   : ease-in-out
 $default-animation-fill-mode         : both
 
-// Contraste
+// Contrast
 $contrasted-dark-default             : lighten(black, 20)
 $contrasted-light-default            : darken(white, 20)
 $contrasted-lightness-threshold      : 40%
+
+// Browser support
+$legacy-support-for-ie6              : false
+
+// CERBERUS variables --------------------------------------- /
 
 // Gradients
 $cerberus-gradient-span              : 5% !default
 $cerberus-gradient-borders           : 1px !default
 
+//////////////////////////////////////////////////////////////
+////////////////// FRAMEWORKS AND EXTENSIONS ///////////////// 
+//////////////////////////////////////////////////////////////
 
-// Options
-$legacy-support-for-ie6              : false
+// COMPASS core -------------------------------------------- /
 
-// ---------------------------------------------------------------------------
-// Imports
-
-// Compass
 @import compass
+
 @import compass/css3/animation
 @import compass/css3/user-interface
 
-// Compass modules
+// COMPASS extensions -------------------------------------- /
+
 @import rgbapng
 @import modular-scale

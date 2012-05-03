@@ -1,19 +1,22 @@
-///////////////////////////////////////////////
-////////////////// FUNCTIONS ////////////////// 
-///////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+///////////////////////// FUNCTIONS ////////////////////////// 
+//////////////////////////////////////////////////////////////
 
+// Shortcut for rgba() with a percentage-based $opacity
 @function fade($color, $opacity)
   @return rgba($color, $opacity / 100)
   
+// Generate a grey on a lightness-scale from 0 to 100
 @function grey($lightness)
   @return lighten(black, $lightness)
 
-///////////////////////////////////////////////
-////////////////// MIXINS ///////////////////// 
-///////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+/////////////////////////// MIXINS /////////////////////////// 
+//////////////////////////////////////////////////////////////
 
-// CSS3 ----------------------------------------------------------------------
+// CSS3 ---------------------------------------------------- /
 
+// Changes the current selection color
 =selection($background, $color: white)
   ::selection
     background: $background
@@ -22,41 +25,13 @@
     background: $background
     color: $color
 
+// Changes the current font-smoothing mode
 =font-smoothing($smooth)
   +experimental(font-smoothing, $smooth)
 
-=text-drop($color, $size: 2px)
-  color: $color
-  +text-shadow(0 $size 0 rgba(contrast-color($color), 0.5))
+// Gradients ----------------------------------------------- /
 
-=bevel($size, $opacity: 20)
-  +text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
-
-=webfont($name, $font_path, $weight)
-  +font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, normal)
-
-
-// Mixins ----------------------------------------------------------------------
-
-=bouton($color: $main)
-  $bordure: 5px
-  cursor: pointer
-  border: 1px solid darken($color, 10)
-  padding: 5px
-  +single-text-shadow(darken($color, 25), 0, 2px, 0)
-  +gradient-auto-vertical($color, 5%)
-  +box-shadow(0 $bordure 0 0 darken($color, 20))
-  +single-transition(all, 0.1s)
-  &:hover
-    +gradient-auto-vertical(lighten($color, 5%), 5%)
-    +box-shadow(0, $bordure, 0, 0, lighten(darken($color, 20%), 10))
-  &:active
-    +gradient-auto-vertical(darken($color, 10%), 5%)
-    +box-shadow(none)
-    margin-bottom: 5px
-    
-// Gradients --------------------------------------------------------------------
-
+// Main mixin
 =gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical, $borders: $cerberus-gradient-borders)
   @if $type == vertical
     +gradient-vertical(lighten($color, $difference), darken($color, $difference))
@@ -70,6 +45,7 @@
     border-top: $borders solid lighten($color, $difference + 10)
     border-bottom: $borders solid darken($color, $difference + 10)
 
+// Individual directional mixins
 =gradient-auto-vertical($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
   +gradient-auto($color, $difference, vertical, $borders)
 
@@ -79,11 +55,26 @@
 =gradient-auto-radial($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
   +gradient-auto($color, $difference, radial, $borders)
 
-// Utilities --------------------------------------------------------------------
+// Utilities ------------------------------------------------ /
 
+// Drops a text-shadow of a contrast color
+=text-drop($color, $size: 2px)
+  color: $color
+  +text-shadow(0 $size 0 rgba(contrast-color($color), 0.5))
+
+// Creates a beveling text-shadow
+=bevel($size, $opacity: 20)
+  +text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
+
+// Loads a webfont using the +font-face mixin
+=webfont($name, $font_path, $weight)
+  +font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, normal)
+
+// Percentage-based version of rba-background
 =background-fade($color, $opacity)
   +rgba-background($color, $opacity / 100)
 
+// Padding mixins
 =padding-h($padding)
   padding-left: $padding
   padding-right: $padding
@@ -92,6 +83,7 @@
   padding-top: $padding
   padding-bottom: $padding
     
+// Margin mixins
 =margin-h($margin)
   margin-left: $margin
   margin-right: $margin
