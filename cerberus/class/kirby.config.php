@@ -35,21 +35,22 @@ class config
 	 
 		/* Modules */
 		'bootstrap'   => true,
-		'modernizr'   => true,
-		'minify'      => true,
+		'compass'     => array('susy', 'animation', 'rgbapng', 'modular-scale', 'normalize'),
 		'logs'        => false,
+		'minify'      => true,
+		'modernizr'   => false,
 		
 		/* Options */
 		'cache'          => true,
 		'cache.manifest' => false,
-		'rewriting'      => false,
 		'local'          => false,
 		'meta'           => false,
 		'multilangue'    => false,
+		'rewriting'      => false,
 		
 		/* Upload */
-		'upload.overwrite' => true,
 		'upload.allowed'   => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif'),
+		'upload.overwrite' => true,
 		
 		/* MySQL */
 		'admin.login'    => 'root',
@@ -57,8 +58,8 @@ class config
 		'local.name'     => false,
 		
 		/* Cache */
-		'cache.time' => null,
 		'cache.get_variables' => true,
+		'cache.time' => null,
 		
 		/* Navigation */
 		'index' => 'index');

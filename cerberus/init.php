@@ -198,12 +198,4 @@ if(CACHE)
 // Chargement des modules Cerberus
 $cerberus = new Cerberus(config::get('cerberus'));
 if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
-
-/*
-########################################
-############ BALISES META ##############
-########################################
-*/
-
-if(update::revision() < 478) meta::head();
 ?>

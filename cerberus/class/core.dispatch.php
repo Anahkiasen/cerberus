@@ -472,7 +472,7 @@ class dispatch extends Cerberus
 				'line_comments' => 'false',
 				'relative_assets' => 'true');
 			$configuration = array_merge($config, $configuration);
-			$extensions = array('compass-recipes', 'susy', 'animation', 'rgbapng', 'modular-scale');
+			$extensions = config::get('compass');
 			
 			// Configuration
 			foreach($configuration as $k => $v)

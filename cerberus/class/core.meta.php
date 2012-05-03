@@ -158,7 +158,7 @@ class meta
 			
 			// Sitemap et CDN
 			if(file_exists('sitemap.xml'))   $head[] = '<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />';
-			if(dispatch::isScript('jquery')) $head[] = '<link rel="dns-prefetch" href="https://ajax.googleapis.com/" />';
+			if(dispatch::isScript('jquery')) $head[] = '<link rel="dns-prefetch" href="//ajax.googleapis.com">';
 			
 			$return = implode(PHP_EOL."\t", $head).PHP_EOL;
 			$return = str_replace(PHP_EOL."\t".PHP_EOL, NULL, $return);
