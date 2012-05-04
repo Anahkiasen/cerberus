@@ -22,8 +22,10 @@ cerberus/conf.php
 /*.php
 /*.html
 /*.htaccess
+/*.txt
 
 # Dossiers
+/assets/*
 /pages/
 /pageflip/
 /src/
