@@ -1,16 +1,28 @@
+# Système
 .DS_Store
 
 ## SASS ET COMPASS ##
 #####################
+
 config.rb
 .sass-cache
 .project
 
 ## FICHIERS PROPRES AU SITE ##
 ##############################
+
+# Fichiers moteurs
 assets/cerberus/css
 assets/cerberus/img/rgbapng
 assets/common
 cerberus/conf.php
-pages/
-index.php
+
+# Fichiers
+/*.php
+/*.html
+/*.htaccess
+
+# Dossiers
+/pages/
+/pageflip/
+/src/
