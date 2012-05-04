@@ -39,22 +39,6 @@ class db
 				$dbmdp = NULL;
 				$dbname = NULL;
 			}
-			elseif(server::get('HTTP_HOST') == 'the8day.info')
-			{
-				// Le Huitième Jour
-				$dbhost = 'db124.1and1.fr';
-				$dbuser = 'dbo144396219';
-				$dbmdp = 'naxam35741';
-				$dbname = 'db144396219';
-			}
-			elseif(server::get('HTTP_HOST') == 'stappler.fr' or $_SERVER['HTTP_HOST'] == 'www.stappler.fr')
-			{
-				// Stappler
-				$dbhost = 'hostingmysql51';
-				$dbuser = '859841_maxime';
-				$dbmdp  = 'MAXSTA001';
-				$dbname = NULL;
-			}
 			else
 			{
 				$dbhost =
