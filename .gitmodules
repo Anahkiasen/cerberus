@@ -1,12 +1,12 @@
 [submodule "assets/plugins/chosen"]
 	path = assets/plugins/chosen
-	url = https://github.com/harvesthq/chosen.git
+	url = https://github.com/harvesthq/chosen
 [submodule "assets/plugins/colorbox"]
 	path = assets/plugins/colorbox
 	url = https://github.com/jackmoore/colorbox
 [submodule "assets/plugins/noty"]
 	path = assets/plugins/noty
-	url = https://github.com/needim/noty/
+	url = https://github.com/needim/noty
 [submodule "assets/plugins/tablesorter"]
 	path = assets/plugins/tablesorter
 	url = https://github.com/Mottie/tablesorter
