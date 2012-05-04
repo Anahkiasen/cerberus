@@ -14,13 +14,19 @@ class dispatch extends Cerberus
 	static private $typekit;
 	static private $paths = array();
 	static private $availableAPI = array(
+		
+		// jQuery
+		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',		
 		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
+
+		// SWFObject
 		'swfobject'   => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+		
+		// Plugins jQuery
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider'  => 'jquery.nivo.slider.pack',
-		'chosen'      => 'chosen.jquery.min',
 		'colorbox'    => 'jquery.colorbox-min',
+		'chosen'      => 'chosen.jquery.min',
 		'easing'      => 'jquery.easing',
 		'noty'        => 'jquery.noty');
 		
