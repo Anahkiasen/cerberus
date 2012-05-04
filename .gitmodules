@@ -1,0 +1,3 @@
+[submodule "assets/plugins/chosen"]
+	path = assets/plugins/chosen
+	url = https://github.com/harvesthq/chosen.git
