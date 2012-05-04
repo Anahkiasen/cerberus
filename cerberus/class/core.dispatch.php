@@ -10,11 +10,11 @@ class dispatch extends Cerberus
 	static private $CSS;
 	static private $JS;
 		
-	/* API disponibles */
 	static private $typekit;
 	static private $paths = array();
-	static private $availableAPI = array(
-		
+	
+	/* Raccourcis et aliases */
+	static private $alias = array(
 		// jQuery
 		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',		
 		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
@@ -30,23 +30,42 @@ class dispatch extends Cerberus
 		'easing'      => 'jquery.easing',
 		'noty'        => 'jquery.noty');
 		
+	/* Plugins et submodules */
+	static private $plugins_files = array(
+		'chosen'      => array(
+			'chosen/chosen/chosen.css',
+			'chosen/chosen/chosen.jquery.min.js',
+			'chosen/chosen/chosen-sprite.png'),
+		'colorbox'    => array(
+			'colorbox/colorbox/jquery.colorbox-min.js'),
+		'modernizr'   => array(
+			'modernizr/modernizr.js'),
+		'noty'        => array(
+			'noty/css/jquery.noty.css',
+			'noty/css/noty_theme_twitter.css',
+			'noty/js/jquery.noty.js'),
+		'tablesorter' => array(
+			'tablesorter/js/jquery.tablesorter.min.js'),
+			);
+		
 	/***************************
 	 ** RESSOURCES ET CHEMINS **
 	 ***************************/
 	
-	static public $compass =  'config.rb';
+	static public $compass  = 'config.rb';
 	
-	static public $assets =   'assets';
+	static public $assets   = 'assets';
 	static public $cerberus = 'cerberus';
-	static public $common =   'common';
+	static public $common   = 'common';
+	static public $plugins  = 'plugins';
 	
-	static public $fonts =    'fonts';
-	static public $images =   'img';
-	static public $css =      'css';
-	static public $sass =     'sass';
-	static public $js =       'js';
-	static public $coffee =   'coffee';
-	static public $file =     'file';
+	static public $fonts    = 'fonts';
+	static public $images   = 'img';
+	static public $css      = 'css';
+	static public $sass     = 'sass';
+	static public $js       = 'js';
+	static public $coffee   = 'coffee';
+	static public $file     = 'file';
 	
 	/**
 	 * Initializes the dispatch module
@@ -163,7 +182,7 @@ class dispatch extends Cerberus
 		##################		
 				
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
-		$allowed_files = '{' .self::$css. '{/,/plugins/}*.css,' .self::$js. '/*.js}';
+		$allowed_files = '{' .self::$css. '{/,/plugins/}*.css,' .self::$js. '{/,/plugins/}*.js}';
 		$files = glob('{' .PATH_COMMON. ',' .PATH_CERBERUS. '}' .$allowed_files, GLOB_BRACE);
 		
 		// Creating the path list
@@ -174,7 +193,7 @@ class dispatch extends Cerberus
 		}
 		
 		// Getting preset aliases
-		foreach(self::$availableAPI as $s => $paths)
+		foreach(self::$alias as $s => $paths)
 		{
 			if(!is_array($paths)) $paths = array($paths);
 			foreach($paths as $p)
@@ -186,6 +205,23 @@ class dispatch extends Cerberus
 				else self::$paths[$s][] = $p;
 				self::$paths = a::remove(self::$paths, $p);
 			}
+		}
+		
+		// Récupération des fichiers voulus dans les plugins
+		foreach(self::$plugins_files as $plugin => $plugin_files)
+		{
+			if(isset(self::$paths[$plugin])) continue;
+			
+			foreach($plugin_files as $key => $value)
+			{
+				$type = f::type($value);
+				$extension = ($type == 'image') ? 'img' : f::extension($value);
+				$new_path = PATH_CERBERUS.$extension. '/plugins/' .basename($value);
+				
+				copy('assets/plugins/' .$value, $new_path);
+				$plugin_files[$key] = $new_path;
+			}
+			self::$paths[$plugin] = $plugin_files;
 		}
 		
 		################
@@ -204,6 +240,7 @@ class dispatch extends Cerberus
 				foreach(self::$paths[$value] as $script)
 				{
 					$extension = strtoupper(f::extension($script));
+					if($extension != 'CSS' and $extension != 'JS') continue;
 					if(str::find(array('http', self::$js.'/bootstrap-'), $script)) self::${$extension}['url'][] = $script;
 					else self::${$extension}['min'][] = $script;
 				}

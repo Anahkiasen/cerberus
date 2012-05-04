@@ -13,6 +13,7 @@ config.rb
 
 # Fichiers moteurs
 assets/cerberus/css
+assets/cerberus/*/plugins/
 assets/cerberus/img/rgbapng
 assets/common
 cerberus/conf.php

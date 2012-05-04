@@ -129,15 +129,36 @@ echo '<!DOCTYPE html>'.PHP_EOL;
 echo '<html ' .$manifest. ' class="' .browser::css(). '">'.PHP_EOL;
 content::start();
 
-// Fichiers manquants
-if(config::get('bootstrap') and LOCAL)
+/*
+########################################
+########### FICHIERS REQUIS ############
+########################################
+*/
+
+// Fichiers/dossiers requis
+$required = array(
+	PATH_CACHE                                           => NULL,
+	dispatch::path(PATH_CERBERUS.'{images}/{plugins}/')  => NULL,
+	dispatch::path(PATH_CERBERUS.'{css}/{plugins}/')     => NULL,
+	dispatch::path(PATH_CERBERUS.'{js}/{plugins}/')      => NULL);
+	
+// Fichier de variables SASS
+if(LOCAL)
+	$required[dispatch::path(PATH_CERBERUS. '{sass}/base/_custom.sass')] = '@import ../../../../' .PATH_COMMON. 'sass/custom';
+
+// Création des fichiers/dossiers
+foreach($required as $f => $content)
 {
-	$required = array(
-		dispatch::path(PATH_CERBERUS. '{sass}/base/_custom.sass') => '@import ../../../../' .PATH_COMMON. 'sass/custom'
-		);
-	foreach($required as $f => $content) if(!file_exists($f)) f::write($f, $content);
+	if(file_exists($f)) continue;
+	if(substr($f, -1) == '/') dir::make($f);
+	else f::write($f, $content);
 }
-if(!file_exists(PATH_CACHE)) dir::make(PATH_CACHE);
+
+/*
+########################################
+######### LANGUE & NAVIGATION ##########
+########################################
+*/
 
 // Gestion des langues et de la navigation
 new l();
