@@ -17,6 +17,7 @@ assets/cerberus/*/plugins/
 assets/cerberus/img/rgbapng
 assets/common
 cerberus/conf.php
+cerberus/cache
 
 # Fichiers
 /*.php
