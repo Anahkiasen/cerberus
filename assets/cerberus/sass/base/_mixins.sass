@@ -29,6 +29,25 @@
 =font-smoothing($smooth)
   +experimental(font-smoothing, $smooth)
 
+// Folded corners (triangles)
+=folded-corners($size, $color, $offset: 0)
+  &:before,
+  &:after
+    content: ''
+    display: block
+    width: 0
+    height: 0
+    z-index: -5
+    position: absolute
+    border-bottom: $size solid transparent
+    bottom: -$size + $offset
+  &:before
+    left: -$offset
+    border-right: $size solid $color
+  &:after
+    right: -$offset
+    border-left: $size solid $color
+
 // Gradients ----------------------------------------------- /
 
 // Main mixin
