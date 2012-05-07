@@ -135,6 +135,7 @@ class meta
 			if($value)
 			{
 				if($key == 'titre' and $value) $return .= '<title>' .$value. '</title>';
+				elseif($key == 'favicon') $return .= '<link rel="shortcut icon" href="' .PATH_COMMON.'img/' .$value. '"/>';
 				else $return .= '<meta name="' .$key. '" content="' .$value. '" />';		
 			}
 		}
@@ -154,7 +155,8 @@ class meta
 				$baseref,
 				self::head('titre'),
 				self::head('description'),
-				self::head('keywords'));
+				self::head('keywords'),
+				self::head('favicon'));
 			
 			// Sitemap et CDN
 			if(file_exists('sitemap.xml'))   $head[] = '<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />';
