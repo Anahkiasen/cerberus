@@ -37,7 +37,7 @@ class dispatch extends Cerberus
 			'chosen/chosen/chosen.jquery.min.js',
 			'chosen/chosen/chosen-sprite.png'),
 		'colorbox'    => array(
-			'colorbox/colorbox/jquery.colorbox-min.js'),
+			'colorbox/colorbox/jquery.colorbox.js'),
 		'modernizr'   => array(
 			'modernizr/modernizr.js'),
 		'noty'        => array(
