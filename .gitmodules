@@ -13,3 +13,6 @@
 [submodule "assets/plugins/modernizr"]
 	path = assets/plugins/modernizr
 	url = https://github.com/Modernizr/Modernizr
+[submodule "assets/plugins/bootstrap"]
+	path = assets/plugins/bootstrap
+	url = https://Anahkiasen@github.com/Anahkiasen/sassy-bootstrap.git

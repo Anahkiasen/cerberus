@@ -1,9 +1,0 @@
-// PORTRAIT TABLET TO DEFAULT DESKTOP
-// ----------------------------------
-
-+at-breakpoint($landscape ($desktop - 1px))
-  +grid-core-generate(42px, 20px) // Fixed grid
-  +grid-fluid-generate(5.801%, 2.762%) // Fluid grid
-  +grid-input-generate(42px, 20px)   // Input grid
-  
-  // No need to reset .thumbnails here since it's the same $gridGutterWidth
