@@ -365,7 +365,7 @@ class dispatch extends Cerberus
 		// Paramètres par défaut du script inclus
 		$type  = str::upper($type);
 		$alias = a::get($params, 'alias');
-		$place = a::get($params, 'place', 'after');
+		$place = $type == 'css' ? 'after' : a::get($params, 'place', 'after');
 		$wrap  = a::get($params, 'wrap');
 		
 		// Lecture des scripts fournis
@@ -409,9 +409,8 @@ class dispatch extends Cerberus
 		self::$CSS = self::sanitize(self::$CSS);
 		$head = array();
 		
-		if(self::$CSS['inline']['before']) $head[] = '<style type="text/css">' .implode("\n", self::$CSS['inline']['before']). '</style>';
-		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) $head[] = '<link rel="stylesheet" type="text/css" href="' .$url. '" />';	
-		if(self::$CSS['inline']['after']) $head[] = '<style type="text/css">' .implode("\n", self::$CSS['inline']['after']). '</style>';
+		if(self::$CSS['url']) foreach(self::$CSS['url'] as $url) head::stylesheet($url);
+		if(self::$CSS['inline']['after']) head::css("\n\t\t".implode("\n\t\t", self::$CSS['inline']['after'])."\n\t");
 	
 		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;
 		if($return) return $head;
