@@ -3,21 +3,6 @@
 include('class/core.init.php');
 $cerberus = new init();
 
-// Setting main path constants
-$cerberus->paths();
-
-// Defining and assigning class __autoloader
-$cerberus->autoloader();
-
-// Error handling
-$cerberus->errorHandling();
-
-// Timezone setting
-$cerberus->timeZone();
-
-// Starting a new session
-session::start();
-
 content::start();
 
 	// Loading config file
@@ -26,7 +11,9 @@ content::start();
 	// Setting main constants
 	$cerberus->constants();
 	
+	// Load dispatch
 	$cerberus->dispatch();
+	
 	// Connecting to database
 	$cerberus->mysql();
 	
