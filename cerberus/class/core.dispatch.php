@@ -87,27 +87,31 @@ class dispatch extends Cerberus
 				'after' => array()));
 				
 		// Chemins récurrents
-		$path_common =    config::get('path.common');
-		$path_cerberus =  config::get('path.cerberus');
-		$path_file =      config::get('path.file');
+		$path_common   = config::get('path.common');
+		$path_cerberus = config::get('path.cerberus');
+		$path_file     = config::get('path.file');
+		$path_plugins  = config::get('path.plugins');
 		
 		// Chemins par défaut
 		if(!$path_common or !file_exists($path_common))
 		{
-			$path_common =    f::path(self::path('{assets}/{common}/'),        f::path(self::path('{assets}/'), ''));
-			$path_cerberus =  f::path(self::path('{assets}/{cerberus}/'),      f::path(self::path('{assets}/'), ''));
-			$path_file =      f::path(self::path('{assets}/{common}/{file}/'), f::path(self::path('{assets}/{file}/'), f::path(self::path('{file}/'))));
+			$path_common   = f::path(self::path('{assets}/{common}/'),        f::path(self::path('{assets}/'), ''));
+			$path_cerberus = f::path(self::path('{assets}/{cerberus}/'),      f::path(self::path('{assets}/'), ''));
+			$path_file     = f::path(self::path('{assets}/{common}/{file}/'), f::path(self::path('{assets}/{file}/'), f::path(self::path('{file}/'))));
+			$path_plugins  = f::path(self::path('{assets}/{plugins}/'));
 			
 			if(PATH_MAIN == NULL)
 			{
 				config::hardcode('path.common',   $path_common);
 				config::hardcode('path.cerberus', $path_cerberus);
+				config::hardcode('path.plugins',  $path_plugins);
 				config::hardcode('path.file',     $path_file);
 			}
 		}
 		
 		define('PATH_COMMON',   $path_common);
 		define('PATH_CERBERUS', $path_cerberus);
+		define('PATH_PLUGINS',  $path_plugins);
 		define('PATH_FILE',     $path_file);
 		
 		if(LOCAL) self::compass();
@@ -229,7 +233,7 @@ class dispatch extends Cerberus
 				$extension = ($type == 'image') ? 'img' : f::extension($value);
 				$new_path = PATH_CERBERUS.$extension. '/plugins/' .basename($value);
 				
-				copy('assets/plugins/' .$value, $new_path);
+				copy(PATH_PLUGINS.str::remove(PATH_PLUGINS, $value), $new_path);
 				$plugin_files[$key] = $new_path;
 			}
 			self::$paths[$plugin] = $plugin_files;
