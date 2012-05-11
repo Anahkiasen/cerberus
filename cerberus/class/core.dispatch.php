@@ -87,14 +87,13 @@ class dispatch extends Cerberus
 		$path_common =    config::get('path.common');
 		$path_cerberus =  config::get('path.cerberus');
 		$path_file =      config::get('path.file');
-		$path_cache =     'cerberus/cache/';
 		
 		// Chemins par défaut
 		if(!$path_common or !file_exists($path_common))
 		{
-			$path_common =    f::path(dispatch::path('{assets}/{common}/'),        f::path(dispatch::path('{assets}/'), ''));
-			$path_cerberus =  f::path(dispatch::path('{assets}/{cerberus}/'),      f::path(dispatch::path('{assets}/'), ''));
-			$path_file =      f::path(dispatch::path('{assets}/{common}/{file}/'), f::path(dispatch::path('{assets}/{file}/'), f::path(dispatch::path('{file}/'))));
+			$path_common =    f::path(self::path('{assets}/{common}/'),        f::path(self::path('{assets}/'), ''));
+			$path_cerberus =  f::path(self::path('{assets}/{cerberus}/'),      f::path(self::path('{assets}/'), ''));
+			$path_file =      f::path(self::path('{assets}/{common}/{file}/'), f::path(self::path('{assets}/{file}/'), f::path(self::path('{file}/'))));
 			
 			if(PATH_MAIN == NULL)
 			{
@@ -107,7 +106,6 @@ class dispatch extends Cerberus
 		define('PATH_COMMON',   $path_common);
 		define('PATH_CERBERUS', $path_cerberus);
 		define('PATH_FILE',     $path_file);
-		define('PATH_CACHE',    $path_cache);
 		
 		if(LOCAL) self::compass();
 	}
@@ -539,7 +537,7 @@ class dispatch extends Cerberus
 		if(is_array($params)) $params = json_encode($params);
 		$string = $plugin. '(' .$params. ')';
 		if($selector) $string = '$("' .$selector.'").'.$string.';';
-		dispatch::addJS($string);
+		self::addJS($string);
 	}
 	
 	/* Ajout un élément Google Analytics */
