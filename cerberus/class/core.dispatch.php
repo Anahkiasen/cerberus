@@ -59,13 +59,14 @@ class dispatch extends Cerberus
 	static public $common   = 'common';
 	static public $plugins  = 'plugins';
 	
+	static public $coffee   = 'coffee';
+	static public $css      = 'css';
+	static public $file     = 'file';
 	static public $fonts    = 'fonts';
 	static public $images   = 'img';
-	static public $css      = 'css';
-	static public $sass     = 'sass';
 	static public $js       = 'js';
-	static public $coffee   = 'coffee';
-	static public $file     = 'file';
+	static public $sass     = 'sass';
+	static public $swf      = 'swf';
 	
 	/**
 	 * Initializes the dispatch module
