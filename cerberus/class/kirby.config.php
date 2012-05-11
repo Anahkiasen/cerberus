@@ -132,6 +132,21 @@ class config
 		
 		return f::write(self::$config_file, $config);
 	}
+	
+	/**
+	 * Updates the current config file with MySQL informations
+	 */
+	static function mysql($local_name = NULL, $online_host = NULL, $online_user = NULL, $online_password = NULL, $online_name = NULL)
+	{
+		if($local_name and !self::get('local.name')) self::hardcode('local.name', $local_name);
+		if(!self::get('db.host') and $online_password and $online_host and $online_name and $online_user)
+		{
+			self::hardcode('db.host', $online_host);
+			self::hardcode('db.user', $online_user);
+			self::hardcode('db.password', $online_password);
+			self::hardcode('db.name', $online_name);
+		}
+	}
 }
 
 /**
