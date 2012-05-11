@@ -41,5 +41,8 @@
 	"db.errors.fields":              "Unable to list the database fields",
 	"db.errors.disconnect":          "Disconnecting database failed",
 	
+	"update.success":                "The current version was successfully updated",
+	"update.error":                  "An error occured during the update process",
+	
 	"file.folder.error":             "Unable to create the folder"
 }

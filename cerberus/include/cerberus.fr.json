@@ -41,5 +41,8 @@
 	"db.errors.fields":              "Impossible de lister les champs",
 	"db.errors.disconnect":          "Erreur lors de la déconnexion de la base",
 	
+	"update.success":                "La version actuelle a corrèctement été mise à jour",
+	"update.error":                  "Une erreur est survenue durant la mise à jour",
+		
 	"file.folder.error":             "Impossible de créer le dossier"
 }

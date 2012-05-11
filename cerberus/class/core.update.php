@@ -1,89 +1,96 @@
 <?php
 class update
 {
+	// The current revision number
 	private static $revision;
+	
+	// The last revision number to date
+	private static $last = '2012-05-11,fb8ba83283d115b0abb65c0a045a0048e868805a';
 
-	// Effectue des changements dans les fichiers ou sur la base
+	/**
+	 * Sets the current revision number and updates the core
+	 */
 	function __construct()
 	{
-		self::$revision = LOCAL ? config::get('revision.local') : config::get('revision.online');
+		// Define current revision
+		self::$revision = self::revision();
 		
-		if(SQL)
+		// Apply change to the core code
+		if(self::outdate('2012-05-11'))
 		{
-			// Mises à jour de la base
-			if(self::$revision < 353)
-			{
-				if(db::is_table('cerberus_admin') and !in_array('account', db::fields('cerberus_admin')))
-				{
-					$utilisateur = db::row('cerberus_admin', '*');
-					$utilisateur['account'] = 'stappler';
-					self::table('cerberus_admin');
-					db::insert('cerberus_admin', $utilisateur);
-				}
-				self::update_core(353);
-			}
-			if(self::$revision < 355 and db::is_table('cerberus_structure'))
-			{
-				db::execute('ALTER TABLE  `cerberus_structure` ADD  `hidden` ENUM(\'0\', \'1\') NOT NULL AFTER  `cache`');
-				db::execute('ALTER TABLE  `cerberus_structure` ADD  `external_link` VARCHAR( 255 ) NOT NULL AFTER  `hidden`');
-				self::update_core(355);
-			}
-			if(self::$revision < 551 and !db::is_table('cerberus_logs'))
-			{
-				db::execute('ALTER TABLE `cerberus_logs` ADD `locale` VARCHAR( 10 ) NOT NULL AFTER  `mobile`');
-			}
-		}
-		if(self::$revision < 449)
-		{
-			self::codematch('\$desired->([a-z]+)\(', 'navigation::$1(');
-			self::codematch('\$desired->([a-z]+)', 'navigation::$1');
-			self::codematch('global \$desired;', '');
-			self::codematch('navigation::page', 'navigation::$page');
-		}
-		if(self::$revision < 450)
-		{
-			self::codematch('\$dispatch->([a-zA-Z]+)\(', 'dispatch::$1(');
-			self::codematch('dispatch::getPHP', 'dispatch::setPHP');
-			self::codematch('dispatch::getAPI', 'dispatch::assets');
-			self::codematch('global \$dispatch;', '');
-		}
-		if(self::$revision < 518)
-		{
-			self::codematch('a::simple\(', 'a::simplify(');
-			self::codematch('AdminPage\(', 'admin(');
-			self::codematch('class getNews', 'class news');
-			
-			self::codematch('content::uncache', 'cache::delete');
-			self::codematch('content::end_cache', 'cache::save');
+			self::codematch('([ \.\()])swf\(', '$1media::swf(');
+			self::codematch('([ \.\()])timthumb\(', '$1media::timthumb(');
+			self::codematch('str_replace\((.+), ?NULL,', 'str::remove($1,');
 		}
 
-		self::update_core(551);
+		// Update revision number
+		if(self::outdate()) self::update_core(self::$last);
 	}
 	
-	// Retourne le numéro de révision
+	//////////////////////////////////////////////////////////////
+	/////////////////////////// TOOLKIT ////////////////////////// 
+	//////////////////////////////////////////////////////////////	
+	
+	/**
+	 * Returns the current revision number
+	 * @return date    The date of the last update
+	 */
 	static function revision()
 	{
-		return self::$revision;
+		// Get local or online revision number
+		$revision = LOCAL ? config::get('revision.local') : config::get('revision.online');
+		$revision = explode(',', $revision);
+		
+		// Return only the date part 
+		return a::get($revision, 0);	
 	}
 	
-	// Met à jour le numéro de révision
+	/**
+	 * Verify if the current project is outdated or not
+	 * @param  date       $date The date to match against the current revision number. Defaults to last revision number
+	 * @return boolean    Boolean stating if the project is outdated or not
+	 */
+	static function outdate($date = NULL)
+	{
+		// If project still uses SVN Revision, update
+		if(is_numeric(self::$revision)) return true;
+		
+		// If current date is older than asked one, return true
+		if(!$date) $date = a::get(explode(',', self::$last), 0);
+		return (self::$revision < $date);
+	}
+	
+	/**
+	 * Updates the core to a particular revision number
+	 * @param string    $torev The revision number to update to
+	 */
 	static function update_core($torev)
 	{
-		if(self::$revision < $torev)
-		{
-			$rev = LOCAL ? 'revision.local' : 'revision.online';
-			$hardcode = config::hardcode($rev, $torev);
-			if($hardcode) str::display('Mise à jour ' .$torev. ' effectuée', 'success');
-			else str::display('Erreur lors de la mise-à-jour vers ' .$torev, 'error');
-		}
+		// Update online or local revison number
+		$rev = LOCAL ? 'revision.local' : 'revision.online';
+		$hardcode = config::hardcode($rev, $torev);
+		
+		// Display result
+		if($hardcode) str::translate('update.success', NULL, 'success');
+		else str::translate('update.errror', NULL, 'error');
 	}
 
-	// Remplace des parties de code
+	//////////////////////////////////////////////////////////////
+	/////////////////////// CORE FUNCTIONS /////////////////////// 
+	//////////////////////////////////////////////////////////////
+
+	/**
+	 * Search all pages for $search and replace with $replace - both are REGEX
+	 * @param  regex   $search The string to search for
+	 * @param  regex   $replace What to replace it with
+	 * @return string  A list of the found matches
+	 */
 	static function codematch($search, $replace)
 	{
 		$searchLine = '#' .$search. '.+\n#';
 		$search = '#' .$search. '#';
-		$pages = glob('{index.php,pages/*,' .PATH_COMMON. 'php}', GLOB_BRACE);
+		$pages = glob('{index.php,{pages,' .PATH_COMMON. 'php}/*}', GLOB_BRACE);
+		a::show($pages);
 		
 		echo '<div class="cerberus_debug" style="width:100%"><h2>Recherche de ' .$search. '</h2>';
 		
@@ -114,8 +121,14 @@ class update
 		echo '</div>';
 	}
 
+	/**
+	 * Creates a missing Cerberus table into the database
+	 * @param string  $table The key of the table to create
+	 */
 	static function table($table)
 	{
+		if(!SQL) return false;
+		
 		db::drop($table);
 		switch($table)
 		{
