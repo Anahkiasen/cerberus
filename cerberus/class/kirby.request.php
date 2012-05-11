@@ -188,17 +188,4 @@ class r
 		return server::get('http_referer', $default);
 	}
 }
-
-/**
-	* Shortcut for r::get()
-	*
-	* @param	 mixed		$key The key to look for. Pass false or null to return the entire request array. 
-	* @param	 mixed		$default Optional default value, which should be returned if no element has been found
-	* @return	mixed
-	* @package Kirby
-	*/	
-function get($key = false, $default = NULL)
-{
-	return r::get($key, $default);
-}
 ?>
