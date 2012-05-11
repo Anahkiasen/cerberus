@@ -183,6 +183,7 @@ class meta
 		
 		// Get the current page info
 		$meta = self::page();
+		if(!$meta) return false;
 		
 		// Treat the data a little
 		foreach($meta as $key => $value)
