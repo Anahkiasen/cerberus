@@ -47,9 +47,7 @@ class head
 		self::baseref();
 		
 		// Adding META tags
-		meta::head('titre');
-		meta::head('description');
-		meta::head('keywords');
+		meta::head();
 		
 		// Reordering the head tags
 		self::reorder();
