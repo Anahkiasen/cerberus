@@ -46,13 +46,6 @@ class Cerberus
 	function unpackModules($modules = '')
 	{	
 		$modules = a::force_array($modules);
-		if($this->mode == 'core')
-		{
-			// Modules de base
-			$modules = array_merge(array(
-				'timthumb', 'swf'),
-				$modules);
-		}
 				
 		// Tri des modules et préparation des packs
 		if(!empty($modules))
