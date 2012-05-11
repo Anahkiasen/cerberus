@@ -7,6 +7,17 @@ class str
 	########################################
 	*/
 	
+	/**
+	 * Removes a part of a string
+	 * @param  string  $delete The part of the string to remove
+	 * @param  string  $string The string to search in
+	 * @return string          The corrected string
+	 */
+	static function remove($delete, $string)
+	{
+		return str_replace($delete, NULL, $string);
+	}
+	
 	/* A set of sanitizer methods */
 	static function sanitize($string, $type = 'str', $default = NULL)
 	{
@@ -329,10 +340,10 @@ class str
 	/**
 	 * Displays a picture and ensures there is always an alt tag
 	 * 
-	 * @param string	$src The source of the image
-	 * @param string	$alt The alternative text
-	 * @param array 	$attr The picture attributes
-	 * @return string	The <img> tag
+	 * @param  string  $src  The source of the image
+	 * @param  string  $alt  The alternative text
+	 * @param  array   $attr The picture attributes
+	 * @return string        The <img> tag
 	 */
 	static function img($src, $alt = NULL, $attr = NULL)
 	{
