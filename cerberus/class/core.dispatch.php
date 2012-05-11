@@ -32,6 +32,8 @@ class dispatch extends Cerberus
 		
 	/* Plugins et submodules */
 	static private $plugins_files = array(
+		'bootstrap'   => array(
+			'js/*'),
 		'chosen'      => array(
 			'chosen/chosen/chosen.css',
 			'chosen/chosen/chosen.jquery.min.js',
@@ -210,6 +212,16 @@ class dispatch extends Cerberus
 		foreach(self::$plugins_files as $plugin => $plugin_files)
 		{
 			if(isset(self::$paths[$plugin])) continue;
+			
+			// Look for wildcards
+			foreach($plugin_files as $k => $v)
+			{
+				if(!str::find('*', $v)) continue;
+				
+				$glob = glob(PATH_PLUGINS.$plugin.'/'.$v, GLOB_BRACE);
+				$plugin_files = array_merge($plugin_files, $glob);
+				$plugin_files = a::remove($plugin_files, $k);
+			}
 			
 			foreach($plugin_files as $key => $value)
 			{
