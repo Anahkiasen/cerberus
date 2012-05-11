@@ -125,50 +125,15 @@ class meta
 	{
 		if(!is_array(self::$meta)) self::build();
 		
-		if($key)
-		{
-			// Récupération de la balise
-			$return = NULL;
-			$value = self::get($key);
-			$value = str_replace('{meta}', $value, a::get(self::$overwrite, $key, '{meta}'));
-			
-			if($value)
-			{
-				if($key == 'titre' and $value) $return .= '<title>' .$value. '</title>';
-				elseif($key == 'favicon') $return .= '<link rel="shortcut icon" href="' .PATH_COMMON.'img/' .$value. '"/>';
-				else $return .= '<meta name="' .$key. '" content="' .$value. '" />';		
-			}
-		}
-		else
-		{
-			// Baseref
-			if(REWRITING and PATH_MAIN == NULL)
-			{
-				$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
-				$baseref = '<base href="' .config::get('http').$baseref. '" />';
-			}
-			else $baseref = NULL;
-			
-			$head = array(
-			'<head>',
-				'<meta charset="utf-8">',
-				$baseref,
-				self::head('titre'),
-				self::head('description'),
-				self::head('keywords'),
-				self::head('favicon'));
-			
-			// Sitemap et CDN
-			if(file_exists('sitemap.xml'))   $head[] = '<link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" />';
-			if(dispatch::isScript('jquery')) $head[] = '<link rel="dns-prefetch" href="//ajax.googleapis.com">';
-			
-			$return = implode(PHP_EOL."\t", $head).PHP_EOL;
-			$return = str_replace(PHP_EOL."\t".PHP_EOL, NULL, $return);
-		}
+		// Récupération de la balise
+		$return = NULL;
+		$value = self::get($key);
+		$value = str_replace('{meta}', $value, a::get(self::$overwrite, $key, '{meta}'));
 		
+		if($value) $return .= head::set('meta', array('name' => $key, 'content' => $value));	
+
 		// Mise en cache
 		cache::fetch('meta', self::$meta);
-		return $return;
 	}
 }
 ?>
