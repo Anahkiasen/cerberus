@@ -192,8 +192,8 @@ class cache
 	/**
 	 * Deletes file(s) from the cache. The key passed can contain * and braces as it's parsed by glob()
 	 * 
-	 * @param string    $delete The keys to look for. If NULL, the function empties the cache folder
-	 * @param boolean   $sloppy If true if will look for all files containing the key, if not it will search an exact match
+	 * @param  string   $delete The keys to look for. If NULL, the function empties the cache folder
+	 * @param  boolean  $sloppy If true if will look for all files containing the key, if not it will search an exact match
 	 * @return boolean  True if the file(s) have been correctly removed, false if not found
 	 */
 	static function delete($delete = NULL, $sloppy = FALSE)
@@ -204,6 +204,33 @@ class cache
 		$files = self::search($delete, true);
 		if($files) foreach($files as $file) f::remove($file);
 		else return FALSE;
+	}
+	
+	/**
+	 * Purges the project of all files cache-related
+	 */
+	static function purge()
+	{
+		// List the files to purge
+		$purge_files = array(
+			PATH_CERBERUS.'config.rb',
+			'config.rb',
+			PATH_CACHE,
+			PATH_CERBERUS.'{js}/{plugins}/',
+			PATH_CERBERUS.'{css}/{plugins}/',
+			PATH_CERBERUS.'.sass-cache/',
+			PATH_COMMON.'.sass-cache/');
+			
+		foreach($purge_files as $f)
+		{
+			// Replace aliases with real folder names
+			$f = dispatch::path($f);
+			if(!file_exists($f)) continue;
+			
+			// Remove files or folders
+			if(is_dir($f)) dir::remove($f);
+			else f::remove($f);
+		}
 	}
 	
 	/**
