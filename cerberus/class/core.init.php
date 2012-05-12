@@ -12,7 +12,7 @@ class init
 		'constants'     => 'config,paths',
 		'debug'         => 'constants,autoloader',
 		'dispatch'      => 'autoloader,constants,paths,config',
-		'errorHandling' => 'paths',
+		'errorHandle'   => 'paths',
 		'mysql'         => 'constants,config',
 		'required'      => 'dispatch,paths',
 		'stats'         => 'config,mysql,constants',

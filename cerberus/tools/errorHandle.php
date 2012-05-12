@@ -69,14 +69,14 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		
 	$DEBUG['error'] = '
 	<h3>[' .$DEBUG['error']. '] ' .$error. '</h3>
-	<h4>' .f::filename($errorFile). ':' .$errorLine. '</h4>';
+	<h4>' .basename($errorFile). ':' .$errorLine. '</h4>';
 	
 	// Reading backtrace ---------------------------------------- */
 	
 	foreach($path as $id_file => $info)
 	{
 		// Where the error came from
-		if(isset($info['file'], $info['line'])) $thisPath[] = '<em>' .f::filename($info['file']). '</em> &agrave; la ligne <strong>' .$info['line']. '</strong>';
+		if(isset($info['file'], $info['line'])) $thisPath[] = '<em>' .basename($info['file']). '</em> &agrave; la ligne <strong>' .$info['line']. '</strong>';
 		if(isset($info['type'], $info['function'], $info['class'])) $thisPath[] = 'La fonction appel&eacute;e &eacute;tait <strong>' .$info['class'].$info['type'].$info['function']. '</strong>';
 		else
 		{
@@ -90,7 +90,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			foreach($info['args'] as $key => $value)
 			{
 				// Displaying according to the kind of argument (array, string, file)
-				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .f::filename($value). '"';
+				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .basename($value). '"';
 				elseif(is_array($value)) $info['args'][$key] = '<pre>' .print_r($value, TRUE). '</pre>';
 				else $info['args'][$key] = '"' .$value. '"';
 			}
@@ -118,7 +118,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			$titre_email = config::get('sitename');
 			$titre_email = $titre_email ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
 			
-			$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
+			$mailTitle = '[DEBUG] ' .basename($errorFile). '::' .$errorLine;
 			$mail = new smail(config::get('developper.mail', 'maxime@stappler.fr'), $mailTitle, $DEBUG);
 			$mail->setExpediteur($titre_email, config::get('mail'));
 			$mail->messageHTML();
