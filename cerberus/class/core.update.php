@@ -5,7 +5,7 @@ class update
 	private static $revision;
 	
 	// The last revision number to date
-	private static $last = '2012-05-11,fb8ba83283d115b0abb65c0a045a0048e868805a';
+	private static $last = '2012-05-12,bab2e8be97b71a2a856e0df9488c861f456b9bda';
 
 	/**
 	 * Sets the current revision number and updates the core

@@ -95,10 +95,18 @@ class dispatch extends Cerberus
 		// Chemins par défaut
 		if(!$path_common or !file_exists($path_common))
 		{
-			$path_common   = f::path(self::path('{assets}/{common}/'),        f::path(self::path('{assets}/'), ''));
-			$path_cerberus = f::path(self::path('{assets}/{cerberus}/'),      f::path(self::path('{assets}/'), ''));
-			$path_file     = f::path(self::path('{assets}/{common}/{file}/'), f::path(self::path('{assets}/{file}/'), f::path(self::path('{file}/'))));
-			$path_plugins  = f::path(self::path('{assets}/{plugins}/'));
+			$path_common   = 
+				f::path(self::path('{assets}/{common}/'),
+				f::path(self::path('{assets}/'), ''));
+			$path_cerberus =
+				f::path(self::path('{assets}/{cerberus}/'),
+				f::path(self::path('{assets}/'), ''));
+			$path_file     =
+				f::path(self::path('{assets}/{common}/{file}/'),
+				f::path(self::path('{assets}/{file}/'),
+				f::path(self::path('{file}/'))));
+			$path_plugins  =
+				f::path(self::path('{assets}/{plugins}/'));
 			
 			if(PATH_MAIN == NULL)
 			{
@@ -212,10 +220,22 @@ class dispatch extends Cerberus
 			}
 		}
 		
-		// Récupération des fichiers voulus dans les plugins
+		// Make sure the plugins folder exist
+		dir::make(self::path(PATH_CERBERUS.'{css}/{plugins}/'));
+		dir::make(self::path(PATH_CERBERUS.'{js}/{plugins}/'));
+
+		// Gather the source files
 		foreach(self::$plugins_files as $plugin => $plugin_files)
 		{
+			// Check if the plugin is already loaded
 			if(isset(self::$paths[$plugin])) continue;
+			
+			// Check if the source files exist
+			if(!file_exists(PATH_PLUGINS.$plugin.'/'))
+			{
+				echo 'The source folder for plugin ' .$plugin. ' was not found';
+				continue;
+			}	
 			
 			// Look for wildcards
 			foreach($plugin_files as $k => $v)
@@ -229,11 +249,18 @@ class dispatch extends Cerberus
 			
 			foreach($plugin_files as $key => $value)
 			{
+				// Determine the folder to put the copied files into
 				$type = f::type($value);
 				$extension = ($type == 'image') ? 'img' : f::extension($value);
-				$new_path = PATH_CERBERUS.$extension. '/plugins/' .basename($value);
 				
-				copy(PATH_PLUGINS.str::remove(PATH_PLUGINS, $value), $new_path);
+				// Look for the paths
+				$new_path = f::path(ATH_CERBERUS.$extension. '/plugins/' .f::filename($value));
+				$old_path = f::path(PATH_PLUGINS.str::remove(PATH_PLUGINS, $value));
+				
+				// Copy the file or throw an error
+				if($old_path and $new_path) copy($old_path, $new_path);
+				else echo 'The source file ' .f::filename($old_path). ' could not be found.';
+				
 				$plugin_files[$key] = $new_path;
 			}
 			self::$paths[$plugin] = $plugin_files;
