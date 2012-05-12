@@ -1,38 +1,60 @@
 <?php
+/**
+ * Sends or displays an error report
+ * 
+ * @param  string    $errorType The type of the error
+ * @param  string    $error     The message of the error
+ * @param  string    $errorFile The file the error happened in
+ * @param  int       $errorLine The line of the error
+ * @return string    A full error report if local, true if production
+ */
 function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue', $errorFile = __FILE__, $errorLine = __LINE__)
 {
-	// Exceptions pour les fonctions appelées via @
-	if(error_reporting() == 0) return true;
-		
-	// Récupération du chemin du fichier
-	$path = array_reverse(debug_backtrace());
+	// Setting up indentiation to trace the error
 	$indentation = 0;
 	
-	// Date et position de l'erreur
-	$currentPage = ' sur la page ['.navigation::current().']';
-	$DEBUG['date'] = 'Une erreur est survenue &agrave; ' .date('H:i:s \l\e Y-m-d').$currentPage. '<br />';
+	// If DEPRECATED is not defined
 	if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
 	
-	// Type d'erreur
+	// If function called with @, ignore
+	if(error_reporting() == 0) return true;
+		
+	// Getting the error's backtrace
+	$path = array_reverse(debug_backtrace());
+	
+	// Reading the error ---------------------------------------- */
+	
+	// Setting up the date
+	$DEBUG['date'] = 'Une erreur est survenue &agrave; ' .date('H:i:s \l\e Y-m-d');
+	
+	// Setting up position
+	if(class_exists('navigation')) $current = navigation::current();
+	if(isset($current)) $DEBUG['date'] .= ' sur la page ['.navigation::current().']';
+	
+	// Defining error type
 	switch ($errorType)
 	{
 		case E_DEPRECATED:
 		case E_STRICT:
+		case 'advice':
 		$DEBUG['error'] = 'Advice';
 		break;
 		
 		case E_NOTICE:
 		case E_USER_NOTICE:
+		case 'notice':
 		$DEBUG['error'] = 'Notice';
 		break;
 		
 		case E_WARNING:
 		case E_USER_WARNING:
+		case 'warning':
 		$DEBUG['error'] = 'Warning';
 		break;
 		
 		case E_ERROR:
 		case E_USER_ERROR:
+		case 'fatal':
 		$DEBUG['error'] = 'Fatal Error';
 		break;
 		
@@ -49,9 +71,11 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	<h3>[' .$DEBUG['error']. '] ' .$error. '</h3>
 	<h4>' .f::filename($errorFile). ':' .$errorLine. '</h4>';
 	
+	// Reading backtrace ---------------------------------------- */
+	
 	foreach($path as $id_file => $info)
 	{
-		// Provenance de l'erreur
+		// Where the error came from
 		if(isset($info['file'], $info['line'])) $thisPath[] = '<em>' .f::filename($info['file']). '</em> &agrave; la ligne <strong>' .$info['line']. '</strong>';
 		if(isset($info['type'], $info['function'], $info['class'])) $thisPath[] = 'La fonction appel&eacute;e &eacute;tait <strong>' .$info['class'].$info['type'].$info['function']. '</strong>';
 		else
@@ -60,18 +84,18 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			if(isset($info['class'])) $thisPath[] = 'La classe appel&eacute;e &eacute;tait <strong>' .$info['class']. '</strong>';
 		}
 		
-		// Arguments utilisés
+		// What arguments were used
 		if(isset($info['args']) and !empty($info['args']) and $info['function'] != 'errorHandle')
 		{
 			foreach($info['args'] as $key => $value)
 			{
-				// Types d'arguments
+				// Displaying according to the kind of argument (array, string, file)
 				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .f::filename($value). '"';
 				elseif(is_array($value)) $info['args'][$key] = '<pre>' .print_r($value, TRUE). '</pre>';
 				else $info['args'][$key] = '"' .$value. '"';
 			}
 			
-			// Affichage des arguments (saut de ligne si plus d'un)
+			// Displaying formatted arguments
 			$parametres = 'Ses param&egrave;tres &eacute;taient : ';
 			if(count($info['args']) > 1) $parametres .= '<br />';
 			$parametres .= '<em>' .implode(', ', $info['args']). '</em>';
@@ -82,28 +106,28 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 		$thisPath = array();
 	}
 	
-	/* 
-	########################################
-	########## AFFICHAGE DE L'ERREUR #######
-	########################################
-	*/
-	
-	// Rassemblement des informations sur l'erreur
-	$DEBUG = '<div class="cerberus_debug">' .implode('', $DEBUG). '</div>';
+	// Displaying the full report ------------------------------ */
 
-	// Si local affichage de l'erreur, sinon envoi d'un mail
-	if(!LOCAL and navigation::$page != 'admin')
-	{
-		if(!class_exists('smail')) include('cerberus/class/class.smail.php');
-		$titre_email = config::get('sitename');
-		$titre_email = $titre_email ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
-		
-		$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
-		$mail = new smail('maxime@stappler.fr', $mailTitle, $DEBUG);
-		$mail->setExpediteur($titre_email, config::get('mail'));
-		$mail->messageHTML();
-		$mail->send();
-	}
-	else echo $DEBUG;
+	// Prints out what we gathered
+	$DEBUG = '<div class="alert alert-error cerberus_debug">' .implode('', $DEBUG). '</div>';
+
+	// If in local, just display the error, if in production, send it
+	if(defined('LOCAL'))
+		if(!LOCAL and navigation::$page != 'admin')
+		{
+			$titre_email = config::get('sitename');
+			$titre_email = $titre_email ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
+			
+			$mailTitle = '[DEBUG] ' .f::filename($errorFile). '::' .$errorLine;
+			$mail = new smail(config::get('developper.mail', 'maxime@stappler.fr'), $mailTitle, $DEBUG);
+			$mail->setExpediteur($titre_email, config::get('mail'));
+			$mail->messageHTML();
+			$mail->send();
+			
+			return true;
+		}
+	
+	// Fallback if no idea whether local or not - just display the error
+	echo $DEBUG;
 }
 ?>
