@@ -254,7 +254,7 @@ class dispatch extends Cerberus
 				$extension = ($type == 'image') ? 'img' : f::extension($value);
 				
 				// Look for the paths
-				$new_path = f::path(ATH_CERBERUS.$extension. '/plugins/' .f::filename($value));
+				$new_path = f::path(PATH_CERBERUS.$extension. '/plugins/' .f::filename($value));
 				$old_path = f::path(PATH_PLUGINS.str::remove(PATH_PLUGINS, $value));
 				
 				// Copy the file or throw an error
