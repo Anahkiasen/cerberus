@@ -33,6 +33,9 @@ class config
 	 public static $defaults = array(
 	 	'db.charset' => 'utf8',
 	 
+	 	/* Errors */
+	 	'developper.mail' => 'maxime@stappler.fr',
+	 
 		/* Modules */
 		'bootstrap'   => true,
 		'compass'     => array('susy', 'animation', 'rgbapng', 'modular-scale', 'normalize'),
