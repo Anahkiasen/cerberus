@@ -422,7 +422,7 @@ class dispatch extends Cerberus
 				}
 			
 			// Si l'on demande une URL vers un script externe
-			$script = preg_replace('#(<script type="text/javascript">|</script>|<style type="text/css">|</style>)#', NULL, $script);
+			$script = preg_replace('#(<script>|</script>|<style>|</style>)#', NULL, $script);
 			$is_http = str::find('http', substr($script, 0, 4));
 			if(in_array(f::extension($script), array('css', 'js')) or $is_http)
 			{
@@ -469,7 +469,7 @@ class dispatch extends Cerberus
 		$head = array();
 		
 		if(self::$JS['inline']['before']) $head[] = self::inline_js(self::$JS['inline']['before']);
-		if(self::$JS['url']) foreach(self::$JS['url'] as $url) $head[] = '<script type="text/javascript" src="' .$url. '"></script>';
+		if(self::$JS['url']) foreach(self::$JS['url'] as $url) $head[] = '<script src="' .$url. '"></script>';
 		if(self::$JS['inline']['after']) $head[] = self::inline_js(self::$JS['inline']['after']);
 		
 		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;

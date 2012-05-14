@@ -134,12 +134,12 @@ class head
 	// Add a stylesheet
 	static function stylesheet($href)
 	{
-		self::set('link', array('rel' => 'stylesheet', 'type' => 'text/css', 'href' => $href));
+		self::set('link', array('rel' => 'stylesheet', 'href' => $href));
 	}
 	
 	static function css($value)
 	{
-		self::set('style', array('type' => 'text/css', 'value' => $value));	
+		self::set('style', array('value' => $value));	
 	}
 	
 	// Add a favicon
