@@ -33,21 +33,22 @@ class dispatch extends Cerberus
 	/* Plugins et submodules */
 	static private $plugins_files = array(
 		'bootstrap'   => array(
+			'img/*',
 			'js/*'),
 		'chosen'      => array(
-			'chosen/chosen/chosen.css',
-			'chosen/chosen/chosen.jquery.min.js',
-			'chosen/chosen/chosen-sprite.png'),
+			'chosen/chosen.css',
+			'chosen/chosen.jquery.min.js',
+			'chosen/chosen-sprite.png'),
 		'colorbox'    => array(
-			'colorbox/colorbox/jquery.colorbox.js'),
+			'colorbox/jquery.colorbox.js'),
 		'modernizr'   => array(
-			'modernizr/modernizr.js'),
+			'modernizr.js'),
 		'noty'        => array(
-			'noty/css/jquery.noty.css',
-			'noty/css/noty_theme_twitter.css',
-			'noty/js/jquery.noty.js'),
+			'css/jquery.noty.css',
+			'css/noty_theme_twitter.css',
+			'js/jquery.noty.js'),
 		'tablesorter' => array(
-			'tablesorter/js/jquery.tablesorter.min.js'),
+			'js/jquery.tablesorter.min.js'),
 			);
 		
 	/***************************
@@ -220,6 +221,10 @@ class dispatch extends Cerberus
 			}
 		}
 		
+		##################
+		### SUBMODULES ###
+		##################		
+		
 		// Make sure the plugins folder exist
 		dir::make(self::path(PATH_CERBERUS.'{css}/{plugins}/'));
 		dir::make(self::path(PATH_CERBERUS.'{js}/{plugins}/'));
@@ -243,8 +248,10 @@ class dispatch extends Cerberus
 				if(!str::find('*', $v)) continue;
 				
 				$glob = glob(PATH_PLUGINS.$plugin.'/'.$v, GLOB_BRACE);
+				foreach($glob as $gk => $gv) $glob[$gk] = str::remove(PATH_PLUGINS.$plugin.'/', $gv);
+				
+				$plugin_files = a::remove_value($plugin_files, $v);
 				$plugin_files = array_merge($plugin_files, $glob);
-				$plugin_files = a::remove($plugin_files, $k);
 			}
 			
 			foreach($plugin_files as $key => $value)
@@ -254,12 +261,12 @@ class dispatch extends Cerberus
 				$extension = ($type == 'image') ? 'img' : f::extension($value);
 				
 				// Look for the paths
-				$new_path = f::path(PATH_CERBERUS.$extension. '/plugins/' .f::filename($value));
-				$old_path = f::path(PATH_PLUGINS.str::remove(PATH_PLUGINS, $value));
+				$old_path = PATH_PLUGINS.str::remove(PATH_PLUGINS, $plugin.'/'.$value);
+				$new_path = PATH_CERBERUS.$extension. '/plugins/' .f::filename($value);
 				
 				// Copy the file or throw an error
-				if($old_path and $new_path) copy($old_path, $new_path);
-				else echo 'The source file ' .f::filename($old_path). ' could not be found.';
+				if(f::path($old_path) and $new_path) copy($old_path, $new_path);
+				else echo 'The source file ' .$old_path. ' could not be found.'.PHP_EOL;
 				
 				$plugin_files[$key] = $new_path;
 			}
