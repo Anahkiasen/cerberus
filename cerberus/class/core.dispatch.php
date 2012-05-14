@@ -1,19 +1,42 @@
 <?php
-class dispatch extends Cerberus
+/**
+ * 
+ * Dispatch
+ * 
+ * This class handles assets, paths and
+ * everything ressources-related
+ * 
+ * @package Cerberus
+ */
+class dispatch
 {
+	// The page we're currently in
 	static private $current;
+	
+	// The category we're currently in
 	static private $global;
+	
+	/* Current ressources ------------------------------------- */
+	
+	// Table containing the ressources to minify
 	static private $minify;
+	
+	// Table containing the scripts and styles of the current page
 	static private $scripts;
 
-	/* Tableaux des ressources	 */
+	// The current CSS ressources
 	static private $CSS;
+	
+	// The current JS ressources
 	static private $JS;
 		
+	// A Typekit ID if available
 	static private $typekit;
+	
+	// Paths to every ressource available
 	static private $paths = array();
 	
-	/* Raccourcis et aliases */
+	// A list of aliases for different scripts
 	static private $alias = array(
 		// jQuery
 		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',		
@@ -30,7 +53,7 @@ class dispatch extends Cerberus
 		'easing'      => 'jquery.easing',
 		'noty'        => 'jquery.noty');
 		
-	/* Plugins et submodules */
+	// The file to cherry-pick in the linked submodules
 	static private $plugins_files = array(
 		'bootstrap'   => array(
 			'img/*',
@@ -51,17 +74,20 @@ class dispatch extends Cerberus
 			'js/jquery.tablesorter.min.js'),
 			);
 		
-	/***************************
-	 ** RESSOURCES ET CHEMINS **
-	 ***************************/
+	//////////////////////////////////////////////////////////////
+	////////////////////// PATHS AND FOLDERS ///////////////////// 
+	//////////////////////////////////////////////////////////////
 	
+	// Compass configuration file
 	static public $compass  = 'config.rb';
 	
+	// Assets folder
 	static public $assets   = 'assets';
 	static public $cerberus = 'cerberus';
 	static public $common   = 'common';
 	static public $plugins  = 'plugins';
 	
+	// Filetypes folders
 	static public $coffee   = 'coffee';
 	static public $css      = 'css';
 	static public $file     = 'file';
@@ -71,6 +97,10 @@ class dispatch extends Cerberus
 	static public $sass     = 'sass';
 	static public $swf      = 'swf';
 	
+	//////////////////////////////////////////////////////////////
+	//////////////////////////// CONSTRUCT /////////////////////// 
+	//////////////////////////////////////////////////////////////	
+	
 	/**
 	 * Initializes the dispatch module
 	 * 
@@ -78,7 +108,7 @@ class dispatch extends Cerberus
 	 */
 	function __construct($current = NULL)
 	{			
-		// Paramètres
+		// Basic layour of the assets arrays
 		self::$JS = self::$CSS =
 			array(
 			'min' => array(),
@@ -87,13 +117,13 @@ class dispatch extends Cerberus
 				'before' => array(),
 				'after' => array()));
 				
-		// Chemins récurrents
+		// Set up the recurring paths
 		$path_common   = config::get('path.common');
 		$path_cerberus = config::get('path.cerberus');
 		$path_file     = config::get('path.file');
 		$path_plugins  = config::get('path.plugins');
 		
-		// Chemins par défaut
+		// If they're not cached in the config file, calculate them
 		if(!$path_common or !file_exists($path_common))
 		{
 			$path_common   = 
@@ -109,6 +139,7 @@ class dispatch extends Cerberus
 			$path_plugins  =
 				f::path(self::path('{assets}/{plugins}/'));
 			
+			// Cache into config file
 			if(PATH_MAIN == NULL)
 			{
 				config::hardcode('path.common',   $path_common);
@@ -118,15 +149,19 @@ class dispatch extends Cerberus
 			}
 		}
 		
+		// Define constans for easy access
 		define('PATH_COMMON',   $path_common);
 		define('PATH_CERBERUS', $path_cerberus);
 		define('PATH_PLUGINS',  $path_plugins);
 		define('PATH_FILE',     $path_file);
 		
+		// Create Compass configuration file if unexisting
 		if(LOCAL) self::compass();
 	}
 	
-	// Configure les indexs
+	/**
+	 * Fetch the current page and category from the navigation class
+	 */
 	private static function index()
 	{
 		if(!isset(self::$global))
@@ -136,11 +171,9 @@ class dispatch extends Cerberus
 		}
 	}	
 	
-	/* 
-	########################################
-	####### CONFIGURATION DES ASSETS #######
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////
+	///////////////////// ASSETS CONFIGURATION /////////////////// 
+	//////////////////////////////////////////////////////////////
 
 	/**
 	 * Sets the different PHP scripts for the different pages
@@ -305,12 +338,13 @@ class dispatch extends Cerberus
 	 */
 	private static function unpack($modules)
 	{
-		// Séparation des groupes
+		// Looking for groups (group1,group2)
 		foreach($modules as $key => $value)
 		{
 			$value = a::force_array($value);
 			if(str::find(',', $key))
 			{
+				// Separation of the groups
 				$keys = explode(',', $key);
 				foreach($keys as $pages)
 				{
@@ -319,19 +353,22 @@ class dispatch extends Cerberus
 						? array_merge($value, a::force_array($modules[$pages]))
 						: $value;
 				}
+				
+				// Removing the group remains from the main array
 				$modules = a::remove($modules, $key);
 			}
 		}
 		
-		// Récupération des scripts concernés
+		// Getting the scripts that are concerned by the current page
 		$modules['*'] = a::force_array($modules['*']);
 		$modules[self::$global] = a::force_array($modules[self::$global]);
 		$modules[self::$current] = a::force_array($modules[self::$current]);
 		
+		// Filter the arrays
 		$assets = array_merge($modules['*'], $modules[self::$global], $modules[self::$current]);
 		$assets = array_unique(array_filter($assets));
 		
-		// Suppressions des fonctions non voulues
+		// Looking for a !script flag to remove a particular script
 		foreach($assets as $key => $value)
 		{
 			if(str::find('!', $value))
@@ -340,25 +377,27 @@ class dispatch extends Cerberus
 				$assets = a::remove($assets, $key);
 			}
 		}
+		
+		// Return filtered array
 		return !empty($assets) ? $assets : FALSE;
 	}
 	
-	/* 
-	########################################
-	########## EXPORT DES SCRIPTS ##########
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////
+	//////////////////////// UTILITIES /////////////////////////// 
+	//////////////////////////////////////////////////////////////
 	
 	/**
 	 * Returns a given path, replacing all keys (ex: {assets}) by their configured path
 	 * Example : {assets}/{common}/{css}/ => assets/my_theme/stylesheets
 	 * 
-	 * @param string    $path The path to format
+	 * @param  string   $path The path to format
 	 * @return string   The formatted path
 	 */
 	static function path($path)
 	{
 		preg_match_all('#\{([a-z]+)\}#', $path, $results);
+		
+		// If we found aliases, replace them
 		if($results) foreach($results[0] as $id => $r)
 		{
 			$variable = a::get($results[1], $id);
@@ -369,11 +408,17 @@ class dispatch extends Cerberus
 		return $path;
 	}
 	
+	/**
+	 * Returns the current stylesheets
+	 */ 
 	static function currentCSS()
 	{
 		return self::$CSS['url'];
 	}
 	
+	/**
+	 * Returns the current javascript files
+	 */ 
 	static function currentJS()
 	{
 		return self::$JS['url'];
@@ -382,7 +427,7 @@ class dispatch extends Cerberus
 	/**
 	 * Tells if a given script is used on the current page or not
 	 * 
-	 * @param string 	  The name of a script
+	 * @param  string   The name of a script
 	 * @return boolean  Whether or not the script is used on this page
 	 */
 	static function isScript($script)
@@ -542,30 +587,36 @@ class dispatch extends Cerberus
 		self::inject('js', $javascript, $params);
 	}
 	
-	/* 
-	########################################
-	########## MODULES ET API ##############
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////
+	////////////////////// MODULES AND API /////////////////////// 
+	//////////////////////////////////////////////////////////////
 	
+	/* ---------- SASS & COMPASS ---------- */
+	
+	// Setup a Compass configuration file
 	static function compass($config = array())
 	{
+		$file = NULL;
+		
+		// If we don't already have a configuration file
 		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(self::$compass))
 		{
-			$file = NULL;
+			// Fetch default configuration options
 			$configuration = array(
-				'images_dir' => self::$images,
-				'css_dir' => self::$css,
-				'javascripts_dir' => self::$js,
-				'fonts_dir' => self::$fonts,
-				'output_style' => ':expanded',
+				'images_dir'       => self::$images,
+				'css_dir'          => self::$css,
+				'javascripts_dir'  => self::$js,
+				'fonts_dir'        => self::$fonts,
+				'output_style'     => ':expanded',
 				'preferred_syntax' => ':sass',
-				'line_comments' => 'false',
-				'relative_assets' => 'true');
+				'line_comments'    => 'false',
+				'relative_assets'  => 'true');
+				
+			// Merge with given configuration parameters
 			$configuration = array_merge($config, $configuration);
 			$extensions = config::get('compass');
 			
-			// Configuration
+			// Writing options
 			foreach($configuration as $k => $v)
 			{
 				if(is_array($v)) $v = json_encode($v);
@@ -573,25 +624,33 @@ class dispatch extends Cerberus
 				$file .= $k. ' = ' .$v.PHP_EOL;
 			}
 
-			// Extensions
+			// Loading extensions
 			$file .= PHP_EOL.'# Extensions'.PHP_EOL;
 			foreach($extensions as $e) $file .= "require '" .$e. "'".PHP_EOL;
 			
+			// Writing the configuration files
 			f::write(PATH_CERBERUS.self::$compass, $file);
 			f::write(self::$compass, 'project_path = "' .substr(PATH_COMMON, 0, -1). '"'.PHP_EOL.$file);	
 		}	
 	}
+
+	/* ---------- JAVASCRIPT ---------- */
 	
-	// Ajoute un plugin quelconque
+	// Add a basic jQuery plugin
 	static function plugin($plugin, $selector = NULL, $params = NULL)
 	{
+		// Getting parameters
 		if(is_array($params)) $params = json_encode($params);
 		$string = $plugin. '(' .$params. ')';
+		
+		// Getting selector
 		if($selector) $string = '$("' .$selector.'").'.$string.';';
+		
+		// Adding the JS bit
 		self::addJS($string);
 	}
 	
-	/* Ajout un élément Google Analytics */
+	// Add a Google Analytics account
 	static function analytics($analytics = 'XXXXX-X')
 	{
 		self::addJS("var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))");
@@ -606,11 +665,12 @@ class dispatch extends Cerberus
 		self::addJS('try{Typekit.load();}catch(e){}');
 	}
 	
-	// GoogleFonts
+	// Google Webfonts
 	static function googleFonts()
 	{
 		$fonts = func_get_args();
 		
+		// Fetching the fonts, converting to GF syntax
 		$fonts = implode('|', $fonts);
 		$fonts = str_replace(' ' , '+', $fonts);
 		$fonts = str_replace('*' , '100,200,300,400,500,600,700,800,900', $fonts);
