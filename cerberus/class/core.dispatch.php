@@ -297,6 +297,7 @@ class dispatch
 		// Make sure the plugins folder exist
 		dir::make(self::path(PATH_CERBERUS.'{css}/{plugins}/'));
 		dir::make(self::path(PATH_CERBERUS.'{js}/{plugins}/'));
+		dir::make(self::path(PATH_CERBERUS.'{fonts}/'));
 		
 		// Gather the source files
 		foreach(self::$plugins_files as $plugin => $plugin_files)
@@ -341,7 +342,7 @@ class dispatch
 				$new_path = PATH_CERBERUS.$extension.'/'.f::filename($value);
 				
 				// Copy the file or throw an error
-				if(f::path($old_path) and $new_path) copy($old_path, $new_path);
+				if(file_exists($old_path) and $new_path) copy($old_path, $new_path);
 				else echo 'The source file ' .$old_path. ' could not be found.'.PHP_EOL;
 				
 				$plugin_files[$key] = $new_path;
