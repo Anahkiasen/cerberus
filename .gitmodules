@@ -16,3 +16,6 @@
 [submodule "assets/plugins/bootstrap"]
 	path = assets/plugins/bootstrap
 	url = https://Anahkiasen@github.com/Anahkiasen/sassy-bootstrap.git
+[submodule "assets/plugins/font-awesome"]
+	path = assets/plugins/font-awesome
+	url = https://Anahkiasen@github.com/Anahkiasen/Font-Awesome.git

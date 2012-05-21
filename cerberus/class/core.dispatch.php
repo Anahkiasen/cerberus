@@ -64,6 +64,10 @@ class dispatch
 			'chosen/chosen-sprite.png'),
 		'colorbox'    => array(
 			'colorbox/jquery.colorbox.js'),
+		'font-awesome' => array(
+			'css/font-awesome-ie7.css',
+			'sass/font-awesome.sass',
+			'font/*'),
 		'modernizr'   => array(
 			'modernizr.js'),
 		'noty'        => array(
@@ -326,11 +330,15 @@ class dispatch
 			{
 				// Determine the folder to put the copied files into
 				$type = f::type($value);
-				$extension = ($type == 'image') ? self::$images : f::extension($value);
+				
+				// Determine the destination folder
+				if($type == 'image') $extension = self::$images.'/plugins';
+				elseif($type == 'fonts') $extension = self::$fonts;
+				else $extension = f::extension($value).'/plugins';
 				
 				// Look for the paths
 				$old_path = PATH_PLUGINS.str::remove(PATH_PLUGINS, $plugin.'/'.$value);
-				$new_path = PATH_CERBERUS.$extension. '/plugins/' .f::filename($value);
+				$new_path = PATH_CERBERUS.$extension.'/'.f::filename($value);
 				
 				// Copy the file or throw an error
 				if(f::path($old_path) and $new_path) copy($old_path, $new_path);
