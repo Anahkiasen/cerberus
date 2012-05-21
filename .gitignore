@@ -25,6 +25,9 @@ cerberus/cache
 /*.htaccess
 /*.txt
 
+# Submodules
+assets/cerberus/fonts/fontawesome-*.*
+
 # Dossiers
 /assets/2012/
 /pages/
