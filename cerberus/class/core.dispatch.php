@@ -224,9 +224,9 @@ class dispatch
 		}
 		if(config::get('modernizr')) $scripts['*'] = a::inject($scripts['*'], 0, 'modernizr');
 		
-		##################
-		# GETTING ASSETS #
-		##################		
+		############################
+		# GETTING AVAILABLE ASSETS #
+		############################
 				
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
 		$allowed_files = '{' .self::$css. '{/,/plugins/}*.css,' .self::$js. '{/,/plugins/}*.js}';
@@ -254,19 +254,54 @@ class dispatch
 			}
 		}
 		
-		##################
-		### SUBMODULES ###
-		##################		
+		##########################
+		# LOADING CURRENT ASSETS #
+		##########################
 		
+		// Unpacking the wanted scripts
+		self::$scripts = self::unpack($scripts);
+		
+		// Loading the submodules files
+		self::submodules(self::$scripts);
+		
+		if(self::$scripts) foreach(self::$scripts as $key => $value)
+		{
+			// Bootstrap
+			if($value == 'bsjs')
+				self::$JS['url'] = array_merge(self::$JS['url'], $bootstrap_modules);
+			
+			if(isset(self::$paths[$value]))
+				foreach(self::$paths[$value] as $script)
+				{
+					$extension = strtoupper(f::extension($script));
+					if($extension != 'CSS' and $extension != 'JS') continue;
+					if(str::find(array('http', self::$js.'/bootstrap-'), $script)) self::${$extension}['url'][] = $script;
+					else self::${$extension}['min'][] = $script;
+				}
+		}
+		
+		return self::$scripts;
+	}
+
+	/**
+	 * Loads a given list of submodules into the Cerberus folder
+	 * 
+	 * @param array    $submodules The list of required submodules
+	 */
+	private static function submodules($submodules)
+	{
 		// Make sure the plugins folder exist
 		dir::make(self::path(PATH_CERBERUS.'{css}/{plugins}/'));
 		dir::make(self::path(PATH_CERBERUS.'{js}/{plugins}/'));
-
+		
 		// Gather the source files
 		foreach(self::$plugins_files as $plugin => $plugin_files)
 		{
 			// Check if the plugin is already loaded
 			if(isset(self::$paths[$plugin])) continue;
+			
+			// Check if the plugin was required
+			if(!in_array($plugin, $submodules)) continue;
 			
 			// Check if the source files exist
 			if(!file_exists(PATH_PLUGINS.$plugin.'/'))
@@ -291,7 +326,7 @@ class dispatch
 			{
 				// Determine the folder to put the copied files into
 				$type = f::type($value);
-				$extension = ($type == 'image') ? 'img' : f::extension($value);
+				$extension = ($type == 'image') ? self::$images : f::extension($value);
 				
 				// Look for the paths
 				$old_path = PATH_PLUGINS.str::remove(PATH_PLUGINS, $plugin.'/'.$value);
@@ -305,29 +340,6 @@ class dispatch
 			}
 			self::$paths[$plugin] = $plugin_files;
 		}
-		
-		################
-		# ASKED ASSETS #
-		################		
-		
-		// Récupération des différents scripts
-		self::$scripts = self::unpack($scripts);
-		if(self::$scripts) foreach(self::$scripts as $key => $value)
-		{
-			// Bootstrap
-			if($value == 'bsjs')
-				self::$JS['url'] = array_merge(self::$JS['url'], $bootstrap_modules);
-			
-			if(isset(self::$paths[$value]))
-				foreach(self::$paths[$value] as $script)
-				{
-					$extension = strtoupper(f::extension($script));
-					if($extension != 'CSS' and $extension != 'JS') continue;
-					if(str::find(array('http', self::$js.'/bootstrap-'), $script)) self::${$extension}['url'][] = $script;
-					else self::${$extension}['min'][] = $script;
-				}
-		}
-		return self::$scripts;
 	}
 
 	/**
