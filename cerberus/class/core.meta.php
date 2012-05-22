@@ -107,11 +107,8 @@ class meta
 		// Little magic applied to the title
 		if($get == 'title')
 		{
-			// If in the administration, current title is admin page title
-			if(navigation::$page == 'admin' and get('admin')) $page = 'Gestion' .ucfirst(get('admin'));
-			
-			// Else 
-			else $page = l::get('menu-' .$current, l::get('menu-' .navigation::$page, ucfirst(navigation::$page)));
+			// Getting the page name		
+			$page = l::get('menu-' .$current, l::get('menu-' .navigation::$page, ucfirst(navigation::$page)));
 			
 			// Fetch the page description in the meta array
 			$page_description = a::get(self::$meta, $current.',title');
@@ -183,7 +180,9 @@ class meta
 		
 		// Get the current page info
 		$meta = self::page();
-		if(!$meta) return false;
+		if(!$meta)
+			if(navigation::$page == 'admin' and get('admin')) $meta['title'] = 'Administration - Gestion ' .ucfirst(get('admin'));
+			else return false;
 		
 		// Treat the data a little
 		foreach($meta as $key => $value)
