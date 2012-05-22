@@ -419,7 +419,7 @@ class init
 	function modules()
 	{
 		self::module('modules');
-		new Cerberus(config::get('cerberus'));
+		$cerberus = new Cerberus(config::get('cerberus'));
 	}
 	
 	function language()

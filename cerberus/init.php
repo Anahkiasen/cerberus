@@ -1,27 +1,27 @@
 <?php
 // Including bootstrap file
 include('class/core.init.php');
-$cerberus = new init();
+$init = new init();
 
 content::start();
 
 	// Loading config file
-	$cerberus->config();
+	$init->config();
 	
 	// Setting main constants
-	$cerberus->constants();
+	$init->constants();
 	
 	// Load dispatch
-	$cerberus->dispatch();
+	$init->dispatch();
 	
 	// Connecting to database
-	$cerberus->mysql();
+	$init->mysql();
 	
 	// Mise à jour du moteur
-	$cerberus->update();
+	$init->update();
 	
 	// Log user stats
-	$cerberus->stats();
+	$init->stats();
 	
 	// Setting cache manifest if existing
 	$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest')) ? 'manifest="cache.manifest"' : NULL;
@@ -33,25 +33,25 @@ content::start();
 	content::start();
 	
 		// Create required files and folders
-		$cerberus->required();
+		$init->required();
 		
 		// Loading translations index
-		$cerberus->language();
+		$init->language();
 		
 		// Loading navigation structure
-		$cerberus->navigation();
+		$init->navigation();
 		
 		// Display debug informations 
-		$cerberus->debug();
+		$init->debug();
 		
 		// Cache the page
-		$cerberus->cache();
+		$init->cache();
 		
 		// Loading cerberus modules
-		$cerberus->modules();
+		$init->modules();
 		
 		// Backing up database
-		$cerberus->backup();
+		$init->backup();
 		
 // -------------------------------------------------- */
 
