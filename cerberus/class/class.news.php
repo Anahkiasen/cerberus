@@ -134,7 +134,7 @@ class news
 					str::link(
 						PATH_FILE. 'news/' .$value['path'], 
 						str::img(
-							timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, array('zc' => 1)),
+							media::timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, array('zc' => 1)),
 							$value['titre'],
 							array('class' => 'float')),
 						array('class' => 'colorbox'));

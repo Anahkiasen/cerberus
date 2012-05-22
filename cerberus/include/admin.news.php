@@ -22,7 +22,7 @@ $forms->openFieldset($diffText. ' une news');
 			$forms->insert('
 				<dl class="actualThumb">
 				<dt>Supprimer la miniature actuelle</dt>
-				<dd style="text-align:center"><p><img src="' .timthumb($path, 125, 125, array('zc' => 1)). '" /><br />	' 
+				<dd style="text-align:center"><p><img src="' .media::timthumb($path, 125, 125, array('zc' => 1)). '" /><br />	' 
 					.str::slink(
 					'admin-news',
 					'Supprimer',

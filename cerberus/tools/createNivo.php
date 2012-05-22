@@ -39,7 +39,7 @@ function createNivo($path, $largeur, $hauteur, $options = NULL, $shuffle = TRUE)
 	foreach($arrayImages as $file)
 	{
 		$file = str_replace(PATH_FILE, NULL, $file);
-		echo str::img(timthumb($file, $largeur, $hauteur)).PHP_EOL;
+		echo str::img(media::timthumb($file, $largeur, $hauteur)).PHP_EOL;
 	}
 	echo '</div>'.PHP_EOL;
 	
