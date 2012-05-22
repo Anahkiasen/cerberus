@@ -167,9 +167,9 @@ class forms
 		
 		// Attribut name
 		$deploy['name'] = 	a::get($params, 'name', 
-							str::slugify($label));
+		                     str::slugify($label));
 		$deploy['name'] = 	l::get($deploy['name'], 
-							$deploy['name']);
+		                     $deploy['name']);
 		
 		// Valeur du champ
 		$isset_post = isset($_POST) ? $_POST : NULL; 

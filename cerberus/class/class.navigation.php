@@ -107,14 +107,11 @@ class navigation
 	// Vérification de l'existence d'une page
 	static function extension(&$page, &$sousPage)
 	{
-		$page_combined = $sousPage ? $page.'-'.$sousPage : $page;
+		$page_combined = $sousPage ? 'pages/'.$page.'-'.$sousPage : 'pages/'.$page;
 		if(!file_exists('pages')) dir::make('pages');
 		
 		// Balayage des noms possibles de la page
-		$possible = array($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');
-		foreach($possible as $p)
-			if(!isset($return)) $return = f::path('pages/'.$p);
-			else break;
+		$return = f::path($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');
 					
 		// Si non trouvé -> 404
 		if(isset($return)) return basename($return);

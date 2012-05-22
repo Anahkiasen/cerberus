@@ -79,15 +79,16 @@ class Cerberus
 	function getFile($module)
 	{
 		$cheminsValides = array(
-			PATH_MAIN.'cerberus/tools/',
-			PATH_MAIN.'cerberus/class/',
+			PATH_CORE.'tools/',
+			PATH_CORE.'class/',
 			PATH_COMMON.'php/');
 		
 		foreach($cheminsValides as $chemin)
 		{
-			if(file_exists($chemin.$module.'.php')) return $chemin.$module.'.php';
-			elseif(file_exists($chemin.'class.'.$module.'.php')) return $chemin.'class.'.$module.'.php';
-			elseif(file_exists($chemin.'svn.'.$module.'.php')) return $chemin.'svn.'.$module.'.php';
+			return f::path(
+				$chemin.$module.'.php',
+				$chemin.'class.'.$module.'.php',
+				$chemin.'svn.'.$module.'.php');
 		}
 		return false;
 	}		

@@ -132,18 +132,20 @@ class dispatch
 		// If they're not cached in the config file, calculate them
 		if(!$path_common or !file_exists($path_common))
 		{
-			$path_common   = 
-				f::path(self::path('{assets}/{common}/'),
-				f::path(self::path('{assets}/'), ''));
-			$path_cerberus =
-				f::path(self::path('{assets}/{cerberus}/'),
-				f::path(self::path('{assets}/'), ''));
-			$path_file     =
-				f::path(self::path('{assets}/{common}/{file}/'),
-				f::path(self::path('{assets}/{file}/'),
-				f::path(self::path('{file}/'))));
-			$path_plugins  =
-				f::path(self::path('{assets}/{plugins}/'));
+			$path_common   = f::path(
+				self::path('{assets}/{common}/'),
+				self::path('{assets}/'),
+				NULL);
+			$path_cerberus = f::path(
+				self::path('{assets}/{cerberus}/'),
+				self::path('{assets}/'),
+				NULL);
+			$path_file     = f::path(
+				self::path('{assets}/{common}/{file}/'),
+				self::path('{assets}/{file}/'),
+				self::path('{file}/'));
+			$path_plugins  = f::path(
+				self::path('{assets}/{plugins}/'));
 			
 			// Cache into config file
 			if(PATH_MAIN == NULL)
