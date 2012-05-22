@@ -112,7 +112,7 @@ class navigation
 		
 		// Balayage des noms possibles de la page
 		$return = f::path($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');
-					
+		
 		// Si non trouvé -> 404
 		if(isset($return)) return basename($return);
 		else

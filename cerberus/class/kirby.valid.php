@@ -2,7 +2,7 @@
 class v
 {
 	/*
-	Fonction checkString
+	Fonction check
 	# Vérifie l'authenticité d'une chaîne donnée
 	
 	$string

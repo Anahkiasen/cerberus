@@ -56,7 +56,7 @@ class Cerberus
 			'pack.navigation' => array('navigation'),
 			'class.admin' => array('admin', 'admin.setup'),
 			'class.mail' => array('smail'),
-			'class.form' => array('form', 'checkString'),
+			'class.form' => array('form', 'checkFields'),
 			'class.news' => array('news', 'bbcode'));
 		
 			foreach($modules as $value)
