@@ -310,7 +310,7 @@ class dispatch
 			// Check if the source files exist
 			if(!file_exists(PATH_PLUGINS.$plugin.'/'))
 			{
-				echo 'The source folder for plugin ' .$plugin. ' was not found';
+				echo 'The source folder "' .PATH_PLUGINS.$plugin.'/" for plugin ' .$plugin. ' was not found';
 				continue;
 			}	
 			
