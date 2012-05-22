@@ -667,7 +667,11 @@ class dispatch
 		$string = $plugin. '(' .$params. ')';
 		
 		// Getting selector
-		if($selector) $string = '$("' .$selector.'").'.$string.';';
+		if($selector !== NULL)
+		{
+			$selector = empty($selector) ? '$' : "$('" .$selector. "')";
+			$string = $selector.'.'.$string.';';
+		}
 		
 		// Adding the JS bit
 		self::addJS($string);
