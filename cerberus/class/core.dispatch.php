@@ -70,7 +70,7 @@ class dispatch
 			'font/*'),
 		'modernizr'   => array(
 			'modernizr.js'),
-		'nivo-slider' => array(
+		'nivoslider' => array(
 			'jquery.nivo.slider.pack.js'),
 		'noty'        => array(
 			'css/jquery.noty.css',
