@@ -51,7 +51,7 @@ class meta
 				'cerberus_meta M',
 				'cerberus_structure S',
 				'M.page = S.id',
-				'S.page, S.parent, M.titre, M.description, M.url',
+				'S.page, S.parent, M.title, M.description, M.url',
 				array('langue' => l::current()));
 			
 			// Little magic applied to the data
@@ -193,9 +193,9 @@ class meta
 			// Take into account the overwrites
 			$value = str_replace('{meta}', $value, a::get(self::$overwrite, $key, '{meta}'));
 
-			// Send the data to core.head			
+			// Send the data to core.head
 			if($key == 'title') head::title($value);
-			else head::set('meta', array('name' => $key, 'content' => $value));	
+			else head::set('meta', array('name' => $key, 'content' => $value));
 		}
 		
 		// Cache the modified data

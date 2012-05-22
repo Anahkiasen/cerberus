@@ -22,7 +22,12 @@ class update
 			self::codematch('([ \.\()])timthumb\(', '$1media::timthumb(');
 			self::codematch('str_replace\((.+), ?NULL,', 'str::remove($1,');
 		}
-
+		
+		// Change field name in cerberus_meta
+		if(db::is_table('cerberus_meta'))
+			if(db::is_field('titre', 'cerberus_meta'))
+				db::execute('ALTER TABLE cerberus_meta CHANGE "titre" "title" VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;');
+			
 		// Update revision number
 		if(self::outdate()) self::update_core(self::$last);
 	}
