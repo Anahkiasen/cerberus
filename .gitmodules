@@ -19,3 +19,6 @@
 [submodule "assets/plugins/font-awesome"]
 	path = assets/plugins/font-awesome
 	url = https://Anahkiasen@github.com/Anahkiasen/Font-Awesome.git
+[submodule "assets/plugins/nivo-slider"]
+	path = assets/plugins/nivo-slider
+	url = https://github.com/gilbitron/Nivo-Slider.git
