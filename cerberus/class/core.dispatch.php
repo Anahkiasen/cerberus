@@ -231,7 +231,6 @@ class dispatch
 			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
 			$bootstrap_modules = glob(PATH_CERBERUS.'js/bootstrap-*.js');
 		}
-		if(config::get('modernizr')) $scripts['*'] = a::inject($scripts['*'], 0, 'modernizr');
 		
 		############################
 		# GETTING AVAILABLE ASSETS #

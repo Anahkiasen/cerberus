@@ -41,7 +41,6 @@ class config
 		'compass'     => array('susy', 'animation', 'rgbapng', 'modular-scale', 'normalize'),
 		'logs'        => false,
 		'minify'      => true,
-		'modernizr'   => false,
 		
 		/* Options */
 		'cache'          => true,
