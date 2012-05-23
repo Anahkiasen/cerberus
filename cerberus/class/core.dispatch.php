@@ -11,10 +11,10 @@
 class dispatch
 {
 	// The page we're currently in
-	static private $current;
+	static private $page;
 	
 	// The category we're currently in
-	static private $global;
+	static private $category;
 	
 	/* Current ressources ------------------------------------- */
 	
@@ -104,15 +104,13 @@ class dispatch
 	static public $swf      = 'swf';
 	
 	//////////////////////////////////////////////////////////////
-	//////////////////////////// CONSTRUCT /////////////////////// 
+	///////////////////////// CONSTRUCT ////////////////////////// 
 	//////////////////////////////////////////////////////////////	
 	
 	/**
 	 * Initializes the dispatch module
-	 * 
-	 * @param string	$current	The current batch identifier, if not specified, uses the current page
 	 */
-	function __construct($current = NULL)
+	function __construct()
 	{			
 		// Basic layour of the assets arrays
 		self::$JS = self::$CSS =
@@ -123,6 +121,18 @@ class dispatch
 				'before' => array(),
 				'after' => array()));
 				
+		// Set up the main path constants
+		self::paths();
+		
+		// Create Compass configuration file if unexisting
+		if(LOCAL) self::compass();
+	}
+	
+	/**
+	 * Search for, cache and create constants for the most common paths
+	 */
+	private function paths()
+	{
 		// Set up the recurring paths
 		$path_common   = config::get('path.common');
 		$path_cerberus = config::get('path.cerberus');
@@ -130,24 +140,24 @@ class dispatch
 		$path_plugins  = config::get('path.plugins');
 		
 		// If they're not cached in the config file, calculate them
-		if(!$path_common or !f::exist($path_common, $path_cerberus, $path_file, $path_plugins))
+		if(!$path_common or !$path_cerberus or !$path_file or !$path_plugins)
 		{
 			$path_common   = f::exist(
 				self::path('{assets}/{common}/'),
 				self::path('{assets}/'),
-				NULL);
+				'/');
 			$path_cerberus = f::exist(
 				self::path('{assets}/{cerberus}/'),
 				self::path('{assets}/'),
-				NULL);
+				'/');
 			$path_file     = f::exist(
 				self::path('{assets}/{common}/{file}/'),
 				self::path('{assets}/{file}/'),
-				self::path('{file}/'));
-			$path_plugins  = f::exist(
-				self::path('{assets}/{plugins}/'));
+				self::path('{file}/'),
+				'/');
+			$path_plugins  = self::path('{assets}/{plugins}/');
 			
-			// Cache into config file
+			// If we are in the root folder, cache into config file
 			if(PATH_MAIN == NULL)
 			{
 				config::hardcode('path.common',   $path_common);
@@ -161,10 +171,7 @@ class dispatch
 		define('PATH_COMMON',   $path_common);
 		define('PATH_CERBERUS', $path_cerberus);
 		define('PATH_PLUGINS',  $path_plugins);
-		define('PATH_FILE',     $path_file);
-		
-		// Create Compass configuration file if unexisting
-		if(LOCAL) self::compass();
+		define('PATH_FILE',     $path_file);	
 	}
 	
 	/**
@@ -172,23 +179,23 @@ class dispatch
 	 */
 	private static function index()
 	{
-		if(!isset(self::$global))
+		if(!isset(self::$category))
 		{
-			self::$current = (!empty($current)) ? $current : navigation::current();
-			self::$global = navigation::$page;
+			self::$page = (!empty($current)) ? $current : navigation::current();
+			self::$category = navigation::$page;
 		}
 	}	
 	
 	//////////////////////////////////////////////////////////////
-	///////////////////// ASSETS CONFIGURATION /////////////////// 
+	//////////////////// IMPORT ASSETS/MODULES /////////////////// 
 	//////////////////////////////////////////////////////////////
 
 	/**
 	 * Sets the different PHP scripts for the different pages
 	 * 
-	 * @param array 	$modules The wanted modules
+	 * @param array  $modules The wanted modules
 	 */
-	static function setPHP($modules)
+	static function modules($modules)
 	{
 		self::index();
 		
@@ -206,84 +213,93 @@ class dispatch
 	 */
 	static function assets($scripts = array())
 	{
-		global $switcher;
 		self::index();
 		
-		##################
-		# INITIALIZATION #
-		##################
+		/* Building the assets array ----------------------------- */
 		
-		// Mise en array des différents scripts
+		// Forcing arrays where necessary
 		if(!is_array($scripts)) $scripts = array('*' => func_get_args());
-		$scripts['*'] = a::force_array($scripts['*']);
-		$scripts[self::$current] = a::force_array($scripts[self::$current]);
-		$scripts[self::$global] = a::force_array($scripts[self::$global]);
+		$scripts['*']              = a::force_array($scripts['*']);
+		$scripts[self::$page]      = a::force_array($scripts[self::$page]);
+		$scripts[self::$category]  = a::force_array($scripts[self::$category]);
 		
-		// Fichiers par défaut
-		$scripts['*'][] = 'scripts'; // default Javascript
-		$scripts['*'] += array(99 => 'styles'); // default CSS
-		$scripts[self::$current][] = self::$current; // current page
-		$scripts[self::$global][] = self::$global; // current category
+		// Setting default files (scripts.js, styles.css, current page etc)
+		$scripts['*'][]              = 'scripts'; // default Javascript
+		$scripts['*']               += array(99 => 'styles'); // default CSS
+		$scripts[self::$page][]      = self::$page; // current page
+		$scripts[self::$category][]  = self::$category; // current category
 		
-		// Modules intégrés
+		// If Bootstrap, add it
 		if(config::get('bootstrap'))
-		{	
 			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
-			$bootstrap_modules = glob(PATH_CERBERUS.'js/bootstrap-*.js');
-		}
 		
-		############################
-		# GETTING AVAILABLE ASSETS #
-		############################
-				
+		/* Listing available assets ------------------------------- */
+						
+		global $switcher;
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
-		$allowed_files = '{' .self::$css. '{/,/plugins/}*.css,' .self::$js. '{/,/plugins/}*.js}';
-		$files = glob('{' .PATH_COMMON. ',' .PATH_CERBERUS. '}' .$allowed_files, GLOB_BRACE);
 		
-		// Creating the path list
+		// Creating a mask for authorized filepaths and file extensions
+		$allowed_files = '{' .PATH_COMMON. ',' .PATH_CERBERUS. ',' .$templates. '}{' .self::$css. ',' .self::$js. '}{/,/plugins/}*.{css,js}';
+		$files = glob($allowed_files, GLOB_BRACE);
+		
+		// Grouping each found ressource by name
 		foreach($files as $path)
 		{
 			$basename = f::name($path, true);
 			self::$paths[$basename][] = $path;
 		}
 		
+		/* Renaming assets with aliases --------------------------- */
+		
 		// Getting preset aliases
-		foreach(self::$alias as $s => $paths)
+		foreach(self::$alias as $to => $from)
 		{
-			if(!is_array($paths)) $paths = array($paths);
-			foreach($paths as $p)
-			{
-				if(!str::find('http', $p) and !file_exists($p) and !file_exists(a::get(self::$paths, $p.',0'))) continue;
-				
-				if(isset(self::$paths[$p], self::$paths[$s])) self::$paths[$s] = array_merge(self::$paths[$s], self::$paths[$p]);
-				elseif(isset(self::$paths[$p]) and !isset(self::$paths[$s])) self::$paths[$s] = self::$paths[$p];
-				else self::$paths[$s][] = $p;
-				self::$paths = a::remove(self::$paths, $p);
-			}
+			// If the ressource we have an alias for is not in the folders
+			if(!str::find('http', $from) and
+				!a::get(self::$paths, $from.',0') and
+				!isset(self::$paths[$from]))
+					continue;
+			
+			// Case 1 : the old and new name both are in the array (merge)
+			if(isset(self::$paths[$from], self::$paths[$to]))
+				self::$paths[$to] = array_merge(self::$paths[$to], self::$paths[$from]);
+			
+			// Case 2 : The old name is in the array and need to be renamed to new (rename)
+			elseif(isset(self::$paths[$from]) and !isset(self::$paths[$to])) self::$paths[$to] = self::$paths[$from];
+			
+			// Case 3 : The plugin is not in the array but needs to be because it's an external ressource (http)
+			else self::$paths[$to][] = $from;
+			
+			// Removing the old entry from the array
+			self::$paths = a::remove(self::$paths, $from);
 		}
 		
-		##########################
-		# LOADING CURRENT ASSETS #
-		##########################
+		/* Loading the wanted assets ------------------------------- */
 		
-		// Unpacking the wanted scripts
+		// Unpacking the scripts
 		self::$scripts = self::unpack($scripts);
 		
 		// Loading the submodules files
 		self::submodules(self::$scripts);
 		
-		if(self::$scripts) foreach(self::$scripts as $key => $value)
+		// If we have files to load
+		if(self::$scripts)
+		foreach(self::$scripts as $key => $value)
 		{
-			// Bootstrap
-			if($value == 'bsjs')
-				self::$JS['url'] = array_merge(self::$JS['url'], $bootstrap_modules);
+			// Bootstrap Javascript files pack
+			if($value == 'bootstrap-javascript')
+				self::$JS['url'] = array_merge(self::$JS['url'], glob(PATH_CERBERUS.'js/bootstrap-*.js'));
 			
+			// Adding the available files to the CSS and JS arrays
 			if(isset(self::$paths[$value]))
 				foreach(self::$paths[$value] as $script)
 				{
+					// Ensure the asset is .css or .js
 					$extension = strtoupper(f::extension($script));
 					if($extension != 'CSS' and $extension != 'JS') continue;
-					if(str::find(array('http', self::$js.'/bootstrap-'), $script)) self::${$extension}['url'][] = $script;
+					
+					// If it's an external script, don't minify it
+					if(str::find(array('http', 'bootstrap-'), $script)) self::${$extension}['url'][] = $script;
 					else self::${$extension}['min'][] = $script;
 				}
 		}
@@ -291,6 +307,10 @@ class dispatch
 		return self::$scripts;
 	}
 
+	//////////////////////////////////////////////////////////////
+	////////////////////////// HELPERS /////////////////////////// 
+	//////////////////////////////////////////////////////////////
+	
 	/**
 	 * Loads a given list of submodules into the Cerberus folder
 	 * 
@@ -300,17 +320,17 @@ class dispatch
 	{
 		// Gather the source files
 		foreach(self::$plugins_files as $plugin => $plugin_files)
-		{	
+		{
 			// Check if the plugin is already loaded
 			if(isset(self::$paths[$plugin])) continue;
 			
-			// Check if the plugin was required
+			// Check if we need the plugin
 			if(!in_array($plugin, $submodules)) continue;
 			
 			// Check if the source files exist
 			if(!file_exists(PATH_PLUGINS.$plugin.'/'))
 			{
-				echo 'The source folder "' .PATH_PLUGINS.$plugin.'/" for plugin ' .$plugin. ' was not found';
+				errorHandle('warning', 'The source folder "' .PATH_PLUGINS.$plugin.'/" for plugin ' .$plugin. ' could not be found.');
 				continue;
 			}	
 			
@@ -345,7 +365,7 @@ class dispatch
 				
 				// Copy the file or throw an error
 				if(file_exists($old_path) and $new_path) copy($old_path, $new_path);
-				else echo 'The source file ' .$old_path. ' could not be found.'.PHP_EOL;
+				else errorHandle('warning', 'The source file ' .$old_path. ' could not be found.');
 				
 				$plugin_files[$key] = $new_path;
 			}
@@ -383,13 +403,13 @@ class dispatch
 		}
 		
 		// Getting the scripts that are concerned by the current page
-		$modules['*'] = a::force_array($modules['*']);
-		$modules[self::$global] = a::force_array($modules[self::$global]);
-		$modules[self::$current] = a::force_array($modules[self::$current]);
+		$modules['*']             = a::force_array($modules['*']);
+		$modules[self::$category] = a::force_array($modules[self::$category]);
+		$modules[self::$page]     = a::force_array($modules[self::$page]);
 		
 		// Filter the arrays
-		$assets = array_merge($modules['*'], $modules[self::$global], $modules[self::$current]);
-		$assets = array_unique(array_filter($assets));
+		$assets = array_merge($modules['*'], $modules[self::$category], $modules[self::$page]);
+		$assets = a::clean($assets);
 		
 		// Looking for a !script flag to remove a particular script
 		foreach($assets as $key => $value)
@@ -405,16 +425,53 @@ class dispatch
 		return !empty($assets) ? $assets : FALSE;
 	}
 	
+	/**
+	 * Cleans an array of asset from duplicates and empty strings
+	 * 
+	 * @param  array 	$array The array to sanitize
+	 * @return array 	The sanitized array
+	 */
+	private static function sanitize($array)
+	{
+		// Creating link to Minify
+		if(isset($array['min']) and !empty($array['min']))
+		{
+			$minify = a::clean($array['min']);
+			if(!is_dir('min') or !config::get('minify') or !$minify)
+				$array['url'] = array_merge($array['url'], $minify);
+			else
+				$array['url'][] = 'min/?f=' .implode(',', $minify);	
+		}
+		
+		// Filtering array
+		$array['url'] = a::clean($array['url']);
+		
+		return $array;
+	}
+	
+	/**
+	 * Takes a list of singled-out scripts and wrap them in a javascript block
+	 */
+	private static function inline_js($scripts)
+	{
+		content::start(); ?>
+		<script>
+			<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
+		</script>
+		<?
+		return content::end(true);
+	}
+	
 	//////////////////////////////////////////////////////////////
 	//////////////////////// UTILITIES /////////////////////////// 
 	//////////////////////////////////////////////////////////////
 	
 	/**
 	 * Returns a given path, replacing all keys (ex: {assets}) by their configured path
-	 * Example : {assets}/{common}/{css}/ => assets/my_theme/stylesheets
+	 * Example : {assets}/{common}/{css}/ will return assets/my_theme/stylesheets
 	 * 
-	 * @param  string   $path The path to format
-	 * @return string   The formatted path
+	 * @param  string  $path The path to format
+	 * @return string  The formatted path
 	 */
 	static function path($path)
 	{
@@ -433,6 +490,8 @@ class dispatch
 	
 	/**
 	 * Returns the current stylesheets
+	 * 
+	 * @return array  An array containing all stylesheets on the page
 	 */ 
 	static function currentCSS()
 	{
@@ -441,6 +500,8 @@ class dispatch
 	
 	/**
 	 * Returns the current javascript files
+	 * 
+	 * @return array  An array containing all scripts on the page
 	 */ 
 	static function currentJS()
 	{
@@ -458,11 +519,9 @@ class dispatch
 		return (isset(self::$scripts) and in_array($script, self::$scripts));
 	}
 	
-	/* 
-	########################################
-	########## CSS ET JAVASCRIPT ###########
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////
+	//////////////////// CSS & JAVASCRIPT //////////////////////// 
+	//////////////////////////////////////////////////////////////
 	
 	/**
 	 * Injects scripts or styles in the page
@@ -471,24 +530,24 @@ class dispatch
 	 * @param array   $scripts Either an array of assets or a single asset
 	 * @param array   $params Parameters to pass to the current given scripts
 	 *                -- place[before/after] : Place the script before or after including stylesheets/scripts (default after)
-	 *                -- alias : An alias to give the given script
-	 *                -- wrap[window/ready] : Wraps the script with (window).load or (document).ready
+	 *                -- alias               : An alias to give the given script
+	 *                -- wrap[window/ready]  : Wraps the script with (window).load or (document).ready
 	 */
 	static function inject($type, $scripts, $params = array())
 	{
 		if(!is_array($scripts)) $scripts = array($scripts);
-		if(!is_array($params)) json_decode($params);
+		if(!is_array($params))  json_decode($params);
 		
-		// Paramètres par défaut du script inclus
+		// Default parameters (no alias/after/no wrap)
 		$type  = str::upper($type);
 		$alias = a::get($params, 'alias');
 		$place = $type == 'css' ? 'after' : a::get($params, 'place', 'after');
 		$wrap  = a::get($params, 'wrap');
 		
-		// Lecture des scripts fournis
+		// Reading the given scripts
 		foreach($scripts as $script)
 		{
-			// Si l'on demande un script connu de Cerberus
+			// If it's a script we know, match it to its path(s)
 			if(isset(self::$paths[$script]))
 				foreach(self::$paths[$script] as $s)
 				{
@@ -496,26 +555,28 @@ class dispatch
 					self::${$extension}['min'][] = $s;
 				}
 			
-			// Si l'on demande une URL vers un script externe
+			// Clean up the script from any wrapping tag
 			$script = preg_replace('#(<script>|</script>|<style>|</style>)#', NULL, $script);
+			
+			// If it's an external link or not
 			$is_http = str::find('http', substr($script, 0, 4));
+			
+			// If we added a link to another file
 			if(in_array(f::extension($script), array('css', 'js')) or $is_http)
 			{
 				if($is_http) self::${$type}['url'][] = $script;
 				else self::${$type}['min'][] = $script;
 			}
 			
-			// Si l'on demande l'ajout d'un script à la page
+			// If we added pure code to put into tags
 			else
 			{
 				$script = trim($script);
-				
-				if($alias) self::${$type}['inline'][$place][$alias] = trim($script);
-				else self::${$type}['inline'][$place][] = trim($script);
+				if($alias) self::${$type}['inline'][$place][$alias] = $script;
+				else self::${$type}['inline'][$place][] = $script;
 			}	
 		}
 	}
-	
 	
 	/**
 	 * Fetch the current CSS styles for the page
@@ -552,64 +613,47 @@ class dispatch
 		else echo $head;
 	}
 	
+	//////////////////////////////////////////////////////////////
+	////////////////////////// SHORTCUTS ///////////////////////// 
+	//////////////////////////////////////////////////////////////
+	
 	/**
-	 * Cleans an array of asset from duplicates and empty strings
-	 * 
-	 * @param  array 	$array The array to sanitize
-	 * @return array 	The sanitized array
+	 * Add a stylesheet/style to the current page
 	 */
-	private static function sanitize($array)
-	{
-		if(isset($array['min']) and !empty($array['min']))
-		{
-			$minify = array_unique(array_filter($array['min']));
-			if(!is_dir('min') or !config::get('minify') or !$minify)
-				$array['url'] = array_merge($array['url'], $minify);
-			else
-				$array['url'][] = 'min/?f=' .implode(',', $minify). '';	
-		}
-		$array['url'] = array_unique(array_filter($array['url']));
-		
-		return $array;
-	}
-	
-	private static function inline_js($scripts)
-	{
-		content::start(); ?>
-		<script type="text/javascript">
-			<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
-		</script>
-		<?
-		return content::end(true);
-	}
-	
-	/* Raccourcis ---------------------------------------------- */
-	
-	/* Ajoute une feuille de style */
 	static function addCSS($stylesheets)
 	{
 		self::inject('css', $stylesheets);
 	}
 	
-	/* Enlève une feuille de style */
+	/**
+	 * Remove a stylesheet from a page
+	 */
 	static function removeCSS($stylesheets)
 	{
 		if(in_array($stylesheets, self::$CSS['min'])) self::$CSS['min'] = a::remove(self::$CSS['min'], $stylesheets, false);
 		if(in_array($stylesheets, self::$CSS['url'])) self::$CSS['url'] = a::remove(self::$CSS['url'], $stylesheets, false);
 	}
 	
-	/* Ajout de scripts à la volée */
+	/**
+	 * Add Javascript before the links
+	 */
 	static function addJSBefore($javascript, $params = NULL)
 	{
 		$params = array_merge($params, array('place' => 'before'));
 		self::inject('js', $javascript, $params);
 	}
 	
+	/**
+	 * Add Javascript after the links
+	 */
 	static function addJS($javascript, $params = array())
 	{
 		self::inject('js', $javascript, $params);
 	}
 	
+	/**
+	 * Include a PHP script
+	 */
 	static function addPHP($module)
 	{
 		$file = glob('{' .PATH_CORE. '{tools,class,class/plugins},' .PATH_COMMON. 'php}/{' .$module. ',class.' .$module. '}.php', GLOB_BRACE);
