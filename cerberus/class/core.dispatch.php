@@ -194,7 +194,8 @@ class dispatch
 		
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::unpack($modules);
-		if($modules) new Cerberus($modules, self::$global);
+		
+		foreach($modules as $m) self::addPHP($m);
 	}
 	
 	/**
@@ -608,6 +609,15 @@ class dispatch
 	static function addJS($javascript, $params = array())
 	{
 		self::inject('js', $javascript, $params);
+	}
+	
+	static function addPHP($module)
+	{
+		$file = glob('{' .PATH_CORE. '{tools,class,class/plugins},' .PATH_COMMON. 'php}/{' .$module. ',class.' .$module. '}.php', GLOB_BRACE);
+		
+		if($file)
+			if(!function_exists($module) and !class_exists($module))
+				include(a::get($file, 0));
 	}
 	
 	//////////////////////////////////////////////////////////////

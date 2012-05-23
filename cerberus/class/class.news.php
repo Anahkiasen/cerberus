@@ -32,7 +32,7 @@ class news
 		
 	function __construct()
 	{
-		$cerberus = new Cerberus('bbcode');
+		dispatch::addPHP('bbcode');
 		
 		if(!db::is_table('cerberus_news')) update::table('cerberus_news');
 		$this->multiWhere = (MULTILANGUE)

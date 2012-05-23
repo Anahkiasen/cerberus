@@ -413,15 +413,6 @@ class init
 		if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 	}
 	
-	/**
-	* Loading Cerberus modules
-	*/
-	function modules()
-	{
-		self::module('modules');
-		$cerberus = new Cerberus(config::get('cerberus'));
-	}
-	
 	function language()
 	{
 		self::module('language');
