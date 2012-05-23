@@ -85,7 +85,7 @@ class Cerberus
 		
 		foreach($cheminsValides as $chemin)
 		{
-			return f::path(
+			return f::exist(
 				$chemin.$module.'.php',
 				$chemin.'class.'.$module.'.php',
 				$chemin.'svn.'.$module.'.php');

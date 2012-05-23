@@ -5,7 +5,7 @@ class update
 	private static $revision;
 	
 	// The last revision number to date
-	private static $last = '2012-05-12,bab2e8be97b71a2a856e0df9488c861f456b9bda';
+	private static $last = '2012-05-23,a98b7701b20f20aed664d4232550709b2b601f40';
 
 	/**
 	 * Sets the current revision number and updates the core
@@ -21,6 +21,12 @@ class update
 			self::codematch('([ \.\()])swf\(', '$1media::swf(');
 			self::codematch('([ \.\()])timthumb\(', '$1media::timthumb(');
 			self::codematch('str_replace\((.+), ?NULL,', 'str::remove($1,');
+		}
+		
+		if(self::outdate('2012-05-23'))
+		{
+			self::codematch('createNivo\(', 'media::slideshow(');
+			self::codematch('([ !])f::path\(', '$1f::exist(');
 		}
 		
 		// Change field name in cerberus_meta

@@ -130,21 +130,21 @@ class dispatch
 		$path_plugins  = config::get('path.plugins');
 		
 		// If they're not cached in the config file, calculate them
-		if(!$path_common or !file_exists($path_common))
+		if(!$path_common or !f::exist($path_common, $path_cerberus, $path_file, $path_plugins))
 		{
-			$path_common   = f::path(
+			$path_common   = f::exist(
 				self::path('{assets}/{common}/'),
 				self::path('{assets}/'),
 				NULL);
-			$path_cerberus = f::path(
+			$path_cerberus = f::exist(
 				self::path('{assets}/{cerberus}/'),
 				self::path('{assets}/'),
 				NULL);
-			$path_file     = f::path(
+			$path_file     = f::exist(
 				self::path('{assets}/{common}/{file}/'),
 				self::path('{assets}/{file}/'),
 				self::path('{file}/'));
-			$path_plugins  = f::path(
+			$path_plugins  = f::exist(
 				self::path('{assets}/{plugins}/'));
 			
 			// Cache into config file
@@ -219,10 +219,10 @@ class dispatch
 		$scripts[self::$global] = a::force_array($scripts[self::$global]);
 		
 		// Fichiers par défaut
-		$scripts['*'][] = 'core';
-		$scripts['*'] += array(99 => 'styles');	
-		$scripts[self::$current][] = self::$current;
-		$scripts[self::$global][] = self::$global;
+		$scripts['*'][] = 'scripts'; // default Javascript
+		$scripts['*'] += array(99 => 'styles'); // default CSS
+		$scripts[self::$current][] = self::$current; // current page
+		$scripts[self::$global][] = self::$global; // current category
 		
 		// Modules intégrés
 		if(config::get('bootstrap'))

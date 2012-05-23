@@ -137,14 +137,14 @@ class f
 	 * [CERBERUS-ADD]
 	 * 
 	 * @param  string A list of path fallbacks, can be infinite
-	 * @return string The first path in he list to exist
+	 * @return string The first path in the list to exist
 	 * 
 	 */
-	static function path()
+	static function exist()
 	{
 		$paths = func_get_args();
 		
-		foreach($paths as $p) if(file_exists($p)) return $p;
+		foreach($paths as $p) if($p and file_exists($p)) return $p;
 		return false;
 	}
 	

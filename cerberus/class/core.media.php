@@ -71,7 +71,7 @@ class media extends dispatch
 		// Add the Javascript code to the page
 		dispatch::plugin('nivoSlider', '#'.$id_block, $params);
 	}
-	
+
 	/**
 	 * Add a Flash animation to the code with the corresponding SWFObject code
 	 * 
