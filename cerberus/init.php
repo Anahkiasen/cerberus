@@ -47,9 +47,6 @@ content::start();
 		// Cache the page
 		$init->cache();
 		
-		// Loading cerberus modules
-		$init->modules();
-		
 		// Backing up database
 		$init->backup();
 		
