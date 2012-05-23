@@ -35,7 +35,8 @@ class media extends dispatch
 				: $file;
 		}
 			
-		return PATH_CORE.'class/svn.timthumb.php?src=' .$file. '&' .a::glue($params, '&', '=');
+		return PATH_CORE.'class/plugins/timthumb.php?src=' .$file. '&' .a::glue($params, '&', '=');
+	}
 	
 	/**
 	 * Creates a slideshow (currently based on nivoSlider)
