@@ -31,7 +31,7 @@ cerberus/cache
 ###########################
 
 # assets
-assets/common
+# !assets/common
 
 # configuration
 cerberus/conf.php
