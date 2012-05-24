@@ -8,28 +8,41 @@ config.rb
 .sass-cache
 .project
 
-## FICHIERS PROPRES AU SITE ##
-##############################
+## CERBERUS CORE FILES ##
+#########################
 
-# Fichiers moteurs
+# assets
+## compiled files 
 assets/cerberus/css
-assets/cerberus/*/plugins/
+assets/cerberus/js
 assets/cerberus/img/rgbapng
-assets/common
-cerberus/conf.php
+
+## submodules
+assets/cerberus/*/plugins
+assets/cerberus/fonts/fontawesome-*.*
+
+## templates
+assets/*/
+
+# cache
 cerberus/cache
 
-# Fichiers
+## PROJECT RELATED FILES ##
+###########################
+
+# assets
+assets/common
+
+# configuration
+cerberus/conf.php
+
+# pages
+/pages/
+/pageflip/
+/src/
+
+# files
 /*.php
 /*.html
 /*.htaccess
 /*.txt
-
-# Submodules
-assets/cerberus/fonts/fontawesome-*.*
-
-# Dossiers
-/assets/2012/
-/pages/
-/pageflip/
-/src/
