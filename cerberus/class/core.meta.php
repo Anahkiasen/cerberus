@@ -1,41 +1,41 @@
 <?php
 /**
- * 
+ *
  * meta
- * 
+ *
  * This class handles the gathering and managing of meta tags
- * 
+ *
  * @package Cerberus
  */
 class meta
 {
 	// Main data array
 	public static $meta = NULL;
-	
+
 	// The path to the cached meta data array
 	private static $file;
-	
+
 	// A list of overwrites to apply to the main array
 	private static $overwrite = array();
-	
+
 	//////////////////////////////////////////////////////////////
-	////////////////////// INITIALIZATION //////////////////////// 
+	////////////////////// INITIALIZATION ////////////////////////
 	//////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Fetch the meta data either from cache or from a database
 	 * If no cached file found, then create it
 	 */
 	static function build()
 	{
-		// Check if the necessary tables exist		
+		// Check if the necessary tables exist
 		$db_exist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : FALSE;
-		
+
 		// Get the cached meta data file
 		self::$file = PATH_CACHE. 'meta-' .l::current(). '.json';
 		$meta = cache::fetch('meta');
 		if($meta) self::$meta = $meta;
-		
+
 		// If no cached meta array was found, let's create it
 		elseif(!$meta and (config::get('meta') or $db_exist) and SQL)
 		{
@@ -45,7 +45,7 @@ class meta
 				update::table('cerberus_meta');
 				update::table('cerberus_structure');
 			}
-			
+
 			// Gathering of the metadata
 			$metadata = db::left_join(
 				'cerberus_meta M',
@@ -53,18 +53,18 @@ class meta
 				'M.page = S.id',
 				'S.page, S.parent, M.title, M.description, M.url',
 				array('langue' => l::current()));
-			
+
 			// Little magic applied to the data
 			foreach($metadata as $values)
 			{
 				// If no description found, use title instead
 				if(empty($values['description'])) $values['description'] = $values['titre'];
-				
+
 				if(empty($values['keywords'])) $values['keywords'] = self::keywords($values['description']);
-				
+
 				// If no page name found, use title also
 				if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
-				
+
 				// Insert into main array
 				$variables = array('title', 'description', 'keywords', 'url');
 				foreach($variables as $v)
@@ -74,25 +74,25 @@ class meta
 				}
 			}
 		}
-		
+
 		// If REALLY no data to use, GOD HELP US ALL
-		else self::$meta = array();		
+		else self::$meta = array();
 	}
 
 	//////////////////////////////////////////////////////////////
-	///////////////////////// METHODS //////////////////////////// 
+	///////////////////////// METHODS ////////////////////////////
 	//////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Overwrite a particular meta tag
 	 * @param string  $key    The key to overwrite
-	 * @param string  $value  The new content of the string 
+	 * @param string  $value  The new content of the string
 	 */
 	static function set($key, $value = NULL)
 	{
 		self::$overwrite[$key] = $value;
 	}
-	
+
 	/**
 	 * Get a particular key from the array
 	 */
@@ -100,30 +100,30 @@ class meta
 	{
 		// Get current page
 		$current = navigation::current();
-		
+
 		// If no key specified, return the whole array
 		if(!$get) return self::$meta;
-		
+
 		// Little magic applied to the title
 		if($get == 'title')
 		{
-			// Getting the page name		
+			// Getting the page name
 			$page = l::get('menu-' .$current, l::get('menu-' .navigation::$page, ucfirst(navigation::$page)));
-			
+
 			// Fetch the page description in the meta array
 			$page_description = a::get(self::$meta, $current.',title');
-			
+
 			if($page and $page_description)       $title = $page. ' - ' .$page_description;
 			elseif(!$page and $page_description)  $title = $page_description;
 			else                                  $title = $page;
-			
+
 			self::$meta[$current]['title'] = $title;
 		}
-		
+
 		return (isset(self::$meta[$current][$get]) and !empty(self::$meta[$current][$get]))
 			? ucfirst(str::accents(a::get(self::$meta[$current], $get, $default)))
 			: $default;
-	}	
+	}
 
 	/**
 	 * Get the meta data for a specific page (defaults to the current one)
@@ -134,15 +134,15 @@ class meta
 	{
 		// If the meta array doesn't exist yet, let's build it
 		if(!is_array(self::$meta)) self::build();
-		
+
 		// If no page specified, defaults to the current one
 		if(!$page) $page = navigation::current();
-		
+
 		// If we have the data, return it
 		if(isset(self::$meta[$page]) and !empty(self::$meta[$page])) return self::$meta[$page];
 		else return false;
 	}
-	
+
 	/**
 	 * Generate a cloud of keywords from a string
 	 * @param  string  $string The string to use as base
@@ -152,38 +152,38 @@ class meta
 	{
 		// Remove special characters
 		$string = preg_replace('#([,\.\r\n\-])#', NULL, $string);
-		
+
 		// Separate each word
 		$string = explode(' ', $string);
-		
+
 		// Shuffle and unique the array
 		shuffle($string);
 		$string = array_filter(array_unique($string));
-		
+
 		// Implode as keywords
 		$string = implode(', ', $string);
-		
+
 		return $string;
 	}
-	
+
 	//////////////////////////////////////////////////////////////
-	///////////////////////// EXPORT ///////////////////////////// 
+	///////////////////////// EXPORT /////////////////////////////
 	//////////////////////////////////////////////////////////////
-	
+
 	/**
-	 * Format the meta data as meta tags for the <head> 
+	 * Format the meta data as meta tags for the <head>
 	 */
 	static function head()
 	{
 		// If the meta array doesn't exist yet, let's build it
 		if(!is_array(self::$meta)) self::build();
-		
+
 		// Get the current page info
 		$meta = self::page();
 		if(!$meta)
 			if(navigation::$page == 'admin' and get('admin')) $meta['title'] = 'Administration - Gestion ' .ucfirst(get('admin'));
 			else return false;
-		
+
 		// Treat the data a little
 		foreach($meta as $key => $value)
 		{
@@ -196,7 +196,7 @@ class meta
 			if($key == 'title') head::title($value);
 			else head::set('meta', array('name' => $key, 'content' => $value));
 		}
-		
+
 		// Cache the modified data
 		cache::fetch('meta', self::$meta);
 	}

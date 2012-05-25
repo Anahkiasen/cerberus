@@ -1,34 +1,34 @@
 <?php
 /**
  *
- * Browser 
- * 
- * Browser sniffing is bad - I know! 
- * But sometimes this class is very helpful to 
+ * Browser
+ *
+ * Browser sniffing is bad - I know!
+ * But sometimes this class is very helpful to
  * react on certain browsers and build browser-specific
  * css selectors for example. It's up to you to use it.
- * 
+ *
  * @package Kirby
  */
 class browser
 {
-	
-	/** 
+
+	/**
 		* The entire user agent string
 		*
 		* @var string
 		*/
 	static public $ua = false;
 
-	/** 
+	/**
 		* The readable name of the browser
 		* For example: "ie"
-		* 
+		*
 		* @var string
 		*/
 	static public $name = false;
 
-	/** 
+	/**
 		* The readable browser engine name
 		* For example: "webkit"
 		*
@@ -36,134 +36,134 @@ class browser
 		*/
 	static public $engine = false;
 
-	/** 
+	/**
 		* The browser version number
 		* For example: "3.6"
 		*
 		* @var string
-		*/	
+		*/
 	static public $version = false;
 
-	/** 
+	/**
 		* The platform name
 		* For example: "mac"
 		*
 		* @var string
-		*/	
+		*/
 	static public $platform = false;
 
-	/** 
+	/**
 		* True or false if it is a mobile device or not
 		*
 		* @var boolean
-		*/	
+		*/
 	static public $mobile = false;
 
-	/** 
+	/**
 		* True or false if it is an iOS device or not
 		*
 		* @var boolean
-		*/	
+		*/
 	static public $ios = false;
 
-	/** 
+	/**
 		* True or false if it is an iPhone or not
 		*
 		* @var boolean
-		*/	
+		*/
 	static public $iphone = false;
 
-	/** 
+	/**
 		* Returns the name of the browser
 		*
 		* @param	string	$ua The user agent string
 		* @return string	The browser name
-		*/	
+		*/
 	static function name($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$name;
 	}
 
-	/** 
+	/**
 		* Returns the browser engine
 		*
 		* @param	string	$ua The user agent string
 		* @return string	The browser engine
-		*/	
+		*/
 	static function engine($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$engine;
 	}
 
-	/** 
+	/**
 		* Returns the browser version
 		*
 		* @param	string	$ua The user agent string
 		* @return string	The browser version
-		*/	
+		*/
 	static function version($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$version;
 	}
 
-	/** 
+	/**
 		* Returns the platform
 		*
 		* @param	string	$ua The user agent string
 		* @return string	The platform name
-		*/	
+		*/
 	static function platform($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$platform;
 	}
 
-	/** 
+	/**
 		* Checks if the user agent string is from a mobile device
 		*
 		* @param	string	$ua The user agent string
 		* @return boolean True: mobile device, false: not a mobile device
-		*/	
+		*/
 	static function mobile($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$mobile;
 	}
 
-	/** 
+	/**
 		* Checks if the user agent string is from an iPhone
 		*
 		* @param	string	$ua The user agent string
 		* @return boolean True: iPhone, false: not an iPhone
-		*/	
+		*/
 	static function iphone($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$iphone;
 	}
 
-	/** 
+	/**
 		* Checks if the user agent string is from an iOS device
 		*
 		* @param	string	$ua The user agent string
 		* @return boolean True: iOS device, false: not an iOS device
-		*/	
+		*/
 	static function ios($ua = NULL)
 	{
 		self::detect($ua);
 		return self::$ios;
 	}
 
-	/** 
+	/**
 		* Returns a browser-specific css selector string
 		*
 		* @param	string	$ua The user agent string
 		* @param	boolean $array True: return an array, false: return a string
-		* @return mixed 
-		*/	
+		* @return mixed
+		*/
 	static function css($ua = NULL, $array = FALSE)
 	{
 		self::detect($ua);
@@ -174,13 +174,13 @@ class browser
 		return ($array) ? $css : implode(' ', $css);
 	}
 
-	/** 
+	/**
 		* The core detection method, which parses the user agent string
 		*
 		* @todo	 add new browser versions
 		* @param	string	$ua The user agent string
-		* @return array	 An array with all parsed info 
-		*/	
+		* @return array	 An array with all parsed info
+		*/
 	static function detect($ua = NULL)
 	{
 		$ua = ($ua) ? str::lower($ua) : str::lower(server::get('http_user_agent'));

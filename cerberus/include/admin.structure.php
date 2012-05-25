@@ -3,30 +3,30 @@ if(get('meta_structure'))
 {
 	$metaAdmin = new admin();
 	$metaAdmin->setPage('cerberus_meta', array('titre', 'url', 'description'));
-	
+
 	// Sinon
 	if(r::post('traduction_titre'))
 	{
 		$page = db::row('cerberus_structure', '*', array('id' => r::post('page')));
 		$_POST['parent'] = $page['parent'];
 		$_POST['page'] = $page['page'];
-		
+
 		cache::delete('{meta-*,lang-*}');
 		cache::delete($_POST['parent'].'-'.$_POST['page'], true);
-		
+
 		// Page actuelle
 		$index = 'menu-'.$_POST['parent'].'-'.$_POST['page'];
 		$already = db::field('cerberus_langue', 'tag', array('tag' => $index));
 		if($already) db::update('cerberus_langue', array(l::admin_current() => $_POST['traduction_titre']), array('tag' => $index));
 		else db::insert('cerberus_langue', array('tag' => $index, l::admin_current() => $_POST['traduction_titre']));
-		
+
 		// Page parente
 		$index = 'menu-'.$_POST['parent'];
 		$already = db::field('cerberus_langue', 'tag', array('tag' => $index));
 		if($already) db::update('cerberus_langue', array(l::admin_current() => $_POST['traduction_parent_titre']), array('tag' => $index));
 		else db::insert('cerberus_langue', array('tag' => $index, l::admin_current() => $_POST['traduction_parent_titre']));
 	}
-	
+
 	// Si formulaire META
 	if(isset($_POST['url']))
 		unset($_POST);
@@ -36,13 +36,13 @@ if(r::post('page_priority'))
 {
 	$id_old = get('edit_structure');
 	$old = db::row('cerberus_structure', '*', array('id' => $id_old));
-	
+
 	// Changement du nom des fichiers
 	$page = !empty($old['page']) ? $old['parent'].'-'.$old['page'] : $old['parent'];
 	$new_name = !empty($_POST['page']) ? r::post('parent').'-'.r::post('page') : r::post('parent');
 	$pages = glob('pages/' .$page. '.{html,php}', GLOB_BRACE);
 	if(sizeof($pages) == 1) f::rename($pages[0], $new_name);
-	
+
 	// Nom des éléments de traduction
 	db::update('cerberus_langue', array('tag' => 'menu-'.$new_name), array('tag' => 'menu-'.$page));
 	db::last_sql();
@@ -78,7 +78,7 @@ else
 // Formulaire META
 if(isset($_GET['meta_structure']))
 {
-	$meta = 
+	$meta =
 		a::simplify(db::join(
 			'cerberus_meta M',
 			'cerberus_structure S',
@@ -99,10 +99,10 @@ if(isset($_GET['meta_structure']))
 	$form->values('cerberus_meta');
 	$titre = get('meta_structure') ? l::getalt('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
 	$parent_titre = l::getalt('menu-'.$meta['parent'], l::admin_current());
-	
+
 	$form->setValue('traduction_titre', $titre);
 	$form->setValue('traduction_parent_titre', $parent_titre);
-	
+
 	$form->openFieldset('Modifier des données meta');
 		$form->addSelect('page', 'Identifiant de la page', $availablePages, $meta['idx'], array('force_index' => true));
 		$form->addText('traduction_titre', 'Titre de la page');
@@ -126,13 +126,13 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 		$form->addText('page', 'Identifiant de la page');
 		$form->addText('parent', 'Identifiant de la catégorie');
 	$form->closeFieldset();
-	
+
 	$form->openFieldset('Options');
 		$form->addRadio('cache', 'Autoriser la mise en cache', array(1 => 'Oui', 0 => 'Non'));
 		$form->addRadio('hidden', 'Masquer dans les menus', array(1 => 'Oui', 0 => 'Non'));
 		$form->addText('page_priority', 'Ordre');
 		$form->addText('external_link', 'Lien externe');
-		
+
 		$form->addType();
 		$form->addSubmit($diffText);
 	$form->closeFieldset();

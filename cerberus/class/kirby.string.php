@@ -6,7 +6,7 @@ class str
 	####### ACTIONS SUR UNE CHAÎNE #########
 	########################################
 	*/
-	
+
 	/**
 	 * Removes a part of a string
 	 * @param  string  $delete The part of the string to remove
@@ -17,7 +17,7 @@ class str
 	{
 		return str_replace($delete, NULL, $string);
 	}
-	
+
 	/* A set of sanitizer methods */
 	static function sanitize($string, $type = 'str', $default = NULL)
 	{
@@ -53,7 +53,7 @@ class str
 				$string = str::unxml($string);
 				$string = str::unhtml($string);
 				$string = str::trim($string);
-				break;	
+				break;
 			case 'lower':
 				$string = str::lower($string);
 				break;
@@ -82,26 +82,26 @@ class str
 
 		return is_array($string) ? $string : trim($string);
 	}
-	
+
 	// Better alternative for explode()
 	/* It takes care of removing empty values and it has a built-in way to skip values which are too short.  */
 	static function split($string, $separator = ',', $length = 1)
 	{
 		if(is_array($string)) return $string;
-		
+
 		$string = trim($string, $separator);
 		$parts	= explode($separator, $string);
 		$out	= array();
-		
+
 		foreach($parts as $p)
 		{
 			$p = trim($p);
 			if(str::length($p) > 0 && str::length($p) >= $length) $out[] = $p;
 		}
-		
+
 		return $out;
-	}	
-		
+	}
+
 	/* A switch to display either one or the other string dependend on a counter */
 	static function plural($count, $many, $one, $zero = NULL)
 	{
@@ -109,38 +109,38 @@ class str
 		else if($count == 0 && !empty($zero)) return $zero;
 		else return $many;
 	}
-	
+
 	/* Remplace une chaîne par une autre */
 	static function toggle($string, $foo, $bar)
 	{
 		return ($string == $foo) ? $bar : $foo;
 	}
-	
+
 	/* A more brutal way to trim.  */
 	static function trim($string)
 	{
 		$string = preg_replace('/\s\s+/u', ' ', $string);
 		return trim($string);
 	}
-	
+
 	/* Tronque une chaîne $string après $count $mode (word/sentence/default:characters) et ajoute $trailing à la fin */
 	static function truncate($string, $count = 255, $mode = NULL, $removeHTML = true, $trailing = NULL)
 	{
 		if($removeHTML) $string = strip_tags($string);
 		$string = str::trim($string);
-		
+
 		switch($mode)
-		{			
+		{
 			case 'word':
 				preg_match('/^([^.!?\s]*[\.!?\s]+){0,'. $count .'}/', strip_tags($string), $excerpt);
 				return $excerpt[0].$trailing;
 				break;
-				
+
 			case 'sentence':
 				preg_match('/^([^.!?]*[\.!?]+){0,'. $count .'}/', strip_tags($string), $excerpt);
 				return $excerpt[0].$trailing;
 				break;
-				
+
 			case 'character':
 			default:
 				$string = str_replace("\n", ' ', $string);
@@ -149,7 +149,7 @@ class str
 				break;
 		}
 	}
-	
+
 	/* Shortens a string by cutting out chars in the middle */
 	static function cutout($str, $length, $rep = '…')
 	{
@@ -174,7 +174,7 @@ class str
 		// Cut and glue
 		return str::substr($str, 0, $strlcenter) . $rep . str::substr($str, $strrcenter);
 	}
-	
+
 	/* Parses a string by a set of available methods */
 	static function parse($string, $mode = 'json')
 	{
@@ -219,13 +219,12 @@ class str
 
 		return $result;
 	}
-			
+
 	/**** Force a number to be in the 00 format */
 	static function twonum($number)
 	{
 		return str_pad($number, 2, "0", STR_PAD_LEFT);
 	}
-
 
 	/* Convert a string to a safe version */
 	static function slugify($text, $accents = false)
@@ -256,35 +255,35 @@ class str
 			'/ž/' => 'z',
 			'/æ/' => 'ae'
 		);
-		
+
 		$text = preg_replace(array_keys($foreign), array_values($foreign), $text);
 			if($accents == true) return $text;
-		
+
 		$text = preg_replace('![^a-z0-9_]!i', '-', $text);
 		$text = preg_replace('/-+/', '-', $text);
 		$text = trim($text, '-');
 		$text = str::lower($text);
 		return $text;
 	}
-	
+
 	/**** Normalise les accents d'une chaîne */
 	static function slugify_accents($text)
 	{
 		return self::slugify($text, true);
 	}
-	
+
 	/*
 	########################################
 	######### INFOS SUR UNE CHAÎNE #########
 	########################################
 	*/
-	
+
 	/**
 	 * Find one or more needles in one or more haystacks
-	 * 
+	 *
 	 * Also avoid the retarded counter-intuitive original
 	 * strpos syntax that makes you put haystack before needle
-	 * 
+	 *
 	 * @param mixed		$needle	The needle(s) to search for
 	 * @param mixed		$haystack The haystack(s) to search in
 	 * @param boolean	$absolute If true all the needle(s) need to be found in all the haystack(s), otherwise one found is enough
@@ -312,17 +311,17 @@ class str
 				$haystack = strtolower($haystack);
 				$needle = strtolower($needle);
 			}
-			
+
 			// Simple strpos
 			$pos = strpos($haystack, $needle);
 			if($pos === false) return FALSE;
 			else return TRUE;
 		}
 	}
-	
+
 	/**
 	 * Displays the value of a boolean, for debugging
-	 * 
+	 *
 	 * @param boolean	$boolean The boolean to display
 	 * @return string	TRUE or FALSE
 	 */
@@ -330,16 +329,16 @@ class str
 	{
 		return $boolean ? 'TRUE' : 'FALSE';
 	}
-	
+
 	/*
 	########################################
 	########### CREER UNE CHAÎNE ###########
 	########################################
 	*/
-	
+
 	/**
 	 * Displays a picture and ensures there is always an alt tag
-	 * 
+	 *
 	 * @param  string  $src  The source of the image
 	 * @param  string  $alt  The alternative text
 	 * @param  array   $attr The picture attributes
@@ -356,18 +355,18 @@ class str
 			$attr['alt'] = $alt;
 			foreach($attr as $key => $value)
 				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
-		}	
+		}
 		return '<img ' .trim($attributes). ' />';
 	}
-	
+
   /**
     * Creates a link tag
     *
     * @param  string  $link The URL
     * @param  string  $text Specify a text for the link tag. If false the URL will be used
     * @param  string  $attr The link tag attributes
-    * @return string  
-    */  
+    * @return string
+    */
 	static function link($link, $text = false, $attr = NULL)
 	{
 		$text = ($text) ? $text : $link;
@@ -376,26 +375,26 @@ class str
 		{
 			$attributes = NULL;
 			$attr['href'] = $link;
-			if(!isset($attr['title'])) 
+			if(!isset($attr['title']))
 				$attr['title'] = self::unhtml($text);
-			
+
 			foreach($attr as $key => $value)
 				if(!empty($value)) $attributes .= $key. '="' .$value. '" ';
-		}	
+		}
 		return '<a ' .trim($attributes). '>' . str::html($text) . '</a>';
 	}
-	
+
 	/**** Utilise la fonction link en combinisaison avec url::rewrite() */
 	static function slink($link, $text = NULL, $params = array(), $attr = NULL)
 	{
 		$page = meta::page($link);
 		$page = a::get($page, 'titre');
 		if(!isset($attr['title'])) $attr['title'] = $page;
-		
+
 		$link = url::rewrite($link, $params);
 		return self::link($link, $text, $attr);
 	}
-	
+
 	/* Generates a random string */
 	static function random($length = false)
 	{
@@ -403,7 +402,7 @@ class str
 		$chars	= range('a','z');
 		$num	= range(0,9);
 		$pool	 = array_merge($chars, $num);
-		
+
 		$string = '';
 		for($x = 0; $x < $length; $x++)
 		{
@@ -412,7 +411,7 @@ class str
 		}
 		return $string;
 	}
-		
+
 	/* Creates an encoded email address, including proper html-tags */
 	static function email($email, $text = false, $title = false, $class = false)
 	{
@@ -426,7 +425,7 @@ class str
 
 		return '<a'.$title.$class.' href="mailto:'.$email.'">' .self::encode($string, 3). '</a>';
 	}
-	
+
 	/**** Encode des accents en HTML sans toucher aux tags */
 	static function accents($string, $reverse = false)
 	{
@@ -481,14 +480,14 @@ class str
 		'•' => '&bull;',
 		'’' => '\'',
 		'&nbsp;' => ' ');
-		
+
 		if(!$reverse) return strtr($string, $table);
 		else
 		{
 			foreach($table as $ascii => $html)
 				if($html != ' ' and $ascii != '’')
 					$string = str_replace($html, $ascii, $string);
-			
+
 			return $string;
 		}
 	}
@@ -503,7 +502,7 @@ class str
 	{
 		return '<p class="infoblock alert alert-' .$type. '">' .$message. '</p>';
 	}
-	
+
 	/* Raccourcis d'alertes */
 	static function display($message, $type = 'info')
 	{
@@ -513,7 +512,7 @@ class str
 	{
 		echo self::alert(l::get($message, $default), $type);
 	}
-	
+
 	/* Affiche un status */
 	static function status($bool, $message_success, $message_error)
 	{
@@ -540,7 +539,7 @@ class str
 	{
 		return mb_substr($str, $start, ($end == null) ? mb_strlen($str, 'UTF-8') : $end, 'UTF-8');
 	}
-	
+
 	/* An UTF-8 safe version of ucwords() */
 	static function ucwords($str)
 	{
@@ -552,7 +551,7 @@ class str
 	{
 		return str::upper(str::substr($str, 0, 1)) . str::substr($str, 1);
 	}
-	
+
 	/* An UTF-8 safe version of strtolower() */
 	static function lower($str)
 	{
@@ -571,8 +570,6 @@ class str
 		return mb_strlen($str, 'UTF-8');
 	}
 
-
-	
 	/*
 	########################################
 	############### NON TRIE ###############
@@ -584,7 +581,7 @@ class str
 	{
 		// convert raw text to html safe text
 		if($html) $text = self::html($text);
-		
+
 		// convert html entities to xml entities
 		return strtr($text, self::entities());
 	}
@@ -598,7 +595,7 @@ class str
 		// convert html entities to xml entities
 		return strip_tags(strtr($string, $table));
 	}
-	
+
 	/* Converts a string to a html-safe string */
 	static function html($string, $keep_html = true)
 	{
@@ -607,7 +604,7 @@ class str
 			return
 			stripslashes(
 				implode(
-					'', 
+					'',
 					preg_replace(
 						'/^([^<].+[^>])$/e',
 						"htmlentities('\\1', ENT_COMPAT, 'utf-8')",
@@ -618,14 +615,14 @@ class str
 		}
 		else return htmlentities($string, ENT_COMPAT, 'utf-8');
 	}
-	
+
 	/* Removes all html tags and encoded chars from a string */
 	static function unhtml($string)
 	{
 			$string = strip_tags($string);
 			return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
-	
+
 	/* Encode a string (used for email addresses) */
 	static function encode($string)
 	{
@@ -669,18 +666,13 @@ class str
 		return a::get($array, $get, $placeholder);
 	}
 
-	
-
-
-	
-
 	/* A better way to strip slashes */
 	static function stripslashes($string)
 	{
 		if(is_array($string)) return $string;
 		return (get_magic_quotes_gpc()) ? stripslashes(stripslashes($string)) : $string;
 	}
-	
+
 	/* An internal store for a html entities translation table */
 	static function entities()
 	{

@@ -4,7 +4,7 @@ class v
 	/*
 	Fonction check
 	# Vérifie l'authenticité d'une chaîne donnée
-	
+
 	$string
 		Chaîne à vérifier
 	$type
@@ -19,41 +19,41 @@ class v
 			case 'facultative':
 				return true;
 				break;
-			
+
 			case 'url':
 				return !empty($string) and v::url($string);
 				break;
-				
+
 			case 'email':
 				return !empty($string) and v::email($string);
 				break;
-				
+
 			case 'phone':
 			case 'telephone':
 				return !empty($string) and v::phone($string);
 				break;
-				
+
 			case 'nom':
 			case 'prenom':
 			case 'name':
 				return !empty($string) and preg_match('/\D+/', $string);
 				break;
-				
+
 			case 'number':
 				return !empty($string) and preg_match('/\d+/', $string);
-				
+
 			default:
 				return !empty($string);
 				break;
 		}
 	}
-	
+
 	/*
 	########################################
 	########### FONCTIONS MOTEUR ###########
 	########################################
 	*/
-	
+
 	/* Core method to create a new validator */
 	static function string($string, $options)
 	{
@@ -91,28 +91,28 @@ class v
 
 		return (checkdate($month, $day, $year)) ? $time : false;
 	}
-	
+
 	/* Checks for valid email address */
 	static function email($email)
 	{
 		$regex = '#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix';
 		return (preg_match($regex, $email));
 	}
-	
+
 	/* Checks for valid URL */
 	static function url($url)
 	{
 		$regex = '/^(https?|ftp|rmtp|mms|svn):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i';
 		return (preg_match($regex, $url));
 	}
-	
+
 	/* Checks for valid filename */
 	static function filename($string)
 	{
 		$options = array('format' => 'a-zA-Z0-9_-', 'min_length' => 2);
 		return self::string($string, $options);
-	}	
-	
+	}
+
 	/**** Vérifie qu'un numéro de téléphone est valide */
 	static function phone($phone)
 	{

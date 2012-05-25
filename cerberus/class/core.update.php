@@ -3,7 +3,7 @@ class update
 {
 	// The current revision number
 	private static $revision;
-	
+
 	// The last revision number to date
 	private static $last = '2012-05-23,a98b7701b20f20aed664d4232550709b2b601f40';
 
@@ -14,7 +14,7 @@ class update
 	{
 		// Define current revision
 		self::$revision = self::revision();
-		
+
 		// Apply change to the core code
 		if(self::outdate('2012-05-11'))
 		{
@@ -22,30 +22,30 @@ class update
 			self::codematch('([ \.\()])timthumb\(', '$1media::timthumb(');
 			self::codematch('str_replace\((.+), ?NULL,', 'str::remove($1,');
 		}
-		
+
 		if(self::outdate('2012-05-23'))
 		{
 			self::codematch('createNivo\(', 'media::slideshow(');
 			self::codematch('([ !])f::path\(', '$1f::exist(');
 		}
-		
+
 		// SQL specific updates
 		if(SQL)
 		{
 			// Change field name in cerberus_meta
 			if(db::is_table('cerberus_meta'))
 				if(db::is_field('titre', 'cerberus_meta'))
-					db::execute('ALTER TABLE cerberus_meta CHANGE `titre` `title` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;');			
+					db::execute('ALTER TABLE cerberus_meta CHANGE `titre` `title` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;');
 		}
-			
+
 		// Update revision number
 		if(self::outdate()) self::update_core(self::$last);
 	}
-	
+
 	//////////////////////////////////////////////////////////////
-	/////////////////////////// TOOLKIT ////////////////////////// 
-	//////////////////////////////////////////////////////////////	
-	
+	/////////////////////////// TOOLKIT //////////////////////////
+	//////////////////////////////////////////////////////////////
+
 	/**
 	 * Returns the current revision number
 	 * @return date    The date of the last update
@@ -55,11 +55,11 @@ class update
 		// Get local or online revision number
 		$revision = LOCAL ? config::get('revision.local') : config::get('revision.online');
 		$revision = explode(',', $revision);
-		
-		// Return only the date part 
-		return a::get($revision, 0);	
+
+		// Return only the date part
+		return a::get($revision, 0);
 	}
-	
+
 	/**
 	 * Verify if the current project is outdated or not
 	 * @param  date       $date The date to match against the current revision number. Defaults to last revision number
@@ -69,12 +69,12 @@ class update
 	{
 		// If project still uses SVN Revision, update
 		if(is_numeric(self::$revision)) return true;
-		
+
 		// If current date is older than asked one, return true
 		if(!$date) $date = a::get(explode(',', self::$last), 0);
 		return (self::$revision < $date);
 	}
-	
+
 	/**
 	 * Updates the core to a particular revision number
 	 * @param string    $torev The revision number to update to
@@ -84,14 +84,14 @@ class update
 		// Update online or local revison number
 		$rev = LOCAL ? 'revision.local' : 'revision.online';
 		$hardcode = config::hardcode($rev, $torev);
-		
+
 		// Display result
 		if($hardcode) str::translate('update.success', NULL, 'success');
 		else str::translate('update.errror', NULL, 'error');
 	}
 
 	//////////////////////////////////////////////////////////////
-	/////////////////////// CORE FUNCTIONS /////////////////////// 
+	/////////////////////// CORE FUNCTIONS ///////////////////////
 	//////////////////////////////////////////////////////////////
 
 	/**
@@ -106,16 +106,16 @@ class update
 		$search = '#' .$search. '#';
 		$pages = glob('{index.php,{pages,' .PATH_COMMON. 'php}/*}', GLOB_BRACE);
 		a::show($pages);
-		
+
 		echo '<div class="cerberus_debug" style="width:100%"><h2>Recherche de ' .$search. '</h2>';
-		
+
 		foreach($pages as $file)
 		{
-			$code = f::read($file);	
+			$code = f::read($file);
 			$lines = explode("\n", $code);
 			$resultats = preg_grep($search, $lines);
 			$count = count($resultats);
-			
+
 			if($count >= 1)
 			{
 				// Affichage des matches trouvés
@@ -123,12 +123,12 @@ class update
 				foreach($resultats as $nb => $match)
 				{
 					echo '<li>
-						<ins>Ligne ' .($nb+1). '</ins><br/>' 
-						."	". '<strong>' .htmlentities($match). '</strong><br />' 
+						<ins>Ligne ' .($nb+1). '</ins><br/>'
+						."	". '<strong>' .htmlentities($match). '</strong><br />'
 						."	<strong>".htmlentities(preg_replace($search, $replace, $match)). '</strong></li>';
 				}
 				echo '</ul>';
-				
+
 				$code = preg_replace($search, $replace, $code);
 				f::write($file, $code);
 			}
@@ -143,7 +143,7 @@ class update
 	static function table($table)
 	{
 		if(!SQL) return false;
-		
+
 		db::drop($table);
 		switch($table)
 		{
@@ -152,10 +152,10 @@ class update
 				  `tag` varchar(40) NOT NULL,
 				  `fr` varchar(255) NOT NULL,
 				  PRIMARY KEY (`tag`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');	
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				db::execute('INSERT INTO cerberus_langue VALUES ("menu-home", "Accueil")');
 				break;
-		
+
 			case 'cerberus_admin':
 				db::execute('CREATE TABLE `cerberus_admin` (
 				  `account` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -181,7 +181,7 @@ class update
 				  PRIMARY KEY  (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
-			
+
 			case 'cerberus_meta':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_meta` (
 				  `id` tinyint(4) NOT NULL auto_increment,
@@ -193,7 +193,7 @@ class update
 				  PRIMARY KEY  (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
-				
+
 			case 'cerberus_structure':
 				db::execute('CREATE TABLE `cerberus_structure` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -207,7 +207,7 @@ class update
 				  PRIMARY KEY (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
-				
+
 			case 'cerberus_news':
 				db::execute('CREATE TABLE IF NOT EXISTS `cerberus_news` (
 				  `id` smallint(4) NOT NULL AUTO_INCREMENT,

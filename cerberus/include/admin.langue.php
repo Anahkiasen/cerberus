@@ -3,7 +3,7 @@
 <style type="text/css">
 .admin-langue table td.tablerow-data
 {
-	text-align:left !important; 
+	text-align:left !important;
 	width: 30%;
 }
 .admin-langue table td:first-child { width: 25%; }
@@ -62,7 +62,7 @@ if(get('bdd'))
 		<dd><input type="file" name="import" /><input type="submit" class="ok" value="ok" /></dd>
 		</dl>
 		</fieldset><p class="clear"></p></form>
-		<?
+		<?php
 		}
 	}
 }
@@ -83,10 +83,10 @@ $forms->openFieldset($diffText. ' une traduction');
 	$forms->addText('tag', 'Identitifant de la traduction');
 	foreach(config::get('langues') as $langue)
 		$forms->addText($langue, 'Traduction ' .strtoupper($langue));
-	
+
 	$forms->addType();
 	$forms->addSubmit($diffText);
 $forms->closeFieldset();
-	
+
 echo $langueAdmin->formAddOrEdit($forms->returns());
 ?>

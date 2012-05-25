@@ -35,30 +35,30 @@ if(isset($_GET['rename']))
 	$i = 0;
 	$basename = $_GET['rename'];
 	$glob = glob(PATH_FILE.$basename. '/*');
-	
+
 	// Nombre de 0
 	$count = count($glob);
 	if($count < 10) $numpad = 1;
 	elseif($count >= 10 and $count < 100) $numpad = 2;
 	elseif($count >= 100 and $count < 1000) $numpad = 3;
 	elseif($count >= 1000) $numpad = 4;
-	
+
 	foreach($glob as $file)
 	{
 		$extension = f::extension($file);
 		$newname = $PREFIXE.$basename. '-' .str_pad($i, $numpad, "0", STR_PAD_LEFT). '.' .$extension;
 		rename($file, PATH_FILE.$basename. '/' .$newname);
-		
+
 		$i++;
 	}
-	
+
 	str::display('Les images ont bien été renommées au format ' .$PREFIXE.$basename. '-XX');
 }
 ?>
 
 <div class="infoblock alert alert-info">
 	Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
-	<? $form = new forms(array('class' => 'form-search'));
+	<?php $form = new forms(array('class' => 'form-search'));
 	$form->addText('prefixpost', 'Préfixe', $PREFIXE, array('style' => 'padding: 5px'));
 	$form->addSubmit('ok');
 	$form->render();
@@ -84,7 +84,7 @@ foreach(glob(PATH_FILE. '*') as $file)
 	{
 		$basename = f::filename($file);
 		$count = count(glob(PATH_FILE.$basename. '/*'));
-	
+
 		echo '
 		<tr>
 			<td>' .$basename. '</td>
@@ -118,7 +118,7 @@ if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 			</tr>
 		</thead>
 	<tbody>';
-	
+
 	if($images) foreach($images as $image)
 	{
 		$basename = f::filename($image);
@@ -136,12 +136,12 @@ if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 		</tr>';
 	}
 	echo '</tbody></table>';
-	
+
 	// Renommer une image
-	if(isset($_GET['edit_image'])) 
+	if(isset($_GET['edit_image']))
 	{
 		$name = str_replace('\\', '', $_GET['edit_image']);
-		
+
 		$editImage = new form(false);
 		$editImage->openFieldset('Editer une image');
 			$editImage->addText('Renommer', '<strong>' .$name. '</strong> sera renommée');
@@ -156,7 +156,7 @@ if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 		$upload->addFile('path', 'Chemin vers l\'image');
 		$upload->addSubmit();
 	$upload->closeFieldset();
-	
+
 	echo '<br />';
 	if(isset($_GET['edit_image'])) echo $editImage;
 	else echo $upload;

@@ -10,7 +10,7 @@ class timer
 		if($key) self::$timer[$key] = $microtime;
 		else self::$timer[] = $microtime;
 	}
-	
+
 	/* Sauvegarde un temps */
 	static function save($key = NULL)
 	{
@@ -29,17 +29,17 @@ class timer
 		}
 		else return microtime(true) - a::get(self::$timer, $key);
 	}
-	
+
 	static function show()
 	{
 		self::$timer = a::remove(self::$timer, 0);
 		$total = self::$timer['total'] = round(array_sum(self::$timer), 2). ' ms';
-	
+
 		echo '<pre>';
 		foreach(self::$timer as $key => $time)
 		{
 			$last_time = $time;
-			echo 
+			echo
 				$key.
 				str_repeat( ' ', (20 - strlen($key)) ).
 				$time.

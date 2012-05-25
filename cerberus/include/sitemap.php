@@ -17,7 +17,7 @@ foreach($sitemap as $categorie => $pages)
 		echo str::slink(
 			$categorie,
 			'<h2>' .l::get('menu-'.$categorie, ucfirst($categorie)). '</h2>');
-		
+
 		if(isset($pages['submenu']))
 		{
 			if(isset($pages['external']) and $pages['external'] != 1)
@@ -28,9 +28,9 @@ foreach($sitemap as $categorie => $pages)
 						'<li>' .l::get('menu-'.$categorie.'-'.$pageSub). '</li>');
 				}
 		}
-			
+
 		echo '</ul>';
-		
+
 		// Colonnes
 		$count++;
 		if($count == $lignes)

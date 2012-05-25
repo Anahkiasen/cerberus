@@ -5,7 +5,7 @@ class pager
 	static public $page;
 	static public $limit;
 	static public $pages;
-	
+
 	static private $pagination;
 	static private $get_var;
 
@@ -14,7 +14,7 @@ class pager
 	{
 		self::$get_var = !$get_var ? navigation::current(). '_page' : $get_var;
 		if(!$page) $page = a::get($_GET, self::$get_var, 1);
-		
+
 		self::$pagination = NULL;
 		self::$entries = $entries;
 		self::$limit = $limit;
@@ -39,7 +39,7 @@ class pager
 	{
 		return (self::$page-1 >= 1) ? self::$page-1 : self::$page;
 	}
-	
+
 	/* Première page */
 	static function first()
 	{
@@ -63,7 +63,7 @@ class pager
 	{
 		return (self::$page == self::$pages) ? true : false;
 	}
-	
+
 	/* Nombre de pages */
 	static function count()
 	{
@@ -74,7 +74,7 @@ class pager
 	static function sanitize($page, $pages)
 	{
 		if(!$pages) $pages = self::$pages;
-		
+
 		$page = intval($page);
 		if($page > $pages) $page = $pages;
 		if($page < 1) $page = 1;
@@ -86,7 +86,7 @@ class pager
 	{
 		return (self::$page-1) * self::$limit;
 	}
-	
+
 	/* Builds a navigation */
 	static function pagination()
 	{
@@ -99,18 +99,18 @@ class pager
 				<ul>
 					<?php
 					echo '<li><a href="' .url::reload(array(self::$get_var => self::previous())). '">&laquo;</a></li>';
-					
+
 					for($i = self::first(); $i <= self::last(); $i++)
 					{
 						$class = ($i == self::get()) ? ' class="active"' : NULL;
 						echo '<li' .$class. '>' .str::link(url::reload(array(self::$get_var => $i)), $i). '</li>';
 					}
-						
+
 					echo '<li><a href="' .url::reload(array(self::$get_var => self::next())). '">&raquo;</a></li>';
 					?>
 				</ul>
 			</div>
-			<?
+			<?php
 			self::$pagination = content::end(true);
 			echo self::$pagination;
 		}

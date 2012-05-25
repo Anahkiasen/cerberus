@@ -9,7 +9,7 @@ class upload
 		$overwrite = a::get($params, 'overwrite', config::get('upload.overwrite'));
 		$sanitize = a::get($params, 'sanitize', true);
 		$file = a::get($_FILES, $field);
-		
+
 		if(empty($file))
 			return array('status' => 'error', 'msg' => l::get('upload.errors.missing-file'));
 
@@ -20,7 +20,7 @@ class upload
 		$size = a::get($file, 'size');
 		$msg = false;
 		$extension = self::mime_to_extension($type, f::extension($name));
-		
+
 		// Normalisation du nom
 		$fname = ($sanitize) ? str::slugify(f::name($name)) : f::name($name);
 
@@ -32,10 +32,10 @@ class upload
 		}
 		$destination = str_replace('{name}', $fname, $destination);
 		$destination = str_replace('{extension}', $extension, $destination);
-		
+
 		if(file_exists($destination) && $overwrite == false)
 			return array('status' => 'error', 'msg' => l::get('upload.errors.file-exists'), );
-		
+
 		if(empty($tmp_name))
 			return array('status' => 'error', 'msg' => l::get('upload.errors.missing-file'), );
 

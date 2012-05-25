@@ -22,19 +22,19 @@ $forms->openFieldset($diffText. ' une news');
 			$forms->insert('
 				<dl class="actualThumb">
 				<dt>Supprimer la miniature actuelle</dt>
-				<dd style="text-align:center"><p><img src="' .media::timthumb($path, 125, 125, array('zc' => 1)). '" /><br />	' 
+				<dd style="text-align:center"><p><img src="' .media::timthumb($path, 125, 125, array('zc' => 1)). '" /><br />	'
 					.str::slink(
 					'admin-news',
 					'Supprimer',
 					array(
 						'edit_news' => $_GET['edit_news'],
-						'deleteThumb' => $_GET['edit_news'])). 
+						'deleteThumb' => $_GET['edit_news'])).
 				'</p></dd></dl>');
 		}
 	}
 	$forms->addFile('thumb', 'Envoi d\'une miniature');
 	$forms->addType();
-	if($diffText == 'Ajouter') $forms->addHidden('date', date('Y-m-d')); 
+	if($diffText == 'Ajouter') $forms->addHidden('date', date('Y-m-d'));
 	$forms->addSubmit($diffText);
 }
 $forms->closeFieldset();

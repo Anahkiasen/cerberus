@@ -17,15 +17,15 @@ if(isset($_POST['db-host']))
 		}
 		elseif(in_array($value, array('TRUE','FALSE'))) $formatted_value = $value;
 		else $formatted_value = "'" .$value. "'";
-		
+
 		config::hardcode($key, $formatted_value);
 	}
-	
+
 	str::display(l::get('admin.config.ok'), 'success');
 }
 
 // Paramètres de Cerberus
-$CONFIGURATION = 
+$CONFIGURATION =
 array(
 	'Paramètres du site' => array(
 		'rewriting' => 'Activer la réecriture d\'URL',
@@ -47,7 +47,7 @@ array(
 		'local.host' => 'Serveur local',
 		'local.user' => 'Identifiant local',
 		'local.password' => 'Mot de passe local',
-		'local.name' => 'Base de donnée locale',	
+		'local.name' => 'Base de donnée locale',
 		'db.host' => 'Serveur en ligne',
 		'db.user' => 'Utilisateur en ligne',
 		'db.password' => 'Mot de passe en ligne',
@@ -63,7 +63,7 @@ array(
 
 if(file_exists(PATH_CONF)) include(PATH_CONF);
 if(!isset($config)) $config = array();
-	
+
 // Création du formulaire
 $forms = new forms();
 foreach($CONFIGURATION as $FIELDSET => $FIELDS)

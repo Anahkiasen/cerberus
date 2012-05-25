@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  * Language
- * 
+ *
  * Some handy methods to handle multi-language support
- * 
+ *
  * @todo rework all but set() and get()
  * @package Kirby
  */
@@ -12,7 +12,7 @@ class l
 {
 	/**
 	 * The global language array
-	 * 
+	 *
 	 * @var array
 	 */
 	public static $lang = array();
@@ -22,8 +22,8 @@ class l
 	{
 		if(SQL)
 			if(!db::is_table('cerberus_langue'))
-				update::table('cerberus_langue');		
-		
+				update::table('cerberus_langue');
+
 		// Langue du site
 		if(!session::get('langue_site')) session::set('langue_site', config::get('langue_default', 'fr'));
 		if(get('langue')) self::change(get('langue'));
@@ -31,13 +31,13 @@ class l
 		// Langue de l'administration
 		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
 		if(isset($_GET['get_admin_langue']) && in_array($_GET['get_admin_langue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['get_admin_langue'];
-		
+
 		self::locale();
-	
+
 		// Chargement du fichier de langue et mise en cache
 		self::change(self::sanitize(self::current()));
 		$index = cache::fetch('lang');
-		
+
 		if(!$index)
 		{
 			// Chargement et création dynamique du fichier langue
@@ -47,22 +47,22 @@ class l
 				// Récupération de la base de langues
 				$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
 				$index = a::simplify(a::rearrange($index, 'tag', true), false);
-				
+
 				if(isset($index) and !empty($index))
 					self::$lang = $index;
 				else errorHandle('Fatal Error', 'Impossible de localiser le fichier langue', __FILE__, __LINE__);
 			}
-			
+
 			// Clés de langue par défaut
 			self::load('cerberus/include/cerberus.{langue}.json');
 			cache::fetch('lang', self::$lang);
 		}
-		else self::$lang = $index;		
+		else self::$lang = $index;
 	}
 
 	/**
 		* Loads a language file
-		*/	
+		*/
 	static function load($fileraw)
 	{
 		$file = str_replace('{langue}', l::current(), $fileraw);
@@ -84,7 +84,7 @@ class l
 	########## LANGUE EN COURS #############
 	########################################
 	*/
-	
+
 	/* Affiche un lien vers une ou la totalité des langues */
 	static function flags($path, $langue = NULL)
 	{
@@ -95,53 +95,53 @@ class l
 			$hover = (self::current() == $langue) ? NULL : '-off';
 			$currentpath = str_replace('{langue}', $langue, $path);
 			$currentpath = str_replace('{hover}', $hover, $currentpath);
-			
+
 			echo str::slink(
 				NULL,
 				str::img($currentpath, strtoupper($langue). ' VERSION'),
 				array('langue' => $langue));
 		}
 	}
-	
+
 	/**
 		* Change the current website language
-		*/	
+		*/
 	static function change($langue = 'fr')
 	{
 		session::set('langue_site', l::sanitize($langue));
 		return session::get('langue_site');
 	}
-	
+
 	/**
 		* Returns the current website language
-		*/	
+		*/
 	static function current()
 	{
 		if(session::get('langue_site')) return session::get('langue_site');
 		else
 		{
 			$langue = str::split(server::get('http_accept_language'), '-');
-			$langue = str::trim(a::get($langue, 0));			
+			$langue = str::trim(a::get($langue, 0));
 			$langue = l::sanitize($langue);
-			
+
 			session::set('langue_site', $langue);
 			return $langue;
 		}
 	}
-	
+
 	/**
 	 * Returns the current language in the website administration
-	 * 
+	 *
 	 * @return string 	The current language ID
 	 */
 	static function admin_current()
 	{
 		return session::get('admin,langue');
 	}
-	
+
 	/**
 		* Sets the language according to the user locale environnement
-		*/	
+		*/
 	static function locale($language = FALSE)
 	{
 		if(!$language) $language = l::current();
@@ -162,12 +162,12 @@ class l
 
 	/**
 		* Checks if a given language can be used in the current website
-		*/	
+		*/
 	static function sanitize($langue)
 	{
 		$default = config::get('langue_default', 'fr');
 		$array_langues = config::get('langues', array($default));
-		
+
 		if(!in_array($langue, $array_langues)) $langue = $default;
 		return $langue;
 	}
@@ -177,24 +177,24 @@ class l
 	###### CONTENU ET TRADUCTIONS ##########
 	########################################
 	*/
-	
-	/** 
+
+	/**
 		* Sets a language value by key
 		*
 		* @param	mixed	 $key The key to define
 		* @param	mixed	 $value The value for the passed key
-		*/	
+		*/
 	static function set($key, $value = NULL)
 	{
 		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
 		else self::$lang[$key] = $value;
 	}
-	
+
 	/**
 		* Gets a language value by key
 		* [CERBERUS-EDIT]
 		*
-		* @param	mixed		$key The key to look for. Pass false or null to return the entire language array. 
+		* @param	mixed		$key The key to look for. Pass false or null to return the entire language array.
 		* @param	mixed		$default Optional default value, which should be returned if no element has been found
 		* @return mixed
 		*/
@@ -208,16 +208,16 @@ class l
 			return (empty($translate) or is_array($translate)) ? $default : stripslashes($translate);
 		}
 	}
-	
+
 	/**** Récupérer une traduction dans une langue en particulier */
 	static function getalt($key, $language = NULL, $default = NULL, $fallback = false)
 	{
 		$translate = $language ? db::field('cerberus_langue', $language, array('tag' => $key)) : NULL;
 		if(!$translate)
-			$translate = $fallback ? l::get($key, $default) : $default;		
+			$translate = $fallback ? l::get($key, $default) : $default;
 		return stripslashes($translate);
 	}
-	
+
 	/**** Traduction d'un jour */
 	static function day($day = NULL)
 	{
@@ -225,7 +225,7 @@ class l
 		$day = strtotime($day);
 		return strtolower(strftime('%A', $day));
 	}
-	
+
 	/**** Traduction d'un mois */
 	static function month($month = NULL)
 	{
@@ -233,12 +233,12 @@ class l
 		$month = strtotime($month);
 		return strftime('%B', $month);
 	}
-	
+
 	/**** Charger du contenu traduit */
 	static function content($file)
 	{
 		$file = 'pages/text/' .self::current(). '-' .$file;
-		
+
 		if(f::inclure($file.'.html')) true;
 		elseif(f::inclure($file.'.php')) true;
 		else echo '<span style="color:red">[' .$file. '(' .self::current(). ')]</span>';

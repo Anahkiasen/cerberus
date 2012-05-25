@@ -9,7 +9,7 @@ if(isset($_GET['load']))
 {
 	foreach(glob(PATH_CACHE. 'sql/' .$_GET['load']. '/*.sql') as $file)
 		$fichier = $file;
-		
+
 	multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.password'), config::get('db.name')));
 	str::display('La sauvegarde du ' .$_GET['load']. ' a bien été chargée', 'success');
 }
@@ -25,7 +25,7 @@ echo '<p>Ci-dessous se trouve la liste des sauvegardes journalières.</p>
 		</tr>
 	</thead>
 	<tbody>';
-	
+
 // Liste des sauvegardes
 foreach(glob('./' .PATH_CACHE. 'sql/*') as $file)
 {
@@ -34,7 +34,7 @@ foreach(glob('./' .PATH_CACHE. 'sql/*') as $file)
 		$folderDate = str_replace('./' .PATH_CACHE. 'sql/', '', $file);
 		$filesql = a::simplify(glob($file. '/*.sql'));
 
-		echo 
+		echo
 		'<tr>
 		<td>' .$folderDate. '</td>
 		<td>' .str::link($filesql, str::img(PATH_CERBERUS.'img/action-load.png'), array('load' => $folderDate)). '</td>

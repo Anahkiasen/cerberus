@@ -4,34 +4,34 @@ class admin_setup
 	// Options
 	protected $multilangue; // Site multilangue ou pas
 	private $arrayLangues; // Admin multilangue ou pas
-	
+
 	// Login
 	private $granted; // État de l'accès
 	private $login_user; // Utilisateur
 	private $login_password; // Mot de passe
-	
+
 	// Navigation
 	private static $droits;
 	private static $navigation = array('website' => array(), 'systeme' => array());
-	
+
 	/*
 	########################################
 	############## CONSTRUCTION ############
-	######################################## 
+	########################################
 	*/
-	
+
 	function __construct($customNavigation = NULL)
-	{	
+	{
 		global $connected;
 
 		$this->defineMultilangue();
-			
-		// Identification	 
+
+		// Identification
  		if(isset($_GET['logoff'])) session::remove('admin');
 		$this->login_user = md5(config::get('admin.login'));
 		$this->login_password = md5(config::get('admin.password'));
 		$this->adminLogin();
-		
+
 		if($this->granted)
 		{
 			// Création de la navigation de l'admin
@@ -44,16 +44,16 @@ class admin_setup
 				if(MULTILANGUE) array_unshift(self::$navigation['systeme'], 'langue');
 				if(db::is_table('cerberus_news')) self::$navigation['website']['Actualités'] = 'news';
 			}
-			
+
 			foreach(navigation::getSubmenu(FALSE) as $index => $name) if($index != 'admin') self::$navigation['website'][$name['text']] = $index;
 			self::$navigation['systeme'] = array_merge(self::$navigation['systeme'], a::force_array($customNavigation));
-			
+
 			// Droits de l'utilisateur
-			self::$droits = (SQL and db::is_table('cerberus_admin')) 
-				? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user'])))) 
+			self::$droits = (SQL and db::is_table('cerberus_admin'))
+				? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user']))))
 				: NULL;
-				if(empty(self::$droits)) 
-					foreach(self::$navigation as $section => $pages) 
+				if(empty(self::$droits))
+					foreach(self::$navigation as $section => $pages)
 						foreach($pages as $page) self::$droits[$page] = TRUE;
 
 			// Vérification de la page
@@ -63,18 +63,18 @@ class admin_setup
 				$admin = get('admin');
 				if(	isset($admin) and
 					in_array($admin, self::$droits))
-						
+
 					$title = ($this->arrayLangues) ? l::get('menu-admin-' .$admin) : ucfirst($admin);
 			}
-			
-			// Affichage de la page		
+
+			// Affichage de la page
 			echo '<div id="admin">';
 			$this->admin_navigation();
 			$this->content();
 			echo '</div>';
 		}
 	}
-	
+
 	// Charger une page d'admin
 	function content()
 	{
@@ -85,10 +85,10 @@ class admin_setup
 			elseif(f::inclure('pages/admin-' .$page. '.php')) true;
 		}
 	}
-	
+
 	// Admin en plusieures langues
 	function defineMultilangue($arrayLangues = NULL)
-	{		
+	{
 		$this->arrayLangues = $arrayLangues;
 		if(MULTILANGUE)
 		{
@@ -98,13 +98,13 @@ class admin_setup
 		else $this->multilangue = FALSE;
 		return $this->multilangue;
 	}
-	
+
 	/*
 	########################################
 	############# IDENTIFICATION ###########
 	########################################
 	*/
-	
+
 	// Formulaire d'identification et vérification
 	function adminLogin()
 	{
@@ -114,8 +114,8 @@ class admin_setup
 			$admin_form->addPassword('password', 'Mot de passe');
 			$admin_form->addSubmit('Connexion');
 		$admin_form->closeFieldset();
-				
-		// Vérification du formulaire		
+
+		// Vérification du formulaire
 		if(isset($_POST['user'], $_POST['password']))
 		{
 			if($this->checkLogin($_POST['user'], $_POST['password']))
@@ -137,7 +137,7 @@ class admin_setup
 			$admin_form->render();
 		}
 	}
-	
+
 	// Vérification des identifiants
 	function checkLogin($user, $password)
 	{
@@ -148,22 +148,22 @@ class admin_setup
 		}
 		else return (md5($user) == $this->login_user and md5($password) == $this->login_password);
 	}
-	
+
 	// Recupération de l'identification
 	function accessGranted()
 	{
 		return $this->granted;
 	}
-	
+
 	/*
 	########################################
 	############## NAVIGATION ##############
-	######################################## 
+	########################################
 	*/
 	function admin_navigation()
 	{
 		echo '<div id="admin-navigation"><h4>Tableau de bord</h4>';
-		
+
 		if(MULTILANGUE and $this->multilangue)
 		{
 			echo '<div class="btn-group"><button class="btn category">Langue</button>';
@@ -174,30 +174,30 @@ class admin_setup
 				echo '<a class="btn ' .$active. '" href="' .url::reload(array('get_admin_langue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue). '</a>';
 			}
 			echo '</div>';
-		}		
-		
+		}
+
 		echo '<div class="btn-group">
 		<button class="btn category">Pages du site</button>';
-		
+
 		// Langue de l'admin
-		
+
 		// Navigation de l'admin
 		asort(self::$navigation);
 		if(!empty(self::$navigation))
 		foreach(self::$navigation as $sections => $pages)
 		{
 			// Séparation
-			if($sections == 'systeme') 
+			if($sections == 'systeme')
 				echo '</div>
 				<div class="btn-group bottom"><button class="btn category">Pages système</button>';
-				
+
 			// Enumération des liens
 			foreach($pages as $titre => $page)
 			{
 				if(!empty($page) and self::$droits[$page])
 				{
 					// Texte
-					$texte_lien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE); 
+					$texte_lien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE);
 					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? 'btn-inverse' : NULL;
 					echo '<a class="btn ' .$thisActive. '" href="' .url::rewrite('admin-' .$page). '">' .ucfirst($texte_lien). '</a>';
 				}
@@ -205,7 +205,7 @@ class admin_setup
 		}
 		echo '<a class="btn btn-warning" href="' .url::rewrite('admin', 'logoff'). '">Déconnexion</a></div></div>';
 	}
-	
+
 	function get($variable)
 	{
 		return self::${$variable};

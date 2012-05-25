@@ -2,7 +2,7 @@
 /*
 	Fonction checkFields
 	# Vérifie si un formulaire a été correctement rempli
-	
+
 	$fields
 		Liste des champs obligatoires
 		Peut préciser le type d'un champ pour qu'il
@@ -11,7 +11,7 @@
 function checkFields()
 {
 	$mailbody = NULL;
-	
+
 	// Liste des champs voulus et incomplets
 	$funcGet = func_get_args();
 	foreach($funcGet as $id => $champ)
@@ -31,7 +31,7 @@ function checkFields()
 		{
 			$unfilled = array_diff($unfilled, array($key));
 			if(v::check($POST, $type))
-			{	
+			{
 				$mailbody .= (MULTILANGUE)
 					? '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : '
 					: '<strong>' .ucfirst($key). '</strong> : ';
@@ -40,11 +40,11 @@ function checkFields()
 			else $misfilled[] = $key;
 		}
 	}
-	
+
 	// On vérifie que les champs sont remplis
 	$isUnfilled = l::get('form-erreur-incomplete', 'Un ou plusieurs champs sont incomplets');
 	$isMisfilled = l::get('form-erreur-incorrect', 'Un ou plusieurs champs sont incorrects');
-		
+
 	$typesErreur = array('un', 'mis');
 	foreach($typesErreur as $erreur)
 	{
@@ -56,13 +56,13 @@ function checkFields()
 			$new_error = ${'is' .ucfirst($erreur). 'filled'}. ' :';
 			$new_error .= (count($variable) > 3) ? '<br />' : ' ';
 			$new_error .= implode(', ', $variable);
-			
+
 			$erreurs[] = $new_error;
 			$new_error = NULL;
 		}
 	}
 
-	// Affiche des possibles erreurs, sinon validation	
+	// Affiche des possibles erreurs, sinon validation
 	if(!empty($erreurs))
 	{
 		str::display(implode('<br />', $erreurs), 'error');

@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  * Head
- * 
+ *
  * This class handles the generation and managing of the head tag
- * 
+ *
  * @package Cerberus
  */
 class head
@@ -13,12 +13,12 @@ class head
 	 * The main array containing the head tags
 	 */
 	private static $head = array();
-	
+
 	/**
 	 * Order for tags and attributes
 	 */
 	private static $order_tags = array('base', 'title', 'meta', 'link', 'style');
-	
+
 	/**
 	 * Adds a tag to the header
 	 * @param string    $tag The desired tag
@@ -30,7 +30,7 @@ class head
 		$tag = array_merge($tag, $attributes);
 		self::$head[] = $tag;
 	}
-	
+
 	/**
 	 * Prints out the current head tag
 	 */
@@ -38,17 +38,17 @@ class head
 	{
 		// Setting encoding
 		self::set('meta', array('charset' => 'utf-8'));
-		
+
 		// Sitemap et CDN
 		if(file_exists('sitemap.xml'))   head::set('link', array('rel' => 'sitemap', 'type' => 'application/xml', 'title' => 'Sitemap', 'href' => 'sitemap.xml'));
 		if(dispatch::isScript('jquery')) head::set('link', array('rel' => 'dns-prefetch', 'href' => '//ajax.googleapis.com'));;
-			
+
 		// Add base tag
 		self::baseref();
-		
+
 		// Adding META tags
 		meta::head();
-		
+
 		// Reordering the head tags
 		self::reorder();
 
@@ -59,7 +59,7 @@ class head
 			$balise_name = a::get($attributes, 'tag');
 			$self_closing = !isset($attributes['value']);
 			$balise = $balise_name;
-			
+
 			// Writing the tag attributes
 			foreach($attributes as $k => $v)
 			{
@@ -69,27 +69,27 @@ class head
 					$balise .= '>' .$v;
 					continue;
 				}
-			
+
 				if($k == 'tag') continue;
-				else $balise .= ' ' .$k. '=\'' .addslashes($v). '\'';				
+				else $balise .= ' ' .$k. '=\'' .addslashes($v). '\'';
 			}
-			
-			// Wrapping the tag 
+
+			// Wrapping the tag
 			$balise = '<'.$balise;
 			$balise .= $self_closing ? '/>' : '</'.$balise_name. '>';
-			
+
 			// Saving the formatted version
 			self::$head[$id_balise] = $balise;
 		}
-		
+
 		// Prints the head tags
 		echo '<head>'.PHP_EOL."\t".implode(PHP_EOL."\t", self::$head).PHP_EOL;
 	}
-	
+
 	//////////////////////////////////////////////////////////////
-	//////////////////////////// HELPERS ///////////////////////// 
+	//////////////////////////// HELPERS /////////////////////////
 	//////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Reorder the tags and attributes in the head tag
 	 */
@@ -100,15 +100,15 @@ class head
 		// Sorting the head tags by type
 		foreach(self::$head as $attributes)
 			$tags[a::get($attributes, 'tag')][] = $attributes;
-		
+
 		// Emptying the head array
 		self::$head = array();
-		
+
 		foreach(self::$order_tags as $order)
 		{
 			if(!isset($tags[$order])) continue;
-		
-			// Ordering link tags by rel attribute	
+
+			// Ordering link tags by rel attribute
 			//if($order == 'link') $tags[$order] = a::sort($tags[$order], 'rel', 'asc');
 
 			// Reinserting the tags in the head
@@ -118,37 +118,37 @@ class head
 				self::$head[] = $attributes;
 			}
 		}
-		
+
 	}
-	
+
 	//////////////////////////////////////////////////////////////
-	////////////////////////// SHORTCUTS ///////////////////////// 
+	////////////////////////// SHORTCUTS /////////////////////////
 	//////////////////////////////////////////////////////////////
-	
+
 	// Set the page title
 	static function title($title)
 	{
-		self::set('title', array('value' => $title));	
+		self::set('title', array('value' => $title));
 	}
-	
+
 	// Add a stylesheet
 	static function stylesheet($href)
 	{
 		self::set('link', array('rel' => 'stylesheet', 'href' => $href));
 	}
-	
+
 	// Add CSS styles
 	static function css($value)
 	{
-		self::set('style', array('value' => $value));	
+		self::set('style', array('value' => $value));
 	}
-	
+
 	// Add a favicon
 	static function favicon($favicon)
 	{
 		self::set('link', array('rel' => 'shortcut icon', 'href' => PATH_COMMON.'img/'.$favicon));
 	}
-	
+
 	// Add a base tag to the head
 	static function baseref()
 	{
@@ -159,6 +159,6 @@ class head
 			head::set('base', array('href' => config::get('http').$baseref));
 		}
 	}
-	
+
 }
 ?>

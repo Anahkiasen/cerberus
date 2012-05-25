@@ -1,21 +1,21 @@
 <?php
 /**
- * 
+ *
  * Content
- * 
+ *
  * This class handles output buffering,
- * content loading and setting content type headers. 
- * 
+ * content loading and setting content type headers.
+ *
  * @package Kirby
  */
 class content
 {
 	private static $cache_folder = PATH_CACHE;
 	private static $cachename = NULL;
-	
+
 	/**
 		* Starts the output buffer
-		* 
+		*
 		*/
 	static function start()
 	{
@@ -25,8 +25,8 @@ class content
 	/**
 		* Stops the output buffer
 		* and flush the content or return it.
-		* 
-		* @param	boolean	$return Pass true to return the content instead of flushing it 
+		*
+		* @param	boolean	$return Pass true to return the content instead of flushing it
 		* @return mixed
 		*/
 	static function end($return = false)
@@ -42,7 +42,7 @@ class content
 
 	/**
 		* Loads content from a passed file
-		* 
+		*
 		* @param	string	$file The path to the file
 		* @param	boolean $return True: return the content of the file, false: echo the content
 		* @return mixed
@@ -53,12 +53,12 @@ class content
 		require_once($file);
 		$content = self::end(true);
 		if($return) return $content;
-		echo $content;				
+		echo $content;
 	}
 
 	/**
 		* Simplifies setting content type headers
-		* 
+		*
 		* @param	string	$ctype The shortcut for the content type. See the keys of the $ctypes array for all available shortcuts
 		* @param	string	$charset The charset definition for the content type header. Default is "utf-8"
 		*/
