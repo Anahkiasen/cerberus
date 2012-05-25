@@ -304,7 +304,10 @@ class init
 			
 		// Add path to custom Sass environnement
 		if(LOCAL)
+		{
+			$required[dispatch::path(PATH_COMMON. '{sass}/_custom.sass')] = NULL;
 			$required[dispatch::path(PATH_CERBERUS. '{sass}/base/_custom.sass')] = '@import ../../../../' .PATH_COMMON. 'sass/custom';
+		}
 		
 		// Create files and folders
 		foreach($required as $f => $content)
