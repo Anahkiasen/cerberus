@@ -24,7 +24,7 @@ class media extends dispatch
 	 */
 	static function timthumb($file, $width = NULL, $height = NULL, $params = array())
 	{
-		if(!empty($width)) $params['w'] = $width;
+		if(!empty($width)) $params['w']  = $width;
 		if(!empty($height)) $params['h'] = $height;
 
 		if(!str::find('http', $file))
@@ -50,6 +50,7 @@ class media extends dispatch
 	static function slideshow($folder, $width, $height, $params = array(), $shuffle = true)
 	{
 		// Ensure necessary plugins are loaded
+		dispatch::submodules('jquery', 'nivoslider');
 		if(!dispatch::isScript('jquery'))     dispatch::addJS('jquery');
 		if(!dispatch::isScript('nivoslider')) dispatch::addJS('nivoslider');
 
