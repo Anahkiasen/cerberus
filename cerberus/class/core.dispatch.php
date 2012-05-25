@@ -549,11 +549,14 @@ class dispatch
 		{
 			// If it's a script we know, match it to its path(s)
 			if(isset(self::$paths[$script]))
+			{
 				foreach(self::$paths[$script] as $s)
 				{
 					$extension = strtoupper(f::extension($s));
 					self::${$extension}['min'][] = $s;
 				}
+				continue;
+			}
 			
 			// Clean up the script from any wrapping tag
 			$script = preg_replace('#(<script>|</script>|<style>|</style>)#', NULL, $script);
