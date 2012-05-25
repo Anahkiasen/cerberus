@@ -112,15 +112,6 @@ class dispatch
 	 */
 	function __construct()
 	{
-		// Basic layour of the assets arrays
-		self::$JS = self::$CSS =
-			array(
-			'min' => array(),
-			'url' => array(),
-			'inline' => array(
-				'before' => array(),
-				'after' => array()));
-
 		// Set up the main path constants
 		self::paths();
 
@@ -129,9 +120,23 @@ class dispatch
 	}
 
 	/**
+	 * Creates the basic layout of the assets array
+	 */
+	private static function structure()
+	{
+		self::$JS = self::$CSS =
+			array(
+			'min' => array(),
+			'url' => array(),
+			'inline' => array(
+				'before' => array(),
+				'after' => array()));	
+	}
+
+	/**
 	 * Search for, cache and create constants for the most common paths
 	 */
-	private function paths()
+	private static function paths()
 	{
 		// Set up the recurring paths
 		$path_common   = config::get('path.common');
@@ -181,7 +186,7 @@ class dispatch
 	{
 		if(!isset(self::$category))
 		{
-			self::$page = (!empty($current)) ? $current : navigation::current();
+			self::$page     = (!empty($current)) ? $current : navigation::current();
 			self::$category = navigation::$page;
 		}
 	}
@@ -214,6 +219,11 @@ class dispatch
 	static function assets($scripts = array())
 	{
 		self::index();
+		self::structure();
+
+		// Emptying preexisting array
+		if(!empty(self::$scripts))
+			self::$scripts = array();
 
 		/* Building the assets array ------------------------------ */
 
