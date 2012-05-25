@@ -16,7 +16,7 @@ class dispatch
 	// The category we're currently in
 	static private $category;
 
-	/* Current ressources ------------------------------------- */
+	/* Current ressources ----------------------------------------- */
 
 	// Table containing the ressources to minify
 	static private $minify;
@@ -80,9 +80,9 @@ class dispatch
 			'js/jquery.tablesorter.min.js'),
 			);
 
-	//////////////////////////////////////////////////////////////
-	////////////////////// PATHS AND FOLDERS /////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	///////////////////////// PATHS AND FOLDERS //////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	// Compass configuration file
 	static public $compass  = 'config.rb';
@@ -103,9 +103,9 @@ class dispatch
 	static public $sass     = 'sass';
 	static public $swf      = 'swf';
 
-	//////////////////////////////////////////////////////////////
-	///////////////////////// CONSTRUCT //////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	/////////////////////////// CONSTRUCT ////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Initializes the dispatch module
@@ -186,9 +186,9 @@ class dispatch
 		}
 	}
 
-	//////////////////////////////////////////////////////////////
-	//////////////////// IMPORT ASSETS/MODULES ///////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	/////////////////////// IMPORT ASSETS/MODULES ////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Sets the different PHP scripts for the different pages
@@ -215,7 +215,7 @@ class dispatch
 	{
 		self::index();
 
-		/* Building the assets array ----------------------------- */
+		/* Building the assets array ------------------------------ */
 
 		// Forcing arrays where necessary
 		if(!is_array($scripts)) $scripts = array('*' => func_get_args());
@@ -232,6 +232,56 @@ class dispatch
 		// If Bootstrap, add it
 		if(config::get('bootstrap'))
 			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
+
+		/* Creating the environnement ----------------------------- */
+
+		// Getting assets paths
+		self::list_assets();
+
+		// Loading the submodules files
+		self::submodules(self::$scripts);
+
+		/* Loading the wanted assets ------------------------------ */
+
+		// Unpacking the scripts
+		self::$scripts = self::unpack($scripts);
+
+		// If we have files to load
+		if(self::$scripts)
+		foreach(self::$scripts as $key => $value)
+		{
+			// Bootstrap Javascript files pack
+			if($value == 'bootstrap-javascript')
+				self::$JS['url'] = array_merge(self::$JS['url'], glob(PATH_CERBERUS.'js/bootstrap-*.js'));
+
+			// Adding the available files to the CSS and JS arrays
+			if(isset(self::$paths[$value]))
+				foreach(self::$paths[$value] as $script)
+				{
+					// Ensure the asset is .css or .js
+					$extension = strtoupper(f::extension($script));
+					if($extension != 'CSS' and $extension != 'JS') continue;
+
+					// If it's an external script, don't minify it
+					if(str::find(array('http', 'bootstrap-'), $script)) self::${$extension}['url'][] = $script;
+					else self::${$extension}['min'][] = $script;
+				}
+		}
+
+		return self::$scripts;
+	}
+
+	//////////////////////////////////////////////////////////////////
+	///////////////////////////// HELPERS ////////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	/**
+	 * Crawls through the assets folder and group them by a common alias 
+	 */
+	private static function list_assets()
+	{
+		// Emptying the current list for refresh
+		self::$paths = array();
 
 		/* Listing available assets ------------------------------- */
 
@@ -273,54 +323,26 @@ class dispatch
 			// Removing the old entry from the array
 			self::$paths = a::remove(self::$paths, $from);
 		}
-
-		/* Loading the wanted assets ------------------------------- */
-
-		// Unpacking the scripts
-		self::$scripts = self::unpack($scripts);
-
-		// Loading the submodules files
-		self::submodules(self::$scripts);
-
-		// If we have files to load
-		if(self::$scripts)
-		foreach(self::$scripts as $key => $value)
-		{
-			// Bootstrap Javascript files pack
-			if($value == 'bootstrap-javascript')
-				self::$JS['url'] = array_merge(self::$JS['url'], glob(PATH_CERBERUS.'js/bootstrap-*.js'));
-
-			// Adding the available files to the CSS and JS arrays
-			if(isset(self::$paths[$value]))
-				foreach(self::$paths[$value] as $script)
-				{
-					// Ensure the asset is .css or .js
-					$extension = strtoupper(f::extension($script));
-					if($extension != 'CSS' and $extension != 'JS') continue;
-
-					// If it's an external script, don't minify it
-					if(str::find(array('http', 'bootstrap-'), $script)) self::${$extension}['url'][] = $script;
-					else self::${$extension}['min'][] = $script;
-				}
-		}
-
-		return self::$scripts;
 	}
-
-	//////////////////////////////////////////////////////////////
-	////////////////////////// HELPERS ///////////////////////////
-	//////////////////////////////////////////////////////////////
 
 	/**
 	 * Loads a given list of submodules into the Cerberus folder
 	 *
 	 * @param array    $submodules The list of required submodules
 	 */
-	private static function submodules($submodules)
+	public static function submodules($submodules)
 	{
+		// Getting an array or a list
+		if(!is_array($submodules)) $submodules = func_get_args();
+
+		// Compute the list of asked modules that exist
+		$plugins = array_intersect($submodules, array_keys(self::$plugins_files));
+
 		// Gather the source files
-		foreach(self::$plugins_files as $plugin => $plugin_files)
+		foreach($plugins as $plugin)
 		{
+			$plugin_files = a::get(self::$plugins_files, $plugin);
+
 			// Check if the plugin is already loaded
 			if(isset(self::$paths[$plugin])) continue;
 
@@ -451,6 +473,9 @@ class dispatch
 
 	/**
 	 * Takes a list of singled-out scripts and wrap them in a javascript block
+	 * 
+	 * @param  array   $scripts An array of Javascript bits
+	 * @return string  A <script> block
 	 */
 	private static function inline_js($scripts)
 	{
@@ -462,9 +487,9 @@ class dispatch
 		return content::end(true);
 	}
 
-	//////////////////////////////////////////////////////////////
-	//////////////////////// UTILITIES ///////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////// UTILITIES ///////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Returns a given path, replacing all keys (ex: {assets}) by their configured path
@@ -519,14 +544,14 @@ class dispatch
 		return (isset(self::$scripts) and in_array($script, self::$scripts));
 	}
 
-	//////////////////////////////////////////////////////////////
-	//////////////////// CSS & JAVASCRIPT ////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	//////////////////////// CSS & JAVASCRIPT ////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Injects scripts or styles in the page
 	 *
-	 * @param string 	$type The type of the injected asset, css or js
+	 * @param string  $type The type of the injected asset, css or js
 	 * @param array   $scripts Either an array of assets or a single asset
 	 * @param array   $params Parameters to pass to the current given scripts
 	 *                -- place[before/after] : Place the script before or after including stylesheets/scripts (default after)
@@ -537,6 +562,10 @@ class dispatch
 	{
 		if(!is_array($scripts)) $scripts = array($scripts);
 		if(!is_array($params))  json_decode($params);
+
+		// Check the paths and assets are initialized
+		if(empty(self::$paths))
+			self::assets();
 
 		// Default parameters (no alias/after/no wrap)
 		$type  = str::upper($type);
@@ -616,9 +645,9 @@ class dispatch
 		else echo $head;
 	}
 
-	//////////////////////////////////////////////////////////////
-	////////////////////////// SHORTCUTS /////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	////////////////////////////// SHORTCUTS /////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Add a stylesheet/style to the current page
@@ -666,11 +695,11 @@ class dispatch
 				include(a::get($file, 0));
 	}
 
-	//////////////////////////////////////////////////////////////
-	////////////////////// MODULES AND API ///////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	///////////////////////// MODULES AND API ////////////////////////
+	//////////////////////////////////////////////////////////////////
 
-	/* ---------- SASS & COMPASS ---------- */
+	/* SASS & COMPASS --------------------------------------------- */
 
 	// Setup a Compass configuration file
 	static function compass($config = array())
@@ -713,7 +742,7 @@ class dispatch
 		}
 	}
 
-	/* ---------- JAVASCRIPT ---------- */
+	/* JAVASCRIPT ------------------------------------------------- */
 
 	// Add a basic jQuery plugin
 	static function plugin($plugin, $selector = NULL, $params = NULL)
@@ -739,7 +768,7 @@ class dispatch
 		self::addJS("var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'));");
 	}
 
-	/* ---------- WEBFONTS ---------- */
+	/* WEBFONTS --------------------------------------------------- */
 
 	// Typekit
 	static function typekit($kit = 'xky6uxx')

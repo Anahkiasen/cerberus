@@ -243,7 +243,6 @@ class f
 	 */
 	static function convert($name, $type = 'jpg')
 	{
-		$this->
 		return self::name($name).$type;
 	}
 	
