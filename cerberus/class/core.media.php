@@ -17,8 +17,8 @@ class media extends dispatch
 	/**
 	 * Display an image using TimThumb to resize/recrop
 	 * 
-	 * @param  string  $file The name and path of the picture
-	 * @param  int     $width The desired width
+	 * @param  string  $file   The name and path of the picture
+	 * @param  int     $width  The desired width
 	 * @param  int     $height The desired $height
 	 * @param  array   $params Supplementary options to pass to TimThumb 
 	 */
@@ -34,7 +34,7 @@ class media extends dispatch
 				? realpath($file)
 				: $file;
 		}
-			
+		
 		return PATH_CORE.'class/plugins/timthumb.php?src=' .$file. '&' .a::glue($params, '&', '=');
 	}
 	
@@ -49,6 +49,10 @@ class media extends dispatch
 	 */
 	static function slideshow($folder, $width, $height, $params = array(), $shuffle = true)
 	{
+		// Ensure necessary plugins are loaded
+		if(!dispatch::isScript('jquery'))     dispatch::addJS('jquery');
+		if(!dispatch::isScript('nivoslider')) dispatch::addJS('nivoslider');
+		
 		// Create a HTML-safe id for the block
 		$id_block = str::slugify($folder);
 		
@@ -77,7 +81,7 @@ class media extends dispatch
 	 * 
 	 * @param string  $swf         The name of the .swf file
 	 * @param string  $bloc        The name of the div to put the animation in
-	 * @param int	   $width       The width of the animation
+	 * @param int	  $width       The width of the animation
 	 * @param int     $height      The height of the animation
 	 * @param array   $flashvars   Some variables to pass to Flash
 	 * @param array   $params      The Flash animation parameters
