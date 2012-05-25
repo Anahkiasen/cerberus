@@ -54,8 +54,8 @@ class media extends dispatch
 		
 		// Fetch the pictures
 		$images = glob(PATH_FILE.$folder.'/*.jpg');
-		echo PATH_FILE.$folder.'/*.jpg';
-		a::show($images);
+		
+		// Shuffle them if asked
 		if($shuffle) shuffle($images);
 		
 		// Creating the block
@@ -63,7 +63,7 @@ class media extends dispatch
 		foreach($images as $i) echo "\t".
 			str::img(
 				self::timthumb(
-					$folder.f::name($i),
+					$folder.'/'.basename($i),
 					$width,
 					$height)).PHP_EOL;
 		echo '</div>'.PHP_EOL;
