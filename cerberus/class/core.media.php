@@ -101,15 +101,18 @@ class media extends dispatch
 	/**
 	 * Imports an SVG file and render it in plain text in the code
 	 * 
-	 * @param  string  $svg The path to an .svg file
-	 * @return string  The content of said SVG file
+	 * @param  string   $svg The path to an .svg file
+	 * @param  boolean  $embbed Decides whether the SVG will be added as an <img> tag or embbeded directly into the code
+	 * @return string   The content of said SVG file
 	 */
-	static function svg($svg)
+	static function svg($svg, $embbed = TRUE)
 	{
-		$svg = PATH_COMMON.'img/'.$svg;
+		$svg_path = PATH_COMMON.'img/'.$svg;
 		
-		if(f::extension($svg) != 'svg' or !file_exists($svg)) return false;
-		return str::trim(f::read($svg));
+		if(f::extension($svg_path) != 'svg' or !file_exists($svg_path)) return false;
+		return $embbed
+			? str::trim(f::read($svg_path))
+			: self::image($svg);
 	}
 }
 ?>

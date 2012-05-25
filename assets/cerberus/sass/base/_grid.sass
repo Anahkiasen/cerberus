@@ -1,12 +1,12 @@
-//////////////////////////////////////////////////////////////
-//////////////////// GRID SYSTEM AND SUSY //////////////////// 
-//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////// GRID SYSTEM AND SUSY //////////////////////// 
+//////////////////////////////////////////////////////////////////////
 
-// SUSY import --------------------------------------------- /
+// SUSY import ----------------------------------------------------- /
 
 @import susy
 
-// Grid settings ------------------------------------------- /
+// Grid settings --------------------------------------------------- /
 
 // Grid type
 $cerberus-fluid: false !default
@@ -16,3 +16,16 @@ $total-columns : $gridColumns
 $column-width  : if($cerberus-fluid, $fluidGridColumnWidth, $gridColumnWidth)
 $gutter-width  : if($cerberus-fluid, $fluidGridGutterWidth, $gridGutterWidth)
 $grid-padding  : $gutter-width
+
+// Responsive design ----------------------------------------------- /
+
+$wide       : 1200px
+$desktop    : 980px
+$ipad       : 768px
+$mobile     : 480px
+
+// Max-width
+$to-wide    : 0 $wide
+$to-desktop : 0 $desktop
+$to-ipad    : 0 $ipad
+$to-mobile  : 0 $mobile
