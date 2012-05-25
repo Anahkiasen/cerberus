@@ -206,8 +206,8 @@ class dispatch
 
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::unpack($modules);
-
-		foreach($modules as $m) self::addPHP($m);
+		
+		if($modules) foreach($modules as $m) self::addPHP($m);
 	}
 
 	/**
