@@ -41,10 +41,10 @@ class dispatch
 		// jQuery
 		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
-
+		
 		// SWFObject
 		'swfobject'   => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-
+		
 		// Plugins jQuery
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider'  => 'jquery.nivo.slider.pack',
@@ -86,13 +86,13 @@ class dispatch
 
 	// Compass configuration file
 	static public $compass  = 'config.rb';
-
+	
 	// Assets folder
 	static public $assets   = 'assets';
 	static public $cerberus = 'cerberus';
 	static public $common   = 'common';
 	static public $plugins  = 'plugins';
-
+	
 	// Filetypes folders
 	static public $coffee   = 'coffee';
 	static public $css      = 'css';

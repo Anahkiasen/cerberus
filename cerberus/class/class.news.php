@@ -7,23 +7,23 @@ class news
 	############################ */
 
 	// Paramètres
-	private $table = 'cerberus_news';
-
+	private $table        = 'cerberus_news';
+	
 	// Affichage des news
-	private $newsNumber = 5;
+	private $newsNumber   = 5;
 	private $newsPaginate = FALSE;
-	private $newsOrder = 'date';
+	private $newsOrder    = 'date';
 	private $newsStart;
-
+	
 	// Composantes
 	private $displayThumb = TRUE;
-	private $displayDate = TRUE;
-	private $displayLink = TRUE;
-
+	private $displayDate  = TRUE;
+	private $displayLink  = TRUE;
+	
 	// Affichage de la miniature
-	private $thumbWidth = 100;
-	private $thumbHeight = 100;
-	private $thumbCrop = TRUE;
+	private $thumbWidth   = 100;
+	private $thumbHeight  = 100;
+	private $thumbCrop    = TRUE;
 
 	/*
 	###############################

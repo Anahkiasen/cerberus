@@ -6,11 +6,11 @@ class forms
 	private $infieldset = FALSE;
 	private $values;
 	private $status = array();
-
+	
 	// Options
 	private $optionMultilangue;
 	private $optionFormType;
-
+	
 	// Rendu
 	private $render;
 
@@ -52,26 +52,26 @@ class forms
 		// Analyse des résultats du formulaire
 		foreach($parser as $field)
 		{
-			$params			= explode(':', $field);
-			$key      		= a::get($params, 0);
-			$type				= a::get($params, 1, $key);
-			$default			= a::get($params, 2, NULL);
-			$value 			= $type == 'file'
-									? a::get($_FILES, $key)
-									: str::sanitize(r::request($key, $default), $type);
-
-			$status 					= (v::check($value, $type) and a::get($value, 'error', 0) == 0);
-			$this->status[$key] 	= $status ? 'success' : 'error';
-
-			$result[$key] 				= $value;
-			if(!$status) $errors[] 	= $key;
+			$params                = explode(':', $field);
+			$key                   = a::get($params, 0);
+			$type                  = a::get($params, 1, $key);
+			$default               = a::get($params, 2, NULL);
+			$value                 = $type == 'file'
+			                       	   ? a::get($_FILES, $key)
+			                           : str::sanitize(r::request($key, $default), $type);
+			
+			$status                = (v::check($value, $type) and a::get($value, 'error', 0) == 0);
+			$this->status[$key]    = $status ? 'success' : 'error';
+			
+			$result[$key]          = $value;
+			if(!$status) $errors[] = $key;
 		}
 
 		// Affichage des erreurs
 		if(!empty($errors))
 		{
 			return array(
-				'msg' => l::get('form.incomplete'),
+				'msg'    => l::get('form.incomplete'),
 				'result' => $result,
 				'status' => FALSE);
 		}
@@ -91,7 +91,7 @@ class forms
 			return array(
 				'status' => TRUE,
 				'result' => $result,
-				'mail' => $mailbody);
+				'mail'   => $mailbody);
 		}
 	}
 
@@ -174,8 +174,8 @@ class forms
 		// Valeur du champ
 		$isset_post = isset($_POST) ? $_POST : NULL;
 		$deploy['value'] = 	a::get($isset_post, $deploy['name'],
-									a::get($params, 'value',
-									a::get($this->values, $deploy['name'])));
+							a::get($params, 'value',
+							a::get($this->values, $deploy['name'])));
 
 		// Paramètres auxiliaires et data-*
 		$auxiliaires = array('placeholder', 'style', 'rel', 'rows', 'id', 'disabled', 'select');
@@ -189,20 +189,20 @@ class forms
 
 		// Listes
 		$checkboxes = a::get($params, 'checkboxes');
-		$radio = a::get($params, 'radio');
+		$radio      = a::get($params, 'radio');
 
 		// Add-ons
-		$prepend = a::get($params, 'prepend');
-		$append = a::get($params, 'append');
+		$prepend      = a::get($params, 'prepend');
+		$append       = a::get($params, 'append');
 		$prepend_type = $prepend ? 'prepend' : 'append';
-		$addon = a::get($params, 'addon');
+		$addon        = a::get($params, 'addon');
 
 		// Classe du champ
 		$deploy['class'] = a::get($params, 'class');
 		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']);
 		if($addon) $deploy['class'] .= ' ' .$addon;
 
-		$div_class = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
+		$div_class   = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
 		$div_class[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
 		$div_class[] = str::slugify($label);
 		$div_class[] = str::slugify($deploy['type']);

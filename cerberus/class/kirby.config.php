@@ -31,40 +31,40 @@ class config
 	 * @var array
 	 */
 	 public static $defaults = array(
-	 	'db.charset' => 'utf8',
-
-	 	/* Errors */
-	 	'developper.mail' => 'maxime@stappler.fr',
-
+		'db.charset'          => 'utf8',
+		
+		/* Errors */
+		'developper.mail'     => 'maxime@stappler.fr',
+		
 		/* Modules */
-		'bootstrap'   => true,
-		'compass'     => array('susy', 'animation', 'rgbapng', 'modular-scale', 'normalize'),
-		'logs'        => false,
-		'minify'      => true,
-
+		'bootstrap'           => true,
+		'compass'             => array('susy', 'animation', 'rgbapng', 'modular-scale', 'normalize'),
+		'logs'                => false,
+		'minify'              => true,
+		
 		/* Options */
-		'cache'          => true,
-		'cache.manifest' => false,
-		'local'          => false,
-		'meta'           => false,
-		'multilangue'    => false,
-		'rewriting'      => false,
-
+		'cache'               => true,
+		'cache.manifest'      => false,
+		'local'               => false,
+		'meta'                => false,
+		'multilangue'         => false,
+		'rewriting'           => false,
+		
 		/* Upload */
-		'upload.allowed'   => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif'),
-		'upload.overwrite' => true,
-
+		'upload.allowed'      => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif'),
+		'upload.overwrite'    => true,
+		
 		/* MySQL */
-		'admin.login'    => 'root',
-		'admin.password' => 'root',
-		'local.name'     => false,
-
+		'admin.login'         => 'root',
+		'admin.password'      => 'root',
+		'local.name'          => false,
+		
 		/* Cache */
 		'cache.get_variables' => true,
-		'cache.time' => null,
-
+		'cache.time'          => null,
+		
 		/* Navigation */
-		'index' => 'index');
+		'index'               => 'index');
 
 	/**
 		* Gets a config value by key

@@ -18,8 +18,8 @@ class navigation
 
 	// Paramètres
 	static private $homepage;
-	static public $page;
-	static public $sousPage;
+	static public  $page;
+	static public  $sousPage;
 	static private $filepath;
 	static private $system = array('404', 'sitemap');
 
@@ -58,10 +58,10 @@ class navigation
 
 				foreach($navigation as $page)
 				$data_raw[] = array(
-					'page' => $page,
-					'parent' => NULL,
-					'cache' => 0,
-					'hidden' => 0,
+					'page'          => $page,
+					'parent'        => NULL,
+					'cache'         => 0,
+					'hidden'        => 0,
 					'external_link' => NULL);
 			}
 			self::build($data_raw);
@@ -145,10 +145,10 @@ class navigation
 		foreach(self::$system as $sys)
 		{
 			$data_raw[] = array(
-				'page' => $sys,
-				'parent' => NULL,
-				'cache' => 1,
-				'hidden' => 1,
+				'page'          => $sys,
+				'parent'        => NULL,
+				'cache'         => 1,
+				'hidden'        => 1,
 				'external_link' => NULL);
 		}
 
@@ -175,11 +175,11 @@ class navigation
 				}
 
 				$data_raw[$index] = array(
-					'text' => l::get('menu-' .$index, ucfirst($index)),
-					'hidden' => $hidden,
+					'text'     => l::get('menu-' .$index, ucfirst($index)),
+					'hidden'   => $hidden,
 					'external' => $external,
-					'class' => array('menu-'.$index),
-					'link' => $lien);
+					'class'    => array('menu-'.$index),
+					'link'     => $lien);
 			}
 
 			// SOUS-MENU
@@ -192,9 +192,9 @@ class navigation
 
 				$data_raw[$index]['submenu'][$values['page']] = array(
 					'hidden' => $values['hidden'],
-					'text' => l::get('menu-' .$index_sub, ucfirst($values['page'])),
-					'class' => array('menu-'.$index.'-'.$values['page']),
-					'link' => $lien);
+					'text'   => l::get('menu-' .$index_sub, ucfirst($values['page'])),
+					'class'  => array('menu-'.$index.'-'.$values['page']),
+					'link'   => $lien);
 
 				// Calculs des liens des sous-pages
 				if(isset($data_raw[$index]['submenu']))
@@ -269,11 +269,11 @@ class navigation
 				if(isset($value['hidden']) and $value['hidden'] != 1)
 				{
 					// Attributs
-					$subpage = key(a::get($value, 'submenu', array()));
-					$metapage = meta::page($key. '-' .$subpage);
+					$subpage       = key(a::get($value, 'submenu', array()));
+					$metapage      = meta::page($key. '-' .$subpage);
 					$attr['class'] = a::get($value, 'class');
 					$attr['title'] = a::get($metapage, 'titre');
-					$classList = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
+					$classList     = $attr['class'] ? ' class="' .$attr['class']. '"' : NULL;
 
 					$lien = self::$optionListed
 						? '<li' .$classList. '>' .str::link($value['link'], $value['text'], array('title' => $attr['title'])). '</li>'
