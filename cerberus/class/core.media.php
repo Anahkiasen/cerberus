@@ -17,10 +17,10 @@ class media extends dispatch
 	/**
 	 * Display an image using TimThumb to resize/recrop
 	 *
-	 * @param  string  $file   The name and path of the picture
-	 * @param  int     $width  The desired width
-	 * @param  int     $height The desired $height
-	 * @param  array   $params Supplementary options to pass to TimThumb
+	 * @param  string  $file    The name and path of the picture
+	 * @param  int     $width   The desired width
+	 * @param  int     $height  The desired $height
+	 * @param  array   $params  Supplementary options to pass to TimThumb
 	 */
 	static function timthumb($file, $width = NULL, $height = NULL, $params = array())
 	{
@@ -41,11 +41,11 @@ class media extends dispatch
 	/**
 	 * Creates a slideshow (currently based on nivoSlider)
 	 *
-	 * @param string  $folder  The folder containing the images to use
-	 * @param int     $width   The width of the slideshow
-	 * @param int     $height  The height of the slideshow
-	 * @param mixed   $params  The parameters to pass, as a JSON or PHP array
-	 * @param boolean $shuffle Whether PHP should shuffle the images found in the directory or not
+	 * @param string   $folder   The folder containing the images to use
+	 * @param int      $width    The width of the slideshow
+	 * @param int      $height   The height of the slideshow
+	 * @param mixed    $params   The parameters to pass, as a JSON or PHP array
+	 * @param boolean  $shuffle  Whether PHP should shuffle the images found in the directory or not
 	 */
 	static function slideshow($folder, $width, $height, $params = array(), $shuffle = true)
 	{
@@ -96,6 +96,20 @@ class media extends dispatch
 
 		$swfobject = 'swfobject.embedSWF("' .PATH_COMMON. 'swf/' .$swf. '.swf", "' .$bloc. '", "' .$width. '", "' .$height. '", "9.0.0", false, ' .$flashvars. ', ' .$params. ', ' .$attributes. ');';
 		dispatch::addJS($swfobject);
+	}
+
+	/**
+	 * Imports an SVG file and render it in plain text in the code
+	 * 
+	 * @param  string  $svg The path to an .svg file
+	 * @return string  The content of said SVG file
+	 */
+	static function svg($svg)
+	{
+		$svg = PATH_COMMON.'img/'.$svg;
+		
+		if(f::extension($svg) != 'svg' or !file_exists($svg)) return false;
+		return str::trim(f::read($svg));
 	}
 }
 ?>
