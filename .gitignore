@@ -1,12 +1,16 @@
-# Système
+## SYSTEM ##
+############
+
+# System
 .DS_Store
 
-## SASS ET COMPASS ##
-#####################
-
+# Project files
 config.rb
-.sass-cache
 .project
+*.sublime-*
+
+# Sass
+.sass-cache
 
 ## CERBERUS CORE FILES ##
 #########################
