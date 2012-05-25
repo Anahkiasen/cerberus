@@ -393,6 +393,8 @@ class dispatch
 			}
 			self::$paths[$plugin] = $plugin_files;
 		}
+
+		self::list_assets();
 	}
 
 	/**
