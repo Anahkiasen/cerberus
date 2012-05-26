@@ -13,8 +13,8 @@ class server
 	/**
 		* Gets a value from the _SERVER array
 		*
-		* @param  mixed    $key The key to look for. Pass false or null to return the entire server array.
-		* @param  mixed    $default Optional default value, which should be returned if no element has been found
+		* @param  mixed $key     The key to look for. Pass false or null to return the entire server array.
+		* @param  mixed $default Optional default value, which should be returned if no element has been found
 		* @return mixed
 		*/
 	static function get($key = FALSE, $default = NULL)
@@ -24,9 +24,33 @@ class server
 	}
 
 	/**
+	 * Returns the current host
+	 *
+	 * @return string The current host
+	 * @package       Cerberus
+	 */
+	static function host()
+	{
+		return self::get('HTTP_HOST');
+	}
+
+	/**
+	 * Checks if we're in a local environnement or not
+	 *
+	 * @return boolean Local or not
+	 * @package        Cerberus
+	 */
+	static function local()
+	{
+		$host = self::host();
+		return (str::find('localhost', $host) or str::find('127.0.0.1', $host));
+	}
+
+	/**
 	 * Gets the person's current IP
 	 *
-	 * @return string    An IP address
+	 * @return string An IP address
+	 * @package       Cerberus
 	 */
 	static function ip()
 	{
@@ -45,7 +69,8 @@ class server
 	/**
 	 * Gets the person's current country and/or country code
 	 *
-	 * @return array    An array of informations about the person's location
+	 * @return array An array of informations about the person's location
+	 * @param        Cerberus
 	 */
 	static function location($ip = NULL)
 	{
