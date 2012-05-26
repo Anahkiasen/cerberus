@@ -205,7 +205,7 @@ class init
 
 		// Page is local or not
 		if(!defined('LOCAL'))
-			define('LOCAL', (in_array(server::get('http_host'), array('localhost:8888', '127.0.0.1'))));
+			define('LOCAL', server::local());
 
 		// Setting parameters according to local or production
 		config::set(array(
