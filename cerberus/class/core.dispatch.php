@@ -10,41 +10,68 @@
  */
 class dispatch
 {
-	// The page we're currently in
+	/**
+	 * The page we're currently in
+	 * @var string
+	 */
 	static private $page;
 
-	// The category we're currently in
+	/**
+	 *  The category we're currently in
+	 * @var string
+	 */
 	static private $category;
 
 	/* Current ressources ----------------------------------------- */
 
-	// Table containing the ressources to minify
+	/**
+	 * Table containing the ressources to minify
+	 * @var array
+	 */
 	static private $minify;
 
-	// Table containing the scripts and styles of the current page
+	/**
+	 * Table containing the scripts and styles of the current page
+	 * @var array
+	 */
 	static private $scripts;
 
-	// The current CSS ressources
+	/**
+	 * The current CSS ressources
+	 * @var array
+	 */
 	static private $CSS;
 
-	// The current JS ressources
+	/**
+	 * The current JS ressources
+	 * @var array
+	 */
 	static private $JS;
 
-	// A Typekit ID if available
+	/**
+	 * A Typekit ID if available
+	 * @var string
+	 */
 	static private $typekit;
 
-	// Paths to every ressource available
+	/**
+	 * Paths to every ressource available
+	 * @var array
+	 */
 	static private $paths = array();
 
-	// A list of aliases for different scripts
+	/**
+	 * A list of aliases for different scripts
+	 * @var array
+	 */
 	static private $alias = array(
 		// jQuery
 		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
-		
+
 		// SWFObject
 		'swfobject'   => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
-		
+
 		// Plugins jQuery
 		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider'  => 'jquery.nivo.slider.pack',
@@ -53,7 +80,10 @@ class dispatch
 		'easing'      => 'jquery.easing',
 		'noty'        => 'jquery.noty');
 
-	// The file to cherry-pick in the linked submodules
+	/**
+	 * The file to cherry-pick in the linked submodules
+	 * @var array
+	 */
 	static private $plugins_files = array(
 		'bootstrap'   => array(
 			'img/*',
@@ -86,13 +116,13 @@ class dispatch
 
 	// Compass configuration file
 	static public $compass  = 'config.rb';
-	
+
 	// Assets folder
 	static public $assets   = 'assets';
 	static public $cerberus = 'cerberus';
 	static public $common   = 'common';
 	static public $plugins  = 'plugins';
-	
+
 	// Filetypes folders
 	static public $coffee   = 'coffee';
 	static public $css      = 'css';
@@ -130,7 +160,7 @@ class dispatch
 			'url' => array(),
 			'inline' => array(
 				'before' => array(),
-				'after' => array()));	
+				'after' => array()));
 	}
 
 	/**
@@ -206,14 +236,14 @@ class dispatch
 
 		if(!is_array($modules)) $modules = array('*' => func_get_args());
 		$modules = self::unpack($modules);
-		
+
 		if($modules) foreach($modules as $m) self::addPHP($m);
 	}
 
 	/**
 	 * Sets the different JS and CSS scripts for the different pages
 	 *
-	 * @param array 	$modules The wanted scripts and styles
+	 * @param  array  $modules The wanted scripts and styles
 	 * @return array  The scripts that were used in the current page
 	 */
 	static function assets($scripts = array())
@@ -286,7 +316,7 @@ class dispatch
 	//////////////////////////////////////////////////////////////////
 
 	/**
-	 * Crawls through the assets folder and group them by a common alias 
+	 * Crawls through the assets folder and group them by a common alias
 	 */
 	private static function list_assets()
 	{
@@ -338,7 +368,7 @@ class dispatch
 	/**
 	 * Loads a given list of submodules into the Cerberus folder
 	 *
-	 * @param array    $submodules The list of required submodules
+	 * @param array  $submodules The list of required submodules
 	 */
 	public static function submodules($submodules)
 	{
@@ -410,7 +440,7 @@ class dispatch
 	/**
 	 * Sort and filters an array of asked modules
 	 *
-	 * @param array 	$modules An array containing the wanted modules globally
+	 * @param  array  $modules An array containing the wanted modules globally
 	 * @return array  Only the needed modules in all those given
 	 */
 	private static function unpack($modules)
@@ -462,8 +492,8 @@ class dispatch
 	/**
 	 * Cleans an array of asset from duplicates and empty strings
 	 *
-	 * @param  array 	$array The array to sanitize
-	 * @return array 	The sanitized array
+	 * @param  array  $array The array to sanitize
+	 * @return array  The sanitized array
 	 */
 	private static function sanitize($array)
 	{
@@ -485,7 +515,7 @@ class dispatch
 
 	/**
 	 * Takes a list of singled-out scripts and wrap them in a javascript block
-	 * 
+	 *
 	 * @param  array   $scripts An array of Javascript bits
 	 * @return string  A <script> block
 	 */
@@ -563,12 +593,12 @@ class dispatch
 	/**
 	 * Injects scripts or styles in the page
 	 *
-	 * @param string  $type The type of the injected asset, css or js
+	 * @param string  $type    The type of the injected asset, css or js
 	 * @param array   $scripts Either an array of assets or a single asset
-	 * @param array   $params Parameters to pass to the current given scripts
-	 *                -- place[before/after] : Place the script before or after including stylesheets/scripts (default after)
-	 *                -- alias               : An alias to give the given script
-	 *                -- wrap[window/ready]  : Wraps the script with (window).load or (document).ready
+	 * @param array   $params  Parameters to pass to the current given scripts
+	 *                         -- place[before/after] : Place the script before or after including stylesheets/scripts (default after)
+	 *                         -- alias               : An alias to give the given script
+	 *                         -- wrap[window/ready]  : Wraps the script with (window).load or (document).ready
 	 */
 	static function inject($type, $scripts, $params = array())
 	{
@@ -713,7 +743,11 @@ class dispatch
 
 	/* SASS & COMPASS --------------------------------------------- */
 
-	// Setup a Compass configuration file
+	/**
+	 * Setup a Compass configuration file
+	 *
+	 * @param  array  $config An array containing configuration parameters
+	 */
 	static function compass($config = array())
 	{
 		$file = NULL;
@@ -756,7 +790,13 @@ class dispatch
 
 	/* JAVASCRIPT ------------------------------------------------- */
 
-	// Add a basic jQuery plugin
+	/**
+	 * Add a basic jQuery plugin
+	 *
+	 * @param  string $plugin   The plugin name
+	 * @param  string $selector The selector to apply the plugin to (can be null)
+	 * @param  array  $params   An array of parameters to pass to the plugin
+	 */
 	static function plugin($plugin, $selector = NULL, $params = NULL)
 	{
 		// Getting parameters
@@ -774,7 +814,11 @@ class dispatch
 		self::addJS($string);
 	}
 
-	// Add a Google Analytics account
+	/**
+	 * Add a Google Analytics account
+	 *
+	 * @param  string $analytics A Google Analytics ID
+	 */
 	static function analytics($analytics = 'XXXXX-X')
 	{
 		self::addJS("var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'));");
@@ -782,14 +826,22 @@ class dispatch
 
 	/* WEBFONTS --------------------------------------------------- */
 
-	// Typekit
+	/**
+	 * Add a Typekit kit
+	 *
+	 * @param  string $kit The Typekit ID
+	 */
 	static function typekit($kit = 'xky6uxx')
 	{
 		self::$typekit = $kit;
 		self::addJS('try{Typekit.load();}catch(e){}');
 	}
 
-	// Google Webfonts
+	/**
+	 * Embbed Google webfonts on the page
+	 *
+	 * @param  string Several fonts to include
+	 */
 	static function googleFonts()
 	{
 		$fonts = func_get_args();

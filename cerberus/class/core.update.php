@@ -1,10 +1,16 @@
 <?php
 class update
 {
-	// The current revision number
+	/**
+	 * The current revision
+	 * @var string
+	 */
 	private static $revision;
 
-	// The last revision number to date
+	/**
+	 * The last revision number to date
+	 * @var string
+	 */
 	private static $last = '2012-05-23,a98b7701b20f20aed664d4232550709b2b601f40';
 
 	/**
@@ -42,13 +48,14 @@ class update
 		if(self::outdate()) self::update_core(self::$last);
 	}
 
-	//////////////////////////////////////////////////////////////
-	/////////////////////////// TOOLKIT //////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	////////////////////////////// TOOLKIT ///////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Returns the current revision number
-	 * @return date    The date of the last update
+	 *
+	 * @return date  The date of the last update
 	 */
 	static function revision()
 	{
@@ -62,8 +69,9 @@ class update
 
 	/**
 	 * Verify if the current project is outdated or not
-	 * @param  date       $date The date to match against the current revision number. Defaults to last revision number
-	 * @return boolean    Boolean stating if the project is outdated or not
+	 *
+	 * @param  date     $date The date to match against the current revision number. Defaults to last revision number
+	 * @return boolean  Boolean stating if the project is outdated or not
 	 */
 	static function outdate($date = NULL)
 	{
@@ -77,7 +85,8 @@ class update
 
 	/**
 	 * Updates the core to a particular revision number
-	 * @param string    $torev The revision number to update to
+	 *
+	 * @param string  $torev The revision number to update to
 	 */
 	static function update_core($torev)
 	{
@@ -90,14 +99,15 @@ class update
 		else str::translate('update.errror', NULL, 'error');
 	}
 
-	//////////////////////////////////////////////////////////////
-	/////////////////////// CORE FUNCTIONS ///////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	/////////////////////////// CORE FUNCTIONS ///////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Search all pages for $search and replace with $replace - both are REGEX
-	 * @param  regex   $search The string to search for
-	 * @param  regex   $replace What to replace it with
+	 *
+	 * @param  regex   $search   The string to search for
+	 * @param  regex   $replace  What to replace it with
 	 * @return string  A list of the found matches
 	 */
 	static function codematch($search, $replace)
@@ -138,7 +148,8 @@ class update
 
 	/**
 	 * Creates a missing Cerberus table into the database
-	 * @param string  $table The key of the table to create
+	 *
+	 * @param string  $table  The key of the table to create
 	 */
 	static function table($table)
 	{

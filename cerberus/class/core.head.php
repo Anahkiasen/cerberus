@@ -11,17 +11,20 @@ class head
 {
 	/**
 	 * The main array containing the head tags
+	 * @var array
 	 */
 	private static $head = array();
 
 	/**
 	 * Order for tags and attributes
+	 * @var array
 	 */
 	private static $order_tags = array('base', 'title', 'meta', 'link', 'style');
 
 	/**
 	 * Adds a tag to the header
-	 * @param string    $tag The desired tag
+	 *
+	 * @param string    $tag        The desired tag
 	 * @param array     $attributes An array containing the attributes of the tag
 	 */
 	static function set($tag, $attributes)
@@ -86,9 +89,9 @@ class head
 		echo '<head>'.PHP_EOL."\t".implode(PHP_EOL."\t", self::$head).PHP_EOL;
 	}
 
-	//////////////////////////////////////////////////////////////
-	//////////////////////////// HELPERS /////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	////////////////////////////// HELPERS ///////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Reorder the tags and attributes in the head tag
@@ -121,44 +124,59 @@ class head
 
 	}
 
-	//////////////////////////////////////////////////////////////
-	////////////////////////// SHORTCUTS /////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////// SHORTCUTS ///////////////////////////
+	//////////////////////////////////////////////////////////////////
 
-	// Set the page title
+	/**
+	 * Set the current page title
+	 *
+	 * @param  string $title The page title
+	 */
 	static function title($title)
 	{
 		self::set('title', array('value' => $title));
 	}
 
-	// Add a stylesheet
+	/**
+	 * Add a stylesheet to the page
+	 *
+	 * @param  string $href Link or path to the stylesheet
+	 */
 	static function stylesheet($href)
 	{
 		self::set('link', array('rel' => 'stylesheet', 'href' => $href));
 	}
 
-	// Add CSS styles
+	/**
+	 * Add CSS styles to the page
+	 *
+	 * @param  string $value CSS code
+	 */
 	static function css($value)
 	{
 		self::set('style', array('value' => $value));
 	}
 
-	// Add a favicon
+	/**
+	 * Add a favicon to the page
+	 * @param  string $favicon Name of the favicon file (must be in image folder)
+	 */
 	static function favicon($favicon)
 	{
 		self::set('link', array('rel' => 'shortcut icon', 'href' => PATH_COMMON.'img/'.$favicon));
 	}
 
-	// Add a base tag to the head
+	/**
+	 * Add a base tag to the page
+	 */
 	static function baseref()
 	{
-		// Baseref
 		if(REWRITING and PATH_MAIN == NULL)
 		{
 			$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
 			head::set('base', array('href' => config::get('http').$baseref));
 		}
 	}
-
 }
 ?>

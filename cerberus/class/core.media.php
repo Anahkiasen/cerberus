@@ -1,4 +1,12 @@
 <?php
+/**
+ *
+ * media
+ *
+ * This class handles the displaying of assets
+ *
+ * @package Cerberus
+ */
 class media extends dispatch
 {
 	/**
@@ -100,7 +108,7 @@ class media extends dispatch
 
 	/**
 	 * Imports an SVG file and render it in plain text in the code
-	 * 
+	 *
 	 * @param  string   $svg The path to an .svg file
 	 * @param  boolean  $embbed Decides whether the SVG will be added as an <img> tag or embbeded directly into the code
 	 * @return string   The content of said SVG file
@@ -108,7 +116,7 @@ class media extends dispatch
 	static function svg($svg, $embbed = TRUE)
 	{
 		$svg_path = PATH_COMMON.'img/'.$svg;
-		
+
 		if(f::extension($svg_path) != 'svg' or !file_exists($svg_path)) return false;
 		return $embbed
 			? str::trim(f::read($svg_path))

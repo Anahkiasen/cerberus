@@ -6,32 +6,37 @@
  * Use for the caching of data, pieces of pages or complete pages
  * It can stock variables, arrays, and use the Content class to stock anything else
  *
- * @package Kirby
+ * @package Cerberus
  */
 class cache
 {
   /**
    * The name of the current output buffer being cache, initialized by fetch() and retrieved by save()
+   * @var string
    */
   static private $cached_file = NULL;
 
   /**
    * The folder where cached files go
+   * @var string
    */
   static private $folder = NULL;
 
   /**
    * The amount of time in seconds to cache files
+   * @var int
    */
   static private $time = NULL;
 
   /**
    * Cache current GET variables or not (useful to cache dynamic pages)
+   * @var boolean
    */
-  static private $cache_get_variables = NULL;
+  static private $cache_get_variables = FALSE;
 
   /**
    * The GET variables to avoid caching
+   * @var array
    */
   static private $get_remove = array('PHPSESSID', 'gclid');
 
@@ -60,20 +65,20 @@ class cache
 	 * 		[your page]
 	 * 	cache::save();
 	 *
-	 * @param string 		$name The name of the cached file
-	 * @param mixed 		$content Facultative; a piece of data to cache, can be a variable, an array etc.
-	 * 						If left NULL, the cache function will start caching everything that is outputed after its call
-	 * 						To save this output, call cache_save
-	 * @param array 		$params Additional parameters to pass the function
-	 *                      -- cache_type: if set to 'output', cache::fetch will initialize a content::start,
-	 *                         and will save everything that comes after cache::fetch, until you do a cache::save
-	 *                         If set to anything else (or not set), cache::fetch will
-	 *                         save the given data on the spot without using an output buffer
-	 * 						-- cache_folder: The folder where the cached file will be
-	 * 						-- cache.time: How long you want to keep the cached version
-	 * 						-- cache_variables: Appends the current $_GET variables to the name of the file, allowing caching of dynamic pages
-	 * @return mixed 		If you're caching a piece of data, it will return the said piece of data.
-	 * 						If you're caching the page, it will return a boolean stating if the file was cached or not
+	 * @param string  $name     The name of the cached file
+	 * @param mixed   $content  Facultative; a piece of data to cache, can be a variable, an array etc.
+	 *                            If left NULL, the cache function will start caching everything that is outputed after its call
+	 *                            To save this output, call cache_save
+	 * @param array  $params    Additional parameters to pass the function
+	 *                            -- cache_type: if set to 'output', cache::fetch will initialize a content::start,
+	 *                              and will save everything that comes after cache::fetch, until you do a cache::save
+	 *                              If set to anything else (or not set), cache::fetch will
+	 *                              save the given data on the spot without using an output buffer
+	 *                            -- cache_folder: The folder where the cached file will be
+	 *                            -- cache.time: How long you want to keep the cached version
+	 *                            -- cache_variables: Appends the current $_GET variables to the name of the file, allowing caching of dynamic pages
+	 * @return mixed  If you're caching a piece of data, it will return the said piece of data.
+	 *                If you're caching the page, it will return a boolean stating if the file was cached or not
 	 */
 	static function fetch($name, $content = NULL, $params = array())
 	{
@@ -146,7 +151,9 @@ class cache
 	/**
 	 * Shortcut to cache a page
 	 *
-	 * @return mixed   The result of the cache
+	 * @param  string  $page    The page name
+	 * @param  array   $params  Additional parameters to pass the cache function
+	 * @return string  The content of the page
 	 */
 	static function page($page, $params = array())
 	{
@@ -157,8 +164,8 @@ class cache
 	/**
 	 * Saves an output buffer initiated with cache::fetch
 	 *
-	 * @param boolean  $return Return the saved data or echoes it
-	 * @return mixed   Echoes or return all the data that was just cached
+	 * @param  boolean  $return Return the saved data or echoes it
+	 * @return mixed    Echoes or return all the data that was just cached
 	 */
 	static function save($return = false)
 	{
@@ -176,8 +183,8 @@ class cache
 	/**
 	 * Search for files inside the cache
 	 *
-	 * @param string    $search The key to look for
-	 * @param boolean   If false returns the first file found, if true returns all files found
+	 * @param  string   $search The key to look for
+	 * @param  boolean  If false returns the first file found, if true returns all files found
 	 * @return mixed    FALSE if the file hasn't been found, the path if it has
 	 */
 	static function search($search, $all_files = false)
@@ -192,8 +199,8 @@ class cache
 	/**
 	 * Deletes file(s) from the cache. The key passed can contain * and braces as it's parsed by glob()
 	 *
-	 * @param  string   $delete The keys to look for. If NULL, the function empties the cache folder
-	 * @param  boolean  $sloppy If true if will look for all files containing the key, if not it will search an exact match
+	 * @param  string   $delete  The keys to look for. If NULL, the function empties the cache folder
+	 * @param  boolean  $sloppy  If true if will look for all files containing the key, if not it will search an exact match
 	 * @return boolean  True if the file(s) have been correctly removed, false if not found
 	 */
 	static function delete($delete = NULL, $sloppy = FALSE)
@@ -219,7 +226,7 @@ class cache
 			PATH_CERBERUS.'{js}/{plugins}/',
 			PATH_CERBERUS.'{css}/{plugins}/',
 			PATH_CERBERUS.'.sass-cache/',
-			PATH_COMMON.'.sass-cache/');
+			PATH_COMMON  .'.sass-cache/');
 
 		foreach($purge_files as $f)
 		{
@@ -236,10 +243,10 @@ class cache
 	/**
 	 * Creates an Application Cache manifest according to a list of given ressources and fallbacks
 	 *
-	 * @param array     $cache
-	 * @param mixed     $network
-	 * @param array     $fallback
-	 * @return
+	 * @param  array    $cache     An array containing the assets to cache
+	 * @param  mixed    $network   An array listing online assets
+	 * @param  array    $fallback  An array containing fallback assets if offline
+	 * @return boolean  Success of the cache.manifest writing
 	 */
 	static function manifest($cache = array('img', 'fonts', 'video'), $network = '*', $fallback = NULL)
 	{

@@ -187,104 +187,105 @@ class browser
 
 		// Don't do the detection twice
 		if(self::$ua == $ua) return array(
-			'name'		 => self::$name,
-			'engine'	 => self::$engine,
-			'version'	=> self::$version,
+			'name'     => self::$name,
+			'engine'   => self::$engine,
+			'version'  => self::$version,
 			'platform' => self::$platform,
-			'agent'		=> self::$ua,
-			'mobile'	 => self::$mobile,
-			'iphone'	 => self::$iphone,
-			'ios'			=> self::$ios);
+			'agent'    => self::$ua,
+			'mobile'   => self::$mobile,
+			'iphone'   => self::$iphone,
+			'ios'      => self::$ios);
 
-		self::$ua			= $ua;
-		self::$name		 	= false;
-		self::$engine	 	= false;
-		self::$version		= false;
-		self::$platform 	= false;
+		self::$ua       = $ua;
+		self::$name     = false;
+		self::$engine   = false;
+		self::$version  = false;
+		self::$platform = false;
 
 		// browser
 		if(!preg_match('/opera|webtv/i', self::$ua) && preg_match('/msie\s(\d)/', self::$ua, $array))
 		{
 			self::$version = $array[1];
-			self::$name = 'ie';
-			self::$engine = 'trident';
+			self::$name    = 'ie';
+			self::$engine  = 'trident';
 		}
 		else if(strstr(self::$ua, 'firefox/3.6'))
 		{
 			self::$version = 3.6;
-			self::$name = 'fx';
-			self::$engine = 'gecko';
+			self::$name    = 'fx';
+			self::$engine  = 'gecko';
 		}
 		else if(strstr(self::$ua, 'firefox/3.5'))
 		{
 			self::$version = 3.5;
-			self::$name = 'fx';
-			self::$engine = 'gecko';
+			self::$name    = 'fx';
+			self::$engine  = 'gecko';
 		}
 		else if(preg_match('/firefox\/(\d+)/i', self::$ua, $array))
 		{
 			self::$version = $array[1];
-			self::$name = 'fx';
-			self::$engine = 'gecko';
+			self::$name    = 'fx';
+			self::$engine  = 'gecko';
 		}
 		else if(preg_match('/opera(\s|\/)(\d+)/', self::$ua, $array))
 		{
-			self::$engine = 'presto';
-			self::$name = 'opera';
+			self::$engine  = 'presto';
+			self::$name    = 'opera';
 			self::$version = $array[2];
 		}
 		else if(strstr(self::$ua, 'konqueror'))
 		{
-			self::$name = 'konqueror';
+			self::$name   = 'konqueror';
 			self::$engine = 'webkit';
 		}
 		else if(strstr(self::$ua, 'iron'))
 		{
-			self::$name = 'iron';
+			self::$name   = 'iron';
 			self::$engine = 'webkit';
 		}
 		else if(strstr(self::$ua, 'chrome'))
 		{
-			self::$name = 'chrome';
+			self::$name   = 'chrome';
 			self::$engine = 'webkit';
 			if(preg_match('/chrome\/(\d+)/i', self::$ua, $array)) self::$version = $array[1];
 		}
-		else if(strstr(self::$ua, 'applewebkit/')) {
-			self::$name = 'safari';
+		else if(strstr(self::$ua, 'applewebkit/'))
+		{
+			self::$name   = 'safari';
 			self::$engine = 'webkit';
 			if(preg_match('/version\/(\d+)/i', self::$ua, $array)) self::$version = $array[1];
 		}
 		else if(strstr(self::$ua, 'mozilla/'))
 		{
 			self::$engine = 'gecko';
-			self::$name = 'fx';
+			self::$name   = 'fx';
 		}
 
 		// Platform
-		if(strstr(self::$ua, 'j2me')) self::$platform = 'mobile';
-		else if(strstr(self::$ua, 'iphone')) self::$platform = 'iphone';
-		else if(strstr(self::$ua, 'ipod')) self::$platform = 'ipod';
-		else if(strstr(self::$ua, 'ipad')) self::$platform = 'ipad';
-		else if(strstr(self::$ua, 'mac')) self::$platform = 'mac';
-		else if(strstr(self::$ua, 'darwin')) self::$platform = 'mac';
-		else if(strstr(self::$ua, 'webtv')) self::$platform = 'webtv';
-		else if(strstr(self::$ua, 'win')) self::$platform = 'win';
+		     if(strstr(self::$ua, 'j2me'))    self::$platform = 'mobile';
+		else if(strstr(self::$ua, 'iphone'))  self::$platform = 'iphone';
+		else if(strstr(self::$ua, 'ipod'))    self::$platform = 'ipod';
+		else if(strstr(self::$ua, 'ipad'))    self::$platform = 'ipad';
+		else if(strstr(self::$ua, 'mac'))     self::$platform = 'mac';
+		else if(strstr(self::$ua, 'darwin'))  self::$platform = 'mac';
+		else if(strstr(self::$ua, 'webtv'))   self::$platform = 'webtv';
+		else if(strstr(self::$ua, 'win'))     self::$platform = 'win';
 		else if(strstr(self::$ua, 'freebsd')) self::$platform = 'freebsd';
 		else if(strstr(self::$ua, 'x11') || strstr(self::$ua, 'linux')) self::$platform = 'linux';
 
 		self::$mobile = (self::$platform == 'mobile') ? true : false;
 		self::$iphone = (in_array(self::$platform, array('ipod', 'iphone'))) ? true : false;
-		self::$ios		= (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
+		self::$ios    = (in_array(self::$platform, array('ipod', 'iphone', 'ipad'))) ? true : false;
 
 		return array(
-			'name'		=> self::$name,
-			'engine'	 	=> self::$engine,
-			'version'	=> self::$version,
-			'platform' 	=> self::$platform,
-			'agent'		=> self::$ua,
-			'mobile'	 	=> self::$mobile,
-			'iphone'	 	=> self::$iphone,
-			'ios'			=> self::$ios);
+			'name'     => self::$name,
+			'engine'   => self::$engine,
+			'version'  => self::$version,
+			'platform' => self::$platform,
+			'agent'    => self::$ua,
+			'mobile'   => self::$mobile,
+			'iphone'   => self::$iphone,
+			'ios'      => self::$ios);
 	}
 }
 ?>

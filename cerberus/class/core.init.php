@@ -1,21 +1,35 @@
 <?php
+/**
+ *
+ * init
+ *
+ * This class loads the different parts of Cerberus
+ *
+ * @package Cerberus
+ */
 class init
 {
-	// Store the loaded modules
+	/**
+	 * Store the currently loaded modules
+	 * @var array
+	 */
 	private static $modules = array();
 
-	// List the different dependencies
+	/**
+	 * List the different dependencies
+	 * @var array
+	 */
 	private static $dependencies = array(
-		'autoloader'    => 'paths',
-		'cache'         => 'navigation,constants',
-		'config'        => 'paths',
-		'constants'     => 'config,paths',
-		'debug'         => 'constants,autoloader',
-		'dispatch'      => 'autoloader,constants,paths,config',
-		'errorHandle'   => 'paths',
-		'mysql'         => 'constants,config',
-		'required'      => 'dispatch,paths',
-		'stats'         => 'config,mysql,constants',
+		'autoloader'  => 'paths',
+		'cache'       => 'navigation,constants',
+		'config'      => 'paths',
+		'constants'   => 'config,paths',
+		'debug'       => 'constants,autoloader',
+		'dispatch'    => 'autoloader,constants,paths,config',
+		'errorHandle' => 'paths',
+		'mysql'       => 'constants,config',
+		'required'    => 'dispatch,paths',
+		'stats'       => 'config,mysql,constants',
 		);
 
 	/**
@@ -46,9 +60,9 @@ class init
 	/**
 	 * Initiate a module and check for its dependencies
 	 *
-	 * @param  string    $module       The module to load
-	 * @param  array     $dependencies A list of the required modules
-	 * @return boolean   Module correctly loaded or not
+	 * @param  string   $module        The module to load
+	 * @param  array    $dependencies  A list of the required modules
+	 * @return boolean  Module correctly loaded or not
 	 */
 	private function module($module)
 	{
@@ -103,8 +117,8 @@ class init
 	/**
 	 * Checks if a module is correctly loaded
 	 *
-	 * @param  string    $module The module to check
-	 * @return boolean   Loaded or not
+	 * @param  string   $module The module to check
+	 * @return boolean  Loaded or not
 	 */
 	private function loaded($module)
 	{
@@ -276,15 +290,15 @@ class init
 		// Saving informations
 		if(!empty($ua['name']) and !empty($ua['platform']))
 			db::insert('cerberus_logs', array(
-				'ip'        => $ip,
-				'date'      => 'NOW()',
-				'platform'  => $ua['platform'],
-				'browser'   => $ua['name'],
-				'version'   => $ua['version'],
-				'engine'    => $ua['engine'],
-				'mobile'    => $mobile,
-				'locale'    => l::locale(),
-				'domaine'   => $domaine));
+				'ip'       => $ip,
+				'date'     => 'NOW()',
+				'platform' => $ua['platform'],
+				'browser'  => $ua['name'],
+				'version'  => $ua['version'],
+				'engine'   => $ua['engine'],
+				'mobile'   => $mobile,
+				'locale'   => l::locale(),
+				'domaine'  => $domaine));
 	}
 
 	/**
@@ -365,11 +379,11 @@ class init
 			if(!isset($setCache)) $setCache = array();
 
 			// Set default parameters
-			$setCache['name'] = a::get($setCache, 'name', navigation::current());
-			$setCache['cache_time'] = a::get($setCache, 'cache_time');
+			$setCache['name']                = a::get($setCache, 'name', navigation::current());
+			$setCache['cache_time']          = a::get($setCache, 'cache_time');
 			$setCache['cache_get_variables'] = a::get($setCache, 'cache_get_variables', true);
-			$setCache['get_remove'] = a::get($setCache, 'get_remove', array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
-			$setCache['type'] = 'html';
+			$setCache['get_remove']          = a::get($setCache, 'get_remove', array('page', 'pageSub', 'PHPSESSID', 'langue', 'gclid', 'cerberus_debug'));
+			$setCache['type']                = 'html';
 
 			// Determine if we should cache the page or not
 			// Exceptions are : page is administration ; page is set as not cached in the database ; in the $setCache

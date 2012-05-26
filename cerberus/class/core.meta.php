@@ -9,18 +9,27 @@
  */
 class meta
 {
-	// Main data array
+	/**
+	 * Main data array
+	 * @var array
+	 */
 	public static $meta = NULL;
 
-	// The path to the cached meta data array
+	/**
+	 * The path to the cached meta data array
+	 * @var string
+	 */
 	private static $file;
 
-	// A list of overwrites to apply to the main array
+	/**
+	 * A list of overwrites to apply to the main array
+	 * @var array
+	 */
 	private static $overwrite = array();
 
-	//////////////////////////////////////////////////////////////
-	////////////////////// INITIALIZATION ////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	///////////////////////// INITIALIZATION /////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Fetch the meta data either from cache or from a database
@@ -79,12 +88,13 @@ class meta
 		else self::$meta = array();
 	}
 
-	//////////////////////////////////////////////////////////////
-	///////////////////////// METHODS ////////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	///////////////////////////// METHODS ////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Overwrite a particular meta tag
+	 *
 	 * @param string  $key    The key to overwrite
 	 * @param string  $value  The new content of the string
 	 */
@@ -95,6 +105,9 @@ class meta
 
 	/**
 	 * Get a particular key from the array
+	 * @param  string  $get      The key to get
+	 * @param  string  $default  A fallback if the key wasn't found
+	 * @return string           The wanted value
 	 */
 	static function get($get = NULL, $default = NULL)
 	{
@@ -127,8 +140,9 @@ class meta
 
 	/**
 	 * Get the meta data for a specific page (defaults to the current one)
-	 * @param  string    $page The page wanted
-	 * @return array           The meta data of said page
+	 *
+	 * @param  string  $page  The page wanted
+	 * @return array   The meta data of said page
 	 */
 	static function page($page = NULL)
 	{
@@ -145,8 +159,9 @@ class meta
 
 	/**
 	 * Generate a cloud of keywords from a string
-	 * @param  string  $string The string to use as base
-	 * @return string          A shuffled string of keywords
+	 *
+	 * @param  string  $string  The string to use as base
+	 * @return string  A shuffled string of keywords
 	 */
 	static function keywords($string)
 	{
@@ -166,9 +181,9 @@ class meta
 		return $string;
 	}
 
-	//////////////////////////////////////////////////////////////
-	///////////////////////// EXPORT /////////////////////////////
-	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	///////////////////////////// EXPORT /////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Format the meta data as meta tags for the <head>
