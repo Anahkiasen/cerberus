@@ -178,7 +178,7 @@ class forms
 							a::get($this->values, $deploy['name'])));
 
 		// Paramètres auxiliaires et data-*
-		$auxiliaires = array('placeholder', 'style', 'rel', 'rows', 'id', 'disabled', 'select');
+		$auxiliaires = array('placeholder', 'min', 'max', 'step', 'style', 'rel', 'rows', 'id', 'disabled', 'select');
 		foreach($params as $key => $value)
 			if(in_array($key, $auxiliaires) or str::find('data-', $key)) $deploy[$key] = $value;
 			if(a::get($deploy, 'data-provide') == 'typeahead') $deploy['autocomplete'] = 'off';
@@ -232,6 +232,7 @@ class forms
 			{
 				// Texte
 				case 'text':
+				case 'number':
 				case 'hidden':
 				case 'password':
 					if($addon == 'uneditable-input') $this->rend('<span ' .$this->paramRender($deploy, 'value'). '>' .$deploy['value']. '</span>');
