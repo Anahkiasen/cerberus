@@ -6,11 +6,11 @@ class forms
 	private $infieldset = FALSE;
 	private $values;
 	private $status = array();
-	
+
 	// Options
 	private $optionMultilangue;
 	private $optionFormType;
-	
+
 	// Rendu
 	private $render;
 
@@ -59,10 +59,10 @@ class forms
 			$value                 = $type == 'file'
 			                       	   ? a::get($_FILES, $key)
 			                           : str::sanitize(r::request($key, $default), $type);
-			
+
 			$status                = (v::check($value, $type) and a::get($value, 'error', 0) == 0);
 			$this->status[$key]    = $status ? 'success' : 'error';
-			
+
 			$result[$key]          = $value;
 			if(!$status) $errors[] = $key;
 		}
@@ -188,8 +188,8 @@ class forms
 		if(isset($params['multiple'])) $deploy['multiple'] = 'multiple';
 
 		// Listes
-		$checkboxes = a::get($params, 'checkboxes');
-		$radio      = a::get($params, 'radio');
+		$checkboxes   = a::get($params, 'checkboxes');
+		$radio        = a::get($params, 'radio');
 
 		// Add-ons
 		$prepend      = a::get($params, 'prepend');
@@ -476,7 +476,7 @@ class forms
 		if(!is_array($except)) $except = array($except);
 
 		foreach($params as $key => $value)
-			if(!empty($value) and !in_array($key, $except)) $render .= $key.'="' .$value. '" ';
+			if((!empty($value) or $value == 0) and !in_array($key, $except)) $render .= $key.'="' .$value. '" ';
 
 		return substr($render, 0, -1);
 	}
