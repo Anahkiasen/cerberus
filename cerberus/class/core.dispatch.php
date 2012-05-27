@@ -278,13 +278,13 @@ class dispatch
 		// Getting assets paths
 		self::list_assets();
 
+		// Filtering the scripts array to keep the ones needed
+		self::$scripts = self::unpack($scripts);
+
 		// Loading the submodules files
 		self::submodules(self::$scripts);
 
 		/* Loading the wanted assets ------------------------------ */
-
-		// Unpacking the scripts
-		self::$scripts = self::unpack($scripts);
 
 		// If we have files to load
 		if(self::$scripts)
@@ -392,7 +392,7 @@ class dispatch
 			// Check if the source files exist
 			if(!file_exists(PATH_PLUGINS.$plugin.'/'))
 			{
-				errorHandle('warning', 'The source folder "' .PATH_PLUGINS.$plugin.'/" for plugin ' .$plugin. ' could not be found.');
+				errorHandle('warning', 'The source folder "' .PATH_PLUGINS.$plugin. '/" for plugin ' .$plugin. ' could not be found.');
 				continue;
 			}
 
@@ -434,6 +434,7 @@ class dispatch
 			self::$paths[$plugin] = $plugin_files;
 		}
 
+		// Crawl the folders again to add the new files
 		self::list_assets();
 	}
 
@@ -480,7 +481,7 @@ class dispatch
 		{
 			if(str::find('!', $value))
 			{
-				$assets = a::remove_value($assets,  substr($value, 1));
+				$assets = a::remove_value($assets, substr($value, 1));
 				$assets = a::remove($assets, $key);
 			}
 		}
@@ -508,7 +509,8 @@ class dispatch
 		}
 
 		// Filtering array
-		$array['url'] = a::clean($array['url']);
+		if($array['url'])
+			$array['url'] = a::clean($array['url']);
 
 		return $array;
 	}
