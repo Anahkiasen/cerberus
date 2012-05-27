@@ -105,6 +105,13 @@ class r
 		else return a::get($_GET, $key, $default);
 	}
 
+	static function file($key = NULL)
+	{
+		if(!isset($_FILES)) return FALSE;
+		if(!$key) return $_FILES;
+		else return a::get($_FILES, $key);
+	}
+
 	/**
 		* Returns the current request method
 		*
