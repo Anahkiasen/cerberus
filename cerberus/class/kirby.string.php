@@ -83,6 +83,32 @@ class str
 		return is_array($string) ? $string : trim($string);
 	}
 
+	static function size($bytes, $precision = 2)
+	{
+	    $kilobyte = 1024;
+	    $megabyte = $kilobyte * 1024;
+	    $gigabyte = $megabyte * 1024;
+	    $terabyte = $gigabyte * 1024;
+
+	    if(($bytes >= 0) and ($bytes < $kilobyte))
+	        return $bytes.'b';
+
+	    elseif (($bytes >= $kilobyte) and ($bytes < $megabyte))
+	        return round($bytes / $kilobyte, $precision) . 'KB';
+
+	    elseif (($bytes >= $megabyte) and ($bytes < $gigabyte))
+	        return round($bytes / $megabyte, $precision) . 'MB';
+
+	    elseif (($bytes >= $gigabyte) and ($bytes < $terabyte))
+	        return round($bytes / $gigabyte, $precision) . 'GB';
+
+	    elseif ($bytes >= $terabyte)
+	        return round($bytes / $terabyte, $precision) . 'TB';
+
+	    else
+	        return $bytes . 'B';
+	}
+
 	// Better alternative for explode()
 	/* It takes care of removing empty values and it has a built-in way to skip values which are too short.  */
 	static function split($string, $separator = ',', $length = 1)
@@ -96,7 +122,7 @@ class str
 		foreach($parts as $p)
 		{
 			$p = trim($p);
-			if(str::length($p) > 0 && str::length($p) >= $length) $out[] = $p;
+			if(str::length($p) > 0 and str::length($p) >= $length) $out[] = $p;
 		}
 
 		return $out;
@@ -106,7 +132,7 @@ class str
 	static function plural($count, $many, $one, $zero = NULL)
 	{
 		if($count == 1) return $one;
-		else if($count == 0 && !empty($zero)) return $zero;
+		else if($count == 0 and !empty($zero)) return $zero;
 		else return $many;
 	}
 
