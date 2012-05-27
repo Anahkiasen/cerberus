@@ -136,15 +136,15 @@ class a
 
   /**
    * Returns the average value of an array
-   * [CERBERUS-ADD]
    *
    * @param  array 	$array The source array
    * @param  int 	$decimals The number of decimals to return
    * @return int	The average value
+   * @package       Cerberus
    */
 	static function average($array, $decimals = 0)
 	{
-		return round(array_sum($array), $decimals) / sizeof($array);
+		return round((array_sum($array) / sizeof($array)), $decimals);
 	}
 
   /**
@@ -193,10 +193,10 @@ class a
 
   /**
    * Checks whether an array is associative or not (experimental)
-   * [CERBERUS-ADD]
    *
-   * @param  array 		$array The array to analyze
-   * @return boolean 	true: The array is associative false: It's not
+   * @param  array    $array The array to analyze
+   * @return boolean  true: The array is associative false: It's not
+   * @package         Cerberus
    */
 	static function is_associative($array)
 	{
@@ -207,8 +207,8 @@ class a
 	 * Checks if an array is truly empty
 	 * Casual empty will return FALSE on multidimensionnal arrays if it has levels, even if they are all empty
 	 *
-	 * @param array		 $array The array to check
-	 * @return boolean	Empty or not
+	 * @param  array    $array The array to check
+	 * @return boolean  Empty or not
 	 */
 	static function array_empty($array)
 	{
