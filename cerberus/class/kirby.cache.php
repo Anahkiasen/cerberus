@@ -183,13 +183,15 @@ class cache
 	/**
 	 * Search for files inside the cache
 	 *
-	 * @param  string   $search The key to look for
-	 * @param  boolean  If false returns the first file found, if true returns all files found
+	 * @param  string   $search     The key to look for
+	 * @param  boolean  $all_files  If false returns the first file found, if true returns all files found
+	 * @param  boolean  $sloppy     Allows for sloppy search (places the query in wildcards)
 	 * @return mixed    FALSE if the file hasn't been found, the path if it has
 	 */
-	static function search($search, $all_files = false)
+	static function search($search, $all_files = false, $sloppy = false)
 	{
 		self::init();
+		if($sloppy) $search = '*-' .$search. '-*';
 
 		$file = glob(self::$folder.$search.'.{json,html}', GLOB_BRACE);
 		if($all_files) return $file;
