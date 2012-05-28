@@ -27,6 +27,7 @@ assets/cerberus/fonts/fontawesome-*.*
 
 ## templates
 assets/*/
+!assets/plugins/
 
 # cache
 cerberus/cache
