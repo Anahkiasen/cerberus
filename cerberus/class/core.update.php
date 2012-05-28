@@ -149,7 +149,8 @@ class update
 	/**
 	 * Creates a missing Cerberus table into the database
 	 *
-	 * @param string  $table  The key of the table to create
+	 * @param  string   $table  The key of the table to create
+	 * @return boolean  Value of the executed query or false if errors
 	 */
 	static function table($table)
 	{
@@ -231,6 +232,9 @@ class update
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
 				break;
 		}
+
+		// Check if the table we wanted to created was indeed created
+		return db::is_table($table);
 	}
 }
 ?>
