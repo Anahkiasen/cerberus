@@ -264,17 +264,23 @@ class init
 	}
 
 	/**
-	* Logs the current user's environnement
-	* @dependencies		config, mysql, constants
-	*/
+	 * Logs the current user's environnement
+	 * @dependencies    config, mysql, constants
+	 */
 	function stats()
 	{
 		self::module('stats');
 
-		// Avoiding main errors (no connection, or table, ...)
-		if(!config::get('logs') or !SQL) return false;
-		if(!db::is_table('cerberus_logs')) return false;
-		else update::table('cerberus_logs');
+		// No active SQL connection or logs desactivated
+		if(!config::get('logs') or !SQL)    return false;
+
+		// The table doesn't exist
+		if(!db::is_table('cerberus_logs'))  return false;
+		
+		// Create the table if it doesn't exist
+		if(!update::table('cerberus_logs')) return false;
+
+		// If we have a table we can start logging ----------------- /
 
 		// Getting the user's IP
 		$ip = server::ip();
@@ -353,9 +359,9 @@ class init
 			$debug .= "[<strong>LANGUE</strong>] " .l::current().'<br/>'.PHP_EOL;
 
 			// Display superglobals
-			if($_GET) $debug .= "[<strong>GET</strong>]\n\n<pre>" .print_r($_GET, true). '</pre>'.PHP_EOL;
-			if($_POST) $debug .= "[<strong>POST</strong>]\n\n<pre>" .print_r($_POST,true). '</pre>'.PHP_EOL;
-			if($_SESSION) $debug .= "[<strong>SESSION</strong>]\n\n<pre>" .print_r($_SESSION, true). '</pre>';
+			if($_GET)       $debug .= "[<strong>GET</strong>]\n\n<pre>" .print_r($_GET, true). '</pre>'.PHP_EOL;
+			if($_POST)      $debug .= "[<strong>POST</strong>]\n\n<pre>" .print_r($_POST,true). '</pre>'.PHP_EOL;
+			if($_SESSION)   $debug .= "[<strong>SESSION</strong>]\n\n<pre>" .print_r($_SESSION, true). '</pre>';
 			if($constantes) $debug .= "[<strong>CONSTANTES</strong>]\n\n<pre>" .print_r($constantes, true). '</pre>';
 
 			// Echo if local, hide in code if online
