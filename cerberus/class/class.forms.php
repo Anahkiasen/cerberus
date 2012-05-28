@@ -1,55 +1,120 @@
 <?php
+/**
+ *
+ * forms
+ *
+ * This class handles the creation and validation of forms
+ *
+ * @package Cerberus
+ */
 class forms
 {
-	// Etats actifs
-	private $tabs;
-	private $infieldset = FALSE;
-	private $values;
+	// Current state ----------------------------------------------- /
+
+	/**
+	 * Current depth of indentation
+	 * 
+	 * @var integer
+	 */
+	private $tabs = 0;
+
+	/**
+	 * Whether we're currently inside a fieldset or not
+	 * 
+	 * @var boolean
+	 */
+	private $inFieldset = FALSE;
+
+	/**
+	 * Current values of the different form fields
+	 * 
+	 * @var array
+	 */
+	private $values = array();
+
+	/**
+	 * Contains informations about the form validation
+	 * 
+	 * @var array
+	 */
 	private $status = array();
 
-	// Options
-	private $optionMultilangue;
-	private $optionFormType;
+	// Options ----------------------------------------------------- /
 
-	// Rendu
-	private $render;
+	/**
+	 * Form is multilanguage or not
+	 * 
+	 * @var boolean
+	 */
+	private $optionMultilangue = FALSE;
 
-	/*
-	########################################
-	###### METHODES DE CONSTRUCTION ########
-	########################################
-	*/
+	/**
+	 * Current form type [horizontal|vertical|search|inline]
+	 * 
+	 * @var string
+	 */
+	private $optionFormType = 'horizontal';
 
-	function __construct($params = NULL, $multilangue = NULL)
+	// Render ------------------------------------------------------ /
+	
+	/**
+	 * Contains the form rendered
+	 * 
+	 * @var string
+	 */
+	private $render = NULL;
+
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////// CONSTRUCTION ////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	public function __construct($params = NULL, $multilangue = NULL)
 	{
-		// Création de l'élément <form>
-		if(!is_array($params)) $params = array('class' => $params);
+		// Defining <form> class and method 
+		if(!is_array($params))        $params = array('class' => $params);
 		if(!isset($params['method'])) $params['method'] = 'post';
-		if(!isset($params['class'])) $params['class'] = 'form-horizontal';
+		if(!isset($params['class']))  $params['class'] = 'form-horizontal';
 
+		// Defining initial depth
 		$this->tabs = a::get($params, 'tabs', 1);
+
+		// Multilanguage or not
 		$this->optionMultilangue = $multilangue ? $multilangue : MULTILANGUE;
+		
+		// Render initial tag
 		$this->rend('<form ' .$this->paramRender($params, 'tabs'). '>');
 
-		// Type de formulaire
+		// Determining form type according to Bootstrap classification
 		$formClass = a::get($params, 'class');
-		if(str::find('form-horizontal', $formClass)) $this->optionFormType = 'horizontal';
-		elseif(str::find('form-search', $formClass)) $this->optionFormType = 'search';
-		elseif(str::find('form-inline', $formClass)) $this->optionFormType = 'inline';
-		else $this->optionFormType = 'horizontal';
+
+		    if(str::find('form-horizontal', $formClass)) $this->optionFormType = 'horizontal';
+		elseif(str::find('form-vertical',   $formClass)) $this->optionFormType = 'horizontal';
+		elseif(str::find('form-search',     $formClass)) $this->optionFormType = 'search';
+		elseif(str::find('form-inline',     $formClass)) $this->optionFormType = 'inline';
 	}
 
-	// Si le formulaire est envoyé, on analyse les champs et on les retourne nettoyés
-	function validate()
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////// VALIDATION //////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	// If a form was sent, check the fields and returned validated values
+	public function validate()
 	{
 		if(!isset($_POST) or empty($_POST)) return FALSE;
 
-		$parser = func_get_args();
-		$mailbody = NULL;
-		$result = array();
-		$errors = array();
+		// Getting validation masks
+		$parser   = func_get_args();
 
-		// Analyse des résultats du formulaire
+		// Creating a body for the mail if we send one
+		$mailBody = NULL;
+
+		// Array containing filtered values
+		$result   = array();
+
+		// Array containing encountered errors
+		$errors   = array();
+
+		// Analyze the form fields
 		foreach($parser as $field)
 		{
 			$params                = explode(':', $field);
@@ -67,7 +132,7 @@ class forms
 			if(!$status) $errors[] = $key;
 		}
 
-		// Affichage des erreurs
+		// Display any found errors
 		if(!empty($errors))
 		{
 			return array(
@@ -75,50 +140,51 @@ class forms
 				'result' => $result,
 				'status' => FALSE);
 		}
-		else
+
+		// Create the mail body
+		foreach($result as $key => $value)
 		{
-			foreach($result as $key => $value)
+			$mailBody .= '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : ';
+			if(is_array($value))
 			{
-				$mailbody .= '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : ';
-				if(is_array($value))
-				{
-					$mailbody .= '<br />';
-					$value = a::glue($value, '<br/>', ':');
-				}
-				$mailbody .= stripslashes($value). '<br />';
+				$mailBody .= '<br />';
+				$value = a::glue($value, '<br/>', ':');
 			}
-
-			return array(
-				'status' => TRUE,
-				'result' => $result,
-				'mail'   => $mailbody);
+			$mailBody .= stripslashes($value). '<br />';
 		}
+
+		// Return validated values
+		return array(
+			'status' => TRUE,
+			'result' => $result,
+			'mail'   => $mailBody);
 	}
 
-	/*
-	########################################
-	######## FIELDSETS ET FONCTIONS ########
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////////
+	//////////////////////////// FIELDSETS ///////////////////////////
+	//////////////////////////////////////////////////////////////////
 
-	// Ouvrir et fermer un fieldset
-	function openFieldset($name)
+	// Open a fieldset
+	public function openFieldset($name)
 	{
-		$this->rend('<fieldset class="' .str::slugify($name). '">', 'TAB');
+		$this->inFieldset = TRUE;
 
-		$this->infieldset = TRUE;
-		$fieldset_name = l::get('form-'.$name, ucfirst($name));
-
-		$this->rend('<legend>' .$fieldset_name. '</legend>');
+		$this->tab('<fieldset class="' .str::slugify($name). '">');
+		$this->rend('<legend>' .l::get('form-'.$name, ucfirst($name)). '</legend>');
 	}
 
-	function closeFieldset()
+	// Close a fieldset
+	public function closeFieldset()
 	{
-		$this->rend('</fieldset>', 'UNTAB');
+		$this->untab('</fieldset>');
 	}
 
-	// Modifier les valeurs du tableau
-	function values($table)
+	//////////////////////////////////////////////////////////////////
+	///////////////////////////// VALUES /////////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	// Modify the values array
+	public function values($table)
 	{
 		$this->usable = str_replace('cerberus_', NULL, $table);
 		$id = db::fields($table);
@@ -127,24 +193,27 @@ class forms
 		if(isset($_GET['edit_'.$this->usable]))
 			$this->values = db::row($table, '*', array($id => $_GET['edit_'.$this->usable]));
 	}
-	function setValues($array)
+
+	// Set several values
+	public function setValues($array)
 	{
 		foreach($array as $key => $val) $this->values[$key] = $val;
 	}
-	function setValue($key, $value)
+
+	// Set a single value
+	public function setValue($key, $value)
 	{
 		$this->values[$key] = $value;
 	}
 
-	/*
-	########################################
-	############### CHAMPS  ################
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////////
+	///////////////////////////// BUILDERS ///////////////////////////
+	//////////////////////////////////////////////////////////////////
 
-	function addElement($params)
+	// Add an element to the form
+	public function addElement($params)
 	{
-		// Fusion des arrays entre eux
+		// Fetch the building array, as a PHP array or JSON
 		if(is_array($params))
 		{
 			$params = array_merge($params, a::get($params, 'params', array()));
@@ -328,7 +397,7 @@ class forms
 			$this->rend('</div>', 'UNTAB');
 	}
 
-	function option($index, $label, $value = NULL, $params = NULL)
+	private function option($index, $label, $value = NULL, $params = NULL)
 	{
 		global $array_value;
 
@@ -346,7 +415,7 @@ class forms
 	*/
 
 	// Add a field to the main form
-	function addField($name, $label, $type, $value, $additionalParams)
+	public function addField($name, $label, $type, $value, $additionalParams)
 	{
 		if(!is_array($additionalParams)) $additionalParams = str::parse('{' .$additionalParams. '}', 'json');
 		$this->addElement(array('label' => $label, 'name' => $name, 'value' => $value, 'type' => $type, 'params' => $additionalParams));
@@ -356,27 +425,27 @@ class forms
 	// CHAMPS TEXTE //
 	//////////////////
 
-	function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label, 'text', $value, $additionalParams);
 	}
 
-	function addPassword($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addPassword($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label, 'password', $value, $additionalParams);
 	}
 
-	function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label, 'textarea', $value, $additionalParams);
 	}
 
-	function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label, 'checkbox', $value, $additionalParams);
 	}
 
-	function addHidden($name, $value = NULL, $additionalParams = NULL)
+	public function addHidden($name, $value = NULL, $additionalParams = NULL)
 	{
 		$this->addField($name, $label = NULL, 'hidden', $value, $additionalParams);
 	}
@@ -385,22 +454,22 @@ class forms
 	///// LISTES /////
 	//////////////////
 
-	function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $value = NULL, $additionalParams = NULL)
+	public function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['checkboxes'] = $checkboxes;
 		$this->addField($name, $label, 'checkboxes', NULL, $additionalParams);
 	}
-	function addRadio($name = NULL, $label = NULL, $radio, $value = NULL, $additionalParams = NULL)
+	public function addRadio($name = NULL, $label = NULL, $radio, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['radio'] = $radio;
 		$this->addField($name, $label, 'radio', NULL, $additionalParams);
 	}
-	function addSelect($name = NULL, $label = NULL, $select, $value = NULL, $additionalParams = NULL)
+	public function addSelect($name = NULL, $label = NULL, $select, $value = NULL, $additionalParams = NULL)
 	{
 		$additionalParams['select'] = $select;
 		$this->addField($name, $label, 'select', $value, $additionalParams);
 	}
-	function addDate($name = 'date', $label = NULL, $value = '0000-00-00', $additionalParams = NULL)
+	public function addDate($name = 'date', $label = NULL, $value = '0000-00-00', $additionalParams = NULL)
 	{
 		$value = explode('-', $value);
 		$additionalParams['class'] = 'dateForm';
@@ -415,17 +484,17 @@ class forms
 	/// FUNCTIONS ////
 	//////////////////
 
-	function addType()
+	public function addType()
 	{
 		$formType = a::get($_GET, 'edit_' .$this->usable, 'add');
 		$this->addHidden('edit', $formType);
 	}
-	function addFile($name, $label = NULL, $additionalParams = NULL)
+	public function addFile($name, $label = NULL, $additionalParams = NULL)
 	{
 		$this->render = str_replace('method="' ,'enctype="multipart/form-data" method="', $this->render);
 		$this->addField($name, $label, 'file', NULL, $additionalParams);
 	}
-	function addSubmit($name = 'Valider', $additionalParams = NULL)
+	public function addSubmit($name = 'Valider', $additionalParams = NULL)
 	{
 		if(!$additionalParams) $additionalParams['class'] = 'btn-cerberus';
 		$this->addField($name, NULL, 'submit', NULL, $additionalParams);
@@ -435,13 +504,13 @@ class forms
 	//// SELECTS /////
 	//////////////////
 
-	function liste_number($end, $start = 0, $step = 1)
+	public function liste_number($end, $start = 0, $step = 1)
 	{
 		return range($start, $end, $step);
 	}
 
 	// Champ date
-	function liste_date($startingYear = NULL, $endingYear = NULL)
+	public function liste_date($startingYear = NULL, $endingYear = NULL)
 	{
 		if(!$startingYear) $startingYear = date('Y');
 		if(!$endingYear) $endingYear = $startingYear + 10;
@@ -452,25 +521,60 @@ class forms
 			'annee' => $this->liste_number($endingYear, $startingYear));
 	}
 
-	/*
-	########################################
-	######## RENDU DU FORMULAIRE ###########
-	########################################
-	*/
+	//////////////////////////////////////////////////////////////////
+	//////////////////////// RENDER FUNCTIONS ////////////////////////
+	//////////////////////////////////////////////////////////////////
 
-	function insert($text)
+	/**
+	 * Insert raw text
+	 * 
+	 * @param  string $text Content to add
+	 */
+	private function insert($text)
 	{
 		$this->render .= $text;
 	}
 
-	function rend($content, $tabs = NULL)
+	/**
+	 * Add text to the render, with corresponding depth
+	 * 
+	 * @param  string $content Content to add
+	 * @param  string $tabs    TAB/UNTAB
+	 */
+	private function rend($content, $tabs = NULL)
 	{
 		if($tabs == 'UNTAB') $this->tabs--;
-		if($this->tabs >= 0) $this->render .= str_repeat("\t", $this->tabs).$content.PHP_EOL;
+
+		if($this->tabs >= 0)
+			$this->render .=
+				str_repeat("\t", $this->tabs).
+				$content.
+				PHP_EOL;
+
 		if($tabs == 'TAB') $this->tabs++;
 	}
 
-	function paramRender($params, $except = NULL)
+	/**
+	 * Add content and go one level deeper
+	 * 
+	 * @param  string $content Content to add
+	 */
+	private function tab($content)
+	{
+		$this->rend($content, 'TAB');
+	}
+
+	/**
+	 * Add content and go one level deeper
+	 * 
+	 * @param  string $content Content to add
+	 */
+	private function untab($content)
+	{
+		$this->rend($content, 'UNTAB');
+	}
+
+	private function paramRender($params, $except = NULL)
 	{
 		$render = NULL;
 		if(!is_array($except)) $except = array($except);
@@ -481,12 +585,16 @@ class forms
 		return substr($render, 0, -1);
 	}
 
-	function render()
+	//////////////////////////////////////////////////////////////////
+	////////////////////////////// EXPORT ////////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	public function render()
 	{
 		echo $this->returns();
 	}
 
-	function returns()
+	public function returns()
 	{
 		// Rendu du formulaire
 		$this->rend('</form>', 'UNTAB');
