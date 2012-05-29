@@ -131,7 +131,7 @@ class head
 	/**
 	 * Set the current page title
 	 *
-	 * @param  string $title The page title
+	 * @param  string  $title  The page title
 	 */
 	static function title($title)
 	{
@@ -141,7 +141,7 @@ class head
 	/**
 	 * Add a stylesheet to the page
 	 *
-	 * @param  string $href Link or path to the stylesheet
+	 * @param  string  $href  Link or path to the stylesheet
 	 */
 	static function stylesheet($href)
 	{
@@ -151,7 +151,7 @@ class head
 	/**
 	 * Add CSS styles to the page
 	 *
-	 * @param  string $value CSS code
+	 * @param  string  $value  CSS code
 	 */
 	static function css($value)
 	{
@@ -160,11 +160,22 @@ class head
 
 	/**
 	 * Add a favicon to the page
-	 * @param  string $favicon Name of the favicon file (must be in image folder)
+	 *
+	 * @param  string  $favicon  Name of the favicon file (must be in image folder)
 	 */
 	static function favicon($favicon)
 	{
 		self::set('link', array('rel' => 'shortcut icon', 'href' => PATH_COMMON.'img/'.$favicon));
+	}
+
+	/**
+	 * Adds mobile responsive capability to a webpage
+	 */
+	static function mobile()
+	{
+		self::set('meta', array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'));
+		self::set('meta', array('name' => 'apple-touch-fullscreen', 'content' => 'yes'));
+		self::set('meta', array('name' => 'viewport', 'content' => 'width = device-width, initial-scale = 1, user-scalable = no'));
 	}
 
 	/**
