@@ -64,4 +64,3 @@ function get($key = false, $default = NULL)
 {
 	return r::get($key, $default);
 }
-?>

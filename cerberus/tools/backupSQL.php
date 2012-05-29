@@ -103,4 +103,3 @@ function backupSQL()
 		else return 'Une sauvegarde existe déjà pour cette date.';
 	}
 }
-?>

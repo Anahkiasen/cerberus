@@ -51,4 +51,3 @@ class timer
 	}
 }
 timer::start();
-?>

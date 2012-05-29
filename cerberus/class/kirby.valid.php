@@ -120,4 +120,3 @@ class v
 		return (preg_match($regex, $phone));
 	}
 }
-?>

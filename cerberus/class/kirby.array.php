@@ -510,4 +510,3 @@ class a
 		return $csv;
 	}
 }
-?>

@@ -123,4 +123,3 @@ class media extends dispatch
 			: self::image($svg);
 	}
 }
-?>

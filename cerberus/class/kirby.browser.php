@@ -288,4 +288,3 @@ class browser
 			'ios'      => self::$ios);
 	}
 }
-?>

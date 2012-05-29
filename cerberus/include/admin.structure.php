@@ -138,4 +138,3 @@ if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 	$form->closeFieldset();
 	$form->render();
 }
-?>

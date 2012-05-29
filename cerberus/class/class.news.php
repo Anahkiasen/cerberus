@@ -8,18 +8,18 @@ class news
 
 	// Paramètres
 	private $table        = 'cerberus_news';
-	
+
 	// Affichage des news
 	private $newsNumber   = 5;
 	private $newsPaginate = FALSE;
 	private $newsOrder    = 'date';
 	private $newsStart;
-	
+
 	// Composantes
 	private $displayThumb = TRUE;
 	private $displayDate  = TRUE;
 	private $displayLink  = TRUE;
-	
+
 	// Affichage de la miniature
 	private $thumbWidth   = 100;
 	private $thumbHeight  = 100;
@@ -216,4 +216,3 @@ class news
 		if($this->newsPaginate) pager::pagination();
 	}
 }
-?>

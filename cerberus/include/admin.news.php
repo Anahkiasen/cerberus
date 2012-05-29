@@ -40,4 +40,3 @@ $forms->openFieldset($diffText. ' une news');
 $forms->closeFieldset();
 
 echo $newsAdmin->formAddOrEdit($forms->returns());
-?>

@@ -22,4 +22,3 @@ function __class_loader($class_name)
 			call_user_func(array($class_name, 'init'));
 	}
 }
-?>

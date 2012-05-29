@@ -854,4 +854,3 @@ class dispatch
 		self::addCSS('http://fonts.googleapis.com/css?family=' .$fonts);
 	}
 }
-?>

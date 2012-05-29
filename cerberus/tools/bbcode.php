@@ -34,4 +34,3 @@ function bbcode($contenu, $css = TRUE)
 
 	return $contenu;
 }
-?>

@@ -451,4 +451,3 @@ class init
 		new navigation();
 	}
 }
-?>

@@ -421,4 +421,3 @@ class navigation
 			: self::$page;
 	}
 }
-?>

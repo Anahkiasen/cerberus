@@ -237,4 +237,3 @@ class update
 		return db::is_table($table);
 	}
 }
-?>

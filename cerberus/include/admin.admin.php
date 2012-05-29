@@ -41,4 +41,3 @@ if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 	$form->closeFieldset();
 	echo $form;
 }
-?>

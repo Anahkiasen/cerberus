@@ -419,4 +419,3 @@ class admin extends admin_setup
 		}
 	}
 }
-?>

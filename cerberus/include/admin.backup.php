@@ -44,4 +44,3 @@ foreach(glob('./' .PATH_CACHE. 'sql/*') as $file)
 	}
 }
 echo '</tbody></table>';
-?>

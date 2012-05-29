@@ -98,4 +98,3 @@ class t
 		return self::format($s, '{i}:{s}');
 	}
 }
-?>

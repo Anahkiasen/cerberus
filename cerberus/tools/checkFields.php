@@ -70,4 +70,3 @@ function checkFields()
 	}
 	else return (MULTILANGUE) ? $mailbody : true;
 }
-?>

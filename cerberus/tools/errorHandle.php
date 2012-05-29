@@ -127,4 +127,3 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	// Fallback if no idea whether local or not - just display the error
 	echo $DEBUG;
 }
-?>

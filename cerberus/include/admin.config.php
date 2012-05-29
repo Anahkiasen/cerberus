@@ -87,4 +87,3 @@ foreach($CONFIGURATION as $FIELDSET => $FIELDS)
 }
 $forms->addSubmit('Enregistrer');
 $forms->render();
-?>

@@ -16,4 +16,3 @@ $modified_body = head::header().$modified_body;
 echo $modified_body; $cached = cache::save(true); // Page en cache
 echo $cached; $cached = content::end(true); // Page réelle
 echo $cached;
-?>

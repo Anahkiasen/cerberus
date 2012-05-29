@@ -211,4 +211,3 @@ class admin_setup
 		return self::${$variable};
 	}
 }
-?>

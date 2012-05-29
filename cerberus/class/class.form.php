@@ -3,11 +3,11 @@ class form
 {
 	private $render;
 	protected static $valuesArray;
-	
+
 	// Etats
 	protected static $openedManual = false;
 	protected static $mandatory    = false;
-	
+
 	// Options
 	protected static $multilangue  = true;
 	protected static $formType     = 'ilec';
@@ -514,4 +514,3 @@ class select extends form
 			$this->render .= '</select>';
 		}
 }
-?>

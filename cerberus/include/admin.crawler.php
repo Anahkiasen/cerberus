@@ -136,4 +136,3 @@ if(isset($_POST['nofollow']))
 	}
 	else str::display('Le cache vient d\'être vidé');
 }
-?>

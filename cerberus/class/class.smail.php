@@ -138,4 +138,3 @@ class smail
 		str::status($this->send(), l::get('mail.sent'), l::get('mail.error'));
 	}
 }
-?>

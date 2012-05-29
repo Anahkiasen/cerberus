@@ -201,4 +201,3 @@ function success($response)
 {
 	return !error($response);
 }
-?>

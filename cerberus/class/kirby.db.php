@@ -234,7 +234,7 @@ class db
      * @param  boolean $fetch True: apply db::fetch to the result, false: go without db::fetch
      * @return mixed
      */
-    static function query($sql, $fetch = true)
+    public static function query($sql, $fetch = true)
 	{
 		$connection = self::connect();
 		if(error($connection)) return $connection;
@@ -260,7 +260,7 @@ class db
      * @param  string $sql The sql query
      * @return mixed
      */
-    static function execute($sql)
+    public static function execute($sql)
 	{
 		$connection = self::connect();
 		if(error($connection)) return $connection;
@@ -462,7 +462,7 @@ class db
      * @param  mixed  $where  Either a key/value array as AND connected where clause or a simple MySQL where clause string
      * @return mixed
      */
-    static function min($table, $column, $where = NULL)
+    public static function min($table, $column, $where = NULL)
 	{
 		$sql = 'SELECT MIN(' .$column. ') as min FROM ' .self::prefix($table);
 		if(!empty($where)) $sql .= ' WHERE ' .self::where($where);
@@ -813,7 +813,6 @@ class db
 		foreach($fields AS $f)
 			array_push($arr, $f.' LIKE \'%'.$search.'%\'');
 
-
 		return '('.implode(' '.trim($mode).' ', $arr).')';
 	}
 
@@ -964,4 +963,3 @@ class db
 		return $output;
 	}
 }
-?>

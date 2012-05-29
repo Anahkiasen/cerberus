@@ -13,28 +13,28 @@ class forms
 
 	/**
 	 * Current depth of indentation
-	 * 
+	 *
 	 * @var integer
 	 */
 	private $tabs = 0;
 
 	/**
 	 * Whether we're currently inside a fieldset or not
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $inFieldset = FALSE;
 
 	/**
 	 * Current values of the different form fields
-	 * 
+	 *
 	 * @var array
 	 */
 	private $values = array();
 
 	/**
 	 * Contains informations about the form validation
-	 * 
+	 *
 	 * @var array
 	 */
 	private $status = array();
@@ -43,23 +43,23 @@ class forms
 
 	/**
 	 * Form is multilanguage or not
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $optionMultilangue = FALSE;
 
 	/**
 	 * Current form type [horizontal|vertical|search|inline]
-	 * 
+	 *
 	 * @var string
 	 */
 	private $optionFormType = 'horizontal';
 
 	// Render ------------------------------------------------------ /
-	
+
 	/**
 	 * Contains the form rendered
-	 * 
+	 *
 	 * @var string
 	 */
 	private $render = NULL;
@@ -70,7 +70,7 @@ class forms
 
 	public function __construct($params = NULL, $multilangue = NULL)
 	{
-		// Defining <form> class and method 
+		// Defining <form> class and method
 		if(!is_array($params))        $params = array('class' => $params);
 		if(!isset($params['method'])) $params['method'] = 'post';
 		if(!isset($params['class']))  $params['class'] = 'form-horizontal';
@@ -80,7 +80,7 @@ class forms
 
 		// Multilanguage or not
 		$this->optionMultilangue = $multilangue ? $multilangue : MULTILANGUE;
-		
+
 		// Render initial tag
 		$this->rend('<form ' .$this->paramRender($params, 'tabs'). '>');
 
@@ -527,7 +527,7 @@ class forms
 
 	/**
 	 * Insert raw text
-	 * 
+	 *
 	 * @param  string $text Content to add
 	 */
 	private function insert($text)
@@ -537,7 +537,7 @@ class forms
 
 	/**
 	 * Add text to the render, with corresponding depth
-	 * 
+	 *
 	 * @param  string $content Content to add
 	 * @param  string $tabs    TAB/UNTAB
 	 */
@@ -556,7 +556,7 @@ class forms
 
 	/**
 	 * Add content and go one level deeper
-	 * 
+	 *
 	 * @param  string $content Content to add
 	 */
 	private function tab($content)
@@ -566,7 +566,7 @@ class forms
 
 	/**
 	 * Add content and go one level deeper
-	 * 
+	 *
 	 * @param  string $content Content to add
 	 */
 	private function untab($content)
@@ -601,4 +601,3 @@ class forms
 		return $this->render;
 	}
 }
-?>

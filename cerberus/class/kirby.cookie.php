@@ -50,4 +50,3 @@ class cookie
 		return @setcookie($key, false, (time() - 3600), $domain);
 	}
 }
-?>

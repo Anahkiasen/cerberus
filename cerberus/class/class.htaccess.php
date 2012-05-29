@@ -537,4 +537,3 @@ class htaccess
 		</FilesMatch>';
 	}
 }
-?>

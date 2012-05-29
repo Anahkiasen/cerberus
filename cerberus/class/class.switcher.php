@@ -64,4 +64,3 @@ function _s($page)
 	global $switcher;
 	return $switcher->content($page);
 }
-?>

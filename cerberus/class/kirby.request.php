@@ -195,4 +195,3 @@ class r
 		return server::get('http_referer', $default);
 	}
 }
-?>

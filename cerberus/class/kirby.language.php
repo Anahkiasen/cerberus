@@ -244,4 +244,3 @@ class l
 		else echo '<span style="color:red">[' .$file. '(' .self::current(). ')]</span>';
 	}
 }
-?>

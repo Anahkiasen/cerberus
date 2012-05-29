@@ -216,4 +216,3 @@ class meta
 		cache::fetch('meta', self::$meta);
 	}
 }
-?>

@@ -179,4 +179,3 @@ class dir
 		return $modified;
 	}
 }
-?>

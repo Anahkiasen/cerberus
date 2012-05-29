@@ -140,4 +140,3 @@ class upload
 		return a::get($types, $mime, $default);
 	}
 }
-?>
