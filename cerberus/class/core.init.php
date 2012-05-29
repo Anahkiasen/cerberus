@@ -166,6 +166,9 @@ class init
 	{
 		self::module('errorHandling');
 
+		// If DEPRECATED is not defined
+		if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
+
 		// Loading errorHandle
 		include(PATH_CORE.'tools/errorHandle.php');
 		set_error_handler('errorHandle');
@@ -276,7 +279,7 @@ class init
 
 		// The table doesn't exist
 		if(!db::is_table('cerberus_logs'))  return false;
-		
+
 		// Create the table if it doesn't exist
 		if(!update::table('cerberus_logs')) return false;
 

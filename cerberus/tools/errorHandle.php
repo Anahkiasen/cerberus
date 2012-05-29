@@ -13,9 +13,6 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 	// Setting up indentiation to trace the error
 	$indentation = 0;
 
-	// If DEPRECATED is not defined
-	if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
-
 	// If function called with @, ignore
 	if(error_reporting() == 0) return true;
 
