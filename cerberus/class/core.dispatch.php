@@ -523,12 +523,10 @@ class dispatch
 	 */
 	private static function inline_js($scripts)
 	{
-		content::start(); ?>
-		<script>
-			<?= PHP_EOL.implode("\n", $scripts).PHP_EOL ?>
-		</script>
-		<?php
-		return content::end(true);
+		$inline  = '<script>';
+		$inline .= PHP_EOL.implode("\n", $scripts).PHP_EOL;
+		$inline .= '</script>';
+		return $inline;
 	}
 
 	//////////////////////////////////////////////////////////////////
