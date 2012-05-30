@@ -190,6 +190,10 @@ class navigation
 					? $values['external_link']
 					: NULL;
 
+				// If one of the submenu items is supposed to be shown, show the main menu
+				if($values['hidden'] == 0 and $dataRaw[$index]['hidden'] == 1)
+					$dataRaw[$index]['hidden'] = 0;
+
 				$dataRaw[$index]['submenu'][$values['page']] = array(
 					'hidden' => $values['hidden'],
 					'text'   => l::get('menu-' .$indexSub, ucfirst($values['page'])),
