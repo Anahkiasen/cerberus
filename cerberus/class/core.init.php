@@ -454,7 +454,8 @@ class init
 	function language()
 	{
 		self::module('language');
-		new l();
+
+		l::cerberus();
 	}
 
 	function navigation()
