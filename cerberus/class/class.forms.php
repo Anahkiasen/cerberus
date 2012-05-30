@@ -303,6 +303,8 @@ class forms
 				case 'text':
 				case 'number':
 				case 'hidden':
+				case 'email':
+				case 'tel':
 				case 'password':
 					if($addon == 'uneditable-input') $this->rend('<span ' .$this->paramRender($deploy, 'value'). '>' .$deploy['value']. '</span>');
 					elseif($addon == 'disabled') $this->rend('<input ' .$this->paramRender($deploy, 'value'). ' placeholder="' .$deploy['value']. '" disabled />');
