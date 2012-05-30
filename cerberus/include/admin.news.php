@@ -1,5 +1,5 @@
 <?php
-$newsAdmin = new admin();
+$newsAdmin = new Admin();
 $newsAdmin->setPage('cerberus_news');
 $newsAdmin->createList(array('titre', 'date'));
 $newsAdmin->addOrEdit($diff, $diffText, $urlAction);

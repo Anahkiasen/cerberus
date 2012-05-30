@@ -1,7 +1,7 @@
 <?php
 if(get('meta_structure'))
 {
-	$metaAdmin = new admin();
+	$metaAdmin = new Admin();
 	$metaAdmin->setPage('cerberus_meta', array('titre', 'url', 'description'));
 
 	// Sinon
@@ -48,7 +48,7 @@ if(r::post('page_priority'))
 	db::last_sql();
 }
 
-$strucAdmin = new admin();
+$strucAdmin = new Admin();
 $strucAdmin->setPage('cerberus_structure', array('external_link'));
 
 if(db::is_table('cerberus_meta'))

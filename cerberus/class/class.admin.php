@@ -1,5 +1,5 @@
 <?php
-class admin extends adminSetup
+class Admin extends adminSetup
 {
 	// Options
 	private $modeSQL; // Site avec BDD

@@ -333,7 +333,7 @@ class navigation
 					break;
 
 				case 'admin':
-					new admin_setup();
+					new Admin_Setup();
 					break;
 
 				case NULL:

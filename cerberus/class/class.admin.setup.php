@@ -1,5 +1,5 @@
 <?php
-class adminSetup
+class Admin_Setup
 {
 	// Options
 	protected $multilangue; // Site multilangue ou pas

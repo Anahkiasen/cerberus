@@ -6,7 +6,7 @@ if(isset($_POST['edit']))
 
 	$_POST['droits'] = json_encode($droits);
 }
-$langueAdmin = new admin();
+$langueAdmin = new Admin();
 $langueAdmin->setPage('cerberus_admin');
 $langueAdmin->createList(array('Identifiant' => 'account'));
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
