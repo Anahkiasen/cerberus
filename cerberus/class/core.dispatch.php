@@ -782,9 +782,14 @@ class dispatch
 			$file .= PHP_EOL.'# Extensions'.PHP_EOL;
 			foreach($extensions as $e) $file .= "require '" .$e. "'".PHP_EOL;
 
-			// Writing the configuration files
-			f::write(PATH_CERBERUS.self::$compass, $file);
-			f::write(self::$compass, 'projectPath = "' .substr(PATH_COMMON, 0, -1). '"'.PHP_EOL.$file);
+			// Write core configuration file in root
+			$root = 'project_path = "' .substr(PATH_COMMON, 0, -1).'"'.PHP_EOL.$file;
+			f::write(self::$compass, $root);
+
+			// Go through the different template and create a Compass config in each one
+			$folders = glob('assets/*/');
+			foreach($folders as $f)
+				if(!in_array(basename($f), array('plugins', 'common'))) f::write($f.self::$compass, $file);
 		}
 	}
 
