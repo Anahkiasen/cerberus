@@ -66,13 +66,15 @@ class meta
 			// Little magic applied to the data
 			foreach($metadata as $values)
 			{
+				$titre = a::get($values, 'titre');
+
 				// If no description found, use title instead
-				if(empty($values['description'])) $values['description'] = $values['titre'];
+				if(empty($values['description'])) $values['description'] = $titre;
 
 				if(empty($values['keywords'])) $values['keywords'] = self::keywords($values['description']);
 
 				// If no page name found, use title also
-				if(empty($values['url'])) $values['url'] = str::slugify($values['titre']);
+				if(empty($values['url'])) $values['url'] = str::slugify($titre);
 
 				// Insert into main array
 				$variables = array('title', 'description', 'keywords', 'url');
