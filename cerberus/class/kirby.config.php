@@ -35,7 +35,7 @@ class config
 
 		/* Modules */
 		'bootstrap'           => true,
-		'compass'             => array('susy', 'animation', 'rgbapng', 'modular-scale', 'normalize'),
+		'compass'             => array('susy', 'animate', 'rgbapng', 'modular-scale', 'normalize'),
 		'logs'                => false,
 		'minify'              => true,
 

@@ -22,13 +22,14 @@ assets/cerberus/js
 assets/cerberus/img/rgbapng
 
 ## submodules
+assets/cerberus/fonts/fontawesome-*.*
 assets/cerberus/*/plugins
 !assets/cerberus/sass/plugins
-assets/cerberus/fonts/fontawesome-*.*
 
 ## templates
 assets/*/
 !assets/plugins/
+!assets/cerberus/
 
 # cache
 cerberus/cache
