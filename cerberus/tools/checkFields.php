@@ -53,12 +53,12 @@ function checkFields()
 		{
 			if(MULTILANGUE) foreach($variable as $key => $value) $variable[$key] = l::get('form-' .$value, ucfirst($value));
 			else foreach($variable as $key => $value) $variable[$key] = ucfirst($value);
-			$new_error = ${'is' .ucfirst($erreur). 'filled'}. ' :';
-			$new_error .= (count($variable) > 3) ? '<br />' : ' ';
-			$new_error .= implode(', ', $variable);
+			$newError = ${'is' .ucfirst($erreur). 'filled'}. ' :';
+			$newError .= (count($variable) > 3) ? '<br />' : ' ';
+			$newError .= implode(', ', $variable);
 
-			$erreurs[] = $new_error;
-			$new_error = NULL;
+			$erreurs[] = $newError;
+			$newError = NULL;
 		}
 	}
 

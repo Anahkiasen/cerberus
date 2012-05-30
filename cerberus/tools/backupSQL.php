@@ -12,8 +12,8 @@
 function backupSQL()
 {
 	// Sauvegarde et chargement de la base
-	$tables_base = db::showtables();
-	if(empty($tables_base))
+	$tablesBases = db::showtables();
+	if(empty($tablesBases))
 	{
 		// Si la base de données est vide, chargement de dernière la sauvegarde
 		foreach(glob(PATH_CACHE. 'sql/*') as $file)
@@ -29,7 +29,7 @@ function backupSQL()
 			multiQuery(file_get_contents($fichier), array(config::get('db.host'), config::get('db.user'), config::get('db.mdp'), config::get('db.name')));
 		}
 	}
-	elseif(!empty($tables_base))
+	elseif(!empty($tablesBases))
 	{
 		$filename = str::slugify(config::get('sitename', config::get('db.name')));
 
@@ -38,9 +38,9 @@ function backupSQL()
 		$folderName = $path.date('Y-m-d');
 
 		// Création du dossier à la date si inexistant
-		if(!file_exists($folderName) and !empty($tables_base))
+		if(!file_exists($folderName) and !empty($tablesBases))
 		{
-			$tables_base = array_values($tables_base);
+			$tablesBases = array_values($tablesBases);
 
 			// Suppression des sauvegardes inutiles
 			foreach(glob($path. '*') as $file)
@@ -63,32 +63,32 @@ function backupSQL()
 
 			// Récupération de la liste des tables
 			$file = NULL;
-			foreach($tables_base as $table)
+			foreach($tablesBases as $table)
 			{
 				$file .= "DROP TABLE IF EXISTS $table;\n";
 
 				// Création de la table
-				$table_create = mysql_fetch_array(mysql_query("SHOW CREATE TABLE $table"));
-				$file .= $table_create[1].";\n";
+				$tableCreate = mysql_fetch_array(mysql_query("SHOW CREATE TABLE $table"));
+				$file .= $tableCreate[1].";\n";
 
 				// Contenu de la table
-				$table_content = mysql_query("SELECT * FROM $table");
-				while($row = mysql_fetch_assoc($table_content))
+				$tableContent = mysql_query("SELECT * FROM $table");
+				while($row = mysql_fetch_assoc($tableContent))
 				{
-					$line_insert = "INSERT INTO $table (";
-					$line_value = ") VALUES (";
+					$lineInsert = "INSERT INTO $table (";
+					$lineValue = ") VALUES (";
 
 					// Valeurs
 					foreach($row as $field => $value)
 					{
-						$line_insert .= "`$field`, ";
-						$line_value .= "'" .mysql_real_escape_string($value). "', ";
+						$lineInsert .= "`$field`, ";
+						$lineValue .= "'" .mysql_real_escape_string($value). "', ";
 					}
 
 					// Suppression du , en trop
-					$line_insert = substr($line_insert, 0, -2);
-					$line_value = substr($line_value, 0, -2);
-					$file .= $line_insert.$line_value. ");\n";
+					$lineInsert = substr($lineInsert, 0, -2);
+					$lineValue = substr($lineValue, 0, -2);
+					$file .= $lineInsert.$lineValue. ");\n";
 				}
 			}
 
@@ -98,7 +98,7 @@ function backupSQL()
 
 			return
 			'Le fichier ' .$filename. ' a bien été crée<br />
-			Tables : ' .implode(', ', $tables_base);
+			Tables : ' .implode(', ', $tablesBases);
 		}
 		else return 'Une sauvegarde existe déjà pour cette date.';
 	}

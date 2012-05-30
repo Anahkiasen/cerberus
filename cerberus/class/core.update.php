@@ -45,7 +45,7 @@ class update
 		}
 
 		// Update revision number
-		if(self::outdate()) self::update_core(self::$last);
+		if(self::outdate()) self::updateCore(self::$last);
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ class update
 	 *
 	 * @param string  $torev The revision number to update to
 	 */
-	static function update_core($torev)
+	static function updateCore($torev)
 	{
 		// Update online or local revison number
 		$rev = LOCAL ? 'revision.local' : 'revision.online';

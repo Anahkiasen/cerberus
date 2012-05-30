@@ -16,7 +16,7 @@ class smail
 
 	// Barrières
 	private $boundary;
-	private $boundary_alt;
+	private $boundaryAlt;
 
 	// Constructeur
 	function __construct($destinataire, $sujet, $contenu)
@@ -45,7 +45,7 @@ class smail
 			$this->destinaire = explode(', ', $destinataire);
 
 		$this->boundary = '-----=' .md5(rand());
-		$this->boundary_alt = '-----=' .md5(rand());
+		$this->boundaryAlt = '-----=' .md5(rand());
 	}
 
 	// Message en HTML
@@ -94,9 +94,9 @@ class smail
 			$this->destinataire = NULL;
 		}
 		$header .= "MIME-Version: 1.0\n";
-		$header .= "Content-Type: multipart/alternative; boundary=\"".$this->boundary_alt."\"";
+		$header .= "Content-Type: multipart/alternative; boundary=\"".$this->boundaryAlt."\"";
 
-		$message = "--".$this->boundary_alt."\n";
+		$message = "--".$this->boundaryAlt."\n";
 		$message .= "Content-Type: text/plain\n";
 		$message .= "charset=\"iso-8859-1\"\n";
 		$message .= "Content-Transfer-Encoding: 8bit\n\n";
@@ -105,7 +105,7 @@ class smail
 		// Message HTML
 		if($this->messageHTML)
 		{
-			$message .= "\n\n--".$this->boundary_alt."\n";
+			$message .= "\n\n--".$this->boundaryAlt."\n";
 			$message .= "Content-Type: text/html; ";
 			$message .= "charset=\"utf-8\"; ";
 			$message .= "Content-Transfer-Encoding: 8bit;\n\n";
@@ -127,7 +127,7 @@ class smail
 			$message .= $data;
 			$message .= "\r\n--".$this->boundary. "\r\n";
 		}*/
-		$message .= "\n--".$this->boundary_alt."--";
+		$message .= "\n--".$this->boundaryAlt."--";
 
 		if(mail($this->destinataire, $this->sujet, $message, $header)) return true;
 		else return false;

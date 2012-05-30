@@ -6,15 +6,15 @@ Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du cr
 
 <?php
 // Valeurs par défaut
-$xml_name = PATH_CACHE. 'sitemap_crawler.xml';
+$xmlName = PATH_CACHE. 'sitemap_crawler.xml';
 $domain = a::get($_POST, 'domain', url::domain());
 $pageLimit = a::get($_POST, 'pagelimit', 0);
 $trafficLimit = a::get($_POST, 'trafficlimit', 0);
 $nofollow2 = a::get($_POST, 'nofollow2', "");
 $extensions = a::get($_POST, 'nofollow', 'jpg,gif,png,pdf');
-$extensions_crawl[] = '.(' .str_replace(',', '|', $extensions). ')';
-$extensions_crawl[] = 'timthumb.php';
-if(!empty($nofollow2))	$extensions_crawl = array_merge($extensions_crawl, explode(',', $nofollow2));
+$extensionsCrawl[] = '.(' .str_replace(',', '|', $extensions). ')';
+$extensionsCrawl[] = 'timthumb.php';
+if(!empty($nofollow2))	$extensionsCrawl = array_merge($extensionsCrawl, explode(',', $nofollow2));
 $exploration = a::get($_POST, 'exploration', 2);
 $type = a::get($_POST, 'type', 'empty');
 
@@ -65,18 +65,18 @@ if(isset($_POST['nofollow']))
 		// Génération du cache
 		class MyCrawler extends PHPCrawler
 		{
-			function handlePageData(&$page_data)
+			function handlePageData(&$pageData)
 			{
 				// Affichage des informations de la page reçue
-				$type = (str::find('404', $page_data['header'])) ? 'red' : 'white';
+				$type = (str::find('404', $pageData['header'])) ? 'red' : 'white';
 				echo '<div class="cerberus_debug" style="text-align:left">
-				<h3 style="margin:0">' .url::strip_query($page_data['url']). '</h3>
-				<span style="color: ' .$type. '"><strong>Type :</strong> ' .strtok($page_data["header"], "\n"). '</span><br />';
-				if(!empty($page_data["referer_url"])) echo '<strong>Page d\'origine :</strong> ' .url::strip_query($page_data["referer_url"]). '<br />';
+				<h3 style="margin:0">' .url::strip_query($pageData['url']). '</h3>
+				<span style="color: ' .$type. '"><strong>Type :</strong> ' .strtok($pageData["header"], "\n"). '</span><br />';
+				if(!empty($pageData["referer_url"])) echo '<strong>Page d\'origine :</strong> ' .url::strip_query($pageData["referer_url"]). '<br />';
 
 				echo '<strong>Contenu :</strong> ';
-				echo ($page_data['received'])
-					? round($page_data['bytes_received'] / 1000, 2). ' kb reçus'
+				echo ($pageData['received'])
+					? round($pageData['bytes_received'] / 1000, 2). ' kb reçus'
 					: '0 bytes reçus';
 					echo '</div>';
 
@@ -88,7 +88,7 @@ if(isset($_POST['nofollow']))
 
 		$crawler->setURL($domain);
 		$crawler->addReceiveContentType("/text\/html/");
-		$crawler->addNonFollowMatch("/" .implode('|', $extensions_crawl). "/i");
+		$crawler->addNonFollowMatch("/" .implode('|', $extensionsCrawl). "/i");
 
 		$crawler->setCookieHandling(true);
 		$crawler->setTrafficLimit($trafficLimit * 1000);
@@ -131,8 +131,8 @@ if(isset($_POST['nofollow']))
 		echo '</ul></div>';
 		$xml .= '</urlset>';
 
-		f::write($xml_name, $xml);
-		str::display(str::link($xml_name, 'Télécharger le sitemap généré'));
+		f::write($xmlName, $xml);
+		str::display(str::link($xmlName, 'Télécharger le sitemap généré'));
 	}
 	else str::display('Le cache vient d\'être vidé');
 }

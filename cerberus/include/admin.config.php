@@ -12,13 +12,13 @@ if(isset($_POST['db-host']))
 		$key = str_replace('-', '.', $key);
 		if(in_array($key, $arrays))
 		{
-			if(str::find(',', $value)) $formatted_value = explode(',', $value);
-			else $formatted_value = array($value);
+			if(str::find(',', $value)) $formattedValue = explode(',', $value);
+			else $formattedValue = array($value);
 		}
-		elseif(in_array($value, array('TRUE','FALSE'))) $formatted_value = $value;
-		else $formatted_value = "'" .$value. "'";
+		elseif(in_array($value, array('TRUE','FALSE'))) $formattedValue = $value;
+		else $formattedValue = "'" .$value. "'";
 
-		config::hardcode($key, $formatted_value);
+		config::hardcode($key, $formattedValue);
 	}
 
 	str::display(l::get('admin.config.ok'), 'success');

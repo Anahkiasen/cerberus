@@ -84,7 +84,7 @@ class dispatch
 	 * The file to cherry-pick in the linked submodules
 	 * @var array
 	 */
-	static private $plugins_files = array(
+	static private $pluginFiles = array(
 		'bootstrap'   => array(
 			'img/*',
 			'js/*'),
@@ -169,44 +169,44 @@ class dispatch
 	private static function paths()
 	{
 		// Set up the recurring paths
-		$path_common   = config::get('path.common');
-		$path_cerberus = config::get('path.cerberus');
-		$path_file     = config::get('path.file');
-		$path_plugins  = config::get('path.plugins');
+		$pathCommon   = config::get('path.common');
+		$pathCerberus = config::get('path.cerberus');
+		$pathFile     = config::get('path.file');
+		$pathPlugins  = config::get('path.plugins');
 
 		// If they're not cached in the config file, calculate them
-		if(!$path_common or !$path_cerberus or !$path_file or !$path_plugins)
+		if(!$pathCommon or !$pathCerberus or !$pathFile or !$pathPlugins)
 		{
-			$path_common   = f::exist(
+			$pathCommon   = f::exist(
 				self::path('{assets}/{common}/'),
 				self::path('{assets}/'),
 				'/');
-			$path_cerberus = f::exist(
+			$pathCerberus = f::exist(
 				self::path('{assets}/{cerberus}/'),
 				self::path('{assets}/'),
 				'/');
-			$path_file     = f::exist(
+			$pathFile     = f::exist(
 				self::path('{assets}/{common}/{file}/'),
 				self::path('{assets}/{file}/'),
 				self::path('{file}/'),
 				'/');
-			$path_plugins  = self::path('{assets}/{plugins}/');
+			$pathPlugins  = self::path('{assets}/{plugins}/');
 
 			// If we are in the root folder, cache into config file
 			if(PATH_MAIN == NULL)
 			{
-				config::hardcode('path.common',   $path_common);
-				config::hardcode('path.cerberus', $path_cerberus);
-				config::hardcode('path.plugins',  $path_plugins);
-				config::hardcode('path.file',     $path_file);
+				config::hardcode('path.common',   $pathCommon);
+				config::hardcode('path.cerberus', $pathCerberus);
+				config::hardcode('path.plugins',  $pathPlugins);
+				config::hardcode('path.file',     $pathFile);
 			}
 		}
 
 		// Define constans for easy access
-		define('PATH_COMMON',   $path_common);
-		define('PATH_CERBERUS', $path_cerberus);
-		define('PATH_PLUGINS',  $path_plugins);
-		define('PATH_FILE',     $path_file);
+		define('PATH_COMMON',   $pathCommon);
+		define('PATH_CERBERUS', $pathCerberus);
+		define('PATH_PLUGINS',  $pathPlugins);
+		define('PATH_FILE',     $pathFile);
 	}
 
 	/**
@@ -276,7 +276,7 @@ class dispatch
 		/* Creating the environnement ----------------------------- */
 
 		// Getting assets paths
-		self::list_assets();
+		self::listAssets();
 
 		// Filtering the scripts array to keep the ones needed
 		self::$scripts = self::unpack($scripts);
@@ -318,7 +318,7 @@ class dispatch
 	/**
 	 * Crawls through the assets folder and group them by a common alias
 	 */
-	private static function list_assets()
+	private static function listAssets()
 	{
 		// Emptying the current list for refresh
 		self::$paths = array();
@@ -329,8 +329,8 @@ class dispatch
 		$templates = isset($switcher) ? ','.implode(',', $switcher->returnList()) : NULL;
 
 		// Creating a mask for authorized filepaths and file extensions
-		$allowed_files = '{' .PATH_COMMON. ',' .PATH_CERBERUS. ',' .$templates. '}{' .self::$css. ',' .self::$js. '}{/,/plugins/}*.{css,js}';
-		$files = glob($allowed_files, GLOB_BRACE);
+		$allowedFiles = '{' .PATH_COMMON. ',' .PATH_CERBERUS. ',' .$templates. '}{' .self::$css. ',' .self::$js. '}{/,/plugins/}*.{css,js}';
+		$files = glob($allowedFiles, GLOB_BRACE);
 
 		// Grouping each found ressource by name
 		foreach($files as $path)
@@ -376,12 +376,12 @@ class dispatch
 		if(!is_array($submodules)) $submodules = func_get_args();
 
 		// Compute the list of asked modules that exist
-		$plugins = array_intersect($submodules, array_keys(self::$plugins_files));
+		$plugins = array_intersect($submodules, array_keys(self::$pluginFiles));
 
 		// Gather the source files
 		foreach($plugins as $plugin)
 		{
-			$plugin_files = a::get(self::$plugins_files, $plugin);
+			$pluginFiles = a::get(self::$pluginFiles, $plugin);
 
 			// Check if the plugin is already loaded
 			if(isset(self::$paths[$plugin])) continue;
@@ -397,18 +397,18 @@ class dispatch
 			}
 
 			// Look for wildcards
-			foreach($plugin_files as $k => $v)
+			foreach($pluginFiles as $k => $v)
 			{
 				if(!str::find('*', $v)) continue;
 
 				$glob = glob(PATH_PLUGINS.$plugin.'/'.$v, GLOB_BRACE);
 				foreach($glob as $gk => $gv) $glob[$gk] = str::remove(PATH_PLUGINS.$plugin.'/', $gv);
 
-				$plugin_files = a::remove_value($plugin_files, $v);
-				$plugin_files = array_merge($plugin_files, $glob);
+				$pluginFiles = a::remove_value($pluginFiles, $v);
+				$pluginFiles = array_merge($pluginFiles, $glob);
 			}
 
-			foreach($plugin_files as $key => $value)
+			foreach($pluginFiles as $key => $value)
 			{
 				// Determine the folder to put the copied files into
 				$type = f::type($value);
@@ -419,23 +419,23 @@ class dispatch
 				else $extension = f::extension($value).'/plugins';
 
 				// Look for the paths
-				$old_path = PATH_PLUGINS.str::remove(PATH_PLUGINS, $plugin.'/'.$value);
-				$new_path = PATH_CERBERUS.$extension.'/'.f::filename($value);
+				$oldPath = PATH_PLUGINS.str::remove(PATH_PLUGINS, $plugin.'/'.$value);
+				$newPath = PATH_CERBERUS.$extension.'/'.f::filename($value);
 
 				// Ensuring the destination folder exists
-				dir::make(f::dirname($new_path));
+				dir::make(f::dirname($newPath));
 
 				// Copy the file or throw an error
-				if(file_exists($old_path) and $new_path) copy($old_path, $new_path);
-				else errorHandle('warning', 'The source file ' .$old_path. ' could not be found.');
+				if(file_exists($oldPath) and $newPath) copy($oldPath, $newPath);
+				else errorHandle('warning', 'The source file ' .$oldPath. ' could not be found.');
 
-				$plugin_files[$key] = $new_path;
+				$pluginFiles[$key] = $newPath;
 			}
-			self::$paths[$plugin] = $plugin_files;
+			self::$paths[$plugin] = $pluginFiles;
 		}
 
 		// Crawl the folders again to add the new files
-		self::list_assets();
+		self::listAssets();
 	}
 
 	/**
@@ -521,7 +521,7 @@ class dispatch
 	 * @param  array   $scripts An array of Javascript bits
 	 * @return string  A <script> block
 	 */
-	private static function inline_js($scripts)
+	private static function inlineJS($scripts)
 	{
 		$inline  = '<script>';
 		$inline .= PHP_EOL.implode("\n", $scripts).PHP_EOL;
@@ -633,12 +633,12 @@ class dispatch
 			$script = preg_replace('#(<script>|</script>|<style>|</style>)#', NULL, $script);
 
 			// If it's an external link or not
-			$is_http = str::find('http', substr($script, 0, 4));
+			$isHttp = str::find('http', substr($script, 0, 4));
 
 			// If we added a link to another file
-			if(in_array(f::extension($script), array('css', 'js')) or $is_http)
+			if(in_array(f::extension($script), array('css', 'js')) or $isHttp)
 			{
-				if($is_http) self::${$type}['url'][] = $script;
+				if($isHttp) self::${$type}['url'][] = $script;
 				else self::${$type}['min'][] = $script;
 			}
 
@@ -678,9 +678,9 @@ class dispatch
 		self::$JS = self::sanitize(self::$JS);
 		$head = array();
 
-		if(self::$JS['inline']['before']) $head[] = self::inline_js(self::$JS['inline']['before']);
+		if(self::$JS['inline']['before']) $head[] = self::inlineJS(self::$JS['inline']['before']);
 		if(self::$JS['url']) foreach(self::$JS['url'] as $url) $head[] = '<script src="' .$url. '"></script>';
-		if(self::$JS['inline']['after']) $head[] = self::inline_js(self::$JS['inline']['after']);
+		if(self::$JS['inline']['after']) $head[] = self::inlineJS(self::$JS['inline']['after']);
 
 		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;
 		if($return) return $head;
@@ -784,7 +784,7 @@ class dispatch
 
 			// Writing the configuration files
 			f::write(PATH_CERBERUS.self::$compass, $file);
-			f::write(self::$compass, 'project_path = "' .substr(PATH_COMMON, 0, -1). '"'.PHP_EOL.$file);
+			f::write(self::$compass, 'projectPath = "' .substr(PATH_COMMON, 0, -1). '"'.PHP_EOL.$file);
 		}
 	}
 

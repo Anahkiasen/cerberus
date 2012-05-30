@@ -38,7 +38,7 @@ class meta
 	static function build()
 	{
 		// Check if the necessary tables exist
-		$db_exist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : FALSE;
+		$dbExist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : FALSE;
 
 		// Get the cached meta data file
 		self::$file = PATH_CACHE. 'meta-' .l::current(). '.json';
@@ -46,10 +46,10 @@ class meta
 		if($meta) self::$meta = $meta;
 
 		// If no cached meta array was found, let's create it
-		elseif(!$meta and (config::get('meta') or $db_exist) and SQL)
+		elseif(!$meta and (config::get('meta') or $dbExist) and SQL)
 		{
 			// If the tables don't exist we create them
-			if(!$db_exist)
+			if(!$dbExist)
 			{
 				update::table('cerberus_meta');
 				update::table('cerberus_structure');
@@ -124,10 +124,10 @@ class meta
 			$page = l::get('menu-' .$current, l::get('menu-' .navigation::$page, ucfirst(navigation::$page)));
 
 			// Fetch the page description in the meta array
-			$page_description = a::get(self::$meta, $current.',title');
+			$pageDescription = a::get(self::$meta, $current.',title');
 
-			if($page and $page_description)       $title = $page. ' - ' .$page_description;
-			elseif(!$page and $page_description)  $title = $page_description;
+			if($page and $pageDescription)       $title = $page. ' - ' .$pageDescription;
+			elseif(!$page and $pageDescription)  $title = $pageDescription;
 			else                                  $title = $page;
 
 			self::$meta[$current]['title'] = $title;

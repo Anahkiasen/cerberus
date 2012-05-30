@@ -241,8 +241,8 @@ class forms
 		                     $deploy['name']);
 
 		// Valeur du champ
-		$isset_post = isset($_POST) ? $_POST : NULL;
-		$deploy['value'] = 	a::get($isset_post, $deploy['name'],
+		$issetPost = isset($_POST) ? $_POST : NULL;
+		$deploy['value'] = 	a::get($issetPost, $deploy['name'],
 							a::get($params, 'value',
 							a::get($this->values, $deploy['name'])));
 
@@ -257,25 +257,25 @@ class forms
 		if(isset($params['multiple'])) $deploy['multiple'] = 'multiple';
 
 		// Listes
-		$checkboxes   = a::get($params, 'checkboxes');
-		$radio        = a::get($params, 'radio');
+		$checkboxes  = a::get($params, 'checkboxes');
+		$radio       = a::get($params, 'radio');
 
 		// Add-ons
-		$prepend      = a::get($params, 'prepend');
-		$append       = a::get($params, 'append');
-		$prepend_type = $prepend ? 'prepend' : 'append';
-		$addon        = a::get($params, 'addon');
+		$prepend     = a::get($params, 'prepend');
+		$append      = a::get($params, 'append');
+		$prependType = $prepend ? 'prepend' : 'append';
+		$addon       = a::get($params, 'addon');
 
 		// Classe du champ
 		$deploy['class'] = a::get($params, 'class');
 		if(is_array($deploy['class'])) $deploy['class'] = implode(' ', $deploy['class']);
 		if($addon) $deploy['class'] .= ' ' .$addon;
 
-		$div_class   = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
-		$div_class[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
-		$div_class[] = str::slugify($label);
-		$div_class[] = str::slugify($deploy['type']);
-		if($mandatory) $div_class[] = 'mandatory';
+		$divClass   = $deploy['type'] == 'submit' ? array('form-actions') : array('control-group');
+		$divClass[] = a::get($params, 'status', a::get($this->status, $deploy['name']));
+		$divClass[] = str::slugify($label);
+		$divClass[] = str::slugify($deploy['type']);
+		if($mandatory) $divClass[] = 'mandatory';
 
 		////////////////////
 		/////// RENDU //////
@@ -284,7 +284,7 @@ class forms
 		$openDiv = ($this->optionFormType == 'horizontal' and $deploy['type'] != 'hidden');
 
 		if($openDiv)
-			$this->rend('<div class="' .implode(' ', $div_class). '">', 'TAB');
+			$this->rend('<div class="' .implode(' ', $divClass). '">', 'TAB');
 
 			// LABEL
 			if(!in_array($deploy['type'], array('submit', 'checkbox', 'hidden')) and $this->optionFormType != 'search')
@@ -293,7 +293,7 @@ class forms
 			// DIV ENGLOBANTE
 			$englobe = ($deploy['type'] != 'submit' and $this->optionFormType == 'horizontal');
 			if($englobe) $this->rend('<div class="controls">', 'TAB');
-			if($prepend or $append) $this->rend('<div class="input-' .$prepend_type. '">', 'TAB');
+			if($prepend or $append) $this->rend('<div class="input-' .$prependType. '">', 'TAB');
 
 			// CHAMP MÊME
 			if($prepend) $this->rend('<span class="add-on">' .$prepend. '</span>', 'TAB');
@@ -325,21 +325,21 @@ class forms
 				case 'checkboxes':
 					$nameCheckbox = a::get($params, 'name').'[]';
 					$postCheckbox = a::get($_POST, $deploy['name'], array());
-					if($checkboxes) foreach($checkboxes as $check_index => $check_label)
+					if($checkboxes) foreach($checkboxes as $checkIndex => $checkLabel)
 					{
-						$checked = in_array($check_index, $postCheckbox) ? ' checked="checked"' : NULL;
+						$checked = in_array($checkIndex, $postCheckbox) ? ' checked="checked"' : NULL;
 						$this->rend('<label class="checkbox ' .$deploy['class']. '">');
-						$this->rend('<input type="checkbox" name="' .$nameCheckbox. '" value="' .$check_index. '" ' .$checked. ' /> '.$check_label);
+						$this->rend('<input type="checkbox" name="' .$nameCheckbox. '" value="' .$checkIndex. '" ' .$checked. ' /> '.$checkLabel);
 						$this->rend('</label>');
 					}
 					break;
 
 				case 'radio':
-					foreach($radio as $radio_index => $radio_label)
+					foreach($radio as $radioIndex => $radioLabel)
 					{
-						$checked = ($deploy['value'] == $radio_index) ? ' checked="checked"' : NULL;
+						$checked = ($deploy['value'] == $radioIndex) ? ' checked="checked"' : NULL;
 						$this->rend('<label class="radio ' .$deploy['class']. '">');
-						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$radio_index. '" /> '.$radio_label);
+						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$radioIndex. '" /> '.$radioLabel);
 						$this->rend('</label>');
 					}
 					break;
@@ -348,21 +348,21 @@ class forms
 					if(isset($deploy['multiple'])) $deploy['name'] .= '[]';
 					if(!is_array(current($deploy['select']))) $deploy['select'] = array($deploy['select']);
 
-					foreach($deploy['select'] as $array_label => $array_entries)
+					foreach($deploy['select'] as $arrayLabel => $arrayEntries)
 					{
-						$array_label = sizeof($deploy['select']) > 1 ? $deploy['name']. '_' .$array_label : $deploy['name'];
-						$array_value = a::get($deploy, 'value', a::get($this->values, $array_label, r::post($array_label)));
+						$arrayLabel = sizeof($deploy['select']) > 1 ? $deploy['name']. '_' .$arrayLabel : $deploy['name'];
+						$arrayValue = a::get($deploy, 'value', a::get($this->values, $arrayLabel, r::post($arrayLabel)));
 
-						$this->rend('<select name="' .$array_label. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>', 'TAB');
-						foreach($array_entries as $index => $label)
+						$this->rend('<select name="' .$arrayLabel. '" ' .$this->paramRender($deploy, array('value', 'select', 'name')). '>', 'TAB');
+						foreach($arrayEntries as $index => $label)
 						{
 							if(is_array($label))
 							{
 								$this->rend('<optgroup label="' .$index. '">');
-								foreach($label as $opt_index => $opt_label) $this->option($opt_index, $opt_label, $array_value, $params);
+								foreach($label as $optionIndex => $optionLabel) $this->option($optionIndex, $optionLabel, $arrayValue, $params);
 								$this->rend('</optgroup>');
 							}
-							else $this->option($index, $label, $array_value, $params);
+							else $this->option($index, $label, $arrayValue, $params);
 						}
 						$this->rend('</select>', 'UNTAB');
 					}
@@ -401,13 +401,13 @@ class forms
 
 	private function option($index, $label, $value = NULL, $params = NULL)
 	{
-		global $array_value;
+		global $arrayValue;
 
-		if(!$value) $value = $array_value;
+		if(!$value) $value = $arrayValue;
 		if(is_numeric($index) and !isset($params['force_index'])) $index = $label;
 		$selected = $value == $index ? ' selected="selected"' : NULL;
-		$this_option = $index == $label ? NULL : ' value="' .$index. '"';
-		$this->rend('<option' .$this_option.$selected. '>'.$label. '</option>');
+		$thisOption = $index == $label ? NULL : ' value="' .$index. '"';
+		$this->rend('<option' .$thisOption.$selected. '>'.$label. '</option>');
 	}
 
 	/*
@@ -479,7 +479,7 @@ class forms
 		$endingYear = a::get($additionalParams, 'end');
 
 		$this->setValues(array($name.'_jour' => $value[2], $name.'_mois' => $value[1], $name.'_annee' => $value[0]));
-		$this->addSelect($name, $label, $this->liste_date($startingYear, $endingYear), NULL, $additionalParams);
+		$this->addSelect($name, $label, $this->listeDate($startingYear, $endingYear), NULL, $additionalParams);
 	}
 
 	//////////////////
@@ -506,21 +506,21 @@ class forms
 	//// SELECTS /////
 	//////////////////
 
-	public function liste_number($end, $start = 0, $step = 1)
+	public function listeNumber($end, $start = 0, $step = 1)
 	{
 		return range($start, $end, $step);
 	}
 
 	// Champ date
-	public function liste_date($startingYear = NULL, $endingYear = NULL)
+	public function listeDate($startingYear = NULL, $endingYear = NULL)
 	{
 		if(!$startingYear) $startingYear = date('Y');
 		if(!$endingYear) $endingYear = $startingYear + 10;
 
 		return array(
-			'jour' => $this->liste_number(31, 1),
-			'mois' => $this->liste_number(12, 1),
-			'annee' => $this->liste_number($endingYear, $startingYear));
+			'jour' => $this->listeNumber(31, 1),
+			'mois' => $this->listeNumber(12, 1),
+			'annee' => $this->listeNumber($endingYear, $startingYear));
 	}
 
 	//////////////////////////////////////////////////////////////////

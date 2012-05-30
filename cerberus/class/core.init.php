@@ -75,24 +75,24 @@ class init
 			if(!is_array($dependencies)) $dependencies = explode(',', $dependencies);
 
 			// Check if all dependencies are loaded
-			$dependencies_loaded = self::dependencies($dependencies);
-			$all_loaded = (sizeof($dependencies_loaded) == sizeof($dependencies));
+			$dependenciesLoaded = self::dependencies($dependencies);
+			$allLoaded = (sizeof($dependenciesLoaded) == sizeof($dependencies));
 
 			// Throws an error if the required modules are not found
-			if(!$all_loaded and !empty($dependencies))
+			if(!$allLoaded and !empty($dependencies))
 			{
 				echo 'Erreur lors du chargement du module ' .$module. '<br />
-				Les dépendences suivantes n\'ont pas été chargées : ' .implode(', ', array_diff($dependencies, $dependencies_loaded));
+				Les dépendences suivantes n\'ont pas été chargées : ' .implode(', ', array_diff($dependencies, $dependenciesLoaded));
 				exit();
 			}
 		}
-		else $all_loaded = true;
+		else $allLoaded = true;
 
 		// Setting the current module as loaded
 		self::$modules[$module] = true;
 
 		// Returns a state of the module loading
-		return $all_loaded;
+		return $allLoaded;
 	}
 
 	/**
@@ -104,14 +104,14 @@ class init
 	private function dependencies($dependencies = array())
 	{
 		// Creating an array to put the loaded dependencies in
-		$dependencies_loaded = array();
+		$dependenciesLoaded = array();
 
 		// Iterate through the dependencies list, checking if they're all loaded
 		foreach($dependencies as $d)
-			if(self::loaded($d)) $dependencies_loaded[] = $d;
+			if(self::loaded($d)) $dependenciesLoaded[] = $d;
 
 		// If the number of loaded modules doesn't match the list, return false
-		return $dependencies_loaded;
+		return $dependenciesLoaded;
 	}
 
 	/**
@@ -171,7 +171,7 @@ class init
 
 		// Loading errorHandle
 		include(PATH_CORE.'tools/errorHandle.php');
-		set_error_handler('errorHandle');
+		//set_error_handler('errorHandle');
 
 		// Setting error level
 		error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);
@@ -191,7 +191,7 @@ class init
 
 		// Include the Autoloader and set it as main loader
 		include(PATH_CORE.'tools/classloader.php');
-		spl_autoload_register('__class_loader');
+		spl_autoload_register('__autoLoader');
 	}
 
 	/**

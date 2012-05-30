@@ -63,7 +63,7 @@ class media extends dispatch
 		if(!dispatch::isScript('nivoslider')) dispatch::addJS('nivoslider');
 
 		// Create a HTML-safe id for the block
-		$id_block = str::slugify($folder);
+		$idBlock = str::slugify($folder);
 
 		// Fetch the pictures
 		$images = glob(PATH_FILE.$folder.'/*.jpg');
@@ -72,7 +72,7 @@ class media extends dispatch
 		if($shuffle) shuffle($images);
 
 		// Creating the block
-		echo "<div id='" .$id_block. "' style='height: " .$height. "px; max-width: " .$width. "px; margin: auto'>".PHP_EOL;
+		echo "<div id='" .$idBlock. "' style='height: " .$height. "px; max-width: " .$width. "px; margin: auto'>".PHP_EOL;
 		foreach($images as $i) echo "\t".
 			str::img(
 				self::timthumb(
@@ -82,7 +82,7 @@ class media extends dispatch
 		echo '</div>'.PHP_EOL;
 
 		// Add the Javascript code to the page
-		dispatch::plugin('nivoSlider', '#'.$id_block, $params);
+		dispatch::plugin('nivoSlider', '#'.$idBlock, $params);
 	}
 
 	/**
@@ -115,11 +115,11 @@ class media extends dispatch
 	 */
 	static function svg($svg, $embbed = TRUE)
 	{
-		$svg_path = PATH_COMMON.'img/'.$svg;
+		$svgPath = PATH_COMMON.'img/'.$svg;
 
-		if(f::extension($svg_path) != 'svg' or !file_exists($svg_path)) return false;
+		if(f::extension($svgPath) != 'svg' or !file_exists($svgPath)) return false;
 		return $embbed
-			? str::trim(f::read($svg_path))
+			? str::trim(f::read($svgPath))
 			: self::image($svg);
 	}
 }

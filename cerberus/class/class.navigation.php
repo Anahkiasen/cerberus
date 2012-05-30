@@ -48,7 +48,7 @@ class navigation
 		{
 			// Navigation via la base de données
 			if(SQL and db::is_table('cerberus_structure'))
-				$data_raw = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
+				$dataRaw = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
 
 			else
 			{
@@ -57,14 +57,14 @@ class navigation
 				if(!$navigation) $navigation = array('home');
 
 				foreach($navigation as $page)
-				$data_raw[] = array(
+				$dataRaw[] = array(
 					'page'          => $page,
 					'parent'        => NULL,
 					'cache'         => 0,
 					'hidden'        => 0,
 					'external_link' => NULL);
 			}
-			self::build($data_raw);
+			self::build($dataRaw);
 		}
 
 		// Page en cours
@@ -106,11 +106,11 @@ class navigation
 	// Vérification de l'existence d'une page
 	static function extension(&$page, &$sousPage)
 	{
-		$page_combined = $sousPage ? 'pages/'.$page.'-'.$sousPage : 'pages/'.$page;
+		$pageCombined = $sousPage ? 'pages/'.$page.'-'.$sousPage : 'pages/'.$page;
 		if(!file_exists('pages')) dir::make('pages');
 
 		// Balayage des noms possibles de la page
-		$return = f::exist($page_combined.'.html', $page_combined.'.php', $page.'.html', $page.'.php');
+		$return = f::exist($pageCombined.'.html', $pageCombined.'.php', $page.'.html', $page.'.php');
 
 		// Si non trouvé -> 404
 		if(isset($return)) return basename($return);
@@ -128,7 +128,7 @@ class navigation
 	// Afficher les menus en ligne ou en liste
 	static function listed($menu = FALSE, $submenu = FALSE)
 	{
-		self::$optionListed = $menu;
+		self::$optionListed    = $menu;
 		self::$optionListedSub = $submenu;
 	}
 
@@ -139,12 +139,12 @@ class navigation
 	*/
 
 	// Création de l'arbre de navigation
-	static function build($data_raw)
+	static function build($dataRaw)
 	{
 		// Ajout des pages système à l'arbre
 		foreach(self::$system as $sys)
 		{
-			$data_raw[] = array(
+			$dataRaw[] = array(
 				'page'          => $sys,
 				'parent'        => NULL,
 				'cache'         => 1,
@@ -153,13 +153,13 @@ class navigation
 		}
 
 		// Création de l'arbre de navigation
-		foreach($data_raw as $key => $values)
+		foreach($dataRaw as $key => $values)
 		{
-			$simple_tree = empty($values['parent']);
+			$simpleTree = empty($values['parent']);
 
 			// MENU
-			$index = !$simple_tree ? $values['parent'] : $values['page']; // Cas d'une arborescence simple
-			if(!isset($data_raw[$index]))
+			$index = !$simpleTree ? $values['parent'] : $values['page']; // Cas d'une arborescence simple
+			if(!isset($dataRaw[$index]))
 			{
 				$lien = NULL;
 				$external = 0;
@@ -174,7 +174,7 @@ class navigation
 					}
 				}
 
-				$data_raw[$index] = array(
+				$dataRaw[$index] = array(
 					'text'     => l::get('menu-' .$index, ucfirst($index)),
 					'hidden'   => $hidden,
 					'external' => $external,
@@ -183,45 +183,45 @@ class navigation
 			}
 
 			// SOUS-MENU
-			if(!$simple_tree and $external != '1')
+			if(!$simpleTree and $external != '1')
 			{
-				$index_sub = $values['parent'].'-'.$values['page'];
+				$indexSub = $values['parent'].'-'.$values['page'];
 				$lien = (!empty($values['external_link']))
 					? $values['external_link']
 					: NULL;
 
-				$data_raw[$index]['submenu'][$values['page']] = array(
+				$dataRaw[$index]['submenu'][$values['page']] = array(
 					'hidden' => $values['hidden'],
-					'text'   => l::get('menu-' .$index_sub, ucfirst($values['page'])),
+					'text'   => l::get('menu-' .$indexSub, ucfirst($values['page'])),
 					'class'  => array('menu-'.$index.'-'.$values['page']),
 					'link'   => $lien);
 
 				// Calculs des liens des sous-pages
-				if(isset($data_raw[$index]['submenu']))
-					foreach($data_raw[$index]['submenu'] as $subkey => $subvalue)
+				if(isset($dataRaw[$index]['submenu']))
+					foreach($dataRaw[$index]['submenu'] as $subkey => $subvalue)
 						if(!a::get($subvalue, 'link'))
-							$data_raw[$index]['submenu'][$subkey]['link'] = url::rewrite($values['parent'].'-'.$values['page']);
+							$dataRaw[$index]['submenu'][$subkey]['link'] = url::rewrite($values['parent'].'-'.$values['page']);
 			}
 
 			if(!a::get($values, 'link'))
 			{
 				// Lien externe
-				if($data_raw[$index]['external'] == 1)
-					$data_raw[$index]['link'] = $data_raw[$index]['link'];
+				if($dataRaw[$index]['external'] == 1)
+					$dataRaw[$index]['link'] = $dataRaw[$index]['link'];
 
 				else
 				{
-					$submenu = a::get(a::get($data_raw, $index), 'submenu');
+					$submenu = a::get(a::get($dataRaw, $index), 'submenu');
 					$link = $submenu ? $index.'-'.key($submenu) : $index;
-					$data_raw[$index]['link'] = url::rewrite($link);
+					$dataRaw[$index]['link'] = url::rewrite($link);
 				}
 			}
 
-			$data_raw = a::remove($data_raw, $key);
+			$dataRaw = a::remove($dataRaw, $key);
 		}
-		if(!LOCAL) $data_raw['admin']['hidden'] = 1;
+		if(!LOCAL) $dataRaw['admin']['hidden'] = 1;
 
-		self::$data = $data_raw;
+		self::$data = $dataRaw;
 		cache::fetch('navigation', self::$data);
 	}
 
@@ -248,14 +248,14 @@ class navigation
 	}
 
 	// Altération des liens de la liste
-	static function alterTree($key, $alter_value = NULL, $alter_key = 'link')
+	static function alterTree($key, $alterValue = NULL, $alterKey = 'link')
 	{
 		if(str::find('-', $key))
 		{
 			$key = explode('-', $key);
-			self::$data[$key[0]]['submenu'][$key[1]][$alter_key] = $alter_value;
+			self::$data[$key[0]]['submenu'][$key[1]][$alterKey] = $alterValue;
 		}
-		else self::$data[$key][$alter_key] = $alter_value;
+		else self::$data[$key][$alterKey] = $alterValue;
 	}
 
 	// Rendu HTML des arbres de navigation

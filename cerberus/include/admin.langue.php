@@ -36,18 +36,18 @@ if(get('bdd'))
 			$resultat = move_uploaded_file($_FILES['import']['tmp_name'], $filename);
 			if($resultat)
 			{
-				$csv_content = file_get_contents($filename);
-				$index = str::parse($csv_content, 'csv');
+				$csvContent = file_get_contents($filename);
+				$index = str::parse($csvContent, 'csv');
 				foreach($index as $ligne => $colonnes)
 				{
 					if($ligne != 0 and count($colonnes) > 1)
 						foreach($colonnes as $langue => $value)
 							{
-								$index_clean[$ligne][$langue] = substr($value, 1, -1);
+								$indexClean[$ligne][$langue] = substr($value, 1, -1);
 							}
 				}
 				db::delete('cerberus_langue');
-				db::insert_all('cerberus_langue', NULL, $index_clean);
+				db::insert_all('cerberus_langue', NULL, $indexClean);
 				db::status('Fichier de langue correctement importé', 'Erreur lors de l\'import du fichier langue');
 			}
 		}

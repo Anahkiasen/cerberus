@@ -34,17 +34,17 @@ if(get('meta_structure'))
 
 if(r::post('page_priority'))
 {
-	$id_old = get('edit_structure');
-	$old = db::row('cerberus_structure', '*', array('id' => $id_old));
+	$idOld = get('edit_structure');
+	$old = db::row('cerberus_structure', '*', array('id' => $idOld));
 
 	// Changement du nom des fichiers
 	$page = !empty($old['page']) ? $old['parent'].'-'.$old['page'] : $old['parent'];
-	$new_name = !empty($_POST['page']) ? r::post('parent').'-'.r::post('page') : r::post('parent');
+	$newName = !empty($_POST['page']) ? r::post('parent').'-'.r::post('page') : r::post('parent');
 	$pages = glob('pages/' .$page. '.{html,php}', GLOB_BRACE);
-	if(sizeof($pages) == 1) f::rename($pages[0], $new_name);
+	if(sizeof($pages) == 1) f::rename($pages[0], $newName);
 
 	// Nom des éléments de traduction
-	db::update('cerberus_langue', array('tag' => 'menu-'.$new_name), array('tag' => 'menu-'.$page));
+	db::update('cerberus_langue', array('tag' => 'menu-'.$newName), array('tag' => 'menu-'.$page));
 	db::last_sql();
 }
 
@@ -98,10 +98,10 @@ if(isset($_GET['meta_structure']))
 	$form = new forms(array('action' => url::reload(array('meta_structure' => get('meta_structure')))));
 	$form->values('cerberus_meta');
 	$titre = get('meta_structure') ? l::getalt('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
-	$parent_titre = l::getalt('menu-'.$meta['parent'], l::admin_current());
+	$parentTitre = l::getalt('menu-'.$meta['parent'], l::admin_current());
 
 	$form->setValue('traduction_titre', $titre);
-	$form->setValue('traduction_parent_titre', $parent_titre);
+	$form->setValue('traduction_parent_titre', $parentTitre);
 
 	$form->openFieldset('Modifier des données meta');
 		$form->addSelect('page', 'Identifiant de la page', $availablePages, $meta['idx'], array('force_index' => true));

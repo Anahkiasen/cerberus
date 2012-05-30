@@ -31,7 +31,7 @@ class htaccess
 	///////////////////////// CONSTRUCTORS ///////////////////////
 	//////////////////////////////////////////////////////////////
 
-	function better_ie7()
+	function betterIE7()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function cross_domain_ajax_requests()
+	function crossDomainAjaxRequests()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function cors_enabled_images()
+	function corsEnabledImage()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function webfont_assets()
+	function webfontAssets()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -109,7 +109,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function proper_mime()
+	function properMime()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -156,7 +156,7 @@ class htaccess
 		AddType text/x-vcard                        vcf';
 	}
 
-	function allow_concatenation()
+	function allowConcatenation()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -185,7 +185,7 @@ class htaccess
 		</FilesMatch>';
 	}
 
-	function gzip_compression()
+	function gzipCompression()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -237,7 +237,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function expires_headers()
+	function expiresHeaders()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -304,7 +304,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function etag_removal()
+	function etagRemoval()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -324,7 +324,7 @@ class htaccess
 		FileETag None';
 	}
 
-	function stop_screen_flicker()
+	function stopScreenFlicker()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -341,7 +341,7 @@ class htaccess
 		SetEnvIf brokenvary 1 force-no-vary';
 	}
 
-	function cookie_settings_iframes()
+	function cookieSettingsIframes()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -358,7 +358,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function start_rewrite_engine()
+	function startRewriteEngine()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -374,7 +374,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function force_www()
+	function forceWWW()
 	{
 		return '
 		# Option 2:
@@ -389,7 +389,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function suppress_www()
+	function suppressWWW()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -419,7 +419,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function builtin_cachebusting()
+	function builtinCachebusting()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -441,7 +441,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function prevent_ssl_warnings()
+	function preventSSLWarnings()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -458,7 +458,7 @@ class htaccess
 		# </IfModule>';
 	}
 
-	function prevent_404()
+	function prevent404()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -471,7 +471,7 @@ class htaccess
 		Options -MultiViews';
 	}
 
-	function custom_404()
+	function custom404()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -482,7 +482,7 @@ class htaccess
 		ErrorDocument 404 index.php?page=404';
 	}
 
-	function force_utf8()
+	function forceUTF8()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -496,7 +496,7 @@ class htaccess
 		AddCharset utf-8 .css .js .xml .json .rss .atom';
 	}
 
-	function additional_security()
+	function additionalSecurity()
 	{
 		return '
 		# ----------------------------------------------------------------------

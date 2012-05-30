@@ -1,5 +1,5 @@
 <?php
-class admin extends admin_setup
+class admin extends adminSetup
 {
 	// Options
 	private $modeSQL; // Site avec BDD
@@ -66,7 +66,7 @@ class admin extends admin_setup
 				}
 				if(in_array($key, $this->fields))
 				{
-					if(!$this->is_blank($value)) $fieldsUpdate[$key] = $value;
+					if(!$this->isBlank($value)) $fieldsUpdate[$key] = $value;
 					else if(!in_array($key, $facultativeFields)) $emptyFields[] = $key;
 				}
 			}
@@ -312,7 +312,7 @@ class admin extends admin_setup
 	}
 
 	// Vérifie si un champ est véritablement nul
-	function is_blank($value)
+	function isBlank($value)
 	{
 		return empty($value) && !is_numeric($value);
 	}

@@ -1,5 +1,5 @@
 <?php
-class admin_setup
+class adminSetup
 {
 	// Options
 	protected $multilangue; // Site multilangue ou pas
@@ -7,8 +7,8 @@ class admin_setup
 
 	// Login
 	private $granted; // État de l'accès
-	private $login_user; // Utilisateur
-	private $login_password; // Mot de passe
+	private $loginUser; // Utilisateur
+	private $loginPassword; // Mot de passe
 
 	// Navigation
 	private static $droits;
@@ -28,8 +28,8 @@ class admin_setup
 
 		// Identification
  		if(isset($_GET['logoff'])) session::remove('admin');
-		$this->login_user = md5(config::get('admin.login'));
-		$this->login_password = md5(config::get('admin.password'));
+		$this->loginUser = md5(config::get('admin.login'));
+		$this->loginPassword = md5(config::get('admin.password'));
 		$this->adminLogin();
 
 		if($this->granted)
@@ -69,7 +69,7 @@ class admin_setup
 
 			// Affichage de la page
 			echo '<div id="admin">';
-			$this->admin_navigation();
+			$this->adminNavigation();
 			$this->content();
 			echo '</div>';
 		}
@@ -108,12 +108,12 @@ class admin_setup
 	// Formulaire d'identification et vérification
 	function adminLogin()
 	{
-		$admin_form = new forms();
-		$admin_form->openFieldset('Identification');
-			$admin_form->addText('user', 'Identifiant');
-			$admin_form->addPassword('password', 'Mot de passe');
-			$admin_form->addSubmit('Connexion');
-		$admin_form->closeFieldset();
+		$adminForm = new forms();
+		$adminForm->openFieldset('Identification');
+			$adminForm->addText('user', 'Identifiant');
+			$adminForm->addPassword('password', 'Mot de passe');
+			$adminForm->addSubmit('Connexion');
+		$adminForm->closeFieldset();
 
 		// Vérification du formulaire
 		if(isset($_POST['user'], $_POST['password']))
@@ -127,14 +127,14 @@ class admin_setup
 			else
 			{
 				str::display('Les identifiants entrés sont incorrects.', 'error');
-				$admin_form->render();
+				$adminForm->render();
 			}
 		}
 		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = TRUE;
 		else
 		{
 			str::display('Veuillez entrer votre identifiant et mot de passe.');
-			$admin_form->render();
+			$adminForm->render();
 		}
 	}
 
@@ -146,7 +146,7 @@ class admin_setup
 			$queryQ = db::field('cerberus_admin', 'password', array('user' => md5($user)));
 			return (isset($queryQ) && md5($password) == $queryQ);
 		}
-		else return (md5($user) == $this->login_user and md5($password) == $this->login_password);
+		else return (md5($user) == $this->loginUser and md5($password) == $this->loginPassword);
 	}
 
 	// Recupération de l'identification
@@ -160,7 +160,7 @@ class admin_setup
 	############## NAVIGATION ##############
 	########################################
 	*/
-	function admin_navigation()
+	function adminNavigation()
 	{
 		echo '<div id="admin-navigation"><h4>Tableau de bord</h4>';
 
@@ -169,9 +169,9 @@ class admin_setup
 			echo '<div class="btn-group"><button class="btn category">Langue</button>';
 			foreach($this->multilangue as $langue)
 			{
-				$flag_state = (l::admin_current() == $langue) ? NULL : '_off';
+				$flagState = (l::admin_current() == $langue) ? NULL : '_off';
 				$active = ($langue == l::admin_current()) ? 'btn-inverse' : NULL;
-				echo '<a class="btn ' .$active. '" href="' .url::reload(array('get_admin_langue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flag_state. '.png', $langue). '</a>';
+				echo '<a class="btn ' .$active. '" href="' .url::reload(array('get_admin_langue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flagState. '.png', $langue). '</a>';
 			}
 			echo '</div>';
 		}
@@ -197,9 +197,9 @@ class admin_setup
 				if(!empty($page) and self::$droits[$page])
 				{
 					// Texte
-					$texte_lien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE);
+					$texteLien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE);
 					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? 'btn-inverse' : NULL;
-					echo '<a class="btn ' .$thisActive. '" href="' .url::rewrite('admin-' .$page). '">' .ucfirst($texte_lien). '</a>';
+					echo '<a class="btn ' .$thisActive. '" href="' .url::rewrite('admin-' .$page). '">' .ucfirst($texteLien). '</a>';
 				}
 			}
 		}

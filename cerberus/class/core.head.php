@@ -19,7 +19,7 @@ class head
 	 * Order for tags and attributes
 	 * @var array
 	 */
-	private static $order_tags = array('base', 'title', 'meta', 'link', 'style');
+	private static $orderTags = array('base', 'title', 'meta', 'link', 'style');
 
 	/**
 	 * Adds a tag to the header
@@ -56,12 +56,12 @@ class head
 		self::reorder();
 
 		// Iterating the head tags
-		foreach(self::$head as $id_balise => $attributes)
+		foreach(self::$head as $idBalise => $attributes)
 		{
 			// Determine the name and if the tag is self closing
-			$balise_name = a::get($attributes, 'tag');
-			$self_closing = !isset($attributes['value']);
-			$balise = $balise_name;
+			$baliseName = a::get($attributes, 'tag');
+			$selfClosing = !isset($attributes['value']);
+			$balise = $baliseName;
 
 			// Writing the tag attributes
 			foreach($attributes as $k => $v)
@@ -79,10 +79,10 @@ class head
 
 			// Wrapping the tag
 			$balise = '<'.$balise;
-			$balise .= $self_closing ? '/>' : '</'.$balise_name. '>';
+			$balise .= $selfClosing ? '/>' : '</'.$baliseName. '>';
 
 			// Saving the formatted version
-			self::$head[$id_balise] = $balise;
+			self::$head[$idBalise] = $balise;
 		}
 
 		// Prints the head tags
@@ -107,7 +107,7 @@ class head
 		// Emptying the head array
 		self::$head = array();
 
-		foreach(self::$order_tags as $order)
+		foreach(self::$orderTags as $order)
 		{
 			if(!isset($tags[$order])) continue;
 
