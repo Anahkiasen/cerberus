@@ -197,7 +197,7 @@ class Admin_Setup
 				if(!empty($page) and self::$droits[$page])
 				{
 					// Texte
-					$texteLien = (!is_numeric($titre)) ? $titre : l::getalt('menu-admin-'.$page, l::admin_current(), $page, TRUE);
+					$texteLien = (!is_numeric($titre)) ? $titre : l::getTranslation('menu-admin-'.$page, l::admin_current(), $page, TRUE);
 					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? 'btn-inverse' : NULL;
 					echo '<a class="btn ' .$thisActive. '" href="' .url::rewrite('admin-' .$page). '">' .ucfirst($texteLien). '</a>';
 				}

@@ -97,8 +97,8 @@ if(isset($_GET['meta_structure']))
 	// Formulaire META
 	$form = new forms(array('action' => url::reload(array('meta_structure' => get('meta_structure')))));
 	$form->values('cerberus_meta');
-	$titre = get('meta_structure') ? l::getalt('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
-	$parentTitre = l::getalt('menu-'.$meta['parent'], l::admin_current());
+	$titre = get('meta_structure') ? l::getTranslation('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
+	$parentTitre = l::getTranslation('menu-'.$meta['parent'], l::admin_current());
 
 	$form->setValue('traduction_titre', $titre);
 	$form->setValue('traduction_parent_titre', $parentTitre);
