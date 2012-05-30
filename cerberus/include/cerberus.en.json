@@ -23,6 +23,8 @@
 	"form.cancel"                  : "Cancel",
 	"form.incomplete"              : "One or more fields are incomplete or incorrect",
 
+	"language.missing"             : "Unable to locate the language file",
+
 	"mail.error"                   : "An error occured during the sending of the message",
 	"mail.sent"                    : "Your message was correctly sent",
 

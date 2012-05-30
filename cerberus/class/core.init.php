@@ -43,6 +43,9 @@ class init
 		// Defining and assigning class __autoloader
 		$this->autoloader();
 
+		// Set main language of the environnement
+		$this->strings();
+
 		// Error handling
 		$this->errorHandling();
 
@@ -210,6 +213,15 @@ class init
 
 		// Load the local configuration file
 		else config::load(PATH_CONF);
+	}
+
+	/**
+	 * Loads the Cerberus language file containing errors and messages
+	 */
+	function strings()
+	{
+		l::locale('fr');
+		l::load('cerberus/include/cerberus.{langue}.json');
 	}
 
 	/**

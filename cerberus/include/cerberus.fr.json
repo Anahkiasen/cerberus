@@ -16,12 +16,14 @@
 	"db.errors.missing_db_name"    : "Aucune base n'a été fournie",
 	"db.errors.query"              : "Requ&ecirc;te incorrecte",
 
-	"error.filepath"               : "Le fichier&nbsp;{filepath} est introuvable",
+	"error.filepath"               : "Le fichier {filepath} est introuvable",
 
 	"file.folder.error"            : "Impossible de créer le dossier",
 
 	"form.cancel"                  : "Annuler",
 	"form.incomplete"              : "Un ou plusieurs champs sont incomplets ou incorrects",
+
+	"language.missing"             : "Impossible de localiser le fichier langue",
 
 	"mail.error"                   : "Une erreur est survenue durant l'envoi du message",
 	"mail.sent"                    : "Votre message a bien été envoyé",
@@ -38,11 +40,11 @@
 	"update.error"                 : "Une erreur est survenue durant la mise à jour",
 	"update.success"               : "La version actuelle a corrèctement été mise à jour",
 
-	"upload.errors.file-exists"    : "Le fichier existe déjà et ne peut &ecirc;tre écrasé",
+	"upload.errors.file-exists"    : "Le fichier existe déjà et ne peut être écrasé",
 	"upload.errors.invalid-file"   : "Ce type de fichier n'est pas autorisé",
 	"upload.errors.invalide-upload": "L'envoi du fichier a échoué",
 	"upload.errors.missing-file"   : "Fichier introuvable",
-	"upload.errors.move-error"     : "Le fichier n'a pas pu &ecirc;tre placé sur le serveur",
+	"upload.errors.move-error"     : "Le fichier n'a pas pu être placé sur le serveur",
 	"upload.errors.too-big"        : "Le fichier est trop volumineux",
 	"upload.success"               : "Le fichier a correctement été envoyé"
 }
