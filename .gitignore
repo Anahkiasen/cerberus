@@ -23,6 +23,7 @@ assets/cerberus/img/rgbapng
 
 ## submodules
 assets/cerberus/*/plugins
+!assets/cerberus/sass/plugins
 assets/cerberus/fonts/fontawesome-*.*
 
 ## templates
