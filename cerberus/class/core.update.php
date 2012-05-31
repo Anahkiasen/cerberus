@@ -11,7 +11,7 @@ class update
 	 * The last revision number to date
 	 * @var string
 	 */
-	private static $last = '2012-05-23,a98b7701b20f20aed664d4232550709b2b601f40';
+	private static $last = '2012-05-31,a98b7701b20f20aed664d4232550709b2b601f40';
 
 	/**
 	 * Sets the current revision number and updates the core
@@ -33,6 +33,15 @@ class update
 		{
 			self::codematch('createNivo\(', 'media::slideshow(');
 			self::codematch('([ !])f::path\(', '$1f::exist(');
+		}
+
+		// Update config file format
+		$confPHP = PATH_CORE.'conf.php';
+		if(file_exists($confPHP))
+		{
+			$json = f::read($confPHP, 'json');
+			f::write($confPHP, $json);
+			f::remove($confPHP);
 		}
 
 		// SQL specific updates

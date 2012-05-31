@@ -41,7 +41,7 @@ cerberus/cache
 # !assets/common
 
 # configuration
-cerberus/conf.php
+cerberus/conf.json
 
 # pages
 /pages/

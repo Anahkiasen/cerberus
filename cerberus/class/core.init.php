@@ -178,8 +178,8 @@ class init
 		// Define PATH_CORE (cerberus folder)
 		if(!defined('PATH_CORE')) define('PATH_CORE', PATH_MAIN.'cerberus/');
 
-		// Define PATH_CONF (conf.php file)
-		if(!defined('PATH_CONF')) define('PATH_CONF', PATH_CORE.'conf.php');
+		// Define PATH_CONF (conf.json file)
+		if(!defined('PATH_CONF')) define('PATH_CONF', PATH_CORE.'conf.json');
 
 		// Define PATH_CACHE (cerberus cache folder)
 		if(!defined('PATH_CACHE')) define('PATH_CACHE', PATH_CORE.'cache/');

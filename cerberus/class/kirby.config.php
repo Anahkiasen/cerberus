@@ -97,7 +97,7 @@ class config
 	 */
 	static function load($file)
 	{
-		if(file_exists($file)) require_once($file);
+		if(file_exists($file)) $config = f::read($file, 'json');
 		if(isset($config)) self::set($config);
 		return self::get();
 	}
@@ -111,25 +111,9 @@ class config
 	 */
 	static function hardcode($key, $value = NULL)
 	{
-		// Traitement de la valeur
-		if(is_array($value)) $value = 'array(\'' .implode("', '", $formatted_value). '\')';
-		elseif(is_bool($value)) $value = str::boolprint($value);
-		elseif(is_null($value)) $value = 'NULL';
-		else $value = '"' .$value. '"';
-
-		$config = f::read(self::$config_file);
-
-		// Recherche de sa présence dans le fichier config
-		if(preg_match('#\$config\[\'(' .$key. ')\'\] = (.+);#', $config))
-		{
-			$config = preg_replace(
-				'#\$config\[\'(' .$key. ')\'\] = (.+);#',
-				'$config[\'$1\'] = ' .$value. ';',
-				$config);
-		}
-		else if(!empty($value)) $config = str_replace('?>', '$config[\'' .$key. '\'] = ' .$value. ";\n?>", $config);
-
-		return f::write(self::$config_file, $config);
+		$json = f::read(PATH_CONF, 'json');
+		$json[$key] = $value;
+		f::write(PATH_CONF, $json);
 	}
 
 	/**
@@ -146,10 +130,10 @@ class config
 		if($local_name and !self::get('local.name')) self::hardcode('local.name', $local_name);
 		if(!self::get('db.host') and $online_password and $online_host and $online_name and $online_user)
 		{
-			self::hardcode('db.host', $online_host);
-			self::hardcode('db.user', $online_user);
+			self::hardcode('db.host',     $online_host);
+			self::hardcode('db.user',     $online_user);
 			self::hardcode('db.password', $online_password);
-			self::hardcode('db.name', $online_name);
+			self::hardcode('db.name',     $online_name);
 		}
 	}
 }
