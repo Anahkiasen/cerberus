@@ -198,7 +198,8 @@ class init
 
 		// Loading errorHandle
 		include(PATH_CORE.'tools/errorHandle.php');
-		//set_error_handler('errorHandle');
+		set_error_handler('errorHandle');
+		set_exception_handler(array('Debug', 'handle'));
 
 		// Setting error level
 		error_reporting(E_ALL | E_STRICT ^ E_DEPRECATED);

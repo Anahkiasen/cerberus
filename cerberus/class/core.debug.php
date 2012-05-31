@@ -1,7 +1,7 @@
 <?php
-class Debug extends Exception
+class Debug
 {
-	private $errorType = NULL;
+	private static $errorType = NULL;
 
 	/**
 	 * Decides wether we should print or send the error log
@@ -9,56 +9,36 @@ class Debug extends Exception
 	 * @param Exception $exception An exception that occured
 	 * @param integer   $type      An error code or type
 	 */
-	public function __construct($exception, $type = NULL)
+	static public function handle($exception, $type = NULL)
 	{
-		// Building Exception
-		parent::__construct($exception);
-
 		// Error type
-		$this->errorType = $this->errorType($type);
+		self::$errorType = self::errorType($type);
 
-		// Displaying error
-		if(LOCAL) $this->render();
-		else $this->send();
-	}
-
-	/**
-	 * Send the error log
-	 */
-	private function send()
-	{
-		// Setting the mail's title
-		$mailTitle = config::get('sitename');
-		$mailTitle = $mailTitle ? 'Cerberus - ' .$mailTitle : 'CerberusDebug';
-
-		$mailObject = '[DEBUG] ' .basename($this->getFile()). '::' .$this->getLine();
-
-		$mail = new smail(config::get('developper.mail', 'maxime@stappler.fr'), $mailObject, $DEBUG);
-		$mail->setExpediteur($mailTitle, config::get('mail'));
-		$mail->messageHTML();
-		$mail->send();
+		// Displaying error or sending it
+		if(LOCAL) echo self::render($exception);
+		else self::send($exception);
 	}
 
 	/**
 	 * Display the error backtrace
 	 */
-	private function render()
+	private static function render($e)
 	{
 		// Getting error code
-		$code = $this->getCode();
+		$code = $e->getCode();
 		$code = !empty($code) ? '['.$code.'] ' : NULL;
 
-
-		echo '
-		<h1>' .$this->errorType. ' : ' .$code.$this->getMessage(). '</h1>
-		<h2>' .basename($this->getFile()). '[' .$this->getLine(). '] at <ins>' .date('H:i:s \t\h\e Y-m-d'). '</ins></h2>';
+		// Displaying error header
+		$render = '
+		<h1>' .self::$errorType. ' : ' .$code.$e->getMessage(). '</h1>
+		<h2>' .basename($e->getFile()). '[' .$e->getLine(). '] at <ins>' .date('H:i:s \t\h\e Y-m-d'). '</ins></h2>';
 
 		// Crawling backtrace
-		foreach($this->getTrace() as $i => $t)
+		foreach($e->getTrace() as $i => $t)
 		{
 			// File
-			echo '<div style="margin-left:' .($i * 25). 'px">';
-				echo '<h3>' .basename($t['file']). '[' .$t['line']. ']</h3>';
+			$render .= '<div style="margin-left:' .($i * 25). 'px">';
+				$render .= '<h3>' .basename($t['file']). '[' .$t['line']. ']</h3>';
 
 				// Arguments
 				if(!empty($t['args'])) $t['args'] = "'" .implode("', '", $t['args']). "'";
@@ -66,15 +46,40 @@ class Debug extends Exception
 
 				// Class and function
 				if(isset($t['function']) and isset($t['class']))
-					echo '<p>' .$t['class'].$t['type'].$t['function'].'(' .$t['args']. ')</p>';
+					$render .= '<p>' .$t['class'].$t['type'].$t['function'].'(' .$t['args']. ')</p>';
 
 				elseif(isset($t['function']))
-					echo '<p>' .$t['function'].'(' .$t['args']. ')</p>';
-			echo '</div>';
+					$render .= '<p>' .$t['function'].'(' .$t['args']. ')</p>';
+			$render .= '</div>';
 		}
+
+		return $render;
 	}
 
-	private function errorType($errorType)
+	/**
+	 * Send the error log
+	 */
+	private static function send($e)
+	{
+		// Setting the mail's title
+		$mailTitle = config::get('sitename');
+		$mailTitle = $mailTitle ? 'Cerberus - ' .$mailTitle : 'CerberusDebug';
+
+		$mailObject = '[DEBUG] ' .basename($e->getFile()). '::' .$e->getLine();
+
+		$mail = new smail(config::get('developper.mail', 'maxime@stappler.fr'), $mailObject, self::render($e));
+		$mail->setExpediteur($mailTitle, config::get('mail'));
+		$mail->messageHTML();
+		$mail->send();
+	}
+
+	/**
+	 * Getting a readable error type
+	 *
+	 * @param  string $errorType A type of error
+	 * @return string            A readable type or error
+	 */
+	private static function errorType($errorType)
 	{
 		switch ($errorType)
 		{
