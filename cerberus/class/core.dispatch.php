@@ -342,7 +342,10 @@ class dispatch
 		/* Renaming assets with aliases --------------------------- */
 
 		// Getting preset aliases
-		foreach(self::$alias as $to => $from)
+		foreach(self::$alias as $to => $froms)
+		{
+			if(!is_array($froms)) $froms = array($froms);
+			foreach($froms as $from)
 		{
 			// If the ressource we have an alias for is not in the folders
 			if(!str::find('http', $from) and
@@ -363,6 +366,7 @@ class dispatch
 			// Removing the old entry from the array
 			self::$paths = a::remove(self::$paths, $from);
 		}
+	}
 	}
 
 	/**
