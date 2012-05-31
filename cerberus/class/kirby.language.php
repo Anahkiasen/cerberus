@@ -291,12 +291,12 @@ class l
 	 * @param  string  $file The name of the translated file
 	 * @return mixed   The content of the file, or an error if not found
 	 */
-	static function content($file)
+	static function content($content)
 	{
-		$file = 'pages/text/' .self::current(). '-' .$file;
-		$file = f::path($file.'html', $file.'php');
+		$file = 'pages/text/' .self::current(). '-' .$content;
+		$file = f::exist($file.'.html', $file.'.php');
 
 		if($file) include $file;
-		else str::display('Translation for ' .$file. ' not found in (' .self::current(). ')', 'error');
+		else str::display('Translation for ' .$content. ' not found in (' .self::current(). ')', 'error');
 	}
 }
