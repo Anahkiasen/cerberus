@@ -811,7 +811,7 @@ class dispatch
 		// Getting selector
 		if($selector !== NULL)
 		{
-			$selector = empty($selector) ? '$' : "$('" .$selector. "')";
+			$selector = empty($selector) ? '$' : "$('" .addslashes($selector). "')";
 			$string = $selector.'.'.$string.';';
 		}
 
