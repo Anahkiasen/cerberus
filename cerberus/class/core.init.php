@@ -290,10 +290,11 @@ class init
 		if(!config::get('logs') or !SQL)    return false;
 
 		// The table doesn't exist
-		if(!db::is_table('cerberus_logs'))  return false;
-
-		// Create the table if it doesn't exist
-		if(!update::table('cerberus_logs')) return false;
+		if(!db::is_table('cerberus_logs'))
+		{
+			$update = update::table('cerberus_logs');
+			if(!$update) return false;
+		}
 
 		// If we have a table we can start logging ----------------- /
 
@@ -310,6 +311,7 @@ class init
 
 		// Saving informations
 		if(!empty($ua['name']) and !empty($ua['platform']))
+		{
 			db::insert('cerberus_logs', array(
 				'ip'       => $ip,
 				'date'     => 'NOW()',
@@ -320,6 +322,7 @@ class init
 				'mobile'   => $mobile,
 				'locale'   => l::locale(),
 				'domaine'  => $domaine));
+		}
 	}
 
 	/**
