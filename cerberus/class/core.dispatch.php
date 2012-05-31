@@ -74,7 +74,7 @@ class dispatch
 
 		// Plugins jQuery
 		'tablesorter' => 'jquery.tablesorter.min',
-		'nivoslider'  => 'jquery.nivo.slider.pack',
+		'nivoslider'  => array('jquery.nivo.slider.pack', 'nivo-slider'),
 		'colorbox'    => 'jquery.colorbox-min',
 		'chosen'      => 'chosen.jquery.min',
 		'easing'      => 'jquery.easing',
@@ -101,6 +101,7 @@ class dispatch
 		'modernizr'   => array(
 			'modernizr.js'),
 		'nivoslider' => array(
+			'nivo-slider.css',
 			'jquery.nivo.slider.pack.js'),
 		'noty'        => array(
 			'css/jquery.noty.css',
