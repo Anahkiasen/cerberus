@@ -97,27 +97,23 @@ class db
 			$database = a::get($args, 3, config::get('db.name',     $dbname));
 			$charset  = a::get($args, 4, config::get('db.charset'));
 
-
 			if(LOCAL) $password = $dbmdp;
 
 			// Try to establish a connection
 			self::$connection = @mysql_connect($host, $user, $password);
+			if(!self::$connection) throw new Exception(l::get('db.errors.connect'));
+
 			if(self::$connection)
 			{
 				// Select the database
-			    $database = self::database($database);
-			    if(error($database)) return $database;
+				$database = self::database($database);
+				if(!$database) throw new Exception();
 
 			    // Set the right charset
 			    $charset = self::charset($charset);
 			    if(error($charset)) return $charset;
 			}
-			else return self::error(l::get('db.errors.connect'), true);
 		}
-
-		// Display errors
-		if(!self::$connection) return self::error(l::get('db.errors.connect'), true);
-		else return self::$connection;
 	}
 
 	/**
@@ -146,7 +142,7 @@ class db
 		$disconnect = @mysql_close($connection);
 		self::$connection = false;
 
-		if(!$disconnect) return self::error(l::get('db.errors.disconnect'));
+		if(!$disconnect) throw new Exception(l::get('db.errors.disconnect'));
 		return true;
 	}
 
@@ -159,7 +155,7 @@ class db
 	static function database($database)
 	{
 		// If no database has been set
-		if(!$database) return self::error(l::get('db.errors.missing_db_name'), true);
+		if(!$database) throw new Exception(l::get('db.errors.missing_db_name'));
 
 		// If we're already connected to it
 		if(self::$database == $database) return true;
@@ -168,7 +164,7 @@ class db
 		$select = @mysql_select_db($database, self::connection());
 
 		// Display errors if found
-		if(!$select) return self::error(l::get('db.errors.missing_db'), true);
+		if(!$select) throw new Exception(l::get('db.errors.missing_db'));
 
 		// Else set the current database as the one given
 		self::$database = $database;
@@ -189,7 +185,7 @@ class db
 
 		// Set the new charset
 		$set = @mysql_query('SET NAMES ' .$charset);
-		if(!$set) return self::error(l::get('db.errors.setting_charset_failed', 'Setting database charset failed'));
+		if(!$set) throw new Exception(l::get('db.errors.setting_charset_failed', 'Setting database charset failed'));
 
 		// Save the new charset to the globals
 		self::$charset = $charset;

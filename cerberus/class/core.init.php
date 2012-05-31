@@ -286,17 +286,18 @@ class init
 	{
 		self::module('mysql');
 
-		// If local, we set the SQL login informations to the local.variables
-		if(config::get('local.name'))
+		// If we have database names to use
+		if(config::get('local.name') or config::get('online.name'))
 		{
+			// If local, we set the SQL login informations to the local.variables
 			if(LOCAL) config::set(array(
 				'db.host'     => config::get('local.host'),
 				'db.user'     => config::get('local.user'),
 				'db.password' => config::get('local.password'),
 				'db.name'     => config::get('local.name')));
 
-			// Unable to connect
-			if(!db::connect()) exit('Impossible d\'établir une connexion à la base de données');
+			// Attempt a connection
+			db::connect();
 		}
 
 		// Define the constant SQL to whether there's an existing connection
