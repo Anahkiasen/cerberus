@@ -37,6 +37,12 @@ class init
 	 */
 	function __construct()
 	{
+		// Correct headers as soon as launched, if possible
+		$this->correctHeader();
+
+		// Tweak some base PHP parameters
+		$this->iniPHP();
+
 		// Setting main path constants
 		$this->paths();
 
@@ -131,6 +137,24 @@ class init
 	//////////////////////////////////////////////////////////////
 	/////////////////////////// MODULES //////////////////////////
 	//////////////////////////////////////////////////////////////
+
+	/**
+	 * Correct the base encoding if possible
+	 */
+	function correctHeader()
+	{
+		if (!headers_sent())
+			header('Content-Type: text/html; charset=utf-8');
+	}
+
+	/**
+	 * Overwrite some of the base PHP parameters
+	 */
+	function iniPHP()
+	{
+		ini_set('upload_max_filesize', '100M');
+		ini_set('default_charset', 'utf-8');
+	}
 
 	/**
 	 * Defines the current timezone
