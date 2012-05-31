@@ -347,27 +347,27 @@ class dispatch
 		{
 			if(!is_array($froms)) $froms = array($froms);
 			foreach($froms as $from)
-		{
-			// If the ressource we have an alias for is not in the folders
-			if(!str::find('http', $from) and
-				!a::get(self::$paths, $from.',0') and
-				!isset(self::$paths[$from]))
-					continue;
+			{
+				// If the ressource we have an alias for is not in the folders
+				if(!str::find('http', $from) and
+					!a::get(self::$paths, $from.',0') and
+					!isset(self::$paths[$from]))
+						continue;
 
-			// Case 1 : the old and new name both are in the array (merge)
-			if(isset(self::$paths[$from], self::$paths[$to]))
-				self::$paths[$to] = array_merge(self::$paths[$to], self::$paths[$from]);
+				// Case 1 : the old and new name both are in the array (merge)
+				if(isset(self::$paths[$from], self::$paths[$to]))
+					self::$paths[$to] = array_merge(self::$paths[$to], self::$paths[$from]);
 
-			// Case 2 : The old name is in the array and need to be renamed to new (rename)
-			elseif(isset(self::$paths[$from]) and !isset(self::$paths[$to])) self::$paths[$to] = self::$paths[$from];
+				// Case 2 : The old name is in the array and need to be renamed to new (rename)
+				elseif(isset(self::$paths[$from]) and !isset(self::$paths[$to])) self::$paths[$to] = self::$paths[$from];
 
-			// Case 3 : The plugin is not in the array but needs to be because it's an external ressource (http)
-			else self::$paths[$to][] = $from;
+				// Case 3 : The plugin is not in the array but needs to be because it's an external ressource (http)
+				else self::$paths[$to][] = $from;
 
-			// Removing the old entry from the array
-			self::$paths = a::remove(self::$paths, $from);
+				// Removing the old entry from the array
+				self::$paths = a::remove(self::$paths, $from);
+			}
 		}
-	}
 	}
 
 	/**
@@ -388,8 +388,10 @@ class dispatch
 		{
 			$pluginFiles = a::get(self::$pluginFiles, $plugin);
 
-			// Check if the plugin is already loaded
-			if(isset(self::$paths[$plugin])) continue;
+			// Check if the plugin is already loaded (file exists and is in plugin folder)
+			if(isset(self::$paths[$plugin]))
+				foreach(self::$paths[$plugin] as $check)
+					if(str::find('/plugins/', $check) and in_array(basename($check), $pluginFiles)) break 2;
 
 			// Check if we need the plugin
 			if(!in_array($plugin, $submodules)) continue;
