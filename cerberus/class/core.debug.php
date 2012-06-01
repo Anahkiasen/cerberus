@@ -53,7 +53,7 @@ class Debug
 			$render .= '</div>';
 		}
 
-		return $render;
+		return '<div class="alert alert-block cerberus-debug">' .$render. '</div>';
 	}
 
 	/**
