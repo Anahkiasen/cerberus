@@ -107,7 +107,6 @@ class db
 			{
 				// Select the database
 				$database = self::database($database);
-				if(!$database) throw new Exception();
 
 			    // Set the right charset
 			    $charset = self::charset($charset);
