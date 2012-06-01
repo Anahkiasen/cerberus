@@ -144,9 +144,10 @@ class meta
 	 * Get the meta data for a specific page (defaults to the current one)
 	 *
 	 * @param  string  $page  The page wanted
+	 * @param  string  $key   A specific key to return instead of the whole thing
 	 * @return array   The meta data of said page
 	 */
-	static function page($page = NULL)
+	static function page($page = NULL, $key = NULL)
 	{
 		// If the meta array doesn't exist yet, let's build it
 		if(!is_array(self::$meta)) self::build();
@@ -155,8 +156,12 @@ class meta
 		if(!$page) $page = navigation::current();
 
 		// If we have the data, return it
-		if(isset(self::$meta[$page]) and !empty(self::$meta[$page])) return self::$meta[$page];
-		else return false;
+		if(isset(self::$meta[$page]) and !empty(self::$meta[$page]))
+			return $key
+				? a::get(self::$meta, $page.','.$key)
+				: a::get(self::$meta, $page);
+
+		return false;
 	}
 
 	/**
