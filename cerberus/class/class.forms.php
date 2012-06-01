@@ -452,6 +452,16 @@ class forms
 		$this->addField($name, $label = NULL, 'hidden', $value, $additionalParams);
 	}
 
+	public function addTel($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	{
+		$this->addField($name, $label, 'tel', $value, $additionalParams);
+	}
+
+	public function addEmail($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	{
+		$this->addField($name, $label, 'email', $value, $additionalParams);
+	}
+
 	//////////////////
 	///// LISTES /////
 	//////////////////
