@@ -57,13 +57,19 @@ class navigation
 				if(!$navigation) $navigation = array('home');
 
 				foreach($navigation as $page)
+				{
+					if(!is_array($page))
+						$page = array('page' => $page);
+
 				$dataRaw[] = array(
-					'page'          => $page,
-					'parent'        => NULL,
-					'cache'         => 0,
-					'hidden'        => 0,
-					'external_link' => NULL);
+						'page'          => a::get($page, 'page'),
+						'parent'        => a::get($page, 'parent'),
+						'cache'         => a::get($page, 'cache'),
+						'hidden'        => a::get($page, 'hidden', 0),
+						'external_link' => a::get($page, 'external_link'));
 			}
+			}
+
 			self::build($dataRaw);
 		}
 
