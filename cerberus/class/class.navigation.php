@@ -578,10 +578,12 @@ class navigation
 			$index = $index.'-'.$firstSubpage;
 		}
 
+		$attr = array();
+
 		// Build the class attribute
 		$class = a::get($value, 'class');
 		if(is_array($class)) $class = implode(' ', $class);
-		if($class) $attr['class'] = $class;
+		if($class and !$isListed) $attr['class'] = $class;
 		$classList = ($class) ? ' class="' .$class. '"' : NULL;
 
 		// Build the title attribute
@@ -590,7 +592,7 @@ class navigation
 
 		// Format the listed or flat version of the link
 		$link = $isListed
-			? '<li' .$classList. '>' .str::link($value['link'], $value['text'], array('title' => $attr['title'])). '</li>'
+			? '<li' .$classList. '>' .str::link($value['link'], $value['text'], $attr). '</li>'
 			: str::slink($value['link'], $value['text'], $attr);
 
 		return $link;
