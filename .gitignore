@@ -9,8 +9,10 @@ config.rb
 .project
 *.sublime-*
 
-# Sass
+# Sass cache
 .sass-cache
+*.sassc
+*.scssc
 
 ## CERBERUS CORE FILES ##
 #########################
