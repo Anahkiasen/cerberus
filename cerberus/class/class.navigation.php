@@ -409,9 +409,13 @@ class navigation
 					$isExternal = 0;
 				}
 
+				// Getting the link text
+				$text = a::get($values, 'text', $index);
+				$text = l::get('menu-'.$text, ucfirst($text));
+
 				// Getting text, class and link for the page
 				$dataRaw[$index] = array(
-					'text'     => l::get('menu-' .$index, ucfirst($index)),
+					'text'     => $text,
 					'class'    => array('menu-'.$index),
 					'link'     => $link,
 
@@ -537,8 +541,9 @@ class navigation
 		{
 			$text = $page = $pageData;
 
-			$pageData = array('page' => str::slugify($page, '_'));
-			if(isset($text)) $pageData['text'] = $text;
+			$pageData = array(
+				'page' => str::slugify($page, '_'),
+				'text' => $text);
 		}
 
 		// Writing main informations
