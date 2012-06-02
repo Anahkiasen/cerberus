@@ -534,12 +534,18 @@ class navigation
 	{
 		// If we were given a simple page name or a pagedata array
 		if(!is_array($pageData))
-			$pageData = array('page' => $pageData);
+		{
+			$text = $page = $pageData;
+
+			$pageData = array('page' => str::slugify($page, '_'));
+			if(isset($text)) $pageData['text'] = $text;
+		}
 
 		// Writing main informations
 		$return = array(
 			'page'          => a::get($pageData, 'page'),
 			'parent'        => a::get($pageData, 'parent',        $parent),
+			'text'          => a::get($pageData, 'text'),
 			'cache'         => a::get($pageData, 'cache',         $cache),
 			'hidden'        => a::get($pageData, 'hidden',        $hidden),
 			'external_link' => a::get($pageData, 'external_link', $external_link));
