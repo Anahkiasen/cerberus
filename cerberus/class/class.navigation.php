@@ -81,7 +81,7 @@ class navigation
 	 * The name of the folder containing page files
 	 * @var string
 	 */
-	static private $folder           = 'pages';
+	static private $folder           = 'pages/';
 
 	//////////////////////////////////////////////////////////////////
 	///////////////////////// NAVIGATION SETUP ///////////////////////
