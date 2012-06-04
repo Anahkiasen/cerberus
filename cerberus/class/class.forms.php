@@ -542,7 +542,7 @@ class forms
 	 *
 	 * @param  string $text Content to add
 	 */
-	private function insert($text)
+	public function insert($text)
 	{
 		$this->render .= $text;
 	}
