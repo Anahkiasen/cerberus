@@ -86,6 +86,8 @@ class dispatch
 	 */
 	static private $pluginFiles = array(
 		'bootstrap'   => array(
+			'css/bootstrap.css',
+			'css/bootstrap-responsive.css',
 			'img/*',
 			'js/*'),
 		'chosen'      => array(
@@ -394,7 +396,6 @@ class dispatch
 		foreach($plugins as $plugin)
 		{
 			$pluginFiles = a::get(self::$pluginFiles, $plugin);
-
 			// Check if the plugin is already loaded (file exists and is in plugin folder)
 			if(isset(self::$paths[$plugin]))
 				foreach(self::$paths[$plugin] as $check)

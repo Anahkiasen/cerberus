@@ -183,7 +183,6 @@ class navigation
 	{
 		if(!self::$page) return false;
 
-		//
 		switch(self::$page)
 		{
 			case '404';
@@ -199,12 +198,12 @@ class navigation
 				break;
 
 			default:
-				if(file_exists(self::$folder.self::$filepath)) include self::$folder.self::$filepath;
+				if(self::$filepath and file_exists(self::$folder.self::$filepath)) include self::$folder.self::$filepath;
 				else
 				{
-					$error = str_replace('{filepath}', self::$filepath, l::get('error.filepath'));
+					$error = str_replace('{filepath}', self::$filepath. ' [' .self::$page. ']', l::get('error.filepath'));
 					str::display($error, 'error');
-					errorHandle('Warning', 'Le fichier ' .self::$filepath. ' est introuvable', __FILE__, __LINE__);
+					errorHandle('Warning', $error, __FILE__, __LINE__);
 				}
 				break;
 		}
