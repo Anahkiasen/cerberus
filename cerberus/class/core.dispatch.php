@@ -335,7 +335,15 @@ class dispatch
 		// Grouping each found ressource by name
 		foreach($files as $path)
 		{
+			// Get base name
 			$basename = f::name($path, true);
+
+			// If it's not 'jquery.min', strip it from jquery and min tags
+			if($basename != 'jquery.min')
+			{
+				$basename = str::remove(array('min', 'jquery'), $basename);
+				$basename = trim($basename, '.');
+			}
 			self::$paths[$basename][] = $path;
 		}
 
