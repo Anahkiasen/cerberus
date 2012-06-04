@@ -15,7 +15,11 @@ class str
 	 */
 	static function remove($delete, $string)
 	{
-		return str_replace($delete, NULL, $string);
+		// If we only have one string to remove
+		if(!is_array($delete)) return str_replace($delete, NULL, $string);
+
+		// Else, use Regex
+		return preg_replace('#(' .implode('|', $delete). ')#', NULL, $string);
 	}
 
 	/* A set of sanitizer methods */
