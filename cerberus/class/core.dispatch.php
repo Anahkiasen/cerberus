@@ -96,7 +96,6 @@ class dispatch
 			'colorbox/jquery.colorbox.js'),
 		'font-awesome' => array(
 			'css/font-awesome-ie7.css',
-			'sass/font-awesome.sass',
 			'font/*'),
 		'modernizr'   => array(
 			'modernizr.js'),
