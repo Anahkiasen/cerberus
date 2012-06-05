@@ -231,7 +231,7 @@ class db
      */
     public static function query($sql, $fetch = true)
 	{
-		$connection = self::connect();
+		$connection = self::connection();
 		if(error($connection)) return $connection;
 		self::$last_query = $sql;
 
@@ -257,7 +257,7 @@ class db
      */
     public static function execute($sql)
 	{
-		$connection = self::connect();
+		$connection = self::connection();
 		if(error($connection)) return $connection;
 		self::$last_query = $sql;
 
@@ -612,7 +612,7 @@ class db
      */
 	static function fields($table)
     {
-		$connection = self::connect();
+		$connection = self::connection();
 		if(error($connection)) return $connection;
 
 		if(self::is_table($table))
