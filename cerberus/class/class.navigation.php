@@ -476,7 +476,7 @@ class navigation
 				if(isset($dataRaw[$index]['submenu']))
 					foreach($dataRaw[$index]['submenu'] as $subkey => $subvalue)
 						$dataRaw[$index]['submenu'][$subkey]['link'] =
-							a::get($subvalue, 'link', url::rewrite($values['parent'].'-'.$values['page']));
+							a::get($subvalue, 'link', $values['parent'].'-'.$values['page']);
 			}
 
 			// If no link is yet assigned to the parent page, assign it its first children
@@ -484,7 +484,7 @@ class navigation
 			{
 				$submenu = a::get($dataRaw, $index. ',submenu');
 				$link = $submenu ? $index.'-'.key($submenu) : $index;
-				$dataRaw[$index]['link'] = url::rewrite($link);
+				$dataRaw[$index]['link'] = $link;
 			}
 
 			// Once we're done building the structured view, remove the original data
@@ -552,7 +552,7 @@ class navigation
 		}
 
 		// Wrap the navigations in an <ul> tag if Listed
-		if(self::$optionListed and isset(self::$renderNavigation)) self::$renderNavigation = '<ul>'.self::$renderNavigation.'</ul>';
+		if(self::$optionListed    and isset(self::$renderNavigation))   self::$renderNavigation   = '<ul>' .self::$renderNavigation. '</ul>';
 		if(self::$optionListedSub and isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = '<ul>'.self::$renderSubnav[$key].'</ul>';
 	}
 
@@ -602,7 +602,7 @@ class navigation
 	 * Render a given page link as HTML menu element
 	 *
 	 * @param  string $index A page index
-	 * @param  array $value  An array of paremeters
+	 * @param  array  $value An array of paremeters
 	 *
 	 * @return string        An HTML menu element
 	 */
@@ -634,9 +634,11 @@ class navigation
 		if($title) $attr['title'] = $title;
 
 		// Format the listed or flat version of the link
+		$link = a::get($value, 'link');
+		if(!a::get($value, 'external_link')) $link = url::rewrite($link);
 		$link = $isListed
-			? '<li' .$classList. '>' .str::link($value['link'], $value['text'], $attr). '</li>'
-			: str::slink($value['link'], $value['text'], NULL, $attr);
+			? '<li' .$classList. '>' .str::link($link, $value['text'], $attr). '</li>'
+			: str::link($link, $value['text'], $attr);
 
 		return $link;
 	}
