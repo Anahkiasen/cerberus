@@ -606,7 +606,7 @@ class navigation
 		// Format the listed or flat version of the link
 		$link = $isListed
 			? '<li' .$classList. '>' .str::link($value['link'], $value['text'], $attr). '</li>'
-			: str::slink($value['link'], $value['text'], $attr);
+			: str::slink($value['link'], $value['text'], NULL, $attr);
 
 		return $link;
 	}
