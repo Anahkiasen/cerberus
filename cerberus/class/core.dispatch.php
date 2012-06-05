@@ -340,11 +340,11 @@ class dispatch
 			// Get base name
 			$basename = f::name($path, true);
 
-			// If it's not 'jquery.min', strip it from jquery and min tags
-			if($basename != 'jquery.min')
+			// TODO : Better regex here, srsly
+			if(!in_array($basename, array('jquery.min', 'admin')))
 			{
-				$basename = str::remove(array('min', 'jquery'), $basename);
-				$basename = trim($basename, '.');
+				$basename = str::remove(array('min', 'pack', 'jquery'), $basename);
+				$basename = trim($basename, '.-');
 			}
 			self::$paths[$basename][] = $path;
 		}
