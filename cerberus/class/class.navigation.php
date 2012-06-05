@@ -432,6 +432,9 @@ class navigation
 				$indexSub = $values['parent'].'-'.$values['page'];
 				$linkSub  = a::get($values, 'external_link');
 
+				// If we don't have an external link, point to page itself
+				if(!$linkSub) $linkSub = $index. '-' .$values['page'];
+
 				// If one of the submenu items is supposed to be shown, force the main menu to be shown
 				if($values['hidden'] == 0 and $dataRaw[$index]['hidden'] == 1)
 					$dataRaw[$index]['hidden'] = 0;
