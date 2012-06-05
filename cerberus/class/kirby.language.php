@@ -58,7 +58,7 @@ class l
 			$index = a::simplify(a::rearrange($index, 'tag', true), false);
 
 			// If the array we got is allright, save it
-			if(isset($index) and !empty($index)) self::$lang = $index;
+			if(isset($index) and !empty($index)) self::$lang = array_merge(self::$lang, $index);
 
 			// Otherwise something obviously went wrong
 			else throw new Debug(l::get('language.missing'));
