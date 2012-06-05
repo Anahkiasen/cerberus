@@ -47,6 +47,23 @@ class media extends dispatch
 	}
 
 	/**
+	 * Combines image() and timthumb() to create and render the thumb of a pic
+	 *
+	 * @param  string $file       The name of the file to look for
+	 * @param  int    $width      The desired with
+	 * @param  int    $height     The desired height
+	 * @param  array  $attributes Image parameters
+	 * @param  array  $params     TimThumb parameters
+	 * @return string             An <img> tag
+	 */
+	static function thumb($file, $width, $height, $attributes = array(), $params = array())
+	{
+		$file = self::path(PATH_COMMON.$file);
+		$path = self::timthumb($file, $width, $height, $params);
+		return str::img($path, a::get($attributes, 'alt'), $attributes);
+	}
+
+	/**
 	 * Creates a slideshow (currently based on nivoSlider)
 	 *
 	 * @param string   $folder   The folder containing the images to use
