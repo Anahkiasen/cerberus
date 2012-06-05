@@ -23,6 +23,18 @@ class navigation
 	 */
 	static private $optionListedSub  = FALSE;
 
+	/**
+	 * A glue to insert between each element of the menu
+	 * @var string
+	 */
+	static private $optionGlue       = NULL;
+
+	/**
+	 * A glue to insert between each element of the submenu
+	 * @var string
+	 */
+	static private $optionGlueSub    = NULL;
+
 	// Current environnement --------------------------------------- /
 
 	/**
@@ -273,6 +285,18 @@ class navigation
 	}
 
 	/**
+	 * Change the glue options for both the main and sub menus
+	 *
+	 * @param string $optionGlue    The glue for the main menu
+	 * @param string $optionGlueSub The glue for the submenu
+	 */
+	public static function setGlue($optionGlue = NULL, $optionGlueSub = NULL)
+	{
+		self::$optionGlue    = $optionGlue;
+		self::$optionGlueSub = $optionGlueSub;
+	}
+
+	/**
 	 * Alter the main tree's data after it has been built
 	 *
 	 * @param  string $key        The key to alter, can be page or page-subpage
@@ -494,10 +518,11 @@ class navigation
 	 *
 	 * @param  string $glue The glue separating the links (ex: |)
 	 */
-	private static function render($glue = NULL)
+	private static function render()
 	{
 		// Force each link to be on a line in the code
-		$glue .= PHP_EOL;
+		self::$optionGlue    .= PHP_EOL;
+		self::$optionGlueSub .= PHP_EOL;
 
 		// Check if we haven't already rendered that whole mess
 		if(!empty(self::$renderNavigation)) return true;
@@ -506,7 +531,9 @@ class navigation
 		foreach(self::$data as $key => $value)
 		{
 			// Append formatted link
-			self::$renderNavigation .= self::renderLink($key, $value).$glue;
+			self::$renderNavigation .=
+				self::renderLink($key, $value).
+				self::$optionGlue;
 
 			// Reading the submenu
 			$submenu = a::get($value, 'submenu');
@@ -518,10 +545,13 @@ class navigation
 					self::$renderSubnav[$key] = NULL;
 
 				// Append formatted link
-				self::$renderSubnav[$key] .= self::renderLink($key.'-'.$subkey, $subvalue).$glue;
+				self::$renderSubnav[$key] .=
+					self::renderLink($key.'-'.$subkey, $subvalue).
+					self::$optionGlueSub;
 			}
 		}
 
+		// Wrap the navigations in an <ul> tag if Listed
 		if(self::$optionListed and isset(self::$renderNavigation)) self::$renderNavigation = '<ul>'.self::$renderNavigation.'</ul>';
 		if(self::$optionListedSub and isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = '<ul>'.self::$renderSubnav[$key].'</ul>';
 	}
