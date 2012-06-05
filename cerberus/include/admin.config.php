@@ -61,9 +61,6 @@ array(
 		'base.online' => 'Sous-dossier en ligne (facultatif)')
 );
 
-if(file_exists(PATH_CONF)) include(PATH_CONF);
-if(!isset($config)) $config = array();
-
 // Création du formulaire
 $forms = new forms();
 foreach($CONFIGURATION as $FIELDSET => $FIELDS)
