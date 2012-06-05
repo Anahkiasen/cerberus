@@ -823,7 +823,7 @@ class dispatch
 		if($selector !== NULL)
 		{
 			$selector = empty($selector) ? '$' : "$('" .addslashes($selector). "')";
-			$string = $selector.'.'.$string.'';
+			$string = $selector.'.'.$string;
 		}
 
 		// Adding the JS bit
