@@ -37,7 +37,6 @@ class media extends dispatch
 
 		if(!str::find('http', $file))
 		{
-			$file = PATH_FILE.str::remove(PATH_FILE, $file);
 			$file = (str::find('../', $file))
 				? realpath($file)
 				: $file;
