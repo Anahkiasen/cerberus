@@ -280,7 +280,7 @@ class dispatch
 		self::$scripts = self::unpack($scripts);
 
 		// Loading the submodules files
-		self::submodules(self::$scripts);
+		if(LOCAL) self::submodules(self::$scripts);
 
 		/* Loading the wanted assets ------------------------------ */
 
