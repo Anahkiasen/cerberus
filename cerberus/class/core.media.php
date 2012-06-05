@@ -90,11 +90,10 @@ class media extends dispatch
 		// Creating the block
 		echo "<div id='" .$idBlock. "' style='height: " .$height. "px; max-width: " .$width. "px; margin: auto'>".PHP_EOL;
 		foreach($images as $i) echo "\t".
-			str::img(
-				self::timthumb(
-					$folder.'/'.basename($i),
-					$width,
-					$height)).PHP_EOL;
+			media::thumb(
+				'file/'.$folder.'/'.basename($i),
+				$width,
+				$height).PHP_EOL;
 		echo '</div>'.PHP_EOL;
 
 		// Add the Javascript code to the page

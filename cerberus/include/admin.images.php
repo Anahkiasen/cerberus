@@ -124,7 +124,7 @@ if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 		$basename = f::filename($image);
 		echo
 		'<tr>
-			<td><img src="' .media::timthumb($_GET['pictures']. '/' .$basename, 150, 100). '" /></td>
+			<td>' .media::thumb('file/' .$_GET['pictures']. '/' .$basename, 150, 100). '</td>
 			<td>' .$image. '</td>
 			<td>
 				<form method="post">

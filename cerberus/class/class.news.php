@@ -132,10 +132,12 @@ class news
 				$thisThumb =
 					str::link(
 						PATH_FILE. 'news/' .$value['path'],
-						str::img(
-							media::timthumb('news/' .$value['path'], $this->thumbWidth, $this->thumbHeight, array('zc' => 1)),
-							$value['titre'],
-							array('class' => 'float')),
+						media::thumb(
+							'file/news/' .$value['path'],
+							$this->thumbWidth,
+							$this->thumbHeight,
+							array('alt' => $value['titre'], 'class' => 'float'),
+							array('zc' => 1)),
 						array('class' => 'colorbox'));
 			}
 			else $thisThumb = NULL;
