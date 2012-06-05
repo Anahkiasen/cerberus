@@ -73,12 +73,8 @@ class dispatch
 		'swfobject'   => 'https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',
 
 		// Plugins jQuery
-		'tablesorter' => 'jquery.tablesorter.min',
 		'nivoslider'  => array('nivo.slider', 'nivo-slider'),
-		'colorbox'    => 'jquery.colorbox-min',
-		'chosen'      => 'chosen.jquery.min',
 		'uitotop'     => 'ui.totop');
-		'noty'        => 'jquery.noty');
 
 	/**
 	 * The file to cherry-pick in the linked submodules
@@ -827,11 +823,11 @@ class dispatch
 		if($selector !== NULL)
 		{
 			$selector = empty($selector) ? '$' : "$('" .addslashes($selector). "')";
-			$string = $selector.'.'.$string.';';
+			$string = $selector.'.'.$string.'';
 		}
 
 		// Adding the JS bit
-		self::addJS($string);
+		self::addJS($string.';');
 	}
 
 	/**
