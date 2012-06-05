@@ -19,7 +19,7 @@ class media extends dispatch
 	 */
 	static function image($name, $alt = NULL, $attributes = NULL)
 	{
-		echo str::img(self::path(PATH_COMMON.'{images}/' .$name), $alt, $attributes);
+		return str::img(self::path(PATH_COMMON.'{images}/' .$name), $alt, $attributes);
 	}
 
 	/**
