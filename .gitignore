@@ -8,6 +8,7 @@
 config.rb
 .project
 *.sublime-*
+sftp-config.json
 
 # Sass cache
 .sass-cache
