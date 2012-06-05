@@ -342,6 +342,7 @@ class dispatch
 				$basename = str::remove(array('min', 'pack', 'jquery'), $basename);
 				$basename = trim($basename, '.-');
 			}
+
 			self::$paths[$basename][] = $path;
 		}
 
@@ -361,7 +362,18 @@ class dispatch
 
 				// Case 1 : the old and new name both are in the array (merge)
 				if(isset(self::$paths[$from], self::$paths[$to]))
-					self::$paths[$to] = array_merge(self::$paths[$to], self::$paths[$from]);
+				{
+					$merge = array_merge(self::$paths[$to], self::$paths[$from]);
+
+					// Reorder the array to have cerberus assets first when merged
+					$reorder = array();
+					foreach($merge as $m)
+					{
+						if(str::find('/cerberus/', $m)) array_unshift($reorder, $m);
+						else $reorder[] = $m;
+					}
+					self::$paths[$to] = $reorder;
+				}
 
 				// Case 2 : The old name is in the array and need to be renamed to new (rename)
 				elseif(isset(self::$paths[$from]) and !isset(self::$paths[$to])) self::$paths[$to] = self::$paths[$from];
