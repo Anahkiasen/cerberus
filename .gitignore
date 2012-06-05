@@ -37,6 +37,10 @@ assets/*/
 # cache
 cerberus/cache
 
+# config
+cerberus/conf.php
+cerberus/conf.json
+
 ## PROJECT RELATED FILES ##
 ###########################
 
