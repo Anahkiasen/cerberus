@@ -71,15 +71,15 @@ class navigation
 
 	/**
 	 * HTML rendered version of the main tree
-	 * @var string
+	 * @var array
 	 */
-	static private $renderNavigation = NULL;
+	static private $renderNavigation = array();
 
 	/**
 	 * HTML rendered version of the sub tree
-	 * @var string
+	 * @var array
 	 */
-	static private $renderSubnav     = NULL;
+	static private $renderSubnav     = array();
 
 	// Private data ------------------------------------------------ /
 
@@ -531,29 +531,26 @@ class navigation
 		foreach(self::$data as $key => $value)
 		{
 			// Append formatted link
-			self::$renderNavigation .=
-				self::renderLink($key, $value).
-				self::$optionGlue;
+			$renderedLink = self::renderLink($key, $value);
+			if($renderedLink) self::$renderNavigation[] = $renderedLink;
 
 			// Reading the submenu
-			$submenu = a::get($value, 'submenu');
-			if($submenu)
+			if(a::get($value, 'submenu'))
 			foreach($value['submenu'] as $subkey => $subvalue)
 			{
-				// Make sure the is an empty render variable to append to
-				if(!isset(self::$renderSubnav[$key]))
-					self::$renderSubnav[$key] = NULL;
-
 				// Append formatted link
-				self::$renderSubnav[$key] .=
-					self::renderLink($key.'-'.$subkey, $subvalue).
-					self::$optionGlueSub;
+				$renderedLink = self::renderLink($key.'-'.$subkey, $subvalue);
+				if($renderedLink) self::$renderSubnav[$key][] = $renderedLink;
 			}
 		}
 
+		// Imploding the rendered links with given glues
+		if(self::$renderNavigation)          self::$renderNavigation   = implode(self::$optionGlue,    self::$renderNavigation);
+		if(isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = implode(self::$optionGlueSub, self::$renderSubnav[$key]);
+
 		// Wrap the navigations in an <ul> tag if Listed
-		if(self::$optionListed    and isset(self::$renderNavigation))   self::$renderNavigation   = '<ul>' .self::$renderNavigation. '</ul>';
-		if(self::$optionListedSub and isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = '<ul>'.self::$renderSubnav[$key].'</ul>';
+		if(self::$optionListed    and isset(self::$renderNavigation))   self::$renderNavigation   = '<ul>' .self::$renderNavigation.  '</ul>';
+		if(self::$optionListedSub and isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = '<ul>' .self::$renderSubnav[$key].'</ul>';
 	}
 
 	//////////////////////////////////////////////////////////////////
