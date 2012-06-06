@@ -10,6 +10,12 @@
 class init
 {
 	/**
+	 * The current folder Cerberus is being called in, defaults to root /
+	 * @var string
+	 */
+	private static $folder = NULL;
+
+	/**
 	 * Store the currently loaded modules
 	 * @var array
 	 */
@@ -35,8 +41,11 @@ class init
 	/**
 	 * Initializes the base modules
 	 */
-	function __construct()
+	function __construct($folder = NULL)
 	{
+		// Set current folder
+		$this->folder = $folder;
+
 		// Correct headers as soon as launched, if possible
 		$this->correctHeader();
 
@@ -173,7 +182,7 @@ class init
 		self::module('paths');
 
 		// Define PATH_MAIN (root folder)
-		if(!defined('PATH_MAIN')) define('PATH_MAIN', NULL);
+		if(!defined('PATH_MAIN'))  define('PATH_MAIN',  $this->folder);
 
 		// Define PATH_CORE (cerberus folder)
 		if(!defined('PATH_CORE')) define('PATH_CORE', PATH_MAIN.'cerberus/');
