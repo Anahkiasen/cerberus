@@ -5,23 +5,15 @@ $init = new init();
 
 content::start();
 
-	// Loading config file
-	$init->config();
-
-	// Setting main constants
-	$init->constants();
-
-	// Load dispatch
-	$init->dispatch();
-
-	// Connecting to database
-	$init->mysql();
-
-	// Mise à jour du moteur
-	$init->update();
-
-	// Log user stats
-	$init->stats();
+	/**
+	 * Loading config file
+	 * Setting main constants
+	 * Load dispatch
+	 * Connecting to a database
+	 * Update core
+	 * Log user stats
+	 */
+	$init->startup('config constants dispatch mysql update stats');
 
 	// Setting cache manifest if existing
 	$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest')) ? 'manifest="cache.manifest"' : NULL;
@@ -32,23 +24,15 @@ content::start();
 
 	content::start();
 
-		// Create required files and folders
-		$init->required();
-
-		// Loading translations index
-		$init->language();
-
-		// Loading navigation structure
-		$init->navigation();
-
-		// Display debug informations
-		$init->debug();
-
-		// Cache the page
-		$init->cache();
-
-		// Backing up database
-		$init->backup();
+		/**
+		 * Create required files and folders
+		 * Loading translations index
+		 * Loading navigation structure
+		 * Display debug informations
+		 * Cache the page
+		 * Back up database
+		 */
+		$init->startup('required language navigation debug cache backup');
 
 // -------------------------------------------------- */
 

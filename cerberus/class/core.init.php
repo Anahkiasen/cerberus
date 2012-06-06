@@ -46,29 +46,29 @@ class init
 		// Set current folder
 		$this->folder = $folder;
 
-		// Correct headers as soon as launched, if possible
-		$this->correctHeader();
-
-		// Tweak some base PHP parameters
-		$this->iniPHP();
-
-		// Setting main path constants
-		$this->paths();
-
-		// Defining and assigning class __autoloader
-		$this->autoloader();
-
-		// Set main language of the environnement
-		$this->strings();
-
-		// Error handling
-		$this->errorHandling();
-
-		// Timezone setting
-		$this->timezone();
+		/**
+		 * Correct header
+		 * Tweak base PHP parameters
+		 * Define and assign _autoloader
+		 * Set main language
+		 * Error handling
+		 * Timezone setting
+		 */
+		self::startup('correctHeader iniPHP paths autoloader strings errorHandling timezone');
 
 		// Starting a new session
 		session::start();
+	}
+
+	/**
+	 * Reads a space separated list of modules and load them in order
+	 * @param  string $modules A list of modules to load
+	 */
+	function startup($modules)
+	{
+		$modules = explode(' ', $modules);
+		foreach($modules as $m)
+			$this->{$m}();
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -185,10 +185,10 @@ class init
 		if(!defined('PATH_MAIN'))  define('PATH_MAIN',  $this->folder);
 
 		// Define PATH_CORE (cerberus folder)
-		if(!defined('PATH_CORE')) define('PATH_CORE', PATH_MAIN.'cerberus/');
+		if(!defined('PATH_CORE'))  define('PATH_CORE',  PATH_MAIN.'cerberus/');
 
 		// Define PATH_CONF (conf.json file)
-		if(!defined('PATH_CONF')) define('PATH_CONF', PATH_CORE.'conf.json');
+		if(!defined('PATH_CONF'))  define('PATH_CONF',  PATH_CORE.'conf.json');
 
 		// Define PATH_CACHE (cerberus cache folder)
 		if(!defined('PATH_CACHE')) define('PATH_CACHE', PATH_CORE.'cache/');
