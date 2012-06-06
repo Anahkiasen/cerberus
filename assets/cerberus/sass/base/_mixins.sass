@@ -48,6 +48,12 @@
     right: -$offset
     border-left: $size solid $color
 
+@function double-shadow($size: 2px, $blur: 0)
+	@return 0 $size $blur fade(black, 10), inset 0 (-$size) $blur fade(black, 20)
+
+=double-shadow($size: 2px, $blur: 0)
+	+box-shadow(double-shadow($size, $blur))
+
 // Gradients ----------------------------------------------- /
 
 // Main mixin
