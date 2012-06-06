@@ -96,8 +96,8 @@
 	+text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
 
 // Loads a webfont using the +font-face mixin
-=webfont($name, $font_path, $weight)
-	+font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, normal)
+=webfont($name, $font_path, $weight: normal, $style: normal)
+	+font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, $style)
 
 // Percentage-based version of rba-background
 =background-fade($color, $opacity)
