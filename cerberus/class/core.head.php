@@ -163,7 +163,7 @@ class head
 	 *
 	 * @param  string  $favicon  Name of the favicon file (must be in image folder)
 	 */
-	static function favicon($favicon)
+	static function favicon($favicon = 'favicon.png')
 	{
 		self::set('link', array('rel' => 'shortcut icon', 'href' => PATH_COMMON.'img/'.$favicon));
 	}
