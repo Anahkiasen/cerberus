@@ -776,38 +776,55 @@ class dispatch
 		$file = NULL;
 
 		// If we don't already have a configuration file
-		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(self::$compass))
+		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(PATH_MAIN.self::$compass))
 		{
 			// Fetch default configuration options
 			$configuration = array(
+				'0'                => 'Folders',
+				'project_path'     => substr(PATH_COMMON, 0, -1),
 				'images_dir'       => self::$images,
 				'css_dir'          => self::$css,
 				'javascripts_dir'  => self::$js,
 				'fonts_dir'        => self::$fonts,
+
+				'1'                => 'Options',
 				'output_style'     => ':expanded',
 				'preferred_syntax' => ':sass',
 				'line_comments'    => 'false',
-				'relative_assets'  => 'true');
+				'relative_assets'  => 'true',
+
+				'2'                => 'Extensions');
 
 			// Merge with given configuration parameters
 			$configuration = array_merge($config, $configuration);
-			$extensions = config::get('compass');
+			$extensions    = config::get('compass');
 
 			// Writing options
 			foreach($configuration as $k => $v)
 			{
-				if(is_array($v)) $v = json_encode($v);
+				// If value is comment
+				if(is_numeric($k))
+				{
+					if(!empty($file)) $file .= PHP_EOL;
+					$file .= '# ' .$v.PHP_EOL;
+					continue;
+				}
+
+				// If value is array
+				elseif(is_array($v)) $v = json_encode($v);
+
+				// If value is boolean
 				elseif(!($v == 'true' or $v == 'false' or (substr($v, 0, 1) == ':'))) $v = '"' .$v. '"';
+
 				$file .= $k. ' = ' .$v.PHP_EOL;
 			}
 
 			// Loading extensions
-			$file .= PHP_EOL.'# Extensions'.PHP_EOL;
-			foreach($extensions as $e) $file .= "require '" .$e. "'".PHP_EOL;
+			foreach($extensions as $e)
+				$file .= "require '" .$e. "'".PHP_EOL;
 
 			// Write core configuration file in root
-			$root = 'project_path = "' .substr(PATH_COMMON, 0, -1).'"'.PHP_EOL.$file;
-			f::write(self::$compass, $root);
+			f::write(self::$compass, $file);
 
 			// Go through the different template and create a Compass config in each one
 			$folders = glob('assets/*/');
