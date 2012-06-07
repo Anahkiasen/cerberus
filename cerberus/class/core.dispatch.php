@@ -845,8 +845,15 @@ class dispatch
 	static function plugin($plugin, $selector = NULL, $params = NULL)
 	{
 		// Getting parameters
-		if(is_array($params)) $params = json_encode($params);
-		$string = $plugin. '(' .$params. ')';
+		$params = func_get_args();
+		$paramString = array();
+		foreach($params as $k => $p)
+		{
+			if($k < 2) continue;
+			if(is_array($p)) $p = json_encode($p);
+			$paramString[] = $p;
+		}
+		$string = $plugin. '(' .implode(', ', $paramString). ')';
 
 		// Getting selector
 		if($selector !== NULL)
