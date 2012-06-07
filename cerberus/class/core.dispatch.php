@@ -879,7 +879,7 @@ class dispatch
 	static function typekit($kit = 'xky6uxx')
 	{
 		self::$typekit = $kit;
-		self::addJS('try{Typekit.load();}catch(e){}');
+		self::addJS('try{Typekit.load();}catch(e){};');
 	}
 
 	/**
