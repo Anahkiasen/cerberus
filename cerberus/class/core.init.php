@@ -44,7 +44,7 @@ class init
 	function __construct($folder = NULL)
 	{
 		// Set current folder
-		$this->folder = $folder;
+		self::$folder = $folder;
 
 		/**
 		 * Correct header
@@ -182,7 +182,7 @@ class init
 		self::module('paths');
 
 		// Define PATH_MAIN (root folder)
-		if(!defined('PATH_MAIN'))  define('PATH_MAIN',  $this->folder);
+		if(!defined('PATH_MAIN'))  define('PATH_MAIN',  self::$folder);
 
 		// Define PATH_CORE (cerberus folder)
 		if(!defined('PATH_CORE'))  define('PATH_CORE',  PATH_MAIN.'cerberus/');
