@@ -680,7 +680,7 @@ class dispatch
 	 */
 	static function getCSS($return = false)
 	{
-		if(a::array_empty(self::$CSS)) self::assets();
+		if(a::array_empty(self::$CSS) and a::array_empty(self::$JS)) self::assets();
 		self::$CSS = self::sanitize(self::$CSS);
 		$head = array();
 
