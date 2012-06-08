@@ -11,12 +11,12 @@ class update
 	 * The last revision number to date
 	 * @var string
 	 */
-	private static $last = '2012-05-31,a98b7701b20f20aed664d4232550709b2b601f40';
+	private static $last = '2012-06-08,ab0b60cb0aa1178bd1f8ec3c102ded26beaf45db';
 
 	/**
 	 * Sets the current revision number and updates the core
 	 */
-	function __construct()
+	public function __construct()
 	{
 		// Define current revision
 		self::$revision = self::revision();
@@ -33,6 +33,10 @@ class update
 		{
 			self::codematch('createNivo\(', 'media::slideshow(');
 			self::codematch('([ !])f::path\(', '$1f::exist(');
+		}
+		if(self::outdate('2012-06-08'))
+		{
+			self::codematch('new forms\(', 'new Forms(');
 		}
 
 		// Update config file format

@@ -5,8 +5,10 @@ class a
     * Gets an element of an array by key
     * [EDIT-CERBERUS]
     *
-    * @param  array    $array The source array
-    * @param  mixed    $key The key to look for, or a path through a multidimensionnal array under the form key1,key2,... or arrray[key1,key2,...]
+    * @param  array    $array   The source array
+    * @param  mixed    $key     The key to look for, or a path through a
+    *                           multidimensionnal array under the form
+    *                           key1,key2,... or array[key1,key2,...]
     * @param  mixed    $default Optional default value, which should be returned if no element has been found
     * @return mixed
     */
@@ -29,7 +31,7 @@ class a
     * Gets all elements for an array of key
     *
     * @param  array    $array The source array
-    * @keys   array    $keys An array of keys to fetch
+    * @param  array    $keys An array of keys to fetch
     * @return array    An array of keys and matching values
     */
 	public static function getall($array, $keys)
@@ -232,10 +234,11 @@ class a
    * Forces a variable to be an array
    * [CERBERUS-ADD]
    *
-   * @param  mixed	$mixed The value to transform in an array
-   * @return array 	The entry value if it's already an array, or an array containing the value if it's not
+   * @param  mixed $mixed The value to transform in an array
+   * @return array The entry value if it's already an array,
+   *               or an array containing the value if it's not
    */
-  static function force_array(&$mixed)
+  public static function force_array(&$mixed)
   {
     return !is_array($mixed) ? array($mixed) : $mixed;;
   }
@@ -252,7 +255,7 @@ class a
 	{
 		$start = array_slice($array, 0, $position);
 		$end = array_slice($array, $position);
-		return array_merge($start, (array)$element, $end);
+		return array_merge($start, (array) $element, $end);
 	}
 
   /**
@@ -301,7 +304,11 @@ class a
 		$helper = array();
 
 		foreach($array as $key => $row)
-			$helper[$key] = (is_object($row)) ? (method_exists($row, $field)) ? str::lower($row -> $field()) : str::lower($row -> $field) : str::lower($row[$field]);
+			$helper[$key] = (is_object($row))
+				? (method_exists($row, $field))
+					? str::lower($row -> $field())
+					: str::lower($row -> $field)
+				: str::lower($row[$field]);
 
 		array_multisort($helper, $direction, $method, $array);
 		return $array;
@@ -342,8 +349,14 @@ class a
    * Rearrange an array by one of it's subkeys
    * [CERBERUS-ADD]
    *
-   * Takes per example an array array(0 => array('id' => 'key1', 'value' => 'value1'), array('id' => 'key2', 'value' => 'value2'))
-   * And rearrange it as array('key1' => array('value' => 'value1'), 'key2' => array('value' => 'value2'))
+   * Takes per example an array
+   *     array(
+   *         array('id' => 'key1', 'value' => 'value1'),
+   *         array('id' => 'key2', 'value' => 'value2'))
+   * And rearrange it as
+   *     array(
+   *         'key1' => array('value' => 'value1'),
+   *         'key2' => array('value' => 'value2'))
    *
    * @param  array 		$array The array to rearrange
    * @param  string 	$subkey The subkey to use as the new key
@@ -409,7 +422,7 @@ class a
 	public static function extract($array, $key)
 	{
 		$output = array();
-		foreach($array AS $a)
+		foreach($array as $a)
 			if(isset($a[$key])) $output[] = $a[$key];
 		return $output;
 	}
@@ -441,7 +454,7 @@ class a
     */
 	public static function json($array)
 	{
-		return @json_encode((array)$array);
+		return @json_encode((array) $array);
 	}
 
   /**
@@ -459,13 +472,13 @@ class a
 		$result = ($level == 0 && $head) ? '<?xml version="1.0" encoding="'.$charset.'"?>'.PHP_EOL : null;
 		$nlevel = ($level + 1);
 		$result .= str_repeat($tab, $level).'<'.$tag.'>'.PHP_EOL;
-		foreach($array AS $key => $value)
+		foreach($array as $key => $value)
 		{
 			$key = str::lower($key);
 			if(is_array($value))
 			{
 				$mtags = false;
-				foreach($value AS $key2 => $value2)
+				foreach($value as $key2 => $value2)
 				{
 					if(is_array($value2))
 					{

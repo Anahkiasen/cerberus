@@ -1,5 +1,5 @@
 <?php
-class smail
+class Smail
 {
 	// Core
 	private $destinataire;

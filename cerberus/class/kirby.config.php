@@ -105,9 +105,9 @@ class config
 	/**
 	 * Adds a value to the config file
 	 *
-	 * @param  string 	$key The parameter to add
-	 * @param  string 	$value Its value
-	 * @return boolean 	The success of writing into the file
+	 * @param  string  $key The parameter to add
+	 * @param  string  $value Its value
+	 * @return boolean The success of writing into the file
 	 */
 	public static function hardcode($key, $value = null)
 	{
@@ -125,7 +125,12 @@ class config
 	 * @param  string $online_password Online SQL password
 	 * @param  string $online_name     Online database
 	 */
-	public static function mysql($local_name = null, $online_host = null, $online_user = null, $online_password = null, $online_name = null)
+	public static function mysql(
+		$local_name      = null,
+		$online_host     = null,
+		$online_user     = null,
+		$online_password = null,
+		$online_name     = null)
 	{
 		if($local_name and !self::get('local.name')) self::hardcode('local.name', $local_name);
 		if(!self::get('db.host') and $online_password and $online_host and $online_name and $online_user)

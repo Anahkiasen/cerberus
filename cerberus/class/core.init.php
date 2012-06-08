@@ -7,25 +7,25 @@
  *
  * @package Cerberus
  */
-class init
+class Init
 {
 	/**
 	 * The current folder Cerberus is being called in, defaults to root /
 	 * @var string
 	 */
-	private static $folder = null;
+	private $folder = null;
 
 	/**
 	 * Store the currently loaded modules
 	 * @var array
 	 */
-	private static $modules = array();
+	private $modules = array();
 
 	/**
 	 * List the different dependencies
 	 * @var array
 	 */
-	private static $dependencies = array(
+	private $dependencies = array(
 		'autoloader'  => 'paths',
 		'cache'       => 'navigation,constants',
 		'config'      => 'paths',
@@ -44,7 +44,7 @@ class init
 	public function __construct($folder = null)
 	{
 		// Set current folder
-		self::$folder = $folder;
+		$this->folder = $folder;
 
 		/**
 		 * Correct header
@@ -54,7 +54,7 @@ class init
 		 * Error handling
 		 * Timezone setting
 		 */
-		self::startup('correctHeader iniPHP paths autoloader strings errorHandling timezone');
+		$this->startup('correctHeader iniPHP paths autoloader strings errorHandling timezone');
 
 		// Starting a new session
 		session::start();
@@ -85,15 +85,15 @@ class init
 	private function module($module)
 	{
 		// If the module has dependencies
-		if(isset(self::$dependencies[$module]))
+		if(isset($this->dependencies[$module]))
 		{
-			 $dependencies = self::$dependencies[$module];
+			 $dependencies = $this->dependencies[$module];
 
 			// Assure the dependencies are an array
 			if(!is_array($dependencies)) $dependencies = explode(',', $dependencies);
 
 			// Check if all dependencies are loaded
-			$dependenciesLoaded = self::dependencies($dependencies);
+			$dependenciesLoaded = $this->dependencies($dependencies);
 			$allLoaded = (sizeof($dependenciesLoaded) == sizeof($dependencies));
 
 			// Throws an error if the required modules are not found
@@ -109,7 +109,7 @@ class init
 		else $allLoaded = true;
 
 		// Setting the current module as loaded
-		self::$modules[$module] = true;
+		$this->modules[$module] = true;
 
 		// Returns a state of the module loading
 		return $allLoaded;
@@ -128,7 +128,7 @@ class init
 
 		// Iterate through the dependencies list, checking if they're all loaded
 		foreach($dependencies as $d)
-			if(self::loaded($d)) $dependenciesLoaded[] = $d;
+			if($this->loaded($d)) $dependenciesLoaded[] = $d;
 
 		// If the number of loaded modules doesn't match the list, return false
 		return $dependenciesLoaded;
@@ -142,7 +142,7 @@ class init
 	 */
 	private function loaded($module)
 	{
-		return isset(self::$modules[$module]) and self::$modules[$module];
+		return isset($this->modules[$module]) and $this->modules[$module];
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ class init
 	 */
 	public function timezone()
 	{
-		self::module('timezone');
+		$this->module('timezone');
 		date_default_timezone_set('Europe/Paris');
 	}
 
@@ -181,10 +181,10 @@ class init
 	*/
 	public function paths()
 	{
-		self::module('paths');
+		$this->module('paths');
 
 		// Define PATH_MAIN (root folder)
-		if(!defined('PATH_MAIN'))  define('PATH_MAIN',  self::$folder);
+		if(!defined('PATH_MAIN'))  define('PATH_MAIN',  $this->folder);
 
 		// Define PATH_CORE (cerberus folder)
 		if(!defined('PATH_CORE'))  define('PATH_CORE',  PATH_MAIN.'cerberus/');
@@ -202,7 +202,7 @@ class init
 	*/
 	public function errorHandling()
 	{
-		self::module('errorHandling');
+		$this->module('errorHandling');
 
 		// If DEPRECATED is not defined
 		if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
@@ -226,7 +226,7 @@ class init
 	*/
 	public function autoloader()
 	{
-		self::module('autoloader');
+		$this->module('autoloader');
 
 		// Include the Autoloader and set it as main loader
 		include(PATH_CORE.'tools/classloader.php');
@@ -239,7 +239,7 @@ class init
 	*/
 	public function config()
 	{
-		self::module('config');
+		$this->module('config');
 
 		// Load the configuration default's value
 		config::set(config::$defaults);
@@ -266,7 +266,7 @@ class init
 	*/
 	public function constants()
 	{
-		self::module('constants');
+		$this->module('constants');
 
 		// Page is local or not
 		if(!defined('LOCAL'))
@@ -295,7 +295,7 @@ class init
 	*/
 	public function mysql()
 	{
-		self::module('mysql');
+		$this->module('mysql');
 
 		// If we have database names to use
 		if(config::get('local.name') or config::get('online.name'))
@@ -321,7 +321,7 @@ class init
 	 */
 	public function stats()
 	{
-		self::module('stats');
+		$this->module('stats');
 
 		// No active SQL connection or logs desactivated
 		if(!config::get('logs') or !SQL)    return false;
@@ -368,7 +368,7 @@ class init
 	*/
 	public function required()
 	{
-		self::module('required');
+		$this->module('required');
 
 		// List required files and their content
 		$required = array(
@@ -399,7 +399,7 @@ class init
 	*/
 	public function debug()
 	{
-		self::module('debug');
+		$this->module('debug');
 
 		if(isset($_GET['cerberus_debug']))
 		{
@@ -409,7 +409,7 @@ class init
 
 			// Get main variables
 			$debug	= "[<strong>URL</strong>] " .url::current().'<br/>'.PHP_EOL;
-			if(self::loaded('navigation'))
+			if($this->loaded('navigation'))
 			$debug .= "[<strong>PAGE</strong>] " .navigation::current().'<br/>'.PHP_EOL;
 			$debug .= "[<strong>LANGUE</strong>] " .l::current().'<br/>'.PHP_EOL;
 
@@ -432,7 +432,7 @@ class init
 	*/
 	public function cache()
 	{
-		self::module('cache');
+		$this->module('cache');
 
 		if(CACHE)
 		{
@@ -468,7 +468,7 @@ class init
 	*/
 	public function dispatch()
 	{
-		self::module('dispatch');
+		$this->module('dispatch');
 		new dispatch();
 	}
 
@@ -477,7 +477,7 @@ class init
 	*/
 	public function update()
 	{
-		self::module('update');
+		$this->module('update');
 		new update();
 	}
 
@@ -487,20 +487,20 @@ class init
 	*/
 	public function backup()
 	{
-		self::module('backup');
+		$this->module('backup');
 		if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 	}
 
 	public function language()
 	{
-		self::module('language');
+		$this->module('language');
 
 		l::cerberus();
 	}
 
 	public function navigation()
 	{
-		self::module('navigation');
+		$this->module('navigation');
 		new navigation();
 	}
 }

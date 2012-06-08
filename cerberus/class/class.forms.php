@@ -7,7 +7,7 @@
  *
  * @package Cerberus
  */
-class forms
+class Forms
 {
 	// Current state ----------------------------------------------- /
 
