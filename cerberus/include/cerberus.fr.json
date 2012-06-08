@@ -11,6 +11,7 @@
 	"db.errors.connect"            : "Erreur de connexion à MySQL",
 	"db.errors.disconnect"         : "Erreur lors de la déconnexion de la base",
 	"db.errors.execute"            : "Requ&ecirc;te incorrecte",
+	"db.errors.host"               : "Le serveur est incorrect",
 	"db.errors.fields"             : "Impossible de lister les champs",
 	"db.errors.missing_db"         : "Erreur de connexion à la base",
 	"db.errors.missing_db_name"    : "Aucune base n'a été fournie",

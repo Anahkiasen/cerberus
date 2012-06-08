@@ -11,6 +11,7 @@
 	"db.errors.connect"            : "Database connection failed",
 	"db.errors.disconnect"         : "Disconnecting database failed",
 	"db.errors.execute"            : "The database query failed",
+	"db.errors.host"               : "The host is incorrect",
 	"db.errors.fields"             : "Unable to list the database fields",
 	"db.errors.missing_db"         : "Unable to connect the database",
 	"db.errors.missing_db_name"    : "No database has been provided",
