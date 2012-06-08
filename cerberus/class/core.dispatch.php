@@ -85,12 +85,12 @@ class dispatch
 
 	/**
 	 * The file to cherry-pick in the linked submodules
+	 * TODO : Allow loading of pristine version
+	 * of Bootstrap if no compiled version found
 	 * @var array
 	 */
 	static private $pluginFiles = array(
 		'bootstrap'   => array(
-			'css/bootstrap.css',
-			'css/bootstrap-responsive.css',
 			'img/*',
 			'js/*'),
 		'chosen'      => array(
