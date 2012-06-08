@@ -1,6 +1,6 @@
 <?php
 // Including bootstrap file
-include('class/core.init.php');
+include 'class/core.init.php';
 $init = new init();
 
 content::start();

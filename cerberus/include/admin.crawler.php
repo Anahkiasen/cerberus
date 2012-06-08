@@ -60,7 +60,7 @@ if(isset($_POST['nofollow']))
 		str::display('Le cache vient d\'être vidé, il va être régénéré page par page, veuillez patienter');
 
 		set_time_limit(10000);
-		include("cerberus/class/plugins/crawler.crawler.php");
+		include 'cerberus/class/plugins/crawler.crawler.php';
 
 		// Génération du cache
 		class MyCrawler extends PHPCrawler
