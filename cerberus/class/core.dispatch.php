@@ -852,6 +852,7 @@ class dispatch
 
 			// Write core configuration file in root
 			f::write(self::$compass, $file);
+			$file = preg_replace('#project_path = "(.+)"\n#', null, $file);
 
 			// Go through the different template and create a Compass config in each one
 			$folders = glob('assets/*/');
