@@ -25,7 +25,7 @@ if(isset($_POST['db-host']))
 }
 
 // Paramètres de Cerberus
-$CONFIGURATION =
+$configuration =
 array(
 	'Paramètres du site' => array(
 		'rewriting' => 'Activer la réecriture d\'URL',
@@ -63,21 +63,21 @@ array(
 
 // Création du formulaire
 $forms = new forms();
-foreach($CONFIGURATION as $FIELDSET => $FIELDS)
+foreach($configuration as $fieldset => $fields)
 {
-	$forms->openFieldset($FIELDSET);
-		foreach($FIELDS as $FIELD => $TRADUCTION)
+	$forms->openFieldset($fieldset);
+		foreach($fields as $field => $traduction)
 		{
-			$value = a::get($config, $FIELD, false);
-			if(in_array($FIELD, $bool))
+			$value = config::get($field, false);
+			if(in_array($field, $bool))
 			{
 				$value = str::boolprint($value);
-				$forms->addSelect($FIELD, $TRADUCTION, array('true' => 'Oui', 'false' => 'Non'), $value);
+				$forms->addSelect($field, $traduction, array('true' => 'Oui', 'false' => 'Non'), $value);
 			}
 			else
 			{
 				if(is_array($value)) $value = implode(',', $value);
-				$forms->addText($FIELD, $TRADUCTION, $value);
+				$forms->addText($field, $traduction, $value);
 			}
 		}
 	$forms->closeFieldset();
