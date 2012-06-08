@@ -280,14 +280,14 @@ class dispatch
 		// If Dispatch is authorized to guess assets to add, add default and current page
 		if(self::$guess)
 		{
-		$scripts['*'][]              = 'scripts'; // default Javascript
-		$scripts['*']               += array(99 => 'styles'); // default CSS
-		$scripts[self::$page][]      = self::$page; // current page
-		$scripts[self::$category][]  = self::$category; // current category
+			$scripts['*'][]              = 'scripts'; // default Javascript
+			$scripts['*']               += array(99 => 'styles'); // default CSS
+			$scripts[self::$page][]      = self::$page; // current page
+			$scripts[self::$category][]  = self::$category; // current category
 
-		// If Bootstrap, add it
-		if(config::get('bootstrap'))
-			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
+			// If Bootstrap, add it
+			if(config::get('bootstrap'))
+				$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
 		}
 
 		/* Creating the environnement ----------------------------- */
@@ -582,7 +582,7 @@ class dispatch
 	 * @param  string  $path The path to format
 	 * @return string  The formatted path
 	 */
-	static function path($path)
+	public static function path($path)
 	{
 		preg_match_all('#\{([a-z]+)\}#', $path, $results);
 
@@ -602,7 +602,7 @@ class dispatch
 	 *
 	 * @return array  An array containing all stylesheets on the page
 	 */
-	static function currentCSS()
+	public static function currentCSS()
 	{
 		return self::$CSS['url'];
 	}
@@ -612,7 +612,7 @@ class dispatch
 	 *
 	 * @return array  An array containing all scripts on the page
 	 */
-	static function currentJS()
+	public static function currentJS()
 	{
 		return self::$JS['url'];
 	}
@@ -623,7 +623,7 @@ class dispatch
 	 * @param  string   The name of a script
 	 * @return boolean  Whether or not the script is used on this page
 	 */
-	static function isScript($script)
+	public static function isScript($script)
 	{
 		return (isset(self::$scripts) and in_array($script, self::$scripts));
 	}
@@ -642,7 +642,7 @@ class dispatch
 	 *                         -- alias               : An alias to give the given script
 	 *                         -- wrap[window/ready]  : Wraps the script with (window).load or (document).ready
 	 */
-	static function inject($type, $scripts, $params = array())
+	private static function inject($type, $scripts, $params = array())
 	{
 		if(!is_array($scripts)) $scripts = array($scripts);
 		if(!is_array($params))  json_decode($params);
@@ -697,7 +697,7 @@ class dispatch
 	/**
 	 * Fetch the current CSS styles for the page
 	 */
-	static function getCSS($return = false)
+	public static function getCSS($return = false)
 	{
 		if(a::array_empty(self::$CSS) and a::array_empty(self::$JS)) self::assets();
 		self::$CSS = self::sanitize(self::$CSS);
@@ -714,7 +714,7 @@ class dispatch
 	/**
 	 * Fetch the current JS scripts for the page
 	 */
-	static function getJS($return = false)
+	public static function getJS($return = false)
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
 		self::$JS = self::sanitize(self::$JS);
@@ -736,7 +736,7 @@ class dispatch
 	/**
 	 * Add a stylesheet/style to the current page
 	 */
-	static function addCSS($stylesheets)
+	public static function addCSS($stylesheets)
 	{
 		self::inject('css', $stylesheets);
 	}
@@ -744,7 +744,7 @@ class dispatch
 	/**
 	 * Remove a stylesheet from a page
 	 */
-	static function removeCSS($stylesheets)
+	public static function removeCSS($stylesheets)
 	{
 		if(in_array($stylesheets, self::$CSS['min'])) self::$CSS['min'] = a::remove(self::$CSS['min'], $stylesheets, false);
 		if(in_array($stylesheets, self::$CSS['url'])) self::$CSS['url'] = a::remove(self::$CSS['url'], $stylesheets, false);
@@ -753,7 +753,7 @@ class dispatch
 	/**
 	 * Add Javascript before the links
 	 */
-	static function addJSBefore($javascript, $params = NULL)
+	public static function addJSBefore($javascript, $params = NULL)
 	{
 		$params = array_merge($params, array('place' => 'before'));
 		self::inject('js', $javascript, $params);
@@ -762,7 +762,7 @@ class dispatch
 	/**
 	 * Add Javascript after the links
 	 */
-	static function addJS($javascript, $params = array())
+	public static function addJS($javascript, $params = array())
 	{
 		self::inject('js', $javascript, $params);
 	}
@@ -770,7 +770,7 @@ class dispatch
 	/**
 	 * Include a PHP script
 	 */
-	static function addPHP($module)
+	public static function addPHP($module)
 	{
 		$file = glob('{' .PATH_CORE. '{tools,class,class/plugins},' .PATH_COMMON. 'php}/{' .$module. ',class.' .$module. '}.php', GLOB_BRACE);
 
@@ -790,7 +790,7 @@ class dispatch
 	 *
 	 * @param  array  $config An array containing configuration parameters
 	 */
-	static function compass($config = array())
+	public static function compass($config = array())
 	{
 		$file = NULL;
 
@@ -861,7 +861,7 @@ class dispatch
 	 * @param  string $selector The selector to apply the plugin to (can be null)
 	 * @param  array  $params   An array of parameters to pass to the plugin
 	 */
-	static function plugin($plugin, $selector = NULL, $params = NULL)
+	public static function plugin($plugin, $selector = NULL, $params = NULL)
 	{
 		// Getting parameters
 		$params = func_get_args();
@@ -890,7 +890,7 @@ class dispatch
 	 *
 	 * @param  string $analytics A Google Analytics ID
 	 */
-	static function analytics($analytics = 'XXXXX-X')
+	public static function analytics($analytics = 'XXXXX-X')
 	{
 		self::addJS("var _gaq=[['_setAccount','UA-" .$analytics. "'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'));");
 	}
@@ -902,7 +902,7 @@ class dispatch
 	 *
 	 * @param  string $kit The Typekit ID
 	 */
-	static function typekit($kit = 'xky6uxx')
+	public static function typekit($kit = 'xky6uxx')
 	{
 		self::$typekit = $kit;
 		self::addJS('try{Typekit.load();}catch(e){};');
@@ -913,7 +913,7 @@ class dispatch
 	 *
 	 * @param  string Several fonts to include
 	 */
-	static function googleFonts()
+	public static function googleFonts()
 	{
 		$fonts = func_get_args();
 

@@ -113,6 +113,7 @@ class media extends dispatch
 	 */
 	static function swf($swf, $bloc, $width, $height, $flashvars = NULL, $params = NULL, $attributes = NULL)
 	{
+		dispatch::submodules('swfobject');
 		$flashvars  = ($flashvars)  ? json_encode($flashvars)  : '{}';
 		$params     = ($params)     ? json_encode($params)     : '{}';
 		$attributes = ($attributes) ? json_encode($attributes) : '{}';
