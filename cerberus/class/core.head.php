@@ -35,6 +35,16 @@ class head
 	}
 
 	/**
+	 * Get the current array
+	 *
+	 * @return array The current header
+	 */
+	public static function get()
+	{
+		return self::$head;
+	}
+
+	/**
 	 * Prints out the current head tag
 	 */
 	public static function header()
@@ -44,13 +54,13 @@ class head
 
 		// Sitemap et CDN
 		if(file_exists('sitemap.xml'))
-			head::set('link', array(
+			self::set('link', array(
 				'rel' => 'sitemap',
 				'type' => 'application/xml',
 				'title' => 'Sitemap',
 				'href' => 'sitemap.xml'));
 		if(dispatch::isScript('jquery'))
-			head::set('link', array(
+			self::set('link', array(
 				'rel' => 'dns-prefetch',
 				'href' => '//ajax.googleapis.com'));
 
@@ -74,6 +84,9 @@ class head
 			// Writing the tag attributes
 			foreach($attributes as $k => $v)
 			{
+				// Remove META placeholders
+				$v = str::remove('{meta} - ', $v);
+
 				// Non self closing tags
 				if($k == 'value')
 				{
@@ -200,7 +213,7 @@ class head
 		if(REWRITING and PATH_MAIN == null)
 		{
 			$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
-			head::set('base', array('href' => config::get('http').$baseref));
+			self::set('base', array('href' => config::get('http').$baseref));
 		}
 	}
 }
