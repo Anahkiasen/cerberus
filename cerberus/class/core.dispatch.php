@@ -22,6 +22,13 @@ class dispatch
 	 */
 	static private $category;
 
+	/**
+	 * Whether Dispatch should try and add assets automatically or not
+	 * Dispatch by default will add any asset matching the current page and base names (styles.css, scripts.js)
+	 * @var boolean
+	 */
+	static private $guess = true;
+
 	/* Current ressources ----------------------------------------- */
 
 	/**
@@ -219,6 +226,15 @@ class dispatch
 		}
 	}
 
+	/**
+	 * Change Dispatch's guess setting
+	 * @param boolean $guess The new guess setting
+	 */
+	public static function setGuess($guess)
+	{
+		self::$guess = $guess;
+	}
+
 	//////////////////////////////////////////////////////////////////
 	/////////////////////// IMPORT ASSETS/MODULES ////////////////////
 	//////////////////////////////////////////////////////////////////
@@ -261,7 +277,9 @@ class dispatch
 		$scripts[self::$page]      = a::force_array($scripts[self::$page]);
 		$scripts[self::$category]  = a::force_array($scripts[self::$category]);
 
-		// Setting default files (scripts.js, styles.css, current page etc)
+		// If Dispatch is authorized to guess assets to add, add default and current page
+		if(self::$guess)
+		{
 		$scripts['*'][]              = 'scripts'; // default Javascript
 		$scripts['*']               += array(99 => 'styles'); // default CSS
 		$scripts[self::$page][]      = self::$page; // current page
@@ -270,6 +288,7 @@ class dispatch
 		// If Bootstrap, add it
 		if(config::get('bootstrap'))
 			$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
+		}
 
 		/* Creating the environnement ----------------------------- */
 
