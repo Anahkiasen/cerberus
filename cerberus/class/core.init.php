@@ -64,7 +64,7 @@ class init
 	 * Reads a space separated list of modules and load them in order
 	 * @param  string $modules A list of modules to load
 	 */
-	public static function startup($modules)
+	public function startup($modules)
 	{
 		$modules = explode(' ', $modules);
 		foreach($modules as $m)
