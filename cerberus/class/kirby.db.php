@@ -55,6 +55,12 @@ class db
 	 */
 	public  static $trace      = array();
 
+	/**
+	 * PDO Object holding the current connection
+	 * @var object
+	 */
+	private static $pdo;
+
 	//////////////////////////////////////////////////////////////////
 	/////////////////////////// CONNECTION ///////////////////////////
 	//////////////////////////////////////////////////////////////////
@@ -99,6 +105,17 @@ class db
 
 			if(LOCAL) $password = $dbmdp;
 
+			// Creating PDO Object for future references
+			try
+  			{
+	  			self::$pdo = new PDO('mysql:host=' .$host. ';dbname=' .$database, $user, $password);
+	  			self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+  			}
+  			catch(PDOException $e)
+  			{
+  				echo $e->getMessage();
+  			}
+
 			// Try to establish a connection
 			self::$connection = @mysql_connect($host, $user, $password);
 			if(!self::$connection) throw new Exception(l::get('db.errors.connect'));
@@ -113,6 +130,11 @@ class db
 			    if(error($charset)) return $charset;
 			}
 		}
+	}
+
+	public static function prepare($sql)
+	{
+		return self::$pdo->prepare($sql);
 	}
 
 	/**
@@ -183,7 +205,7 @@ class db
 		if(self::$charset == $charset) return true;
 
 		// Set the new charset
-		$set = @mysql_query('SET NAMES ' .$charset);
+		$set = self::$pdo->query('SET NAMES ' .$charset);
 		if(!$set) throw new Exception(l::get('db.errors.setting_charset_failed', 'Setting database charset failed'));
 
 		// Save the new charset to the globals
@@ -205,7 +227,7 @@ class db
 			$string = str::stripslashes($string);
 			if(self::connection())
 			{
-				$string = mysql_real_escape_string((string)$string, self::connection());
+				$string = mysql_real_escape_string((string) $string, self::connection());
 				$string = addcslashes($string, '%_');
 			}
 			else $string = addslashes($string);
@@ -231,21 +253,28 @@ class db
      */
     public static function query($sql, $fetch = true)
 	{
+		// Check if the connection is OK
 		$connection = self::connection();
-		if(error($connection)) return $connection;
+		if(!$connection) return $connection;
+
+		// Record last query
 		self::$last_query = $sql;
+		self::$trace[]    = $sql;
 
-		// Execute the query
-		$result = @mysql_query($sql, $connection);
-		self::$affected = @mysql_affected_rows();
-		self::$trace[] = $sql;
+		// Try executing the query
+		try
+		{
+			$query = self::$pdo->query($sql);
+			$results = $query->fetchAll(PDO::FETCH_ASSOC);
+		}
 
-		if(!$result) return self::error(l::get('db.errors.query'));
-		if(!$fetch) return $result;
+		// Handle errors
+		catch(Exception $e)
+		{
+			Debug::handle($e);
+		}
 
-		$array = array();
-		while($r = self::fetch($result)) array_push($array, $r);
-		return $array;
+		return $results;
 	}
 
 	/**
@@ -257,17 +286,28 @@ class db
      */
     public static function execute($sql)
 	{
+		// Check if the connection is OK
 		$connection = self::connection();
-		if(error($connection)) return $connection;
+		if(!$connection) return $connection;
+
+		// Record last query
 		self::$last_query = $sql;
+		self::$trace[]    = $sql;
 
-		$execute = @mysql_query($sql, $connection);
-		self::$affected = @mysql_affected_rows();
-		self::$trace[] = $sql;
+		// Try executing the query
+		try
+		{
+			self::$affected = self::$pdo->exec($sql);
+			$last_id        = self::$pdo->lastInsertId();
+		}
 
-		if(!$execute) self::error(l::get('db.errors.execute'));
+		// Handle errors
+		catch(Exception $e)
+		{
+			Debug::handle($e);
+		}
 
-		$last_id = self::last_id();
+		// Return number of affected rows or ID of insert
 		return ($last_id === false) ? self::$affected : self::last_id();
 	}
 
@@ -288,7 +328,15 @@ class db
     * @param  boolean $fetch  true: apply db::fetch(), false: don't apply db::fetch()
     * @return mixed
     */
-	public static function select($table, $select = '*', $where = null, $order = null, $group = null, $page = null, $limit = null, $fetch = true)
+	public static function select(
+		$table,
+		$select = '*',
+		$where  = null,
+		$order  = null,
+		$group  = null,
+		$page   = null,
+		$limit  = null,
+		$fetch  = true)
 	{
 		if($limit === 0) return array();
 		if(is_array($select)) $select = self::select_clause($select);
@@ -549,7 +597,7 @@ class db
 	public static function row($table, $select = '*', $where = null, $order = null)
 	{
 		$result = self::select($table, $select, $where, $order, null, 0, 1, false);
-		return self::fetch($result);
+		return a::get($result, 0);
 	}
 
 	/**
@@ -581,9 +629,8 @@ class db
 	public static function column($table, $column, $where = null, $order = null, $page = null, $limit = null)
 	{
 		$result = self::select($table, $column, $where, $order, null, $page, $limit, false);
-
 		$array = array();
-		while($r = self::fetch($result)) array_push($array, a::get($r, $column));
+		foreach($result as $r) array_push($array, a::get($r, $column));
 		return $array;
 	}
 
@@ -805,7 +852,7 @@ class db
 		if(empty($search)) return false;
 
 		$arr = array();
-		foreach($fields AS $f)
+		foreach($fields as $f)
 			array_push($arr, $f.' LIKE \'%'.$search.'%\'');
 
 		return '('.implode(' '.trim($mode).' ', $arr).')';
