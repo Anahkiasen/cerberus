@@ -21,7 +21,7 @@ class l
 	 *
 	 * @param  string $database The name of the cerberus database
 	 */
-	static function cerberus($database = 'cerberus_langue')
+	public static function cerberus($database = 'cerberus_langue')
 	{
 		// If no active SQL connection, don't even bother
 		if(!SQL) return false;
@@ -54,7 +54,7 @@ class l
 		if(!empty($tables))
 		{
 			// Getting the language array
-			$index = db::select($database, 'tag,'.self::current(), NULL, 'tag ASC');
+			$index = db::select($database, 'tag,'.self::current(), null, 'tag ASC');
 			$index = a::simplify(a::rearrange($index, 'tag', true), false);
 
 			// If the array we got is allright, save it
@@ -73,7 +73,7 @@ class l
 	/**
 	 * Loads a language file
 	 */
-	static function load($fileraw)
+	public static function load($fileraw)
 	{
 		$file = str_replace('{langue}', self::current(), $fileraw);
 		$index = f::read($file, 'json');
@@ -101,18 +101,18 @@ class l
 	 *
 	 * @return [type]         [description]
 	 */
-	static function flags($path, $langue = NULL)
+	public static function flags($path, $langue = null)
 	{
 		$array = ($langue) ? array(self::sanitize($langue)) : config::get('langues');
-		if($langue != NULL or count($array) > 1) foreach($array as $langue)
+		if($langue != null or count($array) > 1) foreach($array as $langue)
 		{
 			$currentpath = $path;
-			$hover = (self::current() == $langue) ? NULL : '-off';
+			$hover = (self::current() == $langue) ? null : '-off';
 			$currentpath = str_replace('{langue}', $langue, $path);
 			$currentpath = str_replace('{hover}', $hover, $currentpath);
 
 			return str::slink(
-				NULL,
+				null,
 				str::img($currentpath, strtoupper($langue). ' VERSION'),
 				array('langue' => $langue));
 		}
@@ -124,7 +124,7 @@ class l
 	 * @param  string   $langue  The desired language
 	 * @return boolean           If the website successfully changed language
 	 */
-	static function change($langue = 'fr')
+	public static function change($langue = 'fr')
 	{
 		session::set('langue_site', self::sanitize($langue));
 		return session::get('langue_site') == $langue;
@@ -135,7 +135,7 @@ class l
 	 *
 	 * @return string Current website's language
 	 */
-	static function current()
+	public static function current()
 	{
 		// If we have a language in session
 		if(session::get('langue_site')) return session::get('langue_site');
@@ -155,7 +155,7 @@ class l
 	 *
 	 * @return string  The current language ID
 	 */
-	static function admin_current()
+	public static function admin_current()
 	{
 		return session::get('admin,langue');
 	}
@@ -166,7 +166,7 @@ class l
 	 * @param  string  $language  A language string to use
 	 * @return
 	 */
-	static function locale($language = FALSE)
+	public static function locale($language = false)
 	{
 		// If nothing was given, just stay where we are
 		if(!$language) $language = self::current();
@@ -197,7 +197,7 @@ class l
 	 * @param  string   $language A language to check
 	 * @return boolean  Language authorized or not
 	 */
-	static function sanitize($language)
+	public static function sanitize($language)
 	{
 		$default = config::get('langue_default', 'fr');
 		$array_langues = config::get('langues', array($default));
@@ -216,7 +216,7 @@ class l
 	 * @param mixed  $key    The key to define
 	 * @param mixed  $value  The value for the passed key
 	 */
-	static function set($key, $value = NULL)
+	public static function set($key, $value = null)
 	{
 		if(is_array($key)) self::$lang = array_merge(self::$lang, $key);
 		else self::$lang[$key] = $value;
@@ -230,12 +230,12 @@ class l
 	 * @return mixed
 	 * @package       Cerberus,Kirby
 	 */
-	static function get($key = NULL, $default = NULL)
+	public static function get($key = null, $default = null)
 	{
 		if(empty($key)) return self::$lang;
 		else
 		{
-			if($default === NULL) $default = ucfirst($key);
+			if($default === null) $default = ucfirst($key);
 			$translate = a::get(self::$lang, $key, $default);
 			return (empty($translate) or is_array($translate)) ? $default : stripslashes($translate);
 		}
@@ -251,9 +251,9 @@ class l
 	 *
 	 * @return string            A translation
 	 */
-	static function getTranslation($key, $language = NULL, $default = NULL, $fallback = false)
+	public static function getTranslation($key, $language = null, $default = null, $fallback = false)
 	{
-		$translate = $language ? db::field('cerberus_langue', $language, array('tag' => $key)) : NULL;
+		$translate = $language ? db::field('cerberus_langue', $language, array('tag' => $key)) : null;
 		if(!$translate)
 			$translate = $fallback ? self::get($key, $default) : $default;
 		return stripslashes($translate);
@@ -265,7 +265,7 @@ class l
 	 * @param  int     $day  A given date
 	 * @return string  The day's name if the current language
 	 */
-	static function day($day = NULL)
+	public static function day($day = null)
 	{
 		if(!$day) $day = date('Y-m-d');
 		$day = strtotime($day);
@@ -278,7 +278,7 @@ class l
 	 * @param  int     $month  A given date
 	 * @return string  The month's name if the current language
 	 */
-	static function month($month = NULL)
+	public static function month($month = null)
 	{
 		if(!$month) $month = date('Y-m-d');
 		$month = strtotime($month);
@@ -291,7 +291,7 @@ class l
 	 * @param  string  $file The name of the translated file
 	 * @return mixed   The content of the file, or an error if not found
 	 */
-	static function content($content)
+	public static function content($content)
 	{
 		$file = 'pages/text/' .self::current(). '-' .$content;
 		$file = f::exist($file.'.html', $file.'.php');

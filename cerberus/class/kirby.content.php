@@ -11,13 +11,13 @@
 class content
 {
 	private static $cache_folder = PATH_CACHE;
-	private static $cachename = NULL;
+	private static $cachename = null;
 
 	/**
 		* Starts the output buffer
 		*
 		*/
-	static function start()
+	public static function start()
 	{
 		ob_start();
 	}
@@ -29,7 +29,7 @@ class content
 		* @param	boolean	$return Pass true to return the content instead of flushing it
 		* @return mixed
 		*/
-	static function end($return = false)
+	public static function end($return = false)
 	{
 		if($return)
 		{
@@ -47,7 +47,7 @@ class content
 		* @param	boolean $return True: return the content of the file, false: echo the content
 		* @return mixed
 		*/
-	static function load($file, $return = true)
+	public static function load($file, $return = true)
 	{
 		self::start();
 		require_once($file);
@@ -62,7 +62,7 @@ class content
 		* @param	string	$ctype The shortcut for the content type. See the keys of the $ctypes array for all available shortcuts
 		* @param	string	$charset The charset definition for the content type header. Default is "utf-8"
 		*/
-	static function type()
+	public static function type()
 	{
 		$args = func_get_args();
 

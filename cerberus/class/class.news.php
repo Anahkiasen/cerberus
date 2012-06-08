@@ -11,19 +11,19 @@ class news
 
 	// Affichage des news
 	private $newsNumber   = 5;
-	private $newsPaginate = FALSE;
+	private $newsPaginate = false;
 	private $newsOrder    = 'date';
 	private $newsStart;
 
 	// Composantes
-	private $displayThumb = TRUE;
-	private $displayDate  = TRUE;
-	private $displayLink  = TRUE;
+	private $displayThumb = true;
+	private $displayDate  = true;
+	private $displayLink  = true;
 
 	// Affichage de la miniature
 	private $thumbWidth   = 100;
 	private $thumbHeight  = 100;
-	private $thumbCrop    = TRUE;
+	private $thumbCrop    = true;
 
 	/*
 	###############################
@@ -37,7 +37,7 @@ class news
 		if(!db::is_table('cerberus_news')) update::table('cerberus_news');
 		$this->multiWhere = (MULTILANGUE)
 			? array('langue' => l::current())
-			: NULL;
+			: null;
 	}
 
 	// Réglages des principaux paramètres : actualité par page
@@ -57,7 +57,7 @@ class news
 				if(isset($_GET['pagenews']))
 					pager::set($entries, $_GET['pagenews'], $limit);
 			}
-			else $this->newsPaginate = FALSE;
+			else $this->newsPaginate = false;
 		}
 	}
 
@@ -84,10 +84,10 @@ class news
 	{
 		if($truncate)
 		{
-			$this->displayLink = TRUE;
+			$this->displayLink = true;
 			$this->truncateNews = $mode;
 		}
-		else $this->truncateNews = FALSE;
+		else $this->truncateNews = false;
 	}
 
 	/*
@@ -95,7 +95,7 @@ class news
 	AFFICHAGE DES NEWS
 	############################ */
 
-	function selectNews($id = NULL)
+	function selectNews($id = null)
 	{
 		// News seule ou toutes
 		if(!empty($id))
@@ -116,7 +116,7 @@ class news
 				'id, titre, date, contenu, path',
 				$this->multiWhere,
 				$this->newsOrder. ' DESC',
-				NULL,
+				null,
 				pager::db(),
 				pager::$limit);
 		}
@@ -140,7 +140,7 @@ class news
 							array('zc' => 1)),
 						array('class' => 'colorbox'));
 			}
-			else $thisThumb = NULL;
+			else $thisThumb = null;
 
 			$thisLink = ($this->displayLink)
 				? url::reload(array('actualite' => $value['id'], 'html' => $value['titre']))
@@ -148,16 +148,16 @@ class news
 
 			// News
 			$contenu = $value['contenu'];
-			if($this->truncateNews != FALSE and empty($id)) $contenu = str::truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
+			if($this->truncateNews != false and empty($id)) $contenu = str::truncate($contenu, $this->truncateNews[0], $this->truncateNews[1], ' [...]');
 			$contenu = nl2br(bbcode(stripslashes($contenu)));
 			if($this->displayLink and empty($id)) $contenu .= '<p class="readmore"><a href="' .$thisLink. '" class="btn wide">' .l::get('news.readmore'). '</a></p>';
 
 			 if(!empty($id)) $alt = 'wide';
-			else $alt = (isset($alt) and $alt == 'alt') ? NULL : 'alt';
+			else $alt = (isset($alt) and $alt == 'alt') ? null : 'alt';
 
 			$thisDate = ($this->displayDate)
 				? '<small class="date">' .$value['date']. '</small>'
-				: NULL;
+				: null;
 
 			echo '
 			<div class="news ' .$alt. '" id="' .$key. '">
@@ -184,7 +184,7 @@ class news
 			$this->multiWhere,
 			'date ASC');
 
-		$actualDate = NULL;
+		$actualDate = null;
 
 		echo '<h1>' .l::get('news.archives'). '</h1>';
 		if($news)
@@ -202,7 +202,7 @@ class news
 				}
 
 				$titre = stripslashes($value['titre']);
-				echo '<li>' .str::slink(NULL, $titre, array('actualite' => $value['id'], 'html' => $titre)). '</li>';
+				echo '<li>' .str::slink(null, $titre, array('actualite' => $value['id'], 'html' => $titre)). '</li>';
 			}
 			echo '</ul></div>
 			<p class="clear"></p>

@@ -1,16 +1,18 @@
 <?php
-/* The Kirby Session Class
- * Handles all session fiddling */
+/**
+ * The Kirby Session Class
+ * Handles all session fiddling
+ */
 class session
 {
 	/* Returns the current session id */
-	static function id()
+	public static function id()
 	{
 		return @session_id();
 	}
 
 	/* Sets a session value by key */
-	static function set($key, $value = false)
+	public static function set($key, $value = false)
 	{
 		if(!isset($_SESSION)) return false;
 		if(is_array($key)) $_SESSION = array_merge($_SESSION, $key);
@@ -18,7 +20,7 @@ class session
 	}
 
 	/* Gets a session value by key */
-	static function get($key = false, $default = null)
+	public static function get($key = false, $default = null)
 	{
 		if(!isset($_SESSION)) return false;
 		if(empty($key)) return $_SESSION;
@@ -26,7 +28,7 @@ class session
 	}
 
 	/* Removes a value from the session by key */
-	static function remove($key)
+	public static function remove($key)
 	{
 		if(!isset($_SESSION)) return false;
 		$_SESSION = a::remove($_SESSION, $key, true);
@@ -34,19 +36,19 @@ class session
 	}
 
 	/* Starts a new session */
-	static function start()
+	public static function start()
 	{
 		@session_start();
 	}
 
 	/* Destroys a session */
-	static function destroy()
+	public static function destroy()
 	{
 		@session_destroy();
 	}
 
 	/* Destroys a session first and then starts it again */
-	static function restart()
+	public static function restart()
 	{
 		self::destroy();
 		self::start();

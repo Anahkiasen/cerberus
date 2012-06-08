@@ -17,7 +17,7 @@ class media extends dispatch
 	 * @param  array   $attributes  Other attributes
 	 * @return string               Formatted image tag
 	 */
-	static function image($name, $alt = NULL, $attributes = NULL)
+	public static function image($name, $alt = null, $attributes = null)
 	{
 		return str::img(self::path(PATH_COMMON.'{images}/' .$name), $alt, $attributes);
 	}
@@ -30,7 +30,7 @@ class media extends dispatch
 	 * @param  int     $height  The desired $height
 	 * @param  array   $params  Supplementary options to pass to TimThumb
 	 */
-	static function timthumb($file, $width = NULL, $height = NULL, $params = array())
+	public static function timthumb($file, $width = null, $height = null, $params = array())
 	{
 		if(!empty($width)) $params['w']  = $width;
 		if(!empty($height)) $params['h'] = $height;
@@ -55,7 +55,7 @@ class media extends dispatch
 	 * @param  array  $params     TimThumb parameters
 	 * @return string             An <img> tag
 	 */
-	static function thumb($file, $width, $height, $attributes = array(), $params = array())
+	public static function thumb($file, $width, $height, $attributes = array(), $params = array())
 	{
 		$file = self::path(PATH_COMMON.$file);
 		$path = self::timthumb($file, $width, $height, $params);
@@ -71,7 +71,7 @@ class media extends dispatch
 	 * @param mixed    $params   The parameters to pass, as a JSON or PHP array
 	 * @param boolean  $shuffle  Whether PHP should shuffle the images found in the directory or not
 	 */
-	static function slideshow($folder, $width, $height, $params = array(), $shuffle = true)
+	public static function slideshow($folder, $width, $height, $params = array(), $shuffle = true)
 	{
 		// Ensure necessary plugins are loaded
 		dispatch::submodules('jquery', 'nivoslider');
@@ -111,7 +111,7 @@ class media extends dispatch
 	 * @param array   $params      The Flash animation parameters
 	 * @param array   $attributes  Attributes of the object element
 	 */
-	static function swf($swf, $bloc, $width, $height, $flashvars = NULL, $params = NULL, $attributes = NULL)
+	public static function swf($swf, $bloc, $width, $height, $flashvars = null, $params = null, $attributes = null)
 	{
 		dispatch::submodules('swfobject');
 		$flashvars  = ($flashvars)  ? json_encode($flashvars)  : '{}';
@@ -129,7 +129,7 @@ class media extends dispatch
 	 * @param  boolean  $embbed Decides whether the SVG will be added as an <img> tag or embbeded directly into the code
 	 * @return string   The content of said SVG file
 	 */
-	static function svg($svg, $embbed = TRUE)
+	public static function svg($svg, $embbed = true)
 	{
 		$svgPath = PATH_COMMON.'img/'.$svg;
 

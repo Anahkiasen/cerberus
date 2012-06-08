@@ -17,7 +17,7 @@ class r
 	static private $_ = false;
 
 	// fetch all data from the request and sanitize it
-	static function data()
+	public static function data()
 	{
 		if(self::$_) return self::$_;
 		return self::$_ = self::sanitize($_REQUEST);
@@ -29,7 +29,7 @@ class r
 		* @param	array $data
 		* @return array
 		*/
-	static function sanitize($data)
+	public static function sanitize($data)
 	{
 		foreach($data as $key => $value)
 		{
@@ -42,7 +42,7 @@ class r
 	}
 
 	/** Sanitize une suite de chaînes selon CHAMP:TYPE:DEFAULT, CHAMP:TYPE:DEFAULT */
-	static function parse()
+	public static function parse()
 	{
 		$keep	= func_get_args();
 		$result = array();
@@ -51,7 +51,7 @@ class r
 			$params			= explode(':', $k);
 			$key			= a::get($params, 0);
 			$type			= a::get($params, 1, 'str');
-			$default		= a::get($params, 2, NULL);
+			$default		= a::get($params, 2, null);
 			$result[$key] 	= str::sanitize(get($key, $default), $type);
 		}
 		return $result;
@@ -63,7 +63,7 @@ class r
 		* @param	mixed	 $key The key to define
 		* @param	mixed	 $value The value for the passed key
 		*/
-	static function set($key, $value = NULL)
+	public static function set($key, $value = null)
 	{
 		$data = self::data();
 		if(is_array($key)) self::$_ = array_merge($data, $key);
@@ -77,7 +77,7 @@ class r
 		* @param	mixed		$default Optional default value, which should be returned if no element has been found
 		* @return mixed
 		*/
-	static function request($key = FALSE, $default = NULL)
+	public static function request($key = false, $default = null)
 	{
 		$request = (self::method() == 'GET') ? self::data() : array_merge(self::data(), self::body());
 		if(empty($key)) return $request;
@@ -87,9 +87,9 @@ class r
 	/**
 	 * Gets a request value by key, only in the POST array
 	 */
-	static function post($key = NULL, $default = NULL)
+	public static function post($key = null, $default = null)
 	{
-		if(!isset($_POST)) return FALSE;
+		if(!isset($_POST)) return false;
 
 		if(!$key) return $_POST;
 		else return a::get($_POST, $key, $default);
@@ -98,16 +98,16 @@ class r
 	/**
 	 * Gets a request value by key, only in the GET array
 	 */
-	static function get($key = NULL, $default = NULL)
+	public static function get($key = null, $default = null)
 	{
-		if(!isset($_GET)) return FALSE;
+		if(!isset($_GET)) return false;
 		if(!$key) return $_GET;
 		else return a::get($_GET, $key, $default);
 	}
 
-	static function file($key = NULL)
+	public static function file($key = null)
 	{
-		if(!isset($_FILES)) return FALSE;
+		if(!isset($_FILES)) return false;
 		if(!$key) return $_FILES;
 		else return a::get($_FILES, $key);
 	}
@@ -117,7 +117,7 @@ class r
 		*
 		* @return string POST, GET, DELETE, PUT
 		*/
-	static function method()
+	public static function method()
 	{
 		return strtoupper(server::get('request_method'));
 	}
@@ -127,7 +127,7 @@ class r
 		*
 		* @return array
 		*/
-	static function body()
+	public static function body()
 	{
 		@parse_str(@file_get_contents('php://input'), $body);
 		return self::sanitize((array)$body);
@@ -138,7 +138,7 @@ class r
 		*
 		* @return boolean
 		*/
-	static function is_ajax()
+	public static function is_ajax()
 	{
 		return (strtolower(server::get('http_x_requested_with')) == 'xmlhttprequest') ? true : false;
 	}
@@ -148,7 +148,7 @@ class r
 		*
 		* @return boolean
 		*/
-	static function is_get()
+	public static function is_get()
 	{
 		return self::method() == 'GET';
 	}
@@ -158,7 +158,7 @@ class r
 		*
 		* @return boolean
 		*/
-	static function is_post()
+	public static function is_post()
 	{
 		return self::method() == 'POST';
 	}
@@ -168,7 +168,7 @@ class r
 		*
 		* @return boolean
 		*/
-	static function is_delete()
+	public static function is_delete()
 	{
 		return self::method() == 'DELETE';
 	}
@@ -178,7 +178,7 @@ class r
 		*
 		* @return boolean
 		*/
-	static function is_put()
+	public static function is_put()
 	{
 		return self::method() == 'PUT';
 	}
@@ -189,7 +189,7 @@ class r
 		* @param	string	$default Define a default URL if no referer has been found
 		* @return string
 		*/
-	static function referer($default = NULL)
+	public static function referer($default = null)
 	{
 		if(empty($default)) $default = '/';
 		return server::get('http_referer', $default);

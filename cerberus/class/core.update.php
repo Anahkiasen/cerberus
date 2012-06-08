@@ -66,7 +66,7 @@ class update
 	 *
 	 * @return date  The date of the last update
 	 */
-	static function revision()
+	public static function revision()
 	{
 		// Get local or online revision number
 		$revision = LOCAL ? config::get('revision.local') : config::get('revision.online');
@@ -82,7 +82,7 @@ class update
 	 * @param  date     $date The date to match against the current revision number. Defaults to last revision number
 	 * @return boolean  Boolean stating if the project is outdated or not
 	 */
-	static function outdate($date = NULL)
+	public static function outdate($date = NULL)
 	{
 		// If project still uses SVN Revision, update
 		if(is_numeric(self::$revision)) return true;
@@ -97,7 +97,7 @@ class update
 	 *
 	 * @param string  $torev The revision number to update to
 	 */
-	static function updateCore($torev)
+	public static function updateCore($torev)
 	{
 		// Update online or local revison number
 		$rev = LOCAL ? 'revision.local' : 'revision.online';
@@ -119,7 +119,7 @@ class update
 	 * @param  regex   $replace  What to replace it with
 	 * @return string  A list of the found matches
 	 */
-	static function codematch($search, $replace)
+	public static function codematch($search, $replace)
 	{
 		$searchLine = '#' .$search. '.+\n#';
 		$search = '#' .$search. '#';
@@ -161,7 +161,7 @@ class update
 	 * @param  string   $table  The key of the table to create
 	 * @return boolean  Value of the executed query or false if errors
 	 */
-	static function table($table)
+	public static function table($table)
 	{
 		if(!SQL) return false;
 

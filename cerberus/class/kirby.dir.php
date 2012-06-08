@@ -10,7 +10,7 @@ class dir
    * @param   boolean $recursive Tells the function to act recursively or not
    * @return  boolean True: the dir has been created, false: creating failed
    */
-	static function make($directory, $recursive = TRUE)
+	public static function make($directory, $recursive = true)
 	{
 		if(!$recursive)
 		{
@@ -22,13 +22,13 @@ class dir
 		else
 		{
 			$directories = explode('/', $directory);
-			$current_path = NULL;
+			$current_path = null;
 
 			foreach($directories as $directory)
 				if($directory !== '.' and $directory !== '..')
 				{
 					$current_path .= $directory.'/';
-					$make = self::make($current_path, FALSE);
+					$make = self::make($current_path, false);
 					if(!$make) return false;
 				}
 			return true;
@@ -42,7 +42,7 @@ class dir
    * @param   string  $dir The path of directory
    * @return  mixed   An array of filenames or false
    */
-	static function read($dir)
+	public static function read($dir)
 	{
 		if(!is_dir($dir)) return false;
 		$skip = array('.', '..', '.DS_Store');
@@ -55,7 +55,7 @@ class dir
    * @param   string  $dir The path of directory
    * @return  mixed   An info array or false
    */
-	static function inspect($dir)
+	public static function inspect($dir)
 	{
 		if(!is_dir($dir)) return array();
 
@@ -84,7 +84,7 @@ class dir
    * @param   string  $new The desired path where the dir should be moved to
    * @return  boolean True: the directory has been moved, false: moving failed
    */
-	static function move($old, $new)
+	public static function move($old, $new)
 	{
 		if(!is_dir($old)) return false;
 		return (@rename($old, $new) && is_dir($new));
@@ -97,7 +97,7 @@ class dir
    * @param   boolean  $keep If set to true, the directory will flushed but not removed.
    * @return  boolean  True: the directory has been removed, false: removing failed
    */
-	static function remove($dir, $keep = false)
+	public static function remove($dir, $keep = false)
 	{
 		if(!is_dir($dir)) return false;
 
@@ -126,7 +126,7 @@ class dir
    * @param   string   $dir The path of the directory
    * @return  boolean  True: the directory has been flushed, false: flushing failed
    */
-	static function clean($dir)
+	public static function clean($dir)
 	{
 		return self::remove($dir, true);
 	}
@@ -139,7 +139,7 @@ class dir
    * @param   boolean  $nice returns the size in a human readable size
    * @return  mixed
    */
-	static function size($path, $recursive = true, $nice = false)
+	public static function size($path, $recursive = true, $nice = false)
 	{
 		if(!file_exists($path)) return false;
 		if(is_file($path)) return self::size($path, $nice);
@@ -165,7 +165,7 @@ class dir
    * @param   int      $modified internal modified store
    * @return  int
    */
-	static function modified($dir, $modified = 0)
+	public static function modified($dir, $modified = 0)
 	{
 		$files = self::read($dir);
 		foreach($files AS $file)

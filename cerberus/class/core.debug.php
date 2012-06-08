@@ -1,7 +1,7 @@
 <?php
 class Debug
 {
-	private static $errorType = NULL;
+	private static $errorType = null;
 
 	/**
 	 * Decides wether we should print or send the error log
@@ -9,7 +9,7 @@ class Debug
 	 * @param Exception $exception An exception that occured
 	 * @param integer   $type      An error code or type
 	 */
-	static public function handle($exception, $type = NULL)
+	static public function handle($exception, $type = null)
 	{
 		// Error type
 		self::$errorType = self::errorType($type);
@@ -26,7 +26,7 @@ class Debug
 	{
 		// Getting error code
 		$code = $e->getCode();
-		$code = !empty($code) ? '['.$code.'] ' : NULL;
+		$code = !empty($code) ? '['.$code.'] ' : null;
 
 		// Displaying error header
 		$render = '
@@ -42,7 +42,7 @@ class Debug
 
 				// Arguments
 				if(!empty($t['args'])) $t['args'] = "'" .implode("', '", $t['args']). "'";
-				else $t['args'] = NULL;
+				else $t['args'] = null;
 
 				// Class and function
 				if(isset($t['function']) and isset($t['class']))

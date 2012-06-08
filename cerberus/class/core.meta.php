@@ -13,7 +13,7 @@ class meta
 	 * Main data array
 	 * @var array
 	 */
-	public static $meta = NULL;
+	public static $meta = null;
 
 	/**
 	 * The path to the cached meta data array
@@ -35,10 +35,10 @@ class meta
 	 * Fetch the meta data either from cache or from a database
 	 * If no cached file found, then create it
 	 */
-	static function build()
+	public static function build()
 	{
 		// Check if the necessary tables exist
-		$dbExist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : FALSE;
+		$dbExist = SQL ? db::is_table(array('cerberus_meta', 'cerberus_structure')) : false;
 
 		// Get the cached meta data file
 		self::$file = PATH_CACHE. 'meta-' .l::current(). '.json';
@@ -100,7 +100,7 @@ class meta
 	 * @param string  $key    The key to overwrite
 	 * @param string  $value  The new content of the string
 	 */
-	static function set($key, $value = NULL)
+	public static function set($key, $value = null)
 	{
 		self::$overwrite[$key] = $value;
 	}
@@ -111,7 +111,7 @@ class meta
 	 * @param  string  $default  A fallback if the key wasn't found
 	 * @return string           The wanted value
 	 */
-	static function get($get = NULL, $default = NULL)
+	public static function get($get = null, $default = null)
 	{
 		// Get current page
 		$current = navigation::current();
@@ -147,7 +147,7 @@ class meta
 	 * @param  string  $key   A specific key to return instead of the whole thing
 	 * @return array   The meta data of said page
 	 */
-	static function page($page = NULL, $key = NULL)
+	public static function page($page = null, $key = null)
 	{
 		// If the meta array doesn't exist yet, let's build it
 		if(!is_array(self::$meta)) self::build();
@@ -170,10 +170,10 @@ class meta
 	 * @param  string  $string  The string to use as base
 	 * @return string  A shuffled string of keywords
 	 */
-	static function keywords($string)
+	public static function keywords($string)
 	{
 		// Remove special characters
-		$string = preg_replace('#([,\.\r\n\-])#', NULL, $string);
+		$string = preg_replace('#([,\.\r\n\-])#', null, $string);
 
 		// Separate each word
 		$string = explode(' ', $string);
@@ -195,7 +195,7 @@ class meta
 	/**
 	 * Format the meta data as meta tags for the <head>
 	 */
-	static function head()
+	public static function head()
 	{
 		// If the meta array doesn't exist yet, let's build it
 		if(!is_array(self::$meta)) self::build();

@@ -14,7 +14,7 @@ class upload
 	 *                                -- sanitize : Sanitize the name of the file or not
 	 * @return array               An array with informations about how the upload went
 	 */
-	static function file($field, $destination, $params = array())
+	public static function file($field, $destination, $params = array())
 	{
 		// Getting main parameters
 		$allowed   = a::get($params, 'allowed',   config::get('upload.allowed'));
@@ -95,12 +95,12 @@ class upload
 	 * @param  array   $array  An array to scan
 	 * @return string
 	 */
-	static function status($array)
+	public static function status($array)
 	{
 		str::display($array['msg'], $array['status']);
 	}
 
-	static function max_size()
+	public static function max_size()
 	{
 		$val = ini_get('post_max_size');
 		$val = trim($val);
@@ -117,7 +117,7 @@ class upload
 		return $val;
 	}
 
-	static function mime_to_extension($mime, $default = '')
+	public static function mime_to_extension($mime, $default = '')
 	{
 		$types = array(
 			'image/jpeg'               => 'jpg',

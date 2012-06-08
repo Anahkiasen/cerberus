@@ -13,7 +13,7 @@ class init
 	 * The current folder Cerberus is being called in, defaults to root /
 	 * @var string
 	 */
-	private static $folder = NULL;
+	private static $folder = null;
 
 	/**
 	 * Store the currently loaded modules
@@ -41,7 +41,7 @@ class init
 	/**
 	 * Initializes the base modules
 	 */
-	function __construct($folder = NULL)
+	public function __construct($folder = null)
 	{
 		// Set current folder
 		self::$folder = $folder;
@@ -64,7 +64,7 @@ class init
 	 * Reads a space separated list of modules and load them in order
 	 * @param  string $modules A list of modules to load
 	 */
-	function startup($modules)
+	public static function startup($modules)
 	{
 		$modules = explode(' ', $modules);
 		foreach($modules as $m)
@@ -99,8 +99,10 @@ class init
 			// Throws an error if the required modules are not found
 			if(!$allLoaded and !empty($dependencies))
 			{
-				echo 'Erreur lors du chargement du module ' .$module. '<br />
-				Les dépendences suivantes n\'ont pas été chargées : ' .implode(', ', array_diff($dependencies, $dependenciesLoaded));
+				echo
+					'Erreur lors du chargement du module ' .$module. '<br />
+					Les dépendences suivantes n\'ont pas été chargées : ' .
+					implode(', ', array_diff($dependencies, $dependenciesLoaded));
 				exit();
 			}
 		}
@@ -150,7 +152,7 @@ class init
 	/**
 	 * Correct the base encoding if possible
 	 */
-	function correctHeader()
+	public function correctHeader()
 	{
 		if (!headers_sent())
 			header('Content-Type: text/html; charset=utf-8');
@@ -159,7 +161,7 @@ class init
 	/**
 	 * Overwrite some of the base PHP parameters
 	 */
-	function iniPHP()
+	public function iniPHP()
 	{
 		ini_set('upload_max_filesize', '100M');
 		ini_set('default_charset', 'utf-8');
@@ -168,7 +170,7 @@ class init
 	/**
 	 * Defines the current timezone
 	 */
-	function timezone()
+	public function timezone()
 	{
 		self::module('timezone');
 		date_default_timezone_set('Europe/Paris');
@@ -177,7 +179,7 @@ class init
 	/**
 	* Defines the paths to some of the main folders
 	*/
-	function paths()
+	public function paths()
 	{
 		self::module('paths');
 
@@ -198,7 +200,7 @@ class init
 	* Handles and log errors
 	* @dependencies		paths
 	*/
-	function errorHandling()
+	public function errorHandling()
 	{
 		self::module('errorHandling');
 
@@ -222,7 +224,7 @@ class init
 	* Assign autoloader as class loader
 	* @dependencies		paths
 	*/
-	function autoloader()
+	public function autoloader()
 	{
 		self::module('autoloader');
 
@@ -235,7 +237,7 @@ class init
 	* Load the configuration file and set default values
 	* @dependencies		paths
 	*/
-	function config()
+	public function config()
 	{
 		self::module('config');
 
@@ -252,7 +254,7 @@ class init
 	/**
 	 * Loads the Cerberus language file containing errors and messages
 	 */
-	function strings()
+	public function strings()
 	{
 		l::locale('fr');
 		l::load('cerberus/include/cerberus.{langue}.json');
@@ -262,7 +264,7 @@ class init
 	* Define some of the main constants
 	* @dependencies		config,paths
 	*/
-	function constants()
+	public function constants()
 	{
 		self::module('constants');
 
@@ -282,7 +284,7 @@ class init
 		if(!defined('MULTILANGUE')) define('MULTILANGUE', config::get('multilangue'));
 		if(!defined('CACHE'))
 		{
-			if(LOCAL or PATH_MAIN != NULL) define('CACHE', false); // If we're in local or in a subfolder
+			if(LOCAL or PATH_MAIN != null) define('CACHE', false); // If we're in local or in a subfolder
 			else                           define('CACHE', config::get('cache'));
 		}
 	}
@@ -291,7 +293,7 @@ class init
 	* Connects to the configured database
 	* @dependencies		constants, config
 	*/
-	function mysql()
+	public function mysql()
 	{
 		self::module('mysql');
 
@@ -310,14 +312,14 @@ class init
 		}
 
 		// Define the constant SQL to whether there's an existing connection
-		if(!defined('SQL')) define('SQL', db::connection(), FALSE);
+		if(!defined('SQL')) define('SQL', db::connection(), false);
 	}
 
 	/**
 	 * Logs the current user's environnement
 	 * @dependencies    config, mysql, constants
 	 */
-	function stats()
+	public function stats()
 	{
 		self::module('stats');
 
@@ -364,21 +366,21 @@ class init
 	* Creates a list of requried files and folders if they aren't there
 	* @dependencies		dispatch, paths
 	*/
-	function required()
+	public function required()
 	{
 		self::module('required');
 
 		// List required files and their content
 		$required = array(
-			PATH_CACHE                                           => NULL,
-			dispatch::path(PATH_CERBERUS.'{images}/{plugins}/')  => NULL,
-			dispatch::path(PATH_CERBERUS.'{css}/{plugins}/')     => NULL,
-			dispatch::path(PATH_CERBERUS.'{js}/{plugins}/')      => NULL);
+			PATH_CACHE                                           => null,
+			dispatch::path(PATH_CERBERUS.'{images}/{plugins}/')  => null,
+			dispatch::path(PATH_CERBERUS.'{css}/{plugins}/')     => null,
+			dispatch::path(PATH_CERBERUS.'{js}/{plugins}/')      => null);
 
 		// Add path to custom Sass environnement
 		if(LOCAL)
 		{
-			$required[dispatch::path(PATH_COMMON. '{sass}/_custom.sass')] = NULL;
+			$required[dispatch::path(PATH_COMMON. '{sass}/_custom.sass')] = null;
 			$required[dispatch::path(PATH_CERBERUS. '{sass}/base/_custom.sass')] = '@import ../../../../' .PATH_COMMON. 'sass/custom';
 		}
 
@@ -395,7 +397,7 @@ class init
 	* Display debug informations
 	* @dependencies		navigation, constants
 	*/
-	function debug()
+	public function debug()
 	{
 		self::module('debug');
 
@@ -428,7 +430,7 @@ class init
 	* Puts the current page in cache
 	* @dependencies		navigation, constants
 	*/
-	function cache()
+	public function cache()
 	{
 		self::module('cache');
 
@@ -447,14 +449,14 @@ class init
 			// Determine if we should cache the page or not
 			// Exceptions are : page is administration ; page is set as not cached in the database ; in the $setCache
 			// Default is true
-			if(navigation::$page == 'admin') $caching = FALSE;
+			if(navigation::$page == 'admin') $caching = false;
 			elseif(SQL and db::is_table('cerberus_structure'))
 				$caching = db::field(
 					'cerberus_structure',
 					'cache',
 					db::where(array('CONCAT_WS("-",parent,page)' => $setCache['name'], 'parent' => $setCache['name']), 'OR'));
 
-			if(!isset($caching)) $caching = a::get($setCache, 'cache', TRUE);
+			if(!isset($caching)) $caching = a::get($setCache, 'cache', true);
 
 			// Start the output buffer
 			if($caching) $start = cache::page($setCache['name'], $setCache);
@@ -464,7 +466,7 @@ class init
 	/**
 	* Initialize the dispatch class
 	*/
-	function dispatch()
+	public function dispatch()
 	{
 		self::module('dispatch');
 		new dispatch();
@@ -473,7 +475,7 @@ class init
 	/**
 	* Updates the Cerberus core
 	*/
-	function update()
+	public function update()
 	{
 		self::module('update');
 		new update();
@@ -483,20 +485,20 @@ class init
 	* Backup the database
 	* @dependencies		mysql,constants,cerberus
 	*/
-	function backup()
+	public function backup()
 	{
 		self::module('backup');
 		if(db::connection() and CACHE and function_exists('backupSQL')) backupSQL();
 	}
 
-	function language()
+	public function language()
 	{
 		self::module('language');
 
 		l::cerberus();
 	}
 
-	function navigation()
+	public function navigation()
 	{
 		self::module('navigation');
 		new navigation();

@@ -41,7 +41,7 @@ class smail
 		else $this->contenu = $contenu;
 		$this->messageText = str::unhtml($this->contenu);
 
-		if(!is_array($destinataire) and strpos($destinataire, ',') !== FALSE)
+		if(!is_array($destinataire) and strpos($destinataire, ',') !== false)
 			$this->destinaire = explode(', ', $destinataire);
 
 		$this->boundary = '-----=' .md5(rand());
@@ -49,7 +49,7 @@ class smail
 	}
 
 	// Message en HTML
-	function messageHTML($absoluteURL = NULL)
+	function messageHTML($absoluteURL = null)
 	{
 		$this->absoluteURL = config::get('http', $absoluteURL);
 
@@ -84,14 +84,14 @@ class smail
 	}
 
 	// Envoi du mail
-	function send($header = NULL)
+	function send($header = null)
 	{
 		if(!empty($this->expediteurMail)) $header .= "From: \"" .$this->expediteurAlias. "\"<" .$this->expediteurMail. ">\r\n";
 		if(is_array($this->destinataire))
 		{
 			foreach($this->destinataire as $key => $value) $destinataires[$key] = '<' .$value. '>';
 			$header .= "Bcc: " .implode(',', $destinataires). "\r\n";
-			$this->destinataire = NULL;
+			$this->destinataire = null;
 		}
 		$header .= "MIME-Version: 1.0\n";
 		$header .= "Content-Type: multipart/alternative; boundary=\"".$this->boundaryAlt."\"";
@@ -113,7 +113,7 @@ class smail
 		}
 
 		// Pièce jointe
-		/*if($this->attachement and TRUE == FALSE)
+		/*if($this->attachement and true == false)
 		{
 			$message .= "\r\n--".$this->boundary. "\r\n";
 			$data = chunk_split(base64_encode(file_get_contents($attachement)));

@@ -18,7 +18,7 @@ class cookie
 		* @param	string	$domain The domain to set this cookie for.
 		* @return boolean true: the cookie has been created, false: cookie creation failed
 		*/
-	static function set($key, $value, $expires = 3600, $domain = '/')
+	public static function set($key, $value, $expires = 3600, $domain = '/')
 	{
 		if(is_array($value)) $value = a::json($value);
 		$_COOKIE[$key] = $value;
@@ -32,7 +32,7 @@ class cookie
 		* @param	string	$default The default value, which should be returned if the cookie has not been found
 		* @return mixed	 The found value
 		*/
-	static function get($key, $default = NULL)
+	public static function get($key, $default = null)
 	{
 		return a::get($_COOKIE, $key, $default);
 	}
@@ -44,7 +44,7 @@ class cookie
 		* @param	string	$domain The domain of the cookie
 		* @return mixed	 true: the cookie has been removed, false: the cookie could not be removed
 		*/
-	static function remove($key, $domain = '/')
+	public static function remove($key, $domain = '/')
 	{
 		$_COOKIE[$key] = false;
 		return @setcookie($key, false, (time() - 3600), $domain);

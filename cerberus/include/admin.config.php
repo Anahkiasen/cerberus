@@ -15,7 +15,7 @@ if(isset($_POST['db-host']))
 			if(str::find(',', $value)) $formattedValue = explode(',', $value);
 			else $formattedValue = array($value);
 		}
-		elseif(in_array($value, array('TRUE','FALSE'))) $formattedValue = $value;
+		elseif(in_array($value, array('true','false'))) $formattedValue = $value;
 		else $formattedValue = "'" .$value. "'";
 
 		config::hardcode($key, $formattedValue);
@@ -68,11 +68,11 @@ foreach($CONFIGURATION as $FIELDSET => $FIELDS)
 	$forms->openFieldset($FIELDSET);
 		foreach($FIELDS as $FIELD => $TRADUCTION)
 		{
-			$value = a::get($config, $FIELD, FALSE);
+			$value = a::get($config, $FIELD, false);
 			if(in_array($FIELD, $bool))
 			{
 				$value = str::boolprint($value);
-				$forms->addSelect($FIELD, $TRADUCTION, array('TRUE' => 'Oui', 'FALSE' => 'Non'), $value);
+				$forms->addSelect($FIELD, $TRADUCTION, array('true' => 'Oui', 'false' => 'Non'), $value);
 			}
 			else
 			{

@@ -11,10 +11,10 @@ class t
 	 * @param string 	$format The format to apply, with units placed into brackets, ie. {h}:{m}:{s}
 	 * @param boolean	$modulus Whether or not the function returns the total number
 	 *                  of any unit, or what's left for each one in ascending order
-	 *                  Per example, 90 seconds to the format {m}:{s} will return 01:30 with modulus on TRUE and 01:90 on FALSE
+	 *                  Per example, 90 seconds to the format {m}:{s} will return 01:30 with modulus on true and 01:90 on false
 	 * @return string	A formated time string
 	 */
-	static function format($secs, $format = NULL, $modulus = true)
+	public static function format($secs, $format = null, $modulus = true)
 	{
 		if($modulus)
 		{
@@ -52,10 +52,10 @@ class t
 	 * @param string	$pattern The format to apply on the result
 	 * @return string	A time difference
 	 */
-	static function difference($start, $end, $pattern = '{d}')
+	public static function difference($start, $end, $pattern = '{d}')
 	{
 		$difference = strtotime($end) - strtotime($start);
-		return self::format($difference, $pattern, TRUE);
+		return self::format($difference, $pattern, true);
 	}
 
 	/**
@@ -64,7 +64,7 @@ class t
 	 * @param string	$date A birthday in the format YYYY-MM-DD
 	 * @return int		A number of years
 	 */
-	static function age($date)
+	public static function age($date)
 	{
  		list($year, $month, $day) = explode('-', $date);
 
@@ -83,7 +83,7 @@ class t
 	 * @param int		$s A number of seconds
 	 * @return string	A number of seconds converted to h:i:s
 	 */
-	static function hms($s)
+	public static function hms($s)
 	{
 		return self::format($s, '{h}:{i}:{s}');
 	}
@@ -93,7 +93,7 @@ class t
 	 * @param int		$s A number of seconds
 	 * @return string	A number of seconds converted to i:s
 	 */
-	static function ms($s)
+	public static function ms($s)
 	{
 		return self::format($s, '{i}:{s}');
 	}

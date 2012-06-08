@@ -79,7 +79,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return string	The browser name
 		*/
-	static function name($ua = NULL)
+	public static function name($ua = null)
 	{
 		self::detect($ua);
 		return self::$name;
@@ -91,7 +91,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return string	The browser engine
 		*/
-	static function engine($ua = NULL)
+	public static function engine($ua = null)
 	{
 		self::detect($ua);
 		return self::$engine;
@@ -103,7 +103,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return string	The browser version
 		*/
-	static function version($ua = NULL)
+	public static function version($ua = null)
 	{
 		self::detect($ua);
 		return self::$version;
@@ -115,7 +115,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return string	The platform name
 		*/
-	static function platform($ua = NULL)
+	public static function platform($ua = null)
 	{
 		self::detect($ua);
 		return self::$platform;
@@ -127,7 +127,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return boolean True: mobile device, false: not a mobile device
 		*/
-	static function mobile($ua = NULL)
+	public static function mobile($ua = null)
 	{
 		self::detect($ua);
 		return self::$mobile;
@@ -139,7 +139,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return boolean True: iPhone, false: not an iPhone
 		*/
-	static function iphone($ua = NULL)
+	public static function iphone($ua = null)
 	{
 		self::detect($ua);
 		return self::$iphone;
@@ -151,7 +151,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return boolean True: iOS device, false: not an iOS device
 		*/
-	static function ios($ua = NULL)
+	public static function ios($ua = null)
 	{
 		self::detect($ua);
 		return self::$ios;
@@ -164,7 +164,7 @@ class browser
 		* @param	boolean $array True: return an array, false: return a string
 		* @return mixed
 		*/
-	static function css($ua = NULL, $array = FALSE)
+	public static function css($ua = null, $array = false)
 	{
 		self::detect($ua);
 		$css[] = self::$engine;
@@ -181,7 +181,7 @@ class browser
 		* @param	string	$ua The user agent string
 		* @return array	 An array with all parsed info
 		*/
-	static function detect($ua = NULL)
+	public static function detect($ua = null)
 	{
 		$ua = ($ua) ? str::lower($ua) : str::lower(server::get('http_user_agent'));
 

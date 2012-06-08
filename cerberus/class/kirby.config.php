@@ -70,7 +70,7 @@ class config
 	 * @param  mixed   $default  The default value, which will be returned if the key has not been found
 	 * @return mixed   The found config value
 	 */
-	static function get($key = NULL, $default = NULL)
+	public static function get($key = null, $default = null)
 	{
 		if(empty($key)) return self::$config;
 		return a::get(self::$config, $key, $default);
@@ -82,7 +82,7 @@ class config
 	 * @param string	 $key The key to define
 	 * @param mixed	 $value The value for the passed key
 	 */
-	static function set($key, $value = NULL)
+	public static function set($key, $value = null)
 	{
 		if(is_array($key)) self::$config = array_merge(self::$config, $key);
 		else self::$config[$key] = $value;
@@ -95,7 +95,7 @@ class config
 	 * @param  string  $file The path to the config file
 	 * @return array   The entire config array
 	 */
-	static function load($file)
+	public static function load($file)
 	{
 		if(file_exists($file)) $config = f::read($file, 'json');
 		if(isset($config)) self::set($config);
@@ -109,7 +109,7 @@ class config
 	 * @param  string 	$value Its value
 	 * @return boolean 	The success of writing into the file
 	 */
-	static function hardcode($key, $value = NULL)
+	public static function hardcode($key, $value = null)
 	{
 		$json = f::read(PATH_CONF, 'json');
 		$json[$key] = $value;
@@ -125,7 +125,7 @@ class config
 	 * @param  string $online_password Online SQL password
 	 * @param  string $online_name     Online database
 	 */
-	static function mysql($local_name = NULL, $online_host = NULL, $online_user = NULL, $online_password = NULL, $online_name = NULL)
+	public static function mysql($local_name = null, $online_host = null, $online_user = null, $online_password = null, $online_name = null)
 	{
 		if($local_name and !self::get('local.name')) self::hardcode('local.name', $local_name);
 		if(!self::get('db.host') and $online_password and $online_host and $online_name and $online_user)

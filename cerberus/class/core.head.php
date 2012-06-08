@@ -27,7 +27,7 @@ class head
 	 * @param string    $tag        The desired tag
 	 * @param array     $attributes An array containing the attributes of the tag
 	 */
-	static function set($tag, $attributes)
+	public static function set($tag, $attributes)
 	{
 		$tag = array('tag' => $tag);
 		$tag = array_merge($tag, $attributes);
@@ -37,14 +37,22 @@ class head
 	/**
 	 * Prints out the current head tag
 	 */
-	static function header()
+	public static function header()
 	{
 		// Setting encoding
 		self::set('meta', array('charset' => 'utf-8'));
 
 		// Sitemap et CDN
-		if(file_exists('sitemap.xml'))   head::set('link', array('rel' => 'sitemap', 'type' => 'application/xml', 'title' => 'Sitemap', 'href' => 'sitemap.xml'));
-		if(dispatch::isScript('jquery')) head::set('link', array('rel' => 'dns-prefetch', 'href' => '//ajax.googleapis.com'));;
+		if(file_exists('sitemap.xml'))
+			head::set('link', array(
+				'rel' => 'sitemap',
+				'type' => 'application/xml',
+				'title' => 'Sitemap',
+				'href' => 'sitemap.xml'));
+		if(dispatch::isScript('jquery'))
+			head::set('link', array(
+				'rel' => 'dns-prefetch',
+				'href' => '//ajax.googleapis.com'));
 
 		// Add base tag
 		self::baseref();
@@ -133,7 +141,7 @@ class head
 	 *
 	 * @param  string  $title  The page title
 	 */
-	static function title($title)
+	public static function title($title)
 	{
 		self::set('title', array('value' => $title));
 	}
@@ -143,7 +151,7 @@ class head
 	 *
 	 * @param  string  $href  Link or path to the stylesheet
 	 */
-	static function stylesheet($href)
+	public static function stylesheet($href)
 	{
 		self::set('link', array('rel' => 'stylesheet', 'href' => $href));
 	}
@@ -153,7 +161,7 @@ class head
 	 *
 	 * @param  string  $value  CSS code
 	 */
-	static function css($value)
+	public static function css($value)
 	{
 		self::set('style', array('value' => $value));
 	}
@@ -163,7 +171,7 @@ class head
 	 *
 	 * @param  string  $favicon  Name of the favicon file (must be in image folder)
 	 */
-	static function favicon($favicon = 'favicon.png')
+	public static function favicon($favicon = 'favicon.png')
 	{
 		self::set('link', array('rel' => 'shortcut icon', 'href' => PATH_COMMON.'img/'.$favicon));
 	}
@@ -171,19 +179,25 @@ class head
 	/**
 	 * Adds mobile responsive capability to a webpage
 	 */
-	static function mobile()
+	public static function mobile()
 	{
-		self::set('meta', array('name' => 'apple-mobile-web-app-capable', 'content' => 'yes'));
-		self::set('meta', array('name' => 'apple-touch-fullscreen', 'content' => 'yes'));
-		self::set('meta', array('name' => 'viewport', 'content' => 'width = device-width, initial-scale = 1, user-scalable = no'));
+		self::set('meta', array(
+			'name' => 'apple-mobile-web-app-capable',
+			'content' => 'yes'));
+		self::set('meta', array(
+			'name' => 'apple-touch-fullscreen',
+			'content' => 'yes'));
+		self::set('meta', array(
+			'name' => 'viewport',
+			'content' => 'width = device-width, initial-scale = 1, user-scalable = no'));
 	}
 
 	/**
 	 * Add a base tag to the page
 	 */
-	static function baseref()
+	public static function baseref()
 	{
-		if(REWRITING and PATH_MAIN == NULL)
+		if(REWRITING and PATH_MAIN == null)
 		{
 			$baseref = LOCAL ? config::get('base.local') : config::get('base.online');
 			head::set('base', array('href' => config::get('http').$baseref));

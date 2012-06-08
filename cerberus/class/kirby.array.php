@@ -10,7 +10,7 @@ class a
     * @param  mixed    $default Optional default value, which should be returned if no element has been found
     * @return mixed
     */
-	static function get($array, $key, $default = NULL)
+	public static function get($array, $key, $default = null)
 	{
 		if(str::find(',', $key)) $key = explode(',', $key);
 		if(!is_array($key)) return (isset($array[$key])) ? $array[$key] : $default;
@@ -32,7 +32,7 @@ class a
     * @keys   array    $keys An array of keys to fetch
     * @return array    An array of keys and matching values
     */
-	static function getall($array, $keys)
+	public static function getall($array, $keys)
 	{
 		$result = array();
 			foreach($keys as $key) $result[$key] = self::get($array, $key);
@@ -47,7 +47,7 @@ class a
     * @param  boolean $key Pass true to search for an key, pass false to search for an value.
     * @return array   The result array without the removed element
     */
-	static function remove($array, $search, $key = true)
+	public static function remove($array, $search, $key = true)
 	{
 		if(is_array($search))
 		{
@@ -75,7 +75,7 @@ class a
 	 * @param mixed    $search Values to look for
 	 * @return array   The cleaned array
 	 */
-	static function remove_value($array, $search)
+	public static function remove_value($array, $search)
 	{
 		return self::remove($array, $search, false);
 	}
@@ -88,7 +88,7 @@ class a
     * @param  boolean $echo By default the result will be echoed instantly. You can switch that off here.
     * @return mixed   If echo is false, this will return the generated array output.
     */
-	static function show($array, $echo = true)
+	public static function show($array, $echo = true)
 	{
 		$output = '<pre>';
 		$output .= htmlspecialchars(print_r($array, true));
@@ -114,7 +114,7 @@ class a
     * @param  array   $array The source array
     * @return mixed   The first element
     */
-	static function first($array)
+	public static function first($array)
 	{
 		return array_shift($array);
 	}
@@ -129,7 +129,7 @@ class a
     * @param  array   $array The source array
     * @return mixed   The last element
     */
-	static function last($array)
+	public static function last($array)
 	{
 		return array_pop($array);
 	}
@@ -142,7 +142,7 @@ class a
    * @return int	The average value
    * @package       Cerberus
    */
-	static function average($array, $decimals = 0)
+	public static function average($array, $decimals = 0)
 	{
 		return round((array_sum($array) / sizeof($array)), $decimals);
 	}
@@ -154,7 +154,7 @@ class a
     * @param  string  $search The regular expression
     * @return array   The array of results
     */
-	static function search($array, $search)
+	public static function search($array, $search)
 	{
 		return preg_grep('#'.preg_quote($search).'#i', $array);
 	}
@@ -166,7 +166,7 @@ class a
     * @param  string  $search The string to search for
     * @return boolean true: the array contains the string, false: it doesn't
     */
-	static function contains($array, $search)
+	public static function contains($array, $search)
 	{
 		$search = self::search($array, $search);
 		return !empty($search);
@@ -182,7 +182,7 @@ class a
     * @param  array   $required An array of required keys
     * @return array   An array of missing fields. If this is empty, nothing is missing.
     */
-	static function missing($array, $required = array())
+	public static function missing($array, $required = array())
 	{
 		$missing = array();
 		foreach($required as $r)
@@ -198,19 +198,19 @@ class a
    * @return boolean  true: The array is associative false: It's not
    * @package         Cerberus
    */
-	static function is_associative($array)
+	public static function is_associative($array)
 	{
-		return !ctype_digit(implode(NULL, array_keys($array)));
+		return !ctype_digit(implode(null, array_keys($array)));
 	}
 
 	/**
 	 * Checks if an array is truly empty
-	 * Casual empty will return FALSE on multidimensionnal arrays if it has levels, even if they are all empty
+	 * Casual empty will return false on multidimensionnal arrays if it has levels, even if they are all empty
 	 *
 	 * @param  array    $array The array to check
 	 * @return boolean  Empty or not
 	 */
-	static function array_empty($array)
+	public static function array_empty($array)
 	{
 		if(is_array($array))
 		{
@@ -248,7 +248,7 @@ class a
     * @param  mixed   $element The element, which should be injected
     * @return array   The result array including the new element
     */
-	static function inject($array, $position, $element = 'placeholder')
+	public static function inject($array, $position, $element = 'placeholder')
 	{
 		$start = array_slice($array, 0, $position);
 		$end = array_slice($array, $position);
@@ -261,7 +261,7 @@ class a
     * @param  array   $array The source array
     * @return array   The shuffled result array
     */
-	static function shuffle($array)
+	public static function shuffle($array)
 	{
 		$keys = array_keys($array);
 		shuffle($keys);
@@ -276,7 +276,7 @@ class a
     * @param  mixed   $fill The element, which should be used to fill the array
     * @return array   The filled-up result array
     */
-	static function fill($array, $limit, $fill = 'placeholder')
+	public static function fill($array, $limit, $fill = 'placeholder')
 	{
 		if(count($array) < $limit)
 		{
@@ -295,7 +295,7 @@ class a
     * @param  const   $method A PHP sort method flag.
     * @return array   The sorted array
     */
-	static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
+	public static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
 	{
 		$direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
 		$helper = array();
@@ -315,7 +315,7 @@ class a
    * @param  boolean 	$stay_array Allows the function to be transformed into a string if it only contains one value
    * @return mixed 		Either an array simplified, or a single mixed value
    */
-	static function simplify($array, $unarray = true, $rearrange = NULL)
+	public static function simplify($array, $unarray = true, $rearrange = null)
 	{
 		if($rearrange) $array = self::rearrange($array, $rearrange, true);
 		$output = array();
@@ -350,7 +350,7 @@ class a
    * @param  boolean 	$remove Remove or not the subkey from the original values
    * @return array 		The rearranged array
    */
-	static function rearrange($array, $subkey = NULL, $remove = FALSE)
+	public static function rearrange($array, $subkey = null, $remove = false)
 	{
 		$output = array();
 
@@ -385,9 +385,9 @@ class a
 	 * 					If not, $glue_value will go before and after the value
 	 * @return string The glued array
 	 */
-	static function glue($array, $glue_pair, $glue_value = NULL, $glue_value_after = NULL)
+	public static function glue($array, $glue_pair, $glue_value = null, $glue_value_after = null)
 	{
-		if(!is_array($array)) return FALSE;
+		if(!is_array($array)) return false;
 
 		if(empty($glue_value)) $imploded = $array;
 		else
@@ -406,7 +406,7 @@ class a
     * @param  string  $key The key name of the column to extract
     * @return array   The result array with all values from that column.
     */
-	static function extract($array, $key)
+	public static function extract($array, $key)
 	{
 		$output = array();
 		foreach($array AS $a)
@@ -420,7 +420,7 @@ class a
 	 * @param  array  $array The array to filter
 	 * @return array  A clean array
 	 */
-	static function clean($array)
+	public static function clean($array)
 	{
 		foreach($array as $k => $v) if(is_array($v)) $array[$k] = self::clean($v);
 		return array_unique(array_filter($array));
@@ -439,7 +439,7 @@ class a
     * @param  array   $array The source array
     * @return string  The JSON string
     */
-	static function json($array)
+	public static function json($array)
 	{
 		return @json_encode((array)$array);
 	}
@@ -454,9 +454,9 @@ class a
     * @param  int     $level The indendation level
     * @return string  The XML string
     */
-	static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '	', $level = 0)
+	public static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '	', $level = 0)
 	{
-		$result = ($level == 0 && $head) ? '<?xml version="1.0" encoding="'.$charset.'"?>'.PHP_EOL : NULL;
+		$result = ($level == 0 && $head) ? '<?xml version="1.0" encoding="'.$charset.'"?>'.PHP_EOL : null;
 		$nlevel = ($level + 1);
 		$result .= str_repeat($tab, $level).'<'.$tag.'>'.PHP_EOL;
 		foreach($array AS $key => $value)
@@ -497,9 +497,9 @@ class a
     * @param  string  $delimiter The delimiter between fields, default ;
     * @return string  The CSV string
     */
-	static function csv($array, $delimiter = ';')
+	public static function csv($array, $delimiter = ';')
 	{
-		$csv = NULL;
+		$csv = null;
 		foreach($array as $row)
 		{
 			if(!empty($csv)) $csv .= PHP_EOL;

@@ -12,7 +12,7 @@ class v
 		de téléphone, un nom ou un chiffre.
 		Dans tous les cas vérifie si la chaîne n'est pas vide.
 	*/
-	static function check($string, $type)
+	public static function check($string, $type)
 	{
 		switch($type)
 		{
@@ -55,7 +55,7 @@ class v
 	*/
 
 	/* Core method to create a new validator */
-	static function string($string, $options)
+	public static function string($string, $options)
 	{
 		$format = null;
 		$min_length = $max_length = 0;
@@ -68,19 +68,22 @@ class v
 	}
 
 	/* Checks for a valid password */
-	static function password($password)
+	public static function password($password)
 	{
 		return self::string($password, array('min_length' => 4));
 	}
 
 	/* Checks for two valid, matching password */
-	static function passwords($password1, $password2)
+	public static function passwords($password1, $password2)
 	{
-		return ($password1 == $password2 && self::password($password1) && self::password($password2));
+		return (
+			$password1 == $password2 and
+		 	self::password($password1) and
+		 	self::password($password2));
 	}
 
 	/* Checks for valid date */
-	static function date($date)
+	public static function date($date)
 	{
 		$time = strtotime($date);
 		if(!$time) return false;
@@ -93,28 +96,28 @@ class v
 	}
 
 	/* Checks for valid email address */
-	static function email($email)
+	public static function email($email)
 	{
 		$regex = '#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix';
 		return (preg_match($regex, $email));
 	}
 
 	/* Checks for valid URL */
-	static function url($url)
+	public static function url($url)
 	{
 		$regex = '/^(https?|ftp|rmtp|mms|svn):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i';
 		return (preg_match($regex, $url));
 	}
 
 	/* Checks for valid filename */
-	static function filename($string)
+	public static function filename($string)
 	{
 		$options = array('format' => 'a-zA-Z0-9_-', 'min_length' => 2);
 		return self::string($string, $options);
 	}
 
 	/**** Vérifie qu'un numéro de téléphone est valide */
-	static function phone($phone)
+	public static function phone($phone)
 	{
 		$regex = '#^[\d \+\(\)\-]+$#';
 		return (preg_match($regex, $phone));

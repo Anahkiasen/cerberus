@@ -1,4 +1,9 @@
 <?php
+/**
+ * close.php
+ * Adds some Cerberus magic into the page, cache it, and display it
+ */
+
 $body = content::end(true);
 
 // Add Javascript to the body tag
@@ -9,7 +14,7 @@ $modifiedBody = preg_replace('#<body( class="(.+)")?>#', '<body class="' .naviga
 
 // Add the head tag
 dispatch::getCSS();
-$modifiedBody = str_replace('<head>', NULL, $modifiedBody);
+$modifiedBody = str_replace('<head>', null, $modifiedBody);
 $modifiedBody = head::header().$modifiedBody;
 
 // Save the page and display it

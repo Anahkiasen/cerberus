@@ -88,7 +88,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			{
 				// Displaying according to the kind of argument (array, string, file)
 				if(in_array($info['function'], array('include', 'include_once'))) $info['args'][$key] = '"' .basename($value). '"';
-				elseif(is_array($value)) $info['args'][$key] = '<pre>' .print_r($value, TRUE). '</pre>';
+				elseif(is_array($value)) $info['args'][$key] = '<pre>' .print_r($value, true). '</pre>';
 				else $info['args'][$key] = '"' .$value. '"';
 			}
 

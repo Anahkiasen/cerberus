@@ -25,7 +25,7 @@ class f
 	 * @param  boolean  $append true: append the content to an exisiting file if available. false: overwrite.
 	 * @return boolean
 	 */
-	static function write($file, $content = NULL, $append = false)
+	public static function write($file, $content = null, $append = false)
 	{
 		$folder = dirname($file);
 		if(!file_exists($folder))
@@ -56,10 +56,10 @@ class f
 	 * @param  string    $new The new name for the file, and new extension if wanted (if not, old extension will be used)
 	 * @return boolean   Returns whether renaming the file succeeded or not
 	 */
-	static function rename($old, $new)
+	public static function rename($old, $new)
 	{
 		$old_name = self::filename($old);
-		$path = str_replace($old_name, NULL, $old);
+		$path = str_replace($old_name, null, $old);
 		$new = $path.$new;
 		if(!str::find('.', $new)) $new .= '.'.self::extension($old_name);
 
@@ -73,7 +73,7 @@ class f
 	 * @param  mixed   $content Either a string or an array. Arrays will be converted to JSON.
 	 * @return boolean
 	 */
-	static function append($file, $content)
+	public static function append($file, $content)
 	{
 		return self::write($file, $content, true);
 	}
@@ -85,7 +85,7 @@ class f
 	 * @param  mixed   $parse if set to true, parse the result with the passed method. See: "str::parse()" for more info about available methods.
 	 * @return mixed
 	 */
-	static function read($file, $parse = false)
+	public static function read($file, $parse = false)
 	{
 		if(!file_exists($file)) return false;
 		$content = @file_get_contents($file);
@@ -99,7 +99,7 @@ class f
 	 * @param  string  $new The path to the new location
 	 * @return boolean
 	 */
-	static function move($old, $new)
+	public static function move($old, $new)
 	{
 		if(!file_exists($old)) return false;
 		else return (@rename($old, $new) && file_exists($new));
@@ -111,7 +111,7 @@ class f
    * @param  mixed    $file The path for the file or an array of path
    * @return boolean
    */
-	static function remove()
+	public static function remove()
 	{
 		$file = func_get_args();
 		if(sizeof($file) == 1) $file = a::get($file, 0);
@@ -140,7 +140,7 @@ class f
 	 * @return string  The first path in the list to exist
 	 *
 	 */
-	static function exist()
+	public static function exist()
 	{
 		$paths = func_get_args();
 
@@ -149,7 +149,7 @@ class f
 	}
 
 	/* Gets the extension of a file */
-	static function extension($filename)
+	public static function extension($filename)
 	{
 		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
@@ -160,7 +160,7 @@ class f
 	 * @param  string  $file The path
 	 * @return string
 	 */
-	static function filename($name)
+	public static function filename($name)
 	{
 		return basename($name);
 	}
@@ -172,7 +172,7 @@ class f
 	 * @param  boolean  $remove_path remove the path from the name
 	 * @return string
 	 */
-	static function name($name, $remove_path = false)
+	public static function name($name, $remove_path = false)
 	{
 		if($remove_path == true)
 			$name = self::filename($name);
@@ -188,7 +188,7 @@ class f
 	 * @param  string  $string The file name
 	 * @return string
 	 */
-	static function safe_name($string)
+	public static function safe_name($string)
 	{
 		return str::urlify($string);
 	}
@@ -199,7 +199,7 @@ class f
 	 * @param  string  $file The path
 	 * @return string
 	 */
-	static function dirname($file = __FILE__)
+	public static function dirname($file = __FILE__)
 	{
 		return dirname($file);
 	}
@@ -211,7 +211,7 @@ class f
 	 * @param  boolean  $nice True: return the size in a human readable format
 	 * @return mixed
 	 */
-	static function size($file, $nice = false)
+	public static function size($file, $nice = false)
 	{
 		@clearstatcache();
 		$size = @filesize($file);
@@ -225,7 +225,7 @@ class f
 	 * @param  int     $size The file size
 	 * @return string
 	 */
-	static function nice_size($size)
+	public static function nice_size($size)
 	{
 		$size = str::sanitize($size, 'int');
 		if($size < 1) return '0 kb';
@@ -241,13 +241,13 @@ class f
 	 * @param  string  $type The new extension
 	 * @return string
 	 */
-	static function convert($name, $type = 'jpg')
+	public static function convert($name, $type = 'jpg')
 	{
 		return self::name($name).$type;
 	}
 
 	/* Inclure un fichier */
-	static function inclure($file, $type = 'once')
+	public static function inclure($file, $type = 'once')
 	{
 		if(file_exists($file))
 		{
@@ -273,7 +273,7 @@ class f
 	 * @param  string  $file The file to analyze
 	 * @return string  The filetype
 	 */
-	static function type($file)
+	public static function type($file)
 	{
 		if(str::find('.', $file)) $file = self::extension($file);
 

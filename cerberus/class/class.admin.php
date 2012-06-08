@@ -37,9 +37,9 @@ class Admin extends Admin_Setup
 	{
 		// Information sur la table
 		$this->table = $table;
-		$this->usable = str_replace('cerberus_', NULL, $table);
-		$this->getEdit = get('edit_' .$this->usable, NULL);
-		$this->getAdd = get('add_' .$this->usable, NULL);
+		$this->usable = str_replace('cerberus_', null, $table);
+		$this->getEdit = r::get('edit_' .$this->usable, null);
+		$this->getAdd = r::get('add_' .$this->usable, null);
 
 		// Champs de mise à jour
 		$fieldsUpdate = array();
@@ -143,7 +143,7 @@ class Admin extends Admin_Setup
 	{
 		if($type == 'link') $this->tableRows = array($function => $name) + $this->tableRows;
 	}
-	function createList($fieldsDisplay, $manualQuery = NULL)
+	function createList($fieldsDisplay, $manualQuery = null)
 	{
 		echo '<table class="table table-striped table-bordered table-condensed"><thead><tr>';
 
@@ -219,7 +219,7 @@ class Admin extends Admin_Setup
 		if($items)
 		{
 			// Fonctions en cours d'utilisation
-			$SELECTED = NULL;
+			$SELECTED = null;
 			if(isset($this->tableRows))
 				foreach($this->tableRows as $function => $name)
 					if(isset($_GET[$function. '_' .$this->usable])) $SELECTED = $_GET[$function. '_' .$this->usable];
@@ -236,7 +236,7 @@ class Admin extends Admin_Setup
 					}
 				}
 
-				$selected = ($SELECTED == $key) ? 'selected' : NULL;
+				$selected = ($SELECTED == $key) ? 'selected' : null;
 				if(isset($thisGroup)) echo '<tr id="' .$key. '" class="opened ' .$selected. '" opened="' .str::slugify($thisGroup). '">';
 				else echo '<tr id="' .$key. '" class="' .$selected. '">';
 
@@ -278,7 +278,7 @@ class Admin extends Admin_Setup
 		// Ajouter un élément
 		echo '
 		<tr class="additem"><td colspan="50">'
-			.str::slink(NULL, l::get('admin.add'), 'add_'.$this->usable, array('class' => 'btn btn-wide btn-cerberus')).'
+			.str::slink(null, l::get('admin.add'), 'add_'.$this->usable, array('class' => 'btn btn-wide btn-cerberus')).'
 		</td></tr>
 		</tbody></table><br /><br />';
 	}
@@ -290,7 +290,7 @@ class Admin extends Admin_Setup
 	*/
 
 	// Détermine si le formulaire est en mode ajout ou modif
-	function addOrEdit(&$typeEdit = NULL, &$editText = NULL, &$urlAction = NULL)
+	function addOrEdit(&$typeEdit = null, &$editText = null, &$urlAction = null)
 	{
 		if($this->getEdit)
 		{
@@ -305,7 +305,7 @@ class Admin extends Admin_Setup
 			$urlAction = 'add';
 		}
 	}
-	function formAddOrEdit($formulaire = NULL)
+	function formAddOrEdit($formulaire = null)
 	{
 		if(!empty($formulaire))
 			if(isset($this->getEdit) or isset($this->getAdd)) return $formulaire;
@@ -332,7 +332,7 @@ class Admin extends Admin_Setup
 	# ID - L'image prend l'id de l'entrée pour reconnaissance
 		Une image
 	*/
-	function imageMode($table = NULL)
+	function imageMode($table = null)
 	{
 		if(!$table) $table = $this->table;
 
@@ -373,7 +373,7 @@ class Admin extends Admin_Setup
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{
 			// Erreurs basiques
-			$errorDisplay = NULL;
+			$errorDisplay = null;
 			$extension = f::extension($_FILES[$field]['name']);
 			if($_FILES[$field]['error'] != 0) $errorDisplay .= 'Une erreur est survenue lors du transfert.';
 			if(f::type($extension) != 'image') $errorDisplay .= '<br />L\'extension du fichier n\'est pas valide';

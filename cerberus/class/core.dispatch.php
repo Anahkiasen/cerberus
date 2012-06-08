@@ -145,7 +145,7 @@ class dispatch
 	/**
 	 * Initializes the dispatch module
 	 */
-	function __construct()
+	public function __construct()
 	{
 		// Set up the main path constants
 		self::paths();
@@ -198,7 +198,7 @@ class dispatch
 			$pathPlugins  = self::path('{assets}/{plugins}/');
 
 			// If we are in the root folder, cache into config file
-			if(PATH_MAIN == NULL)
+			if(PATH_MAIN == null)
 			{
 				config::hardcode('path.common',   $pathCommon);
 				config::hardcode('path.cerberus', $pathCerberus);
@@ -244,7 +244,7 @@ class dispatch
 	 *
 	 * @param array  $modules The wanted modules
 	 */
-	static function modules($modules)
+	public static function modules($modules)
 	{
 		self::index();
 
@@ -260,7 +260,7 @@ class dispatch
 	 * @param  array  $modules The wanted scripts and styles
 	 * @return array  The scripts that were used in the current page
 	 */
-	static function assets($scripts = array())
+	public static function assets($scripts = array())
 	{
 		self::index();
 		self::structure();
@@ -343,10 +343,13 @@ class dispatch
 		/* Listing available assets ------------------------------- */
 
 		global $switcher;
-		$templates = isset($switcher) ? 'assets/'.implode('/,asset/', $switcher->returnList()).'/' : NULL;
+		$templates = isset($switcher) ? 'assets/'.implode('/,asset/', $switcher->returnList()).'/' : null;
 
 		// Creating a mask for authorized filepaths and file extensions
-		$allowedFiles = '{' .PATH_COMMON. ',' .PATH_CERBERUS. ',' .$templates. '}{' .self::$css. ',' .self::$js. '}{/,/plugins/}*.{css,js}';
+		$allowedFiles =
+			'{' .PATH_COMMON. ',' .PATH_CERBERUS. ',' .$templates. '}' .
+			'{' .self::$css. ',' .self::$js. '}' .
+			'{/,/plugins/}*.{css,js}';
 		$files = glob($allowedFiles, GLOB_BRACE);
 
 		// Grouping each found ressource by name
@@ -434,7 +437,9 @@ class dispatch
 			// Check if the source files exist
 			if(!file_exists(PATH_PLUGINS.$plugin.'/'))
 			{
-				errorHandle('warning', 'The source folder "' .PATH_PLUGINS.$plugin. '/" for plugin ' .$plugin. ' could not be found.');
+				errorHandle(
+					'warning',
+					'The source folder "' .PATH_PLUGINS.$plugin. '/" for plugin ' .$plugin. ' could not be found.');
 				continue;
 			}
 
@@ -529,7 +534,7 @@ class dispatch
 		}
 
 		// Return filtered array
-		return !empty($assets) ? $assets : FALSE;
+		return !empty($assets) ? $assets : false;
 	}
 
 	/**
@@ -638,7 +643,7 @@ class dispatch
 	 * @param string  $type    The type of the injected asset, css or js
 	 * @param array   $scripts Either an array of assets or a single asset
 	 * @param array   $params  Parameters to pass to the current given scripts
-	 *                         -- place[before/after] : Place the script before or after including stylesheets/scripts (default after)
+	 *                         -- place[before/after] : Place before/after including stylesheets/scripts (default after)
 	 *                         -- alias               : An alias to give the given script
 	 *                         -- wrap[window/ready]  : Wraps the script with (window).load or (document).ready
 	 */
@@ -672,7 +677,7 @@ class dispatch
 			}
 
 			// Clean up the script from any wrapping tag
-			$script = preg_replace('#(<script>|</script>|<style>|</style>)#', NULL, $script);
+			$script = preg_replace('#(<script>|</script>|<style>|</style>)#', null, $script);
 
 			// If it's an external link or not
 			$isHttp = str::find('http', substr($script, 0, 4));
@@ -753,7 +758,7 @@ class dispatch
 	/**
 	 * Add Javascript before the links
 	 */
-	public static function addJSBefore($javascript, $params = NULL)
+	public static function addJSBefore($javascript, $params = null)
 	{
 		$params = array_merge($params, array('place' => 'before'));
 		self::inject('js', $javascript, $params);
@@ -772,7 +777,10 @@ class dispatch
 	 */
 	public static function addPHP($module)
 	{
-		$file = glob('{' .PATH_CORE. '{tools,class,class/plugins},' .PATH_COMMON. 'php}/{' .$module. ',class.' .$module. '}.php', GLOB_BRACE);
+		$availableFiles =
+			'{' .PATH_CORE. '{tools,class,class/plugins},' .PATH_COMMON. 'php}/' .
+			'{' .$module. ',class.' .$module. '}.php';
+		$file = glob($availableFiles, GLOB_BRACE);
 
 		if($file)
 			if(!function_exists($module) and !class_exists($module))
@@ -792,7 +800,7 @@ class dispatch
 	 */
 	public static function compass($config = array())
 	{
-		$file = NULL;
+		$file = null;
 
 		// If we don't already have a configuration file
 		if(!file_exists(PATH_CERBERUS.self::$compass) or !file_exists(PATH_MAIN.self::$compass))
@@ -861,7 +869,7 @@ class dispatch
 	 * @param  string $selector The selector to apply the plugin to (can be null)
 	 * @param  array  $params   An array of parameters to pass to the plugin
 	 */
-	public static function plugin($plugin, $selector = NULL, $params = NULL)
+	public static function plugin($plugin, $selector = null, $params = null)
 	{
 		// Getting parameters
 		$params = func_get_args();
@@ -875,7 +883,7 @@ class dispatch
 		$string = $plugin. '(' .implode(', ', $paramString). ')';
 
 		// Getting selector
-		if($selector !== NULL)
+		if($selector !== null)
 		{
 			$selector = empty($selector) ? '$' : "$('" .addslashes($selector). "')";
 			$string = $selector.'.'.$string;

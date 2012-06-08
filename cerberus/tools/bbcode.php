@@ -8,7 +8,7 @@
 	$css
 		Utilisation ou non de classes CSS pour la mise en forme
 */
-function bbcode($contenu, $css = TRUE)
+function bbcode($contenu, $css = true)
 {
 	if($css)
 	{

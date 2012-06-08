@@ -15,25 +15,25 @@ class navigation
 	 * Whether the main navigation should be list-based or not
 	 * @var boolean
 	 */
-	static private $optionListed     = FALSE;
+	static private $optionListed     = false;
 
 	/**
 	 * Whether the sub navigation should be list-based or not
 	 * @var boolean
 	 */
-	static private $optionListedSub  = FALSE;
+	static private $optionListedSub  = false;
 
 	/**
 	 * A glue to insert between each element of the menu
 	 * @var string
 	 */
-	static private $optionGlue       = NULL;
+	static private $optionGlue       = null;
 
 	/**
 	 * A glue to insert between each element of the submenu
 	 * @var string
 	 */
-	static private $optionGlueSub    = NULL;
+	static private $optionGlueSub    = null;
 
 	// Current environnement --------------------------------------- /
 
@@ -41,25 +41,25 @@ class navigation
 	 * The website's homepage, used as default in case of error
 	 * @var string
 	 */
-	static private $homepage         = NULL;
+	static private $homepage         = null;
 
 	/**
 	 * The current page
 	 * @var string
 	 */
-	static public  $page             = NULL;
+	static public  $page             = null;
 
 	/**
 	 * The current subpage
 	 * @var string
 	 */
-	static public  $sousPage         = NULL;
+	static public  $sousPage         = null;
 
 	/**
 	 * The actual name of the page's file
 	 * @var string
 	 */
-	static private $filepath         = NULL;
+	static private $filepath         = null;
 
 	/**
 	 * A list of system pages that are in the tree but used as functions
@@ -116,7 +116,7 @@ class navigation
 		{
 			// From the database
 			if(SQL and db::is_table('cerberus_structure'))
-				$dataRaw = db::select('cerberus_structure', '*', NULL, 'parent_priority ASC, page_priority ASC');
+				$dataRaw = db::select('cerberus_structure', '*', null, 'parent_priority ASC, page_priority ASC');
 
 			// From files
 			else
@@ -152,14 +152,14 @@ class navigation
 		self::$homepage = key(self::$data);
 
 		// Calculating current page and subpage
-		$page = isset(self::$data[get('page')]) ? get('page') : self::$homepage;
+		$page = isset(self::$data[r::get('page')]) ? r::get('page') : self::$homepage;
 		$pageSubmenu = a::get(self::$data, $page.',submenu');
 		$sousPage = ($pageSubmenu)
-			? a::get($pageSubmenu, get('pageSub')) ? get('pageSub') : key($pageSubmenu)
-			: NULL;
+			? a::get($pageSubmenu, get('pageSub')) ? r::get('pageSub') : key($pageSubmenu)
+			: null;
 
 		// If we are in the admin and can't find the subpage, check the admin GET
-		if($page == 'admin' and !$sousPage) $sousPage = get('admin');
+		if($page == 'admin' and !$sousPage) $sousPage = r::get('admin');
 
 		// If we're not in any particular case, fetch the file path
 		if(!in_array($page, self::$system) and $page != 'admin')
@@ -173,7 +173,7 @@ class navigation
 		   $path != config::get('index'))
 		{
 			$page     = $path;
-			$sousPage = NULL;
+			$sousPage = null;
 			$external = true;
 		}
 		else $external = false;
@@ -228,7 +228,7 @@ class navigation
 	 * @param  array  $links Supplementary links to append to the navigation, formatted as TEXT => LINK
 	 * @return string        A breadcrumb navigation
 	 */
-	public static function ariane($home = NULL, $links = array())
+	public static function ariane($home = null, $links = array())
 	{
 		// Get the site name from the config file and make it a link
 		$home = config::get('sitename', $home);
@@ -252,7 +252,7 @@ class navigation
 	}
 
 	// Pied de page
-	static function footer($links = array(), $author = 'Le Principe de Stappler', $author_link = 'http://www.stappler.fr/')
+	public static function footer($links = array(), $author = 'Le Principe de Stappler', $author_link = 'http://www.stappler.fr/')
 	{
 		$footer = '&copy;Copyright ' .date('Y');
 		if(config::get('sitename')) $footer .= ' - ' .config::get('sitename');
@@ -278,7 +278,7 @@ class navigation
 	 * @param boolean $menuListed    Main menu should be list-based
 	 * @param boolean $submenuListed Submenu should be list-based
 	 */
-	public static function setListed($menuListed = FALSE, $submenuListed = FALSE)
+	public static function setListed($menuListed = false, $submenuListed = false)
 	{
 		self::$optionListed    = $menuListed;
 		self::$optionListedSub = $submenuListed;
@@ -290,7 +290,7 @@ class navigation
 	 * @param string $optionGlue    The glue for the main menu
 	 * @param string $optionGlueSub The glue for the submenu
 	 */
-	public static function setGlue($optionGlue = NULL, $optionGlueSub = NULL)
+	public static function setGlue($optionGlue = null, $optionGlueSub = null)
 	{
 		self::$optionGlue    = $optionGlue;
 		self::$optionGlueSub = $optionGlueSub;
@@ -303,7 +303,7 @@ class navigation
 	 * @param  string $alterValue The value to put in place of the old one
 	 * @param  string $alterKey   The key to change
 	 */
-	public static function alterTree($key, $alterValue = NULL, $alterKey = 'link')
+	public static function alterTree($key, $alterValue = null, $alterKey = 'link')
 	{
 		// Alter a sub page
 		if(str::find('-', $key))
@@ -319,10 +319,10 @@ class navigation
 	/**
 	 * Get page data from the tree
 	 *
-	 * @param  string $key The page to look for, or NULL for whole data array
+	 * @param  string $key The page to look for, or null for whole data array
 	 * @return array       The data obtained
 	 */
-	public static function get($key = NULL)
+	public static function get($key = null)
 	{
 		if(!$key) return self::$data;
 		else return a::get(self::$data, $key);
@@ -334,7 +334,7 @@ class navigation
 	 * @param  boolean $render Render it as HTML or return it as array
 	 * @return mixed           The main navigation
 	 */
-	public static function getMenu($render = TRUE)
+	public static function getMenu($render = true)
 	{
 		// Ensure the menu is rendered before returning it
 		if($render and !self::$renderNavigation) self::render();
@@ -349,7 +349,7 @@ class navigation
 	 * @param  boolean $render Render it as HTML or return it as array
 	 * @return mixed           The subnavigation
 	 */
-	public static function getSubmenu($render = TRUE)
+	public static function getSubmenu($render = true)
 	{
 		// Fetch the submeny
 		$submenu = a::get(self::$data, self::$page.',submenu');
@@ -361,7 +361,7 @@ class navigation
 		if(!self::$renderSubnav) self::render();
 		return ($submenu and self::$page != 'admin' and count($submenu) > 1)
 			? self::$renderSubnav[self::$page]
-			: NULL;
+			: null;
 	}
 
 	/**
@@ -399,7 +399,7 @@ class navigation
 	private static function build($dataRaw)
 	{
 		// Add system pages to raw data, hidden and in cache by default
-		foreach(self::$system as $sys) self::addPage($sys, NULL, 1, 1);
+		foreach(self::$system as $sys) self::addPage($sys, null, 1, 1);
 
 		// Start building the navigaion tree
 		foreach($dataRaw as $key => $values)
@@ -428,7 +428,7 @@ class navigation
 				}
 				else
 				{
-					$link       = NULL;
+					$link       = null;
 					$isExternal = 0;
 				}
 
@@ -563,7 +563,7 @@ class navigation
 	 * @param mixed $pageData An array of parameters for a page, or just the page name
 	 */
 
-	private static function addPage($pageData, $parent = NULL, $cache = 0, $hidden = 0, $external_link = NULL)
+	private static function addPage($pageData, $parent = null, $cache = 0, $hidden = 0, $external_link = null)
 	{
 		// If we were given a simple page name or a pagedata array
 		if(!is_array($pageData))
@@ -606,7 +606,7 @@ class navigation
 	private static function renderLink($index, $value)
 	{
 		// If the link if not supposed to be shown, pass
-		if(a::get($value, 'hidden') == 1) return NULL;
+		if(a::get($value, 'hidden') == 1) return null;
 
 		// Differences between parent/subpage
 		$isParent = !str::find('-', $index);
@@ -624,7 +624,7 @@ class navigation
 		$class = a::get($value, 'class');
 		if(is_array($class)) $class = implode(' ', $class);
 		if($class and !$isListed) $attr['class'] = $class;
-		$classList = ($class) ? ' class="' .$class. '"' : NULL;
+		$classList = ($class) ? ' class="' .$class. '"' : null;
 
 		// Build the title attribute
 		$title = meta::page($index, 'title');
@@ -669,9 +669,9 @@ class navigation
 		elseif(sizeof(self::$data) != 1 and $page != self::$homepage)
 		{
 			$page     = 404;
-			$sousPage = NULL;
+			$sousPage = null;
 		}
 
-		return FALSE;
+		return false;
 	}
 }

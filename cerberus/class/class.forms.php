@@ -23,7 +23,7 @@ class forms
 	 *
 	 * @var boolean
 	 */
-	private $inFieldset = FALSE;
+	private $inFieldset = false;
 
 	/**
 	 * Current values of the different form fields
@@ -46,7 +46,7 @@ class forms
 	 *
 	 * @var boolean
 	 */
-	private $optionMultilangue = FALSE;
+	private $optionMultilangue = false;
 
 	/**
 	 * Current form type [horizontal|vertical|search|inline]
@@ -62,13 +62,13 @@ class forms
 	 *
 	 * @var string
 	 */
-	private $render = NULL;
+	private $render = null;
 
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////// CONSTRUCTION ////////////////////////
 	//////////////////////////////////////////////////////////////////
 
-	public function __construct($params = NULL, $multilangue = NULL)
+	public function __construct($params = null, $multilangue = null)
 	{
 		// Defining <form> class and method
 		if(!is_array($params))        $params = array('class' => $params);
@@ -100,13 +100,13 @@ class forms
 	// If a form was sent, check the fields and returned validated values
 	public function validate()
 	{
-		if(!isset($_POST) or empty($_POST)) return FALSE;
+		if(!isset($_POST) or empty($_POST)) return false;
 
 		// Getting validation masks
 		$parser   = func_get_args();
 
 		// Creating a body for the mail if we send one
-		$mailBody = NULL;
+		$mailBody = null;
 
 		// Array containing filtered values
 		$result   = array();
@@ -120,7 +120,7 @@ class forms
 			$params                = explode(':', $field);
 			$key                   = a::get($params, 0);
 			$type                  = a::get($params, 1, $key);
-			$default               = a::get($params, 2, NULL);
+			$default               = a::get($params, 2, null);
 			$value                 = $type == 'file'
 			                       	   ? a::get($_FILES, $key)
 			                           : str::sanitize(r::request($key, $default), $type);
@@ -138,7 +138,7 @@ class forms
 			return array(
 				'msg'    => l::get('form.incomplete'),
 				'result' => $result,
-				'status' => FALSE);
+				'status' => false);
 		}
 
 		// Create the mail body
@@ -155,7 +155,7 @@ class forms
 
 		// Return validated values
 		return array(
-			'status' => TRUE,
+			'status' => true,
 			'result' => $result,
 			'mail'   => $mailBody);
 	}
@@ -167,7 +167,7 @@ class forms
 	// Open a fieldset
 	public function openFieldset($name)
 	{
-		$this->inFieldset = TRUE;
+		$this->inFieldset = true;
 
 		$this->tab('<fieldset class="' .str::slugify($name). '">');
 		$this->rend('<legend>' .l::get('form-'.$name, ucfirst($name)). '</legend>');
@@ -186,7 +186,7 @@ class forms
 	// Modify the values array
 	public function values($table)
 	{
-		$this->usable = str_replace('cerberus_', NULL, $table);
+		$this->usable = str_replace('cerberus_', null, $table);
 		$id = db::fields($table);
 		$id = in_array('id', $id) ? 'id' : a::get($id, 0);
 
@@ -241,7 +241,7 @@ class forms
 		                     $deploy['name']);
 
 		// Valeur du champ
-		$issetPost = isset($_POST) ? $_POST : NULL;
+		$issetPost = isset($_POST) ? $_POST : null;
 		$deploy['value'] = 	a::get($issetPost, $deploy['name'],
 							a::get($params, 'value',
 							a::get($this->values, $deploy['name'])));
@@ -327,7 +327,7 @@ class forms
 					$postCheckbox = a::get($_POST, $deploy['name'], array());
 					if($checkboxes) foreach($checkboxes as $checkIndex => $checkLabel)
 					{
-						$checked = in_array($checkIndex, $postCheckbox) ? ' checked="checked"' : NULL;
+						$checked = in_array($checkIndex, $postCheckbox) ? ' checked="checked"' : null;
 						$this->rend('<label class="checkbox ' .$deploy['class']. '">');
 						$this->rend('<input type="checkbox" name="' .$nameCheckbox. '" value="' .$checkIndex. '" ' .$checked. ' /> '.$checkLabel);
 						$this->rend('</label>');
@@ -337,7 +337,7 @@ class forms
 				case 'radio':
 					foreach($radio as $radioIndex => $radioLabel)
 					{
-						$checked = ($deploy['value'] == $radioIndex) ? ' checked="checked"' : NULL;
+						$checked = ($deploy['value'] == $radioIndex) ? ' checked="checked"' : null;
 						$this->rend('<label class="radio ' .$deploy['class']. '">');
 						$this->rend('<input ' .$this->paramRender($deploy, 'value').$checked. ' value="' .$radioIndex. '" /> '.$radioLabel);
 						$this->rend('</label>');
@@ -378,7 +378,7 @@ class forms
 					$this->rend('<button ' .$this->paramRender($deploy, array('label', 'name')). ' data-loading-text="Chargement">' .$label. '</button>');
 
 					// Bouton annuler
-					if($this->optionFormType != 'inline' and a::get($params, 'cancel', FALSE))
+					if($this->optionFormType != 'inline' and a::get($params, 'cancel', false))
 						$this->rend('<button type="reset" class="btn">' .l::get('form.cancel', 'Annuler'). '</button>');
 					break;
 			}
@@ -399,14 +399,14 @@ class forms
 			$this->rend('</div>', 'UNTAB');
 	}
 
-	private function option($index, $label, $value = NULL, $params = NULL)
+	private function option($index, $label, $value = null, $params = null)
 	{
 		global $arrayValue;
 
 		if(!$value) $value = $arrayValue;
 		if(is_numeric($index) and !isset($params['force_index'])) $index = $label;
-		$selected = $value == $index ? ' selected="selected"' : NULL;
-		$thisOption = $index == $label ? NULL : ' value="' .$index. '"';
+		$selected = $value == $index ? ' selected="selected"' : null;
+		$thisOption = $index == $label ? null : ' value="' .$index. '"';
 		$this->rend('<option' .$thisOption.$selected. '>'.$label. '</option>');
 	}
 
@@ -427,37 +427,37 @@ class forms
 	// CHAMPS TEXTE //
 	//////////////////
 
-	public function addText($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addText($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addField($name, $label, 'text', $value, $additionalParams);
 	}
 
-	public function addPassword($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addPassword($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addField($name, $label, 'password', $value, $additionalParams);
 	}
 
-	public function addTextarea($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addTextarea($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addField($name, $label, 'textarea', $value, $additionalParams);
 	}
 
-	public function addCheckbox($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addCheckbox($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addField($name, $label, 'checkbox', $value, $additionalParams);
 	}
 
-	public function addHidden($name, $value = NULL, $additionalParams = NULL)
+	public function addHidden($name, $value = null, $additionalParams = null)
 	{
-		$this->addField($name, $label = NULL, 'hidden', $value, $additionalParams);
+		$this->addField($name, $label = null, 'hidden', $value, $additionalParams);
 	}
 
-	public function addTel($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addTel($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addField($name, $label, 'tel', $value, $additionalParams);
 	}
 
-	public function addEmail($name, $label = NULL, $value = NULL, $additionalParams = NULL)
+	public function addEmail($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addField($name, $label, 'email', $value, $additionalParams);
 	}
@@ -466,22 +466,22 @@ class forms
 	///// LISTES /////
 	//////////////////
 
-	public function addCheckboxes($name = NULL, $label = NULL, $checkboxes, $value = NULL, $additionalParams = NULL)
+	public function addCheckboxes($name = null, $label = null, $checkboxes, $value = null, $additionalParams = null)
 	{
 		$additionalParams['checkboxes'] = $checkboxes;
-		$this->addField($name, $label, 'checkboxes', NULL, $additionalParams);
+		$this->addField($name, $label, 'checkboxes', null, $additionalParams);
 	}
-	public function addRadio($name = NULL, $label = NULL, $radio, $value = NULL, $additionalParams = NULL)
+	public function addRadio($name = null, $label = null, $radio, $value = null, $additionalParams = null)
 	{
 		$additionalParams['radio'] = $radio;
-		$this->addField($name, $label, 'radio', NULL, $additionalParams);
+		$this->addField($name, $label, 'radio', null, $additionalParams);
 	}
-	public function addSelect($name = NULL, $label = NULL, $select, $value = NULL, $additionalParams = NULL)
+	public function addSelect($name = null, $label = null, $select, $value = null, $additionalParams = null)
 	{
 		$additionalParams['select'] = $select;
 		$this->addField($name, $label, 'select', $value, $additionalParams);
 	}
-	public function addDate($name = 'date', $label = NULL, $value = '0000-00-00', $additionalParams = NULL)
+	public function addDate($name = 'date', $label = null, $value = '0000-00-00', $additionalParams = null)
 	{
 		$value = explode('-', $value);
 		$additionalParams['class'] = 'dateForm';
@@ -489,7 +489,7 @@ class forms
 		$endingYear = a::get($additionalParams, 'end');
 
 		$this->setValues(array($name.'_jour' => $value[2], $name.'_mois' => $value[1], $name.'_annee' => $value[0]));
-		$this->addSelect($name, $label, $this->listeDate($startingYear, $endingYear), NULL, $additionalParams);
+		$this->addSelect($name, $label, $this->listeDate($startingYear, $endingYear), null, $additionalParams);
 	}
 
 	//////////////////
@@ -501,15 +501,15 @@ class forms
 		$formType = a::get($_GET, 'edit_' .$this->usable, 'add');
 		$this->addHidden('edit', $formType);
 	}
-	public function addFile($name, $label = NULL, $additionalParams = NULL)
+	public function addFile($name, $label = null, $additionalParams = null)
 	{
 		$this->render = str_replace('method="' ,'enctype="multipart/form-data" method="', $this->render);
-		$this->addField($name, $label, 'file', NULL, $additionalParams);
+		$this->addField($name, $label, 'file', null, $additionalParams);
 	}
-	public function addSubmit($name = 'Valider', $additionalParams = NULL)
+	public function addSubmit($name = 'Valider', $additionalParams = null)
 	{
 		if(!$additionalParams) $additionalParams['class'] = 'btn-cerberus';
-		$this->addField($name, NULL, 'submit', NULL, $additionalParams);
+		$this->addField($name, null, 'submit', null, $additionalParams);
 	}
 
 	//////////////////
@@ -522,7 +522,7 @@ class forms
 	}
 
 	// Champ date
-	public function listeDate($startingYear = NULL, $endingYear = NULL)
+	public function listeDate($startingYear = null, $endingYear = null)
 	{
 		if(!$startingYear) $startingYear = date('Y');
 		if(!$endingYear) $endingYear = $startingYear + 10;
@@ -553,7 +553,7 @@ class forms
 	 * @param  string $content Content to add
 	 * @param  string $tabs    TAB/UNTAB
 	 */
-	private function rend($content, $tabs = NULL)
+	private function rend($content, $tabs = null)
 	{
 		if($tabs == 'UNTAB') $this->tabs--;
 
@@ -586,9 +586,9 @@ class forms
 		$this->rend($content, 'UNTAB');
 	}
 
-	private function paramRender($params, $except = NULL)
+	private function paramRender($params, $except = null)
 	{
-		$render = NULL;
+		$render = null;
 		if(!is_array($except)) $except = array($except);
 
 		foreach($params as $key => $value)

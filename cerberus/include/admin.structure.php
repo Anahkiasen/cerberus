@@ -34,7 +34,7 @@ if(get('meta_structure'))
 
 if(r::post('page_priority'))
 {
-	$idOld = get('edit_structure');
+	$idOld = r::get('edit_structure');
 	$old = db::row('cerberus_structure', '*', array('id' => $idOld));
 
 	// Changement du nom des fichiers
@@ -85,7 +85,7 @@ if(isset($_GET['meta_structure']))
 			'S.id = M.page', 'S.page, S.parent, M.id, M.page AS idx, M.titre, M.description, M.url',
 			array('M.page' => $_GET['meta_structure'], 'M.langue' => l::admin_current())));
 
-	$availablePages = a::simplify(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', TRUE));
+	$availablePages = a::simplify(a::rearrange(db::select('cerberus_structure', 'id, CONCAT_WS("-", parent, page) AS page', NULL, 'parent_priority ASC, page_priority ASC'), 'id', true));
 	if(!isset($meta['id']))
 	{
 		$last = db::insert('cerberus_meta', array('page' => $_GET['meta_structure'], 'langue' => l::admin_current()));
@@ -97,7 +97,7 @@ if(isset($_GET['meta_structure']))
 	// Formulaire META
 	$form = new forms(array('action' => url::reload(array('meta_structure' => get('meta_structure')))));
 	$form->values('cerberus_meta');
-	$titre = get('meta_structure') ? l::getTranslation('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
+	$titre = r::get('meta_structure') ? l::getTranslation('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
 	$parentTitre = l::getTranslation('menu-'.$meta['parent'], l::admin_current());
 
 	$form->setValue('traduction_titre', $titre);

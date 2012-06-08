@@ -17,7 +17,7 @@ class server
 		* @param  mixed $default Optional default value, which should be returned if no element has been found
 		* @return mixed
 		*/
-	static function get($key = FALSE, $default = NULL)
+	public static function get($key = false, $default = null)
 	{
 		if(empty($key)) return $_SERVER;
 		return a::get($_SERVER, str::upper($key), $default);
@@ -29,7 +29,7 @@ class server
 	 * @return string The current host
 	 * @package       Cerberus
 	 */
-	static function host()
+	public static function host()
 	{
 		return self::get('HTTP_HOST');
 	}
@@ -40,7 +40,7 @@ class server
 	 * @return boolean Local or not
 	 * @package        Cerberus
 	 */
-	static function local()
+	public static function local()
 	{
 		$host = self::host();
 		return (str::find('localhost', $host) or str::find('127.0.0.1', $host));
@@ -52,7 +52,7 @@ class server
 	 * @return string An IP address
 	 * @package       Cerberus
 	 */
-	static function ip()
+	public static function ip()
 	{
 		$headers = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
 		foreach($headers as $h)
@@ -72,7 +72,7 @@ class server
 	 * @return array An array of informations about the person's location
 	 * @param        Cerberus
 	 */
-	static function location($ip = NULL)
+	public static function location($ip = null)
 	{
 		if(!$ip) $ip = self::ip();
 		$country = file_get_contents('http://api.ipinfodb.com/v3/ip-country/?key=45af9a9ca62e018ed24abdb22adb47138ef319fa8227d6e1406c87fe7503b734&ip=' .$ip. '&format=json');

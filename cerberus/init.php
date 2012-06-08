@@ -1,6 +1,11 @@
 <?php
+/**
+ * init.php
+ * Initiates a basic Cerberus page
+ */
+
 // Including bootstrap file
-include 'class/core.init.php';
+require 'class/core.init.php';
 $init = new init();
 
 content::start();
@@ -16,7 +21,8 @@ content::start();
 	$init->startup('config constants dispatch mysql update stats');
 
 	// Setting cache manifest if existing
-	$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest')) ? 'manifest="cache.manifest"' : NULL;
+	$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest'))
+		? 'manifest="cache.manifest"' : null;
 
 	// Adding browser sniffing (I know) to the html tag
 	echo '<!DOCTYPE html>'.PHP_EOL;
@@ -33,18 +39,3 @@ content::start();
 		 * Back up database
 		 */
 		$init->startup('required language navigation debug cache backup');
-
-// -------------------------------------------------- */
-
-/**
-	* Shortcut for r::get()
-	*
-	* @param	 mixed		$key The key to look for. Pass false or null to return the entire request array.
-	* @param	 mixed		$default Optional default value, which should be returned if no element has been found
-	* @return	mixed
-	* @package Kirby
-	*/
-function get($key = false, $default = NULL)
-{
-	return r::get($key, $default);
-}

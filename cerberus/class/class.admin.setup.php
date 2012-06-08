@@ -20,7 +20,7 @@ class Admin_Setup
 	########################################
 	*/
 
-	function __construct($customNavigation = NULL)
+	function __construct($customNavigation = null)
 	{
 		global $connected;
 
@@ -45,22 +45,22 @@ class Admin_Setup
 				if(db::is_table('cerberus_news')) self::$navigation['website']['Actualités'] = 'news';
 			}
 
-			foreach(navigation::getSubmenu(FALSE) as $index => $name) if($index != 'admin') self::$navigation['website'][$name['text']] = $index;
+			foreach(navigation::getSubmenu(false) as $index => $name) if($index != 'admin') self::$navigation['website'][$name['text']] = $index;
 			self::$navigation['systeme'] = array_merge(self::$navigation['systeme'], a::force_array($customNavigation));
 
 			// Droits de l'utilisateur
 			self::$droits = (SQL and db::is_table('cerberus_admin'))
 				? str::parse(db::field('cerberus_admin', 'droits', array('user' => md5($_SESSION['admin']['user']))))
-				: NULL;
+				: null;
 				if(empty(self::$droits))
 					foreach(self::$navigation as $section => $pages)
-						foreach($pages as $page) self::$droits[$page] = TRUE;
+						foreach($pages as $page) self::$droits[$page] = true;
 
 			// Vérification de la page
 			$title = 'Administration';
 			if(!empty(self::$navigation))
 			{
-				$admin = get('admin');
+				$admin = r::get('admin');
 				if(	isset($admin) and
 					in_array($admin, self::$droits))
 
@@ -80,22 +80,22 @@ class Admin_Setup
 	{
 		if(isset($_GET['admin']))
 		{
-			$page = get('admin');
+			$page = r::get('admin');
 			if(f::inclure('cerberus/include/admin.' .$page. '.php')) true;
 			elseif(f::inclure('pages/admin-' .$page. '.php')) true;
 		}
 	}
 
 	// Admin en plusieures langues
-	function defineMultilangue($arrayLangues = NULL)
+	function defineMultilangue($arrayLangues = null)
 	{
 		$this->arrayLangues = $arrayLangues;
 		if(MULTILANGUE)
 		{
 			$this->multilangue = config::get('langues', array(config::get('langue_default', 'fr')));
-			if(count($this->multilangue) == 1) $this->multilangue = FALSE;
+			if(count($this->multilangue) == 1) $this->multilangue = false;
 		}
-		else $this->multilangue = FALSE;
+		else $this->multilangue = false;
 		return $this->multilangue;
 	}
 
@@ -122,7 +122,7 @@ class Admin_Setup
 			{
 				$_SESSION['admin']['user'] = $_POST['user'];
 				$_SESSION['admin']['password'] = $_POST['password'];
-				$this->granted = TRUE;
+				$this->granted = true;
 			}
 			else
 			{
@@ -130,7 +130,7 @@ class Admin_Setup
 				$adminForm->render();
 			}
 		}
-		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = TRUE;
+		elseif(isset($_SESSION['admin']['user'], $_SESSION['admin']['password']) and $this->checkLogin($_SESSION['admin']['user'], $_SESSION['admin']['password'])) $this->granted = true;
 		else
 		{
 			str::display('Veuillez entrer votre identifiant et mot de passe.');
@@ -169,8 +169,8 @@ class Admin_Setup
 			echo '<div class="btn-group"><button class="btn category">Langue</button>';
 			foreach($this->multilangue as $langue)
 			{
-				$flagState = (l::admin_current() == $langue) ? NULL : '_off';
-				$active = ($langue == l::admin_current()) ? 'btn-inverse' : NULL;
+				$flagState = (l::admin_current() == $langue) ? null : '_off';
+				$active = ($langue == l::admin_current()) ? 'btn-inverse' : null;
 				echo '<a class="btn ' .$active. '" href="' .url::reload(array('get_admin_langue' => $langue)). '">' .str::img(PATH_CERBERUS.'img/flag-' .$langue.$flagState. '.png', $langue). '</a>';
 			}
 			echo '</div>';
@@ -197,8 +197,8 @@ class Admin_Setup
 				if(!empty($page) and self::$droits[$page])
 				{
 					// Texte
-					$texteLien = (!is_numeric($titre)) ? $titre : l::getTranslation('menu-admin-'.$page, l::admin_current(), $page, TRUE);
-					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? 'btn-inverse' : NULL;
+					$texteLien = (!is_numeric($titre)) ? $titre : l::getTranslation('menu-admin-'.$page, l::admin_current(), $page, true);
+					$thisActive = (isset($_GET['admin']) and $page == $_GET['admin']) ? 'btn-inverse' : null;
 					echo '<a class="btn ' .$thisActive. '" href="' .url::rewrite('admin-' .$page). '">' .ucfirst($texteLien). '</a>';
 				}
 			}
