@@ -1,5 +1,5 @@
 <?php
-if(get('meta_structure'))
+if(r::get('meta_structure'))
 {
 	$metaAdmin = new Admin();
 	$metaAdmin->setPage('cerberus_meta', array('titre', 'url', 'description'));
@@ -95,7 +95,7 @@ if(isset($_GET['meta_structure']))
 	else $_GET['edit_meta'] = $meta['id'];
 
 	// Formulaire META
-	$form = new forms(array('action' => url::reload(array('meta_structure' => get('meta_structure')))));
+	$form = new forms(array('action' => url::reload(array('meta_structure' => r::get('meta_structure')))));
 	$form->values('cerberus_meta');
 	$titre = r::get('meta_structure') ? l::getTranslation('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
 	$parentTitre = l::getTranslation('menu-'.$meta['parent'], l::admin_current());

@@ -52,7 +52,7 @@ class r
 			$key			= a::get($params, 0);
 			$type			= a::get($params, 1, 'str');
 			$default		= a::get($params, 2, null);
-			$result[$key] 	= str::sanitize(get($key, $default), $type);
+			$result[$key] 	= str::sanitize(self::get($key, $default), $type);
 		}
 		return $result;
 	}

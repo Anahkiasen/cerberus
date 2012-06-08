@@ -16,7 +16,7 @@ $forms->openFieldset($diffText. ' une news');
 	$forms->addTextarea('contenu', 'Texte de la news');
 	if(isset($_GET['edit_news']))
 	{
-		$path = $newsAdmin->getImage(get('edit_news'));
+		$path = $newsAdmin->getImage(r::get('edit_news'));
 		if(file_exists($path) and !empty($path))
 		{
 			$forms->insert('

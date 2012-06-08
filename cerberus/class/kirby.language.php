@@ -33,7 +33,7 @@ class l
 		if(!session::get('langue_site')) session::set('langue_site', config::get('langue_default', 'fr'));
 
 		// If we asked for a language, set it
-		if(get('langue')) self::change(get('langue'));
+		if(r::get('langue')) self::change(r::get('langue'));
 
 		// Admin language
 		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');

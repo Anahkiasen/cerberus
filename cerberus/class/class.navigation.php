@@ -155,7 +155,7 @@ class navigation
 		$page = isset(self::$data[r::get('page')]) ? r::get('page') : self::$homepage;
 		$pageSubmenu = a::get(self::$data, $page.',submenu');
 		$sousPage = ($pageSubmenu)
-			? a::get($pageSubmenu, get('pageSub')) ? r::get('pageSub') : key($pageSubmenu)
+			? a::get($pageSubmenu, r::get('pageSub')) ? r::get('pageSub') : key($pageSubmenu)
 			: null;
 
 		// If we are in the admin and can't find the subpage, check the admin GET

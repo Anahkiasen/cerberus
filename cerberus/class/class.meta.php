@@ -203,8 +203,11 @@ class meta
 		// Get the current page info
 		$meta = self::page();
 		if(!$meta)
-			if(navigation::$page == 'admin' and get('admin')) $meta['title'] = 'Administration - Gestion ' .ucfirst(get('admin'));
+		{
+			if(navigation::$page == 'admin' and r::get('admin'))
+				$meta['title'] = 'Administration - Gestion ' .ucfirst(r::get('admin'));
 			else return false;
+		}
 
 		// Treat the data a little
 		foreach($meta as $key => $value)

@@ -19,10 +19,10 @@
 $LANGUES = db::fields('cerberus_langue');
 	unset($LANGUES[0]);
 
-if(get('bdd'))
+if(r::get('bdd'))
 {
 	// EXPORT
-	if(get('bdd') == 'export')
+	if(r::get('bdd') == 'export')
 	{
 		$index = db::select('cerberus_langue', '*', NULL, 'tag ASC');
 		a::csv($index, 'langues', implode(';', db::fields('cerberus_langue')));
