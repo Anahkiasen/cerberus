@@ -1,7 +1,10 @@
 <?php
 class Debug
 {
+	private static $e = null;
 	private static $errorType = null;
+	private static $errorCode = null;
+	private static $errorMessage = null;
 
 	/**
 	 * Decides wether we should print or send the error log
@@ -9,29 +12,37 @@ class Debug
 	 * @param Exception $exception An exception that occured
 	 * @param integer   $type      An error code or type
 	 */
-	static public function handle($exception, $type = null)
+	public static function handle($exception, $message = null, $type = null)
 	{
 		// Error type
+		self::$e = $exception;
 		self::$errorType = self::errorType($type);
 
+		// Message
+		self::$errorMessage = $message
+			? $message
+			: $e->getMessage();
+
 		// Displaying error or sending it
-		if(LOCAL) echo self::render($exception);
-		else self::send($exception);
+		if(LOCAL) echo self::render();
+		else self::send();
 	}
 
 	/**
 	 * Display the error backtrace
 	 */
-	private static function render($e)
+	private static function render()
 	{
+		$e = self::$e;
+
 		// Getting error code
 		$code = $e->getCode();
 		$code = !empty($code) ? '['.$code.'] ' : null;
 
 		// Displaying error header
 		$render = '
-		<h1>' .self::$errorType. ' : ' .$code.$e->getMessage(). '</h1>
-		<h2>' .basename($e->getFile()). '[' .$e->getLine(). '] at <ins>' .date('H:i:s \t\h\e Y-m-d'). '</ins></h2>';
+		<h1>' .self::$errorType. ' : ' .$code.self::$errorMessage. '</h1>
+		<h2>' .basename($e->getFile()). '[' .$e->getLine(). '] at <ins>' .date('H:i:s').'</ins> the <ins>' .date('Y-m-d'). '</ins></h2>';
 
 		// Crawling backtrace
 		foreach($e->getTrace() as $i => $t)
@@ -59,8 +70,10 @@ class Debug
 	/**
 	 * Send the error log
 	 */
-	private static function send($e)
+	private static function send()
 	{
+		$e = self::$e;
+
 		// Setting the mail's title
 		$mailTitle = config::get('sitename');
 		$mailTitle = $mailTitle ? 'Cerberus - ' .$mailTitle : 'CerberusDebug';
