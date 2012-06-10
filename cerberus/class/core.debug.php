@@ -24,7 +24,7 @@ class Debug
 			: self::$e->getMessage();
 
 		// Displaying error or sending it
-		if(LOCAL) echo self::render();
+		if(defined('LOCAL') and LOCAL) echo self::render();
 		else self::send();
 	}
 
@@ -49,7 +49,7 @@ class Debug
 		{
 			// File
 			$render .= '<div style="margin-left:' .($i * 25). 'px">';
-				$render .= '<h3>' .basename($t['file']). '[' .$t['line']. ']</h3>';
+				$render .= '<h3>' .basename(a::get($t, 'file')). '[' .a::get($t, 'line'). ']</h3>';
 
 				// Arguments
 				if(!empty($t['args'])) $t['args'] = self::implodeParams($t['args']);
