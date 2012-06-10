@@ -165,20 +165,6 @@ class navigation
 		if(!in_array($page, self::$system) and $page != 'admin')
 			self::$filepath = self::extension($page, $sousPage);
 
-		// If we're in a subfolder
-		$path = array_reverse(debug_backtrace());
-		$path = f::name($path[0]['file'], true);
-		if($page == self::$homepage and
-		   a::get($_GET, 'page') != self::$homepage and
-		   $path != config::get('index'))
-		{
-			$page     = $path;
-			$sousPage = null;
-			$external = true;
-		}
-		else $external = false;
-		define('EXTERNAL', $external);
-
 		// Save the calculated data
 		self::$page     = $page;
 		self::$sousPage = $sousPage;
