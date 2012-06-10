@@ -137,12 +137,17 @@ class Init
 	/**
 	 * Checks if a module is correctly loaded
 	 *
-	 * @param  string   $module The module to check
-	 * @return boolean  Loaded or not
+	 * @param  string  Modules to check
+	 * @return boolean Loaded or not
 	 */
-	private function loaded($module)
+	public function loaded()
 	{
-		return isset($this->modules[$module]) and $this->modules[$module];
+		$loaded = 0;
+		$modules = func_get_args();
+		foreach($modules as $module)
+			if(isset($this->modules[$module]) and $this->modules[$module])
+				$loaded++;
+		return $loaded == sizeof($modules);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -245,7 +250,7 @@ class Init
 		config::set(config::$defaults);
 
 		// Create the config file if it doesn't exist
-		if(!file_exists(PATH_CONF)) f::write(PATH_CONF, '<?'.PHP_EOL.'?>');
+		if(!file_exists(PATH_CONF)) f::write(PATH_CONF, '{'.PHP_EOL.'}');
 
 		// Load the local configuration file
 		else config::load(PATH_CONF);
