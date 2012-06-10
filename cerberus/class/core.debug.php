@@ -21,7 +21,7 @@ class Debug
 		// Message
 		self::$errorMessage = $message
 			? $message
-			: $e->getMessage();
+			: self::$e->getMessage();
 
 		// Displaying error or sending it
 		if(LOCAL) echo self::render();
@@ -52,7 +52,7 @@ class Debug
 				$render .= '<h3>' .basename($t['file']). '[' .$t['line']. ']</h3>';
 
 				// Arguments
-				if(!empty($t['args'])) $t['args'] = "'" .implode("', '", $t['args']). "'";
+				if(!empty($t['args'])) $t['args'] = self::implodeParams($t['args']);
 				else $t['args'] = null;
 
 				// Class and function
@@ -86,6 +86,12 @@ class Debug
 		$mail->send();
 	}
 
+	private static function implodeParams($params)
+	{
+		$params = a::simplify($params, false);
+		return "'" .implode("', '", $params). "'";
+	}
+
 	/**
 	 * Getting a readable error type
 	 *
@@ -94,6 +100,7 @@ class Debug
 	 */
 	private static function errorType($errorType)
 	{
+		$errorType = strtolower($errorType);
 		switch ($errorType)
 		{
 			case E_DEPRECATED:
@@ -120,7 +127,7 @@ class Debug
 			$error = 'Fatal Error';
 			break;
 
-			case 'SQL':
+			case 'sql':
 			$error = 'MySQL';
 			break;
 
