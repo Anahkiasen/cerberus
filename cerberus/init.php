@@ -6,7 +6,7 @@
 
 // Including bootstrap file
 require 'class/core.init.php';
-$init = new Init();
+$init = new Init($init);
 
 content::start();
 

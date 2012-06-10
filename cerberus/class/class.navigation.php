@@ -650,7 +650,7 @@ class navigation
 	private static function extension(&$page, &$sousPage)
 	{
 		// If no pages/ folder found, create it
-		if(!file_exists(self::$folder)) dir::make(self::$folder);
+		if(!file_exists(self::$folder) and !SUBFOLDER) dir::make(self::$folder);
 
 		// If we have a subpage, try finding the specific file for that subpage
 		$pageSpecific = $sousPage ? $page.'-'.$sousPage : 'pages/'.$page;

@@ -151,7 +151,7 @@ class dispatch
 		self::paths();
 
 		// Create Compass configuration file if unexisting
-		if(LOCAL) self::compass();
+		if(LOCAL and !SUBFOLDER) self::compass();
 	}
 
 	/**
@@ -180,25 +180,25 @@ class dispatch
 		$pathPlugins  = config::get('path.plugins');
 
 		// If they're not cached in the config file, calculate them
-		if(!$pathCommon or !$pathCerberus or !$pathFile or !$pathPlugins)
+		if(SUBFOLDER or !$pathCommon or !$pathCerberus or !$pathFile or !$pathPlugins)
 		{
 			$pathCommon   = f::exist(
-				self::path('{assets}/{common}/'),
-				self::path('{assets}/'),
-				'/');
+				self::path(PATH_MAIN.'{assets}/{common}/'),
+				self::path(PATH_MAIN.'{assets}/'),
+				           PATH_MAIN.'/');
 			$pathCerberus = f::exist(
-				self::path('{assets}/{cerberus}/'),
-				self::path('{assets}/'),
-				'/');
+				self::path(PATH_MAIN.'{assets}/{cerberus}/'),
+				self::path(PATH_MAIN.'{assets}/'),
+				           PATH_MAIN.'/');
 			$pathFile     = f::exist(
-				self::path('{assets}/{common}/{file}/'),
-				self::path('{assets}/{file}/'),
-				self::path('{file}/'),
-				'/');
-			$pathPlugins  = self::path('{assets}/{plugins}/');
+				self::path(PATH_MAIN.'{assets}/{common}/{file}/'),
+				self::path(PATH_MAIN.'{assets}/{file}/'),
+				self::path(PATH_MAIN.'{file}/'),
+				           PATH_MAIN.'/');
+			$pathPlugins  = self::path(PATH_MAIN.'{assets}/{plugins}/');
 
 			// If we are in the root folder, cache into config file
-			if(PATH_MAIN == null)
+			if(!SUBFOLDER)
 			{
 				config::hardcode('path.common',   $pathCommon);
 				config::hardcode('path.cerberus', $pathCerberus);
@@ -299,7 +299,7 @@ class dispatch
 		self::$scripts = self::unpack($scripts);
 
 		// Loading the submodules files
-		if(LOCAL) self::submodules(self::$scripts);
+		if(LOCAL and !SUBFOLDER) self::submodules(self::$scripts);
 
 		/* Loading the wanted assets ------------------------------ */
 

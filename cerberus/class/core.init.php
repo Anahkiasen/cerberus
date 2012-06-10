@@ -199,6 +199,9 @@ class Init
 
 		// Define PATH_CACHE (cerberus cache folder)
 		if(!defined('PATH_CACHE')) define('PATH_CACHE', PATH_CORE.'cache/');
+
+		// Define if we're in the main website area or in a subofolder
+		if(!defined('SUBFOLDER')) define('SUBFOLDER', PATH_MAIN !== null);
 	}
 
 	/**
@@ -374,6 +377,9 @@ class Init
 	public function required()
 	{
 		$this->module('required');
+
+		// If we're in a subfolder, don't deploy main architecture
+		if(SUBFOLDER) return true;
 
 		// List required files and their content
 		$required = array(
