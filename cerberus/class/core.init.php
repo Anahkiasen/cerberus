@@ -41,8 +41,11 @@ class Init
 	/**
 	 * Initializes the base modules
 	 */
-	public function __construct($folder = null)
+	public function __construct($modules = null, $folder = null)
 	{
+		// Set default modules to load
+		if(!$modules) $modules = 'correctHeader iniPHP paths autoloader strings errorHandling timezone';
+
 		// Set current folder
 		$this->folder = $folder;
 
@@ -54,7 +57,7 @@ class Init
 		 * Error handling
 		 * Timezone setting
 		 */
-		$this->startup('correctHeader iniPHP paths autoloader strings errorHandling timezone');
+		$this->startup($modules);
 
 		// Starting a new session
 		session::start();
