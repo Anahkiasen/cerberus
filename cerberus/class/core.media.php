@@ -7,7 +7,7 @@
  *
  * @package Cerberus
  */
-class media extends dispatch
+class media
 {
 	/**
 	 * Adds a picture using the current PATH to the images folder
@@ -19,7 +19,7 @@ class media extends dispatch
 	 */
 	public static function image($name, $alt = null, $attributes = null)
 	{
-		return str::img(self::path(PATH_COMMON.'{images}/' .$name), $alt, $attributes);
+		return str::img(dispatch::path(PATH_COMMON.'{images}/' .$name), $alt, $attributes);
 	}
 
 	/**
@@ -57,7 +57,7 @@ class media extends dispatch
 	 */
 	public static function thumb($file, $width, $height, $attributes = array(), $params = array())
 	{
-		$file = self::path(PATH_COMMON.$file);
+		$file = dispatch::path(PATH_COMMON.$file);
 		$path = self::timthumb($file, $width, $height, $params);
 		return str::img($path, a::get($attributes, 'alt'), $attributes);
 	}
