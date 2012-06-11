@@ -46,6 +46,7 @@ class config
 		'meta'                => false,
 		'multilangue'         => false,
 		'rewriting'           => false,
+		'uasniff'             => false,
 
 		/* Upload */
 		'upload.allowed'      => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif'),

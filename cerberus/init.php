@@ -6,6 +6,9 @@
 
 // Including bootstrap file
 require 'class/core.init.php';
+
+// Creating main object
+if(!isset($init)) $init = null;
 $init = new Init($init);
 
 content::start();
@@ -22,11 +25,14 @@ content::start();
 
 	// Setting cache manifest if existing
 	$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest'))
-		? 'manifest="cache.manifest"' : null;
+		? ' manifest="cache.manifest"' : null;
 
 	// Adding browser sniffing (I know) to the html tag
+	$uaSniff = config::get('uasniff')
+		? ' class="' .browser::css(). '"' : null;
+
 	echo '<!DOCTYPE html>'.PHP_EOL;
-	echo '<html ' .$manifest. ' class="' .browser::css(). '">'.PHP_EOL;
+	echo '<html' .$manifest.$uaSniff. '>'.PHP_EOL;
 
 	content::start();
 
