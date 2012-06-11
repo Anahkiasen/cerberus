@@ -377,9 +377,10 @@ class str
 	public static function img($src, $alt = null, $attr = null)
 	{
 		// Create the alt attribute
-		if(!$alt)
+		$attrAlt = a::get($attr, 'alt');
+		if(!$alt and !$attrAlt)
 		{
-			$alt = f::filename($src);
+			$alt = f::name($src, true);
 
 			// If the picture is dynamic, get the core image
 			if(str::find('&', $alt))
@@ -388,6 +389,7 @@ class str
 				$alt = f::name($alt);
 			}
 		}
+		elseif($attrAlt) $alt = $attrAlt;
 
 		if(!is_array($attr)) $attributes = 'src="' .$src. '" alt="' .$alt. '" '.$attr;
 		else
