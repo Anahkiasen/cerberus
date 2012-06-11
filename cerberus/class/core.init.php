@@ -44,6 +44,7 @@ class Init
 	public function __construct($modules = null, $folder = null)
 	{
 		// Set default modules to load
+		if($modules = 'test') $modules = 'paths autoloader config constants dispatch';
 		if(!$modules) $modules = 'correctHeader iniPHP paths autoloader strings errorHandling timezone';
 
 		// Set current folder

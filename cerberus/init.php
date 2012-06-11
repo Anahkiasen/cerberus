@@ -9,7 +9,7 @@ require 'class/core.init.php';
 
 // Creating main object
 if(!isset($init)) $init = null;
-$init = new Init($init);
+$init = new Init(null, $init);
 
 content::start();
 
