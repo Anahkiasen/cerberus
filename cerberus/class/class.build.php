@@ -34,7 +34,7 @@ class Build
 	private static $additionalFiles = array();
 
 	/**
-	 * An array of files that must *NOT* be minified/concatenated
+	 * An array of files that must *NOT* be concatenated
 	 * @var array
 	 */
 	private static $protectedFiles = array();
@@ -71,23 +71,11 @@ class Build
 	 */
 	public function __construct()
 	{
-		require 'cerberus/class/core.init.php';
-		$init = new Init('constants autoloader config');
-
-		// Minify
-		include PATH_MAIN.'min/lib/Minify.php';
-		include PATH_MAIN.'min/lib/Minify/Controller/Base.php';
-		include PATH_MAIN.'min/lib/Minify/Controller/Files.php';
-		include PATH_MAIN.'min/lib/Minify/CommentPreserver.php';
-
-		// CSS
-		include PATH_MAIN.'min/lib/Minify/CSS.php';
-		include PATH_MAIN.'min/lib/Minify/CSS/Compressor.php';
-		include PATH_MAIN.'min/lib/Minify/CSS/UriRewriter.php';
-
-		// Javascript
-		include PATH_MAIN.'min/lib/JSMin.php';
-		include PATH_MAIN.'min/lib/Minify/JS/ClosureCompiler.php';
+		if(!class_exists('Init'))
+		{
+			require 'cerberus/class/core.init.php';
+			$init = new Init('constants autoloader config');
+		}
 
 		// Clean build cache
 		self::clean();
@@ -105,13 +93,15 @@ class Build
 			$protectedFiles  = a::get($buildFile, 'protectFiles', self::$protectedFiles);
 			$subfolders      = a::get($buildFile, 'subfolders');
 
+			// If we don't have any page to load, cancel
+			if(!$page) return true;
+
 			if($page)            self::setPage($page);
 			if($folder)          self::setFolder($folder);
 			if($additionalFiles) self::addFiles($additionalFiles);
 			if($protectedFiles)  self::protectFiles($protectedFiles);
 
-			// If we don't have any page to load, cancel
-			if(!self::$page) return true;
+			self::includeMinify();
 
 			// Build
 			$build = a::get($buildFile, 'getPages');
@@ -169,6 +159,7 @@ class Build
 
 		foreach($pages as $page)
 		{
+			$_GET = array();
 			if($page) $_GET['page'] = $page;
 
 			// Crawl the pages
@@ -200,15 +191,13 @@ class Build
 		foreach($assets as $asset)
 		{
 			if(!file_exists($asset)) continue;
-			var_dump($asset);
 
 			// Filename
 			$filename = f::filename($asset);
 
 			// Filetype
 			$type = f::extension($asset);
-			if(in_array($filename, self::$protectedFiles) or
-			   preg_match('#.+([\.\-](pack|min))\.(css|js)#', $filename))
+			if(in_array($filename, self::$protectedFiles) or self::isMinified($filename))
 				$type = 'copy';
 
 			if(in_array($asset, self::$build[$type])) continue;
@@ -244,20 +233,28 @@ class Build
 			{
 				// CSS
 				case 'css':
-					$concatenatedName = self::$folder.'styles.css';
+					$concatenatedName = self::$folder.self::minifyName('styles.css');
 					self::minify($files, $concatenatedName);
 					break;
 
 				// Javascript
 				case 'js':
-					$concatenatedName = self::$folder.'scripts.js';
+					$concatenatedName = self::$folder.self::minifyName('scripts.js');
 					self::minify($files, $concatenatedName);
 					break;
 
 				// Other
 				default:
 					foreach($files as $file)
-						copy($file, self::$folder.f::filename($file));
+					{
+						if(!self::isMinified($file))
+						{
+							$concatenatedName = self::$folder.self::minifyName($file);
+							self::minify(array($file), $concatenatedName);
+						}
+
+						else copy($file, self::$folder.f::filename($file));
+					}
 					break;
 			}
 
@@ -284,6 +281,47 @@ class Build
 	//////////////////////////////////////////////////////////////////
 	////////////////////////////// HELPERS ///////////////////////////
 	//////////////////////////////////////////////////////////////////
+
+	/**
+	 * Add a .min. tag to a filename
+	 * @param  string $filename A filename
+	 * @return string           A modified filename
+	 */
+	private function minifyName($filename)
+	{
+		return f::name($filename, true).'.min.'.f::extension($filename);
+	}
+
+	/**
+	 * Check if a file is already minified or not
+	 * @param  string  $filename A filename
+	 * @return boolean           Whether .min or -min was found in the filename
+	 */
+	private function isMinified($filename)
+	{
+		return preg_match('#.+([\.\-](pack|min))\.(css|js)#', $filename);
+	}
+
+	/**
+	 * Include Minify's required files
+	 */
+	private function includeMinify()
+	{
+		// Minify
+		include PATH_MAIN.'min/lib/Minify.php';
+		include PATH_MAIN.'min/lib/Minify/Controller/Base.php';
+		include PATH_MAIN.'min/lib/Minify/Controller/Files.php';
+		include PATH_MAIN.'min/lib/Minify/CommentPreserver.php';
+
+		// CSS
+		include PATH_MAIN.'min/lib/Minify/CSS.php';
+		include PATH_MAIN.'min/lib/Minify/CSS/Compressor.php';
+		include PATH_MAIN.'min/lib/Minify/CSS/UriRewriter.php';
+
+		// Javascript
+		include PATH_MAIN.'min/lib/JSMin.php';
+		include PATH_MAIN.'min/lib/Minify/JS/ClosureCompiler.php';
+	}
 
 	/**
 	 * Clean the build folder
