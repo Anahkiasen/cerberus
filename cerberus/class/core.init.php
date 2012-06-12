@@ -45,7 +45,7 @@ class Init
 	{
 		// Set default modules to load
 		if($modules = 'test') $modules = 'paths autoloader config constants dispatch';
-		if(!$modules) $modules = 'correctHeader iniPHP paths autoloader strings errorHandling timezone';
+		if(!$modules) $modules = 'correctHeader iniPHP paths autoloader strings errorHandling timezone config constants';
 
 		// Set current folder
 		$this->folder = $folder;

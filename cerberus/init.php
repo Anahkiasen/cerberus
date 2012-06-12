@@ -4,13 +4,6 @@
  * Initiates a basic Cerberus page
  */
 
-// Build pages
-if(!class_exists('Build'))
-{
-	require 'cerberus/class/class.build.php';
-	$build = new Build();
-}
-
 // Including bootstrap file
 if(!class_exists('Init'))
 	require 'class/core.init.php';
@@ -18,6 +11,13 @@ if(!class_exists('Init'))
 // Creating main object
 if(!isset($init)) $init = null;
 $init = new Init(null, $init);
+
+// Build pages
+if(LOCAL and isset($_GET['cerberus_build']))
+{
+	if(!class_exists('Build')) require 'cerberus/class/class.build.php';
+	$build = new Build();
+}
 
 content::start();
 
@@ -29,7 +29,7 @@ content::start();
 	 * Update core
 	 * Log user stats
 	 */
-	$init->startup('config constants dispatch mysql update stats');
+	$init->startup('dispatch mysql update stats');
 
 	// Setting cache manifest if existing
 	$manifest = (CACHE and file_exists('cache.manifest') and config::get('cache.manifest'))
