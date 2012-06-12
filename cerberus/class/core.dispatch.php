@@ -14,20 +14,20 @@ class dispatch
 	 * The page we're currently in
 	 * @var string
 	 */
-	static private $page;
+	static private $page     = null;
 
 	/**
 	 *  The category we're currently in
 	 * @var string
 	 */
-	static private $category;
+	static private $category = null;
 
 	/**
 	 * Whether Dispatch should try and add assets automatically or not
 	 * Dispatch by default will add any asset matching the current page and base names (styles.css, scripts.js)
 	 * @var boolean
 	 */
-	static private $guess = true;
+	static private $guess    = true;
 
 	/* Current ressources ----------------------------------------- */
 
@@ -35,43 +35,43 @@ class dispatch
 	 * Table containing the ressources to minify
 	 * @var array
 	 */
-	static private $minify;
+	static private $minify   = array();
 
 	/**
 	 * Table containing the scripts and styles of the current page
 	 * @var array
 	 */
-	static private $scripts;
+	static private $scripts  = array();
 
 	/**
 	 * The current CSS ressources
 	 * @var array
 	 */
-	static private $CSS;
+	static private $CSS      = array();
 
 	/**
 	 * The current JS ressources
 	 * @var array
 	 */
-	static private $JS;
+	static private $JS       = array();
 
 	/**
 	 * A Typekit ID if available
 	 * @var string
 	 */
-	static private $typekit;
+	static private $typekit  = null;
 
 	/**
 	 * Paths to every ressource available
 	 * @var array
 	 */
-	static private $paths = array();
+	static private $paths    = array();
 
 	/**
 	 * A list of aliases for different scripts
 	 * @var array
 	 */
-	static private $alias = array(
+	static private $alias    = array(
 		// jQuery
 		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
@@ -147,6 +147,9 @@ class dispatch
 	 */
 	public function __construct()
 	{
+		// Reset dispatch's state
+		self::cleanState();
+
 		// Set up the main path constants
 		self::paths();
 
@@ -221,9 +224,9 @@ class dispatch
 	 */
 	private static function index()
 	{
-		if(!isset(self::$category))
+		if(self::$page != navigation::$page)
 		{
-			self::$page     = (!empty($current)) ? $current : navigation::current();
+			self::$page     = navigation::current();
 			self::$category = navigation::$page;
 		}
 	}
@@ -235,6 +238,22 @@ class dispatch
 	public static function setGuess($guess)
 	{
 		self::$guess = $guess;
+	}
+
+	/**
+	 * Reset the state of Dispatch to zero
+	 */
+	public static function cleanState()
+	{
+		self::$CSS      =
+		self::$JS       =
+		self::$minify   =
+		self::$scripts  =
+		self::$paths    = array();
+		self::$page     =
+		self::$category = null;
+
+		self::index();
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -291,7 +310,6 @@ class dispatch
 			if(config::get('bootstrap'))
 				$scripts['*'] = a::inject($scripts['*'], 0, 'bootstrap');
 		}
-
 		/* Creating the environnement ----------------------------- */
 
 		// Getting assets paths

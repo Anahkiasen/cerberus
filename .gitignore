@@ -49,11 +49,13 @@ cerberus/conf.json
 
 # configuration
 cerberus/conf.json
+cerberus/build.json
 
 # pages
 /pages/
 /pageflip/
 /src/
+/build/
 
 # files
 /*.php

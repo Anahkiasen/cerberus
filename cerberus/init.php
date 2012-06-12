@@ -4,8 +4,16 @@
  * Initiates a basic Cerberus page
  */
 
+// Build pages
+if(!class_exists('Build'))
+{
+	require 'cerberus/class/class.build.php';
+	$build = new Build();
+}
+
 // Including bootstrap file
-require 'class/core.init.php';
+if(!class_exists('Init'))
+	require 'class/core.init.php';
 
 // Creating main object
 if(!isset($init)) $init = null;

@@ -240,6 +240,9 @@ class Init
 	{
 		$this->module('autoloader');
 
+		// If we've already loaded the Autoloader
+		if(function_exists('__autoLoader')) return true;
+
 		// Include the Autoloader and set it as main loader
 		include(PATH_CORE.'tools/classloader.php');
 		spl_autoload_register('__autoLoader');

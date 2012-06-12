@@ -22,5 +22,5 @@ $modifiedBody = head::header().$modifiedBody;
 
 // Save the page and display it
 echo $modifiedBody; $cached = cache::save(true); // Page en cache
-echo $cached; $cached = content::end(true); // Page réelle
+
 echo $cached;
