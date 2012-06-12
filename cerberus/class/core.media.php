@@ -29,6 +29,7 @@ class media
 	 * @param  int     $width   The desired width
 	 * @param  int     $height  The desired $height
 	 * @param  array   $params  Supplementary options to pass to TimThumb
+	 * @return string  An URL to the picture
 	 */
 	public static function timthumb($file, $width = null, $height = null, $params = array())
 	{
