@@ -173,6 +173,8 @@ class dispatch
 	 */
 	private static function paths()
 	{
+		if(defined('PATH_COMMON')) return true;
+
 		// Set up the recurring paths
 		$pathCommon   = config::get('path.common');
 		$pathCerberus = config::get('path.cerberus');
