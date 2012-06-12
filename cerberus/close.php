@@ -21,6 +21,5 @@ $modifiedBody = str_replace('<head>', null, $modifiedBody);
 $modifiedBody = head::header().$modifiedBody;
 
 // Save the page and display it
-echo $modifiedBody; $cached = cache::save(true); // Page en cache
-
-echo $cached;
+echo $modifiedBody;
+cache::save(); // Page en cache
