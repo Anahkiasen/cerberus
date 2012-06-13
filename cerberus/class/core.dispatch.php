@@ -576,7 +576,7 @@ class dispatch
 		}
 
 		// Filtering array
-		if($array['url'])
+		if(isset($array['url']) and !empty($array['url']))
 			$array['url'] = a::clean($array['url']);
 
 		return $array;
@@ -742,14 +742,23 @@ class dispatch
 	public static function getJS($return = false)
 	{
 		if(isset(self::$typekit)) self::addJS('http://use.typekit.com/' .self::$typekit. '.js');
+
+		// Remove superfluous entries
 		self::$JS = self::sanitize(self::$JS);
+
+		// Define variables
 		$head = array();
+		$url  = a::get(self::$JS, 'url');
+		$inlineBefore = a::get(self::$JS, 'inline,before');
+		$inlineAfter  = a::get(self::$JS, 'inline,after');
 
-		if(self::$JS['inline']['before']) $head[] = self::inlineJS(self::$JS['inline']['before']);
-		if(self::$JS['url']) foreach(self::$JS['url'] as $url) $head[] = '<script src="' .$url. '"></script>';
-		if(self::$JS['inline']['after']) $head[] = self::inlineJS(self::$JS['inline']['after']);
-
+		// Append each part and implode it with a linebreak
+		if($inlineBefore) $head[] = self::inlineJS($inlineBefore);
+		if($url) $head[] = '<script src="' .$url. '"></script>';
+		if($inlineAfter) $head[] = self::inlineJS($inlineAfter);
 		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;
+
+		// Return or echo
 		if($return) return $head;
 		else echo $head;
 	}
