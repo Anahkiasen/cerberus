@@ -47,7 +47,7 @@ class contentTest extends PHPUnit_Framework_TestCase
 	public function testLoad()
 	{
 		$file = 'test.php';
-		f::write($file, '<?= "This is a test" ?>');
+		f::write($file, '<?php echo "This is a test" ?>');
 
 		$test = content::load($file);
 
