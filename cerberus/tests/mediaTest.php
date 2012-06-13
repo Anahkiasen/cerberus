@@ -1,7 +1,4 @@
 <?php
-require('../class/core.init.php');
-new Init('test', '../../');
-
 class mediaTest extends PHPUnit_Framework_TestCase
 {
 	public function testImage()

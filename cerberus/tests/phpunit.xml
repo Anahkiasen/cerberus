@@ -1,0 +1,7 @@
+<phpunit
+	colors="true"
+	bootstrap="phpunit.php">
+	<logging>
+		<log type="json" target="phpunit.json"/>
+	</logging>
+</phpunit>

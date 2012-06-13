@@ -8,6 +8,49 @@
  */
 class session
 {
+	//////////////////////////////////////////////////////////////////
+	//////////////////////// MANAGING SESSION ////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	/**
+     * Starts a new session
+     */
+	public static function start()
+	{
+		@session_start();
+	}
+
+	/**
+     * Starts a new session
+     */
+	public static function destroy()
+	{
+		@session_destroy();
+	}
+
+	/**
+     * Destroys a session first and then starts it again
+     */
+	public static function restart()
+	{
+		self::destroy();
+		self::start();
+	}
+
+	/**
+	 * Tries to guess whether a session is started or not
+	 * @return boolean Session state
+	 */
+	public static function exists()
+	{
+		$id = self::id();
+		return !empty($id);
+	}
+
+	//////////////////////////////////////////////////////////////////
+	////////////////////////// SESSION KEYS //////////////////////////
+	//////////////////////////////////////////////////////////////////
+
 	/**
      * Returns the current session id
      *
@@ -50,6 +93,7 @@ class session
 		// If no key was given, return the whole array
 		if(empty($key)) return $_SESSION;
 
+		// Else return wanted key
 		return a::get($_SESSION, $key, $default);
 	}
 
@@ -65,33 +109,8 @@ class session
 		if(!isset($_SESSION)) return false;
 
 		// Remove key from array
-		$_SESSION = a::remove($_SESSION, $key, true);
+		$_SESSION = a::remove($_SESSION, $key);
 
 		return $_SESSION;
-	}
-
-	/**
-     * Starts a new session
-     */
-	public static function start()
-	{
-		@session_start();
-	}
-
-	/**
-     * Starts a new session
-     */
-	public static function destroy()
-	{
-		@session_destroy();
-	}
-
-	/**
-     * Destroys a session first and then starts it again
-     */
-	public static function restart()
-	{
-		self::destroy();
-		self::start();
 	}
 }

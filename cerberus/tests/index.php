@@ -23,20 +23,30 @@ function readTests($tests)
 {
 	$results = array();
 	$errors  = 0;
+	$folder = dir::last(getcwd());
 
-	// Getting title
-	$results['title'] = a::get($tests, '0,suite');
 
 	foreach($tests as $test)
 	{
-		if(a::get($test, 'event') == 'test')
+		$suite = a::get($test, 'suite');
+		$event = a::get($test, 'event');
+		if($event == 'suiteStart' and $suite !== $folder)
+		{
+			if(isset($className))
+			{
+				$results[$className]['errors'] = $errors;
+				$errors = 0;
+			}
+			$className = $suite;
+		}
+		if($event == 'test')
 		{
 			$function = a::get($test, 'test');
 			$status   = a::get($test, 'status') == 'pass';
 			$message  = a::get($test, 'message');
 
 			if(!$status) $errors++;
-			$results[$function] = array(
+			$results[$className][$function] = array(
 				'status' => $status,
 				'message' => $message);
 		}
@@ -47,17 +57,8 @@ function readTests($tests)
 }
 
 // Reading available JSON tests
-$files = glob('*.json');
-foreach($files as $file)
-{
-	$name = f::filename($file);
-	$parsed = parseTests($name);
-
-	$json[$name] = $parsed;
-	$tests[$name] = readTests($parsed);
-}
-
-// a::show($json);
+$json = parseTests('phpunit.json');
+$suites = readTests($json);
 ?>
 </head>
 
@@ -65,28 +66,30 @@ foreach($files as $file)
 	<div class="container">
 		<h1>Summary</h1>
 		<?php
-		$pass = a::extract($tests, 'errors');
+		$pass = a::extract($suites, 'errors');
 		$pass = array_sum($pass);
 		$color = $pass == 0 ? 'success' : 'error';
 		str::display('Number of errors found : ' .$pass, $color);
+		$suites = a::remove($suites, 'errors');
 		?>
 
 		<?php
-		foreach($tests as $test)
+		foreach($suites as $title => $tests)
 		{
-			$title = a::get($test, 'title');
-			$title = str::remove('Test', $title);
-			echo '<h2 style="clear:both">' .$title. '</h2><div class="row">';
+			$strippedTitle = str::remove('Test', $title);
+			echo '<h2 style="clear:both">' .$strippedTitle. '</h2><div class="row">';
 
-			foreach($test as $name => $infos)
+			foreach($tests as $name => $infos)
 			{
 				if($name == 'errors' or $name == 'title') continue;
-				$name = str::remove(a::get($test, 'title').'::test', $name);
+				$name = str::remove($title.'::test', $name);
+				$message = a::get($infos, 'message');
+				if(!$message) $message = a::get($infos, 'status') ? 'Success' : 'Error';
 
 				echo '<div class="span3"><h3>' .$name. '</h3>';
 				echo a::get($infos, 'status')
-					? str::display('Success', 'success')
-					: str::display('Error', 'error');
+					? str::display($message, 'success')
+					: str::display($message, 'error');
 				echo '</div>';
 			}
 			echo '</div>';

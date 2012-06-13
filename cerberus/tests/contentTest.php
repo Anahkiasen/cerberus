@@ -1,9 +1,4 @@
 <?php
-ob_start();
-
-require('../class/core.init.php');
-new Init('test', '../../');
-
 class contentTest extends PHPUnit_Framework_TestCase
 {
 	public function testStart()
