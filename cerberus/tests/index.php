@@ -33,7 +33,10 @@ function readTests($tests)
 	foreach($tests as $test)
 	{
 		$suite = a::get($test, 'suite');
+		$suite = explode('::', $suite);
+		$suite = a::get($suite, 0);
 		$event = a::get($test, 'event');
+
 		if($event == 'suiteStart' and $suite !== $folder)
 		{
 			if(isset($className))
@@ -82,11 +85,16 @@ function readTests($tests)
 			foreach($tests as $name => $infos)
 			{
 				if($name == 'errors' or $name == 'title') continue;
-				$name = str::remove($title.'::test', $name);
-				$message = a::get($infos, 'message');
+				$name     = str::remove($title.'::test', $name);
+				$dataSet  = preg_replace('/(.+) with data set #([0-9]+) \(.+\)/is', '$2', $name);
+				$provider = preg_replace('/(.+) with data set #([0-9]+) \((.+)\)/is', '$3', $name);
+				$name     = preg_replace('/with data set #([0-9]+) \((.+)\)/', null, $name);
+				$message  = a::get($infos, 'message');
+
 				if(!$message) $message = a::get($infos, 'status') ? 'Success' : 'Error';
 
 				echo '<div class="span3"><h3>' .$name. '</h3>';
+				if($provider != $name) echo str::display('#' .$dataSet.' -> ('.$provider.')', 'info');
 				echo a::get($infos, 'status')
 					? str::display($message, 'success')
 					: str::display($message, 'error');
