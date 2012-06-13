@@ -13,13 +13,13 @@ class meta
 	 * Main data array
 	 * @var array
 	 */
-	public static $meta = null;
+	public static $meta       = null;
 
 	/**
 	 * The path to the cached meta data array
 	 * @var string
 	 */
-	private static $file;
+	private static $file      = null;
 
 	/**
 	 * A list of overwrites to apply to the main array
