@@ -178,4 +178,21 @@ class dir
 		}
 		return $modified;
 	}
+
+	/**
+	 * Returns the last folder of a path
+	 *
+	 * @param  string $folder A filepath
+	 * @return string A folder name
+	 */
+	public static function last($folder)
+	{
+		// Last folder of path
+		$folders = explode('/', $folder);
+		if(sizeof($folders) == 1) $folders = explode("\\", $folder);
+
+		// Folder
+
+		return end($folders);
+	}
 }
