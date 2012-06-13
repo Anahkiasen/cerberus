@@ -5,6 +5,10 @@ require('../init.php');
 // Setting title
 head::title('Unit Testing Summary');
 
+// Reading available JSON tests
+$json = parseTests('phpunit.json');
+$suites = readTests($json);
+
 // Parsing the misconstructed JSON reports (fuckers)
 function parseTests($test)
 {
@@ -55,16 +59,12 @@ function readTests($tests)
 	$results['errors'] = $errors;
 	return $results;
 }
-
-// Reading available JSON tests
-$json = parseTests('phpunit.json');
-$suites = readTests($json);
 ?>
 </head>
 
 <body>
 	<div class="container">
-		<h1>Summary</h1>
+		<h1>Unit Testing Results</h1>
 		<?php
 		$pass = a::extract($suites, 'errors');
 		$pass = array_sum($pass);

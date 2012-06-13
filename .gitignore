@@ -19,7 +19,7 @@ sftp-config.json
 #########################
 
 # assets
-## compiled files 
+## compiled files
 assets/cerberus/css
 assets/cerberus/js
 assets/cerberus/img/rgbapng
@@ -63,3 +63,8 @@ cerberus/build.json
 /*.htaccess
 /*.txt
 /*.xml
+
+## PHPUnit ##
+#############
+
+!/phpunit.xml

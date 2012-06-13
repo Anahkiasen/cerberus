@@ -1,0 +1,12 @@
+<phpunit
+	colors="true"
+	bootstrap="cerberus/tests/phpunit.php">
+	<testsuites>
+		<testsuite name="cerberus">
+			<directory>cerberus/tests</directory>
+		</testsuite>
+	</testsuites>
+	<logging>
+		<log type="json" target="cerberus/tests/phpunit.json"/>
+	</logging>
+</phpunit>
