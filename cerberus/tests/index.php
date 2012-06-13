@@ -11,10 +11,10 @@ function parseTests($test)
 	$tests = f::read($test);
 	$tests = preg_replace('#{([^}]+)}#', '{$1}\n', $tests);
 	$tests = explode('\n', $tests);
+
 	foreach($tests as $k => $v)
-	{
 		$tests[$k] = str::parse($v, 'json');
-	}
+
 	return $tests;
 }
 
@@ -22,6 +22,7 @@ function parseTests($test)
 function readTests($tests)
 {
 	$results = array();
+	$errors  = 0;
 
 	// Getting title
 	$results['title'] = a::get($tests, '0,suite');
@@ -31,14 +32,17 @@ function readTests($tests)
 		if(a::get($test, 'event') == 'test')
 		{
 			$function = a::get($test, 'test');
-			$status = a::get($test, 'status') == 'pass';
-			$message = a::get($test, 'message');
+			$status   = a::get($test, 'status') == 'pass';
+			$message  = a::get($test, 'message');
+
+			if(!$status) $errors++;
 			$results[$function] = array(
 				'status' => $status,
 				'message' => $message);
 		}
 	}
 
+	$results['errors'] = $errors;
 	return $results;
 }
 
@@ -52,29 +56,42 @@ foreach($files as $file)
 	$json[$name] = $parsed;
 	$tests[$name] = readTests($parsed);
 }
-a::show($json);
+
+// a::show($json);
 ?>
 </head>
 
 <body>
 	<div class="container">
-	<?php
+		<h1>Summary</h1>
+		<?php
+		$pass = a::extract($tests, 'errors');
+		$pass = array_sum($pass);
+		$color = $pass == 0 ? 'success' : 'error';
+		str::display('Number of errors found : ' .$pass, $color);
+		?>
 
-	foreach($tests as $tests)
-	{
-		$title = a::get($tests, 'title');
-		echo '<h1>' .$title. '</h1>';
-		$tests = a::remove($tests, 'title');
-
-		foreach($tests as $name => $test)
+		<?php
+		foreach($tests as $test)
 		{
-			echo '<h2>' .$name. '</h2>';
-			echo a::get($test, 'status')
-				? str::display('Success', 'success')
-				: str::display('Error', 'error');
+			$title = a::get($test, 'title');
+			$title = str::remove('Test', $title);
+			echo '<h2 style="clear:both">' .$title. '</h2><div class="row">';
+
+			foreach($test as $name => $infos)
+			{
+				if($name == 'errors' or $name == 'title') continue;
+				$name = str::remove(a::get($test, 'title').'::test', $name);
+
+				echo '<div class="span3"><h3>' .$name. '</h3>';
+				echo a::get($infos, 'status')
+					? str::display('Success', 'success')
+					: str::display('Error', 'error');
+				echo '</div>';
+			}
+			echo '</div>';
 		}
-	}
-	?>
+		?>
 	</div>
 </body>
 </html>
