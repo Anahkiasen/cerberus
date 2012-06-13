@@ -151,15 +151,19 @@ class navigation
 		// Set first page in tree as homepage
 		self::$homepage = key(self::$data);
 
-		// Calculating current page and subpage
+		// Calculating current page
 		$page = isset(self::$data[r::get('page')]) ? r::get('page') : self::$homepage;
+
+		// If we are in the admin, subpage is admin variable
+		if($page == 'admin' and !r::get('pageSub')) $_GET['pageSub'] = r::get('admin');
+
+		// Calculating subpage
 		$pageSubmenu = a::get(self::$data, $page.',submenu');
 		$sousPage = ($pageSubmenu)
-			? a::get($pageSubmenu, r::get('pageSub')) ? r::get('pageSub') : key($pageSubmenu)
+			?  a::get($pageSubmenu, r::get('pageSub'))
+				? r::get('pageSub')
+				: key($pageSubmenu)
 			: null;
-
-		// If we are in the admin and can't find the subpage, check the admin GET
-		if($page == 'admin' and !$sousPage) $sousPage = r::get('admin');
 
 		// If we're not in any particular case, fetch the file path
 		if(!in_array($page, self::$system) and $page != 'admin')
