@@ -7,7 +7,7 @@ class mediaTest extends PHPUnit_Framework_TestCase
 
 		$matcher = array(
 			'tag' => 'img',
-			'attributes' => array('src' => 'assets/common/img/test.jpg'));
+			'attributes' => array('src' => PATH_COMMON.'img/test.jpg'));
 		self::assertTag($matcher, $image);
 	}
 
