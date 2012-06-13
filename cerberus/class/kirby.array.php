@@ -389,14 +389,14 @@ class a
 	 * Implode an array by a set of glues
 	 * Also a shortcut for implode but with array first (more logical)
 	 * Useful per example to take an array and output KEY="VALUE",KEY="VALUE" by doing glue($array, ',', '="', '"')
-	 * [CERBERUS-ADD]
 	 *
-	 * @param array 	The array to glue
-	 * @param string 	$glue_pair The glue that will go around the KEY=VALUE pairs
-	 * @param string 	$glue_value The glue that will go around the values
-	 * @param string	If set, $glue_value will go before the value and $glue_value_after will go after
-	 * 					If not, $glue_value will go before and after the value
+	 * @param array  $array             The array to glue
+	 * @param string $glue_pair         The glue that will go around the KEY=VALUE pairs
+	 * @param string $glue_value        The glue that will go around the values
+	 * @param string $glue_varlue_after If set, $glue_value will go before the value and $glue_value_after will go after
+	 *                                  If not, $glue_value will go before and after the value
 	 * @return string The glued array
+	 * @package Cerberus
 	 */
 	public static function glue($array, $glue_pair, $glue_value = null, $glue_value_after = null)
 	{

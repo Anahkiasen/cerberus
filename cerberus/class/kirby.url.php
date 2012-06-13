@@ -8,6 +8,10 @@
  */
 class url
 {
+	//////////////////////////////////////////////////////////////////
+	////////////////////////// INFORMATIONS //////////////////////////
+	//////////////////////////////////////////////////////////////////
+
 	/**
      * Returns the current URL
      *
@@ -22,6 +26,30 @@ class url
 	}
 
 	/**
+	 * Returns the current domain
+	 *
+	 * @return string The current domain
+	 */
+	public static function domain()
+	{
+		$base = explode('/', self::short());
+		$url = a::get($base, 0);
+		if(LOCAL) $url .= '/' .a::get($base, 1);
+
+		return $url.'/';
+	}
+
+	/**
+     * Checks if the URL has a query string attached
+     *
+     * @param  string $url
+     * @return boolean
+     */
+	public static function has_query($url)
+	{
+		return (str::contains($url, '?'));
+	}
+
 	/**
 	 * Get the hash from a link
 	 *
@@ -35,6 +63,23 @@ class url
 
 		return $hash;
 	}
+
+	/**
+     * Checks for a valid URL
+     *
+     * @param  string $url
+     * @return boolean
+     */
+	public static function valid($url)
+	{
+		return v::url($url);
+	}
+
+	//////////////////////////////////////////////////////////////////
+	////////////////////////// EDIT AN URL ///////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	/**
      * Shortens an URL
      * It removes http:// or https:// and uses str::short afterwards
      *
@@ -62,22 +107,9 @@ class url
 	}
 
 	/**
-     * Checks if the URL has a query string attached
-     *
-     * @param  string $url
-     *
-     * @return boolean
-     */
-	public static function has_query($url)
-	{
-		return (str::contains($url, '?'));
-	}
-
-	/**
      * Strips the query from the URL
      *
      * @param  string $url
-     *
      * @return string
      */
 	public static function strip_query($url)
@@ -89,7 +121,6 @@ class url
      * Strips a hash value from the URL
      *
      * @param  string $url
-     *
      * @return string
      */
 	public static function strip_hash($url)
@@ -98,16 +129,21 @@ class url
 	}
 
 	/**
-     * Checks for a valid URL
-     *
-     * @param  string $url
-     *
-     * @return boolean
-     */
-	public static function valid($url)
+	 * Ensures that HTTP:// is present at the beginning of a link. Avoid unvoluntary relative paths
+	 *
+	 * @param  string $url The URL to check
+	 *
+	 * @return string The corrected URL
+	 * @package Cerberus
+	 */
+	public static function http($url = null)
 	{
-		return v::url($url);
+		return 'http://' .str_replace('http://', null, ($url));
 	}
+
+	//////////////////////////////////////////////////////////////////
+	////////////////////////// VISIT AN URL //////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * Redirects the user to a new URL
@@ -142,38 +178,12 @@ class url
 	}
 
 	/**
-	 * Returns the current domain
-	 *
-	 * @return string The current domain
-	 */
-	public static function domain()
-	{
-		$base = explode('/', self::short());
-		$url = a::get($base, 0);
-		if(LOCAL) $url .= '/' .a::get($base, 1);
-		return $url.'/';
-	}
-
-	/**
-	 * Ensures that HTTP:// is present at the beginning of a link. Avoid unvoluntary relative paths
-	 *
-	 * @param  string $url The URL to check
-	 *
-	 * @return string The corrected URL
-	 * @package Cerberus
-	 */
-	public static function http($url = null)
-	{
-		return 'http://' .str_replace('http://', null, ($url));
-	}
-
-	/**
 	 * Creates a link to the current page with additional GET parameters
 	 *
-	 * @param  array   $variables The variables to pass in the URL
-	 * @param  boolean $reset     Whether any existing GET parameters should be removed
+	 * @param   array   $variables The variables to pass in the URL
+	 * @param   boolean $reset     Whether any existing GET parameters should be removed
 	 *
-	 * @return string             The resulting URL
+	 * @return  string             The resulting URL
 	 * @package Cerberus
 	 */
 	public static function reload($variables = array(), $reset = false)
@@ -186,92 +196,138 @@ class url
 		return self::rewrite(null, $variables);
 	}
 
-	/**** Composer une URL depuis un index */
+	//////////////////////////////////////////////////////////////////
+	////////////////////////// CREATE AN URL /////////////////////////
+	//////////////////////////////////////////////////////////////////
+
+	/**
+	 * Uses the website's structure to create an URL from a page index
+	 *
+	 * @param   string $page   A page index, can be page or page-subpage
+	 * @param   array  $params An array of GET parameters to append the URL
+	 *
+	 * @return  string         An URL, classic or rewritten
+	 * @package Cerberus
+	 */
 	public static function rewrite($page = null, $params = array())
 	{
-		// Création du tableau des paramètres
+		// Reconstruct the array of parameters if given flat
 		if(!is_array($params) and $params)
 		{
+			// Separate at each &
 			$explode_params = explode('&', $params);
+
+			// Reassign each parameter into an array
 			$params = array();
 			foreach($explode_params as $p)
 			{
 				$p = explode('=', $p);
-				if(sizeof($p) != 1) $params[$p[0]] = $p[1];
-				else $params[$p[0]] = true;
+
+				// Single key or key/value
+				if(sizeof($p) == 1) $params[$p[0]] = true;
+				else $params[$p[0]] = $p[1];
 			}
 		}
 
-		// Détermination de la page/sous-page
-		$hashless = url::strip_hash($page);
-		$hash = str_replace($hashless, null, $page);
-		$page = $hashless;
+		// Retrieve parameters ------------------------------------- /
 
-		// Page actuelle
+		// If we were given a hash in the index, separate it
+		$noHash = url::strip_hash($page);
+		$hash   = str_replace($noHash, null, $page);
+		$page   = $noHash;
+
+		// If no page was given, use the current one
 		if(!$page) $page = navigation::current();
 
+		// Explode the index to get page and subpage
 		if(!is_array($page)) $page = explode('-', $page);
-		$page0 = a::get($page, 0);
 
-		$submenu = a::get(navigation::get($page0), 'submenu');
-		$page1 = $submenu ? key($submenu) : null;
-		$page1 = a::get($page, 1, $page1);
+		// Get page
+		$pageMain = a::get($page, 0);
 
-		// Si le nom HTML de la page est fourni
+		// Get subpage
+		$pageSub = a::get($page, 1);
+		if(!$pageSub)
+		{
+			// Or if no subpage given, search first page available in submenu
+			$submenu = a::get(navigation::get($pageMain), 'submenu');
+			$pageSub = $submenu ? key($submenu) : null;
+		}
+
+		// If we were given a specific name for URL rewriting
 		if(isset($params['html']))
 		{
-			$pageHTML = $params['html'];
+			$pageRename = $params['html'];
 			$params = a::remove($params, 'html');
 		}
 
-		// Ecriture du lien
-		$lien = null;
-		if($page0) $params['page'] = $page0;
-		if($page1)
+		// Classic link writing ------------------------------------ /
+
+		$link = null;
+
+		// Assign pageMain and pageSub as GET parameters
+		if($pageMain) $params['page'] = $pageMain;
+		if($pageSub)
 		{
-			if($page0 == 'admin') $params['admin'] = $page1;
-			else $params['pageSub'] = $page1;
+			if($pageMain == 'admin') $params['admin'] = $pageSub;
+			else $params['pageSub'] = $pageSub;
 		}
 
-		if(!REWRITING or $page0 == 'admin')
+		// Classic HTML link (no REWRITING or in the admin area)
+		if(!REWRITING or $pageMain == 'admin')
 		{
 			if(!empty($params))
 				foreach($params as $key => $value) if(!empty($key))
 				{
-					$lien .= !$lien ? '?' : '&';
-					$lien .= is_bool($value) ? $key : $key. '=' .$value;
+					$link .= !$link ? '?' : '&';
+					$link .= is_bool($value) ? $key : $key. '=' .$value;
 				}
-				$lien = 'index.php'.$lien;
+
+			$link = 'index.php'.$link;
+			return $link.$hash;
 		}
-		else
+
+		// URL Rewriting ------------------------------------------- /
+
+		// Append page and subpage
+		if($pageMain) $link .= $pageMain. '/';
+		if($pageSub)  $link .= $pageSub. '/';
+		$params = a::remove($params, array('page', 'pageSub'));
+
+		// Append parameters
+		if(!empty($params))
 		{
-			$this_page = $page0.'-'.$page1;
-			if(isset($params['page'])) $lien .= $params['page']. '/';
-			if(isset($params['pageSub'])) $lien .= $params['pageSub']. '/';
-			$params = a::remove($params, array('page', 'pageSub'));
-
-			if(!empty($params))
+			if(is_array($params))
 			{
-				if(is_array($params))
-					foreach($params as $k => $v) $lien .= $k.'-'.$v.'/';
-				else $lien .= $params;
-				if(substr($lien, -1, 1) != '/') $lien .= '/';
+				foreach($params as $k => $v)
+					$link .= $k.'-'.$v.'/';
 			}
-			$lien = str_replace($page0. '-', null, $lien);
+			else $link .= $params;
 
-			// Si présence du nom HTML de la page (dans admin-meta) on l'ajoute
-			$meta = meta::page($this_page);
-			if(!isset($pageHTML))
-				$pageHTML =
-					a::get($meta, 'url',
-					a::get($meta, 'titre',
-					l::get('menu-'.navigation::current(),
-					null)));
-
-			if($pageHTML)
-				$lien .= str::slugify($pageHTML). '.html';
 		}
 
-		return $lien.$hash;
+		// Ensure the link ends with a slash
+		if(substr($link, -1, 1) != '/') $link .= '/';
+
+		// Parameters bearing the page's name as key are simplified
+		// Example : /news/articles/news-5/ will become news/articles/5/
+		$link = str::remove($pageMain. '-', $link);
+
+		// If no URL text given, fetch the page's title attribute to use it
+		if(!isset($pageRename))
+		{
+			$meta = meta::page($pageMain. '-' .$pageSub);
+			$pageRename =
+				a::get($meta, 'url',
+				a::get($meta, 'titre',
+				l::get('menu-'.navigation::current()
+			)));
+		}
+
+		// If we found/have a page name, slugify it and append it
+		if($pageRename)
+			$link .= str::slugify($pageRename). '.html';
+
+		return $link.$hash;
 	}
 }
