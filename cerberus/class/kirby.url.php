@@ -22,6 +22,19 @@ class url
 	}
 
 	/**
+	/**
+	 * Get the hash from a link
+	 *
+	 * @param  string $url An url
+	 * @return string A hashtag
+	 */
+	public function get_hash($url)
+	{
+		$hash = preg_replace('/(.+)#(.+)$/', '$1', $url);
+		if($hash == $url) $hash = null;
+
+		return $hash;
+	}
      * Shortens an URL
      * It removes http:// or https:// and uses str::short afterwards
      *
