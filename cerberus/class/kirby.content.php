@@ -10,9 +10,6 @@
  */
 class content
 {
-	private static $cache_folder = PATH_CACHE;
-	private static $cachename = null;
-
 	/**
 		* Starts the output buffer
 		*
