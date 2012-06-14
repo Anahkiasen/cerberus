@@ -67,8 +67,12 @@ class config
 	 /**
 	  * Reset config and load the configuration default's value
 	  */
-	 public function __construct()
+	 public function __construct($file = null)
 	 {
+	 	// Set config file if specified
+	 	if($file) self::$config_file = $file;
+
+	 	// Reset parameters
 	 	self::$config = array();
 		config::set(config::$defaults);
 	 }
@@ -99,6 +103,18 @@ class config
 	}
 
 	/**
+	 * Switch the current config file in use
+	 * If the file already exists, it will load its content
+	 *
+	 * @param  string $file A filename of path to a file
+	 */
+	public static function change($file)
+	{
+		if(v::filename($file)) $config_file = $file;
+		if(file_exists($file)) self::load($file);
+	}
+
+	/**
 	 * Loads an additional config file
 	 * Returns the entire configuration array
 	 *
@@ -113,17 +129,24 @@ class config
 	}
 
 	/**
-	 * Adds a value to the config file
+	 * Adds a value to a config file
 	 *
-	 * @param  string  $key The parameter to add
+	 * @param  string  $key   The parameter to add
 	 * @param  string  $value Its value
+	 * @param  string  $file  Path to a config file
 	 * @return boolean The success of writing into the file
 	 */
 	public static function hardcode($key, $value = null)
 	{
-		$json = f::read(PATH_CONF, 'json');
+		// Reading config file
+		$json = f::read(self::$config_file, 'json');
+
+		// Writing new value in current config and file
 		$json[$key] = $value;
-		f::write(PATH_CONF, $json);
+		config::set($key, $value);
+
+		// Saving changes
+		f::write(self::$config_file, $json);
 	}
 
 	/**
@@ -142,7 +165,10 @@ class config
 		$online_password = null,
 		$online_name     = null)
 	{
+		// Local informations
 		if($local_name and !self::get('local.name')) self::hardcode('local.name', $local_name);
+
+		// Online informations
 		if(!self::get('db.host') and $online_password and $online_host and $online_name and $online_user)
 		{
 			self::hardcode('db.host',     $online_host);
@@ -151,4 +177,52 @@ class config
 			self::hardcode('db.name',     $online_name);
 		}
 	}
+}
+
+/**
+ * Returns the status from a Kirby response
+ *
+ * @param   array   $response The Kirby response array
+ * @return  string  "error" or "success"
+ * @package Kirby
+ */
+function status($response)
+{
+	return a::get($response, 'status');
+}
+
+/**
+ * Returns the message from a Kirby response
+ *
+ * @param   array   $response The Kirby response array
+ * @return	string  The message
+ * @package Kirby
+ */
+function msg($response)
+{
+	return a::get($response, 'msg');
+}
+
+/**
+ * Checks if a Kirby response is an error response or not.
+ *
+ * @param   array   $response The Kirby response array
+ * @return  boolean	Returns true if the response is an error, returns false if no error occurred
+ * @package Kirby
+ */
+function error($response)
+{
+	return status($response) == 'error';
+}
+
+/**
+ * Checks if a Kirby response is a success response.
+ *
+ * @param   array    $response The Kirby response array
+ * @return  boolean  Returns true if the response is a success, returns false if an error occurred
+ * @package Kirby
+ */
+function success($response)
+{
+	return !error($response);
 }

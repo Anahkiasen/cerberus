@@ -205,7 +205,7 @@ class Init
 		if(!defined('PATH_CACHE')) define('PATH_CACHE', PATH_CORE.'cache/');
 
 		// Define if we're in the main website area or in a subofolder
-		if(!defined('SUBFOLDER')) define('SUBFOLDER', PATH_MAIN !== null);
+		if(!defined('SUBFOLDER'))  define('SUBFOLDER',  PATH_MAIN !== null);
 	}
 
 	/**
