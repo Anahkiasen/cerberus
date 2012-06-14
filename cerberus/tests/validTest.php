@@ -67,6 +67,31 @@ class ValidTest extends PHPUnit_Framework_TestCase
 			);
 	}
 
+	public function checks()
+	{
+		// TODO : Check ["", "", "false"],
+		$checks = '[
+			["test", "facultative", true],
+			["", "facultative", true],
+
+			["", "nom", false],
+			["maxime", "nom", true],
+			["Maxime Fabre", "name", true],
+			["Jean-Henri D\'Arbrœ des Écumaàñes", "prenom", true],
+			["Anahkiasen66697", "nom", false],
+
+			["", "number", false],
+			["75", "number", true],
+			["12.789", "nombre", true],
+			["1,4535.79", "nombre", true],
+
+			[" ", "hiyu", "true"],
+			["test", "date", "true"]
+		]';
+		$checks = (array) json_decode($checks, true);
+		return $checks;
+	}
+
 	// Tests ------------------------------------------------------- /
 
 	/**
@@ -113,6 +138,10 @@ class ValidTest extends PHPUnit_Framework_TestCase
 
 		if($isValid) self::assertTrue($valid);
 		else self::assertFalse($valid);
+
+		$check = valid::check($email, 'email');
+		if($isValid) self::assertTrue($check);
+		else self::assertFalse($check);
 	}
 
 	/**
@@ -124,6 +153,10 @@ class ValidTest extends PHPUnit_Framework_TestCase
 
 		if($isValid) self::assertTrue($valid);
 		else self::assertFalse($valid);
+
+		$check = valid::check($url, 'url');
+		if($isValid) self::assertTrue($check);
+		else self::assertFalse($check);
 	}
 
 	/**
@@ -135,5 +168,15 @@ class ValidTest extends PHPUnit_Framework_TestCase
 
 		if($isValid) self::assertTrue($valid);
 		else self::assertFalse($valid);
+	}
+
+	/**
+	 * @dataProvider checks
+	 */
+	public function testCheck($string, $type, $isValid)
+	{
+		$check = valid::check($string, $type);
+		if($isValid) self::assertTrue($check);
+		else self::assertFalse($check);
 	}
 }
