@@ -40,9 +40,9 @@ class content
 	 *
 	 * @return string Content of the output buffer
 	 */
-	public function get()
+	public static function get()
 	{
-		return self::end(true);
+		return trim(self::end(true));
 	}
 
 	/**
@@ -54,9 +54,11 @@ class content
 	 */
 	public static function load($file, $return = true)
 	{
+		if(!file_exists($file)) return false;
+
 		self::start();
 			require_once($file);
-		$content = self::end(true);
+		$content = self::get();
 
 		if($return) return $content;
 		echo $content;
