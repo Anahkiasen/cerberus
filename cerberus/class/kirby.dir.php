@@ -124,10 +124,12 @@ class dir
 	{
 		if(!is_dir($old) or !is_dir($new)) return false;
 
-		// TODO : Both files in the same folder
+		$oldMove = explode('/', $old);
+		$oldMove = end($oldMove);
 
-		$newPlace = $new.DIRECTORY_SEPARATOR.$old;
-		return (@rename($old, $newPlace) and is_dir($newPlace));
+		// Calculate new place for the old folder
+		$newPlace = $new.'/'.$oldMove;
+		return (rename($old, $newPlace) and is_dir($newPlace));
 	}
 
 	/**
