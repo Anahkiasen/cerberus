@@ -1,74 +1,96 @@
 <?php
 class dir
 {
-  /**
-   * Creates a new directory.
-   * If the folders containing the end folder don't exist, they will be created too
-   * [CERBERUS-EDIT]
-   *
-   * @param   string  $directory The path for the new directory
-   * @param   boolean $recursive Tells the function to act recursively or not
-   * @return  boolean True: the dir has been created, false: creating failed
-   */
-	public static function make($directory, $recursive = true)
+	/**
+	 * Creates a new directory.
+	 * If the folders containing the end folder don't exist, they will be created too
+	 *
+	 * @param   string  $directory The path for the new directory
+	 * @param   boolean $recursive Tells the function to act recursively or not
+	 * @return  boolean True: the dir has been created, false: creating failed
+	 * @package Kirby, Cerberus
+	 */
+	public static function make($directory, $chmod = 0755, $recursive = true)
 	{
-		if(!$recursive)
+		// Recursive creation -------------------------------------- /
+
+		if($recursive)
 		{
-			if(is_dir($directory)) return true;
-			if(!@mkdir($directory, 0755)) return false;
-			@chmod($directory, 0755);
-			return true;
-		}
-		else
-		{
-			$directories = explode('/', $directory);
+			// Explode
+			$directories  = self::explode($directory);
 			$current_path = null;
 
+			// Crawl through directories and create all nonexistants
 			foreach($directories as $directory)
 				if($directory !== '.' and $directory !== '..')
 				{
+					// Update current position
 					$current_path .= $directory.'/';
-					$make = self::make($current_path, false);
+
+					// Create folder if they don't exist
+					$make = self::make($current_path, $chmod, $recursive = false);
+
+					// Escape if an error is thrown
 					if(!$make) return false;
 				}
 			return true;
 		}
+
+		// Create a folder ----------------------------------------- /
+
+		// If it already exists, cancel
+		if(is_dir($directory)) return true;
+
+		// Try creating the folder
+		try
+		{
+			$created = mkdir($directory, $chmod);
+			chmod($directory, $chmod);
+		}
+		catch(Exception $e) { Debug::handle($e); }
+
+		return true;
 	}
 
-  /**
-   * Reads all files from a directory and returns them as an array.
-   * It skips unwanted invisible stuff.
-   *
-   * @param   string  $dir The path of directory
-   * @return  mixed   An array of filenames or false
-   */
+	/**
+	 * Reads all files from a directory and returns them as an array.
+	 * It skips unwanted invisible stuff.
+	 *
+	 * @param   string  $dir The path of directory
+	 * @return  mixed   An array of filenames or false
+	 */
 	public static function read($dir)
 	{
 		if(!is_dir($dir)) return false;
+
+		// Ignore common system files
 		$skip = array('.', '..', '.DS_Store');
+
+		// Return list of files
 		return array_diff(scandir($dir), $skip);
 	}
 
-  /**
-   * Reads a directory and returns a full set of info about it
-   *
-   * @param   string  $dir The path of directory
-   * @return  mixed   An info array or false
-   */
+	/**
+	 * Reads a directory and returns a full set of info about it
+	 *
+	 * @param   string  $dir The path of directory
+	 * @return  mixed   An info array or false
+	 */
 	public static function inspect($dir)
 	{
 		if(!is_dir($dir)) return array();
 
-		$files = dir::read($dir);
-		$modified = filemtime($dir);
+		// Fill basic informations for folder
 		$data = array(
-			'name' => basename($dir),
-			'root' => $dir,
-			'modified' => $modified,
-			'files' => array(),
+			'name'     => basename($dir),
+			'root'     => $dir,
+			'modified' => filemtime($dir),
+			'files'    => array(),
 			'children' => array());
 
-		foreach($files AS $file)
+		// List all files
+		$files = dir::read($dir);
+		foreach($files as $file)
 		{
 			if(is_dir($dir.'/'.$file)) $data['children'][] = $file;
 			else $data['files'][] = $file;
@@ -77,9 +99,9 @@ class dir
 		return $data;
 	}
 
-  /**
-   * Moves a directory to a new location
-   *
+	/**
+	 * Moves a directory to a new location
+	 *
 	 * @param   string  $old The old name of the file
 	 * @param   string  $new The new name of the file
 	 * @return  boolean Whether the directory has been renamed or not
@@ -94,26 +116,27 @@ class dir
 	/**
 	 * Moves a directory to a new location
 	 *
-   * @param   string  $old The current path of the directory
-   * @param   string  $new The desired path where the dir should be moved to
-   * @return  boolean True: the directory has been moved, false: moving failed
-   */
+	 * @param   string  $old The current path of the directory
+	 * @param   string  $new The desired path where the dir should be moved to
+	 * @return  boolean True: the directory has been moved, false: moving failed
+	 */
 	public static function move($old, $new)
 	{
 		if(!is_dir($old) or !is_dir($new)) return false;
 
+		// TODO : Both files in the same folder
+
 		$newPlace = $new.DIRECTORY_SEPARATOR.$old;
-		var_dump($newPlace);
 		return (@rename($old, $newPlace) and is_dir($newPlace));
 	}
 
-  /**
-   * Deletes a directory
-   *
-   * @param   string   $dir The path of the directory
-   * @param   boolean  $keep If set to true, the directory will flushed but not removed.
-   * @return  boolean  True: the directory has been removed, false: removing failed
-   */
+	/**
+	 * Deletes a directory
+	 *
+	 * @param   string   $dir The path of the directory
+	 * @param   boolean  $keep If set to true, the directory will flushed but not removed.
+	 * @return  boolean  True: the directory has been removed, false: removing failed
+	 */
 	public static function remove($dir, $keep = false)
 	{
 		if(!is_dir($dir)) return false;
@@ -125,7 +148,7 @@ class dir
 
 		while($item = @readdir($handle))
 		{
-			if(is_dir($dir.'/'.$item) && !in_array($item, $skip))
+			if(is_dir($dir.'/'.$item) and !in_array($item, $skip))
 				self::remove($dir.'/'.$item);
 
 			else if(!in_array($item, $skip))
@@ -137,34 +160,34 @@ class dir
 		return true;
 	}
 
-  /**
-   * Flushes a directory
-   *
-   * @param   string   $dir The path of the directory
-   * @return  boolean  True: the directory has been flushed, false: flushing failed
-   */
+	/**
+	 * Flushes a directory
+	 *
+	 * @param   string   $dir The path of the directory
+	 * @return  boolean  True: the directory has been flushed, false: flushing failed
+	 */
 	public static function clean($dir)
 	{
 		return self::remove($dir, true);
 	}
 
-  /**
-   * Gets the size of the directory and all subfolders and files
-   *
-   * @param   string   $dir The path of the directory
-   * @param   boolean  $recursive
-   * @param   boolean  $nice returns the size in a human readable size
-   * @return  mixed
-   */
+	/**
+	 * Gets the size of the directory and all subfolders and files
+	 *
+	 * @param   string   $dir The path of the directory
+	 * @param   boolean  $recursive
+	 * @param   boolean  $nice returns the size in a human readable size
+	 * @return  mixed
+	 */
 	public static function size($path, $recursive = true, $nice = false)
 	{
 		if(!file_exists($path)) return false;
 		if(is_file($path)) return self::size($path, $nice);
 		$size = 0;
 
-		foreach(glob($path."/*") AS $file)
+		foreach(glob($path."/*") as $file)
 		{
-			if($file != "." && $file != "..")
+			if($file != "." and $file != "..")
 			{
 				$size += $recursive
 					? self::size($file, true)
@@ -174,18 +197,18 @@ class dir
 		return ($nice) ? f::nice_size($size) : $size;
 	}
 
-  /**
-   * Recursively check when the dir and all
-   * subfolders have been modified for the last time.
-   *
-   * @param   string   $dir The path of the directory
-   * @param   int      $modified internal modified store
-   * @return  int
-   */
+	/**
+	 * Recursively check when the dir and all
+	 * subfolders have been modified for the last time.
+	 *
+	 * @param   string   $dir The path of the directory
+	 * @param   int      $modified internal modified store
+	 * @return  int
+	 */
 	public static function modified($dir, $modified = 0)
 	{
 		$files = self::read($dir);
-		foreach($files AS $file)
+		foreach($files as $file)
 		{
 			if(!is_dir($dir.'/'.$file)) continue;
 
@@ -211,5 +234,20 @@ class dir
 		// Folder
 
 		return end($folders);
+	}
+
+	/**
+	 * Explodes a filepath with correct separator
+	 *
+	 * @param  string $filepath A file path
+	 * @return array            An exploded filepath
+	 */
+	public function explode($filepath)
+	{
+		$folders = explode('/', $filepath);
+		if(sizeof($folders) == 1)
+			$folders = explode('\\', $filepath);
+
+		return $folders;
 	}
 }
