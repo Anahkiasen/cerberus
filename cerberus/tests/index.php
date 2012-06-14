@@ -76,7 +76,12 @@ function readTests($tests)
 		<ul id ="toc" class="alert alert-block alert-info">
 			<?php
 			foreach($suites as $title => $osef)
-				if($title != 'errors') echo '<li>' .str::link('#'.str::slugify($title), str::remove('Test', $title)). '</li>';
+				if($title != 'errors')
+				{
+					$link = '#'.str::slugify($title);
+					$title = str::remove('Test', $title);
+					echo '<li>' .str::link($link, $title). '</li>';
+				}
 			?>
 		</ul>
 
@@ -122,6 +127,11 @@ function readTests($tests)
 			echo '</section>';
 		}
 		?>
+	</section>
+
+	<section id="coverage">
+		<h1>Tests coverage</h1>
+
 	</section>
 </body>
 </html>
