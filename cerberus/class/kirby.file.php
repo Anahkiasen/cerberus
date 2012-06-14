@@ -17,6 +17,17 @@ class f
 	*/
 
 	/**
+	 * Creates an empty file
+	 *
+	 * @param  string  $file A filepath
+	 * @return boolean       Whether the file was created or not
+	 */
+	public static function create($file)
+	{
+		return f::write($file, null);
+	}
+
+	/**
 	 * Creates a new file, and the folders containing it if they don't exist
 	 * [CERBERUS-EDIT]
 	 *
