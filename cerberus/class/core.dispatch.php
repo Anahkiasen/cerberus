@@ -754,7 +754,7 @@ class dispatch
 
 		// Append each part and implode it with a linebreak
 		if($inlineBefore) $head[] = self::inlineJS($inlineBefore);
-		if($url) $head[] = '<script src="' .$url. '"></script>';
+		if($url) foreach($url as $u) $head[] = '<script src="' .$u. '"></script>';
 		if($inlineAfter) $head[] = self::inlineJS($inlineAfter);
 		$head = "\t".implode(PHP_EOL."\t", $head).PHP_EOL;
 
