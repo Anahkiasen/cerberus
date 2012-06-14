@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * Dispatch
  *
  * This class handles assets, paths and
@@ -769,6 +768,8 @@ class dispatch
 
 	/**
 	 * Add a stylesheet/style to the current page
+	 *
+	 * @param  string $styelsheets The stylesheet to add
 	 */
 	public static function addCSS($stylesheets)
 	{
@@ -777,6 +778,8 @@ class dispatch
 
 	/**
 	 * Remove a stylesheet from a page
+	 *
+	 * @param  string $stylesheets The stylesheet to remove
 	 */
 	public static function removeCSS($stylesheets)
 	{

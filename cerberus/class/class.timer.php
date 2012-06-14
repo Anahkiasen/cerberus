@@ -41,10 +41,10 @@ class Timer
 	 *
 	 * @param  string $key The name of the timer, if none given, last one assumed
 	 */
-	public static function save($key = null)
+	public static function stop($key = null)
 	{
 		// If no key given, use last one
-		if(!$key)
+		if(is_null($key))
 		{
 			$keys = array_keys(self::$running);
 			$key  = end($keys);
@@ -92,7 +92,7 @@ class Timer
 	{
 		// Save any timer still running
 		foreach(self::$running as $k => $v)
-			self::save($k);
+			self::stop($k);
 
 		// Calculate total time
 		self::$finished['total'] = array_sum(self::$finished);
@@ -112,19 +112,20 @@ class Timer
 		if(!empty(self::$running)) self::close();
 
 		$total = self::$finished['total'];
-		echo '<pre>';
+		$render = '<pre>';
 			foreach(self::$finished as $name => $time)
 			{
 				$percentageTime = round($time * 100 / $total, 0);
-				echo
+				$render .=
+				'<p>'.
 					$name.
 					self::pad($name).
 					$time.
 					self::pad($time).
-					$percentageTime.
-					'%<br/>';
+					$percentageTime.'%'.
+				'</p>';
 			}
-		echo '</pre>';
+		echo $render.'</pre>';
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -153,8 +154,8 @@ class Timer
 	 */
 	private static function get($table = 'running', $key = null)
 	{
-		if(!$key) return self::${$table};
-		else      return a::get(self::${$table}, $key);
+		if(is_null($key)) return self::${$table};
+		else return a::get(self::${$table}, $key);
 	}
 
 	/**
