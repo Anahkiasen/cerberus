@@ -127,7 +127,6 @@ class db
 
 			    // Set the right charset
 			    $charset = self::charset($charset);
-			    if(error($charset)) return $charset;
 			}
 		}
 	}
@@ -659,9 +658,6 @@ class db
      */
 	public static function fields($table)
     {
-		$connection = self::connection();
-		if(error($connection)) return $connection;
-
 		if(self::is_table($table))
 		{
 			$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
