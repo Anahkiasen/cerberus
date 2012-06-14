@@ -43,7 +43,7 @@ function readTests($tests)
 
 		if($event == 'suiteStart' and $suite !== $folder)
 		{
-			if(isset($className))
+			if(isset($className) and isset($results[$className]))
 			{
 				$results[$className]['errors'] = $errors;
 				$errors = 0;
@@ -74,7 +74,7 @@ function readTests($tests)
 		<h1>Unit Testing Results</h1>
 
 		<h2>Table of contents</h2>
-		<ul id ="toc">
+		<ul id ="toc" class="alert alert-block alert-info">
 			<?php
 			foreach($suites as $title => $osef)
 				echo '<li>' .str::link('#'.str::slugify($title), str::remove('Test', $title)). '</li>';
@@ -94,7 +94,6 @@ function readTests($tests)
 		<?php
 		foreach($suites as $title => $tests)
 		{
-			if(sizeof($tests) == 1) continue;
 			$testCount = sizeof($tests) - 1;
 			$passed = $testCount - intval(a::get($tests, 'errors'));
 
