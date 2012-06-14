@@ -7,7 +7,7 @@
  *
  * @package Kirby, Cerberus
  */
-class v
+class valid
 {
 	/**
 	 * Validate a string for a certain type
@@ -25,11 +25,11 @@ class v
 				break;
 
 			case 'url':
-				return !empty($string) and v::url($string);
+				return !empty($string) and self::url($string);
 				break;
 
 			case 'email':
-				return !empty($string) and v::email($string);
+				return !empty($string) and self::email($string);
 				break;
 
 			case 'nom':

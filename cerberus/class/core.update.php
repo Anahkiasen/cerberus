@@ -11,7 +11,7 @@ class update
 	 * The last revision number to date
 	 * @var string
 	 */
-	private static $last = '2012-06-08,ab0b60cb0aa1178bd1f8ec3c102ded26beaf45db';
+	private static $last = '2012-06-14,ab0b60cb0aa1178bd1f8ec3c102ded26beaf45db';
 
 	/**
 	 * Sets the current revision number and updates the core
@@ -37,6 +37,10 @@ class update
 		if(self::outdate('2012-06-08'))
 		{
 			self::codematch('new forms\(', 'new Forms(');
+		}
+		if(self::outdate('2012-06-14'))
+		{
+			self::codematch('v::', 'valid::');
 		}
 
 		// Update config file format

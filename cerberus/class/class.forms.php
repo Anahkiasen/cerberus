@@ -125,7 +125,7 @@ class Forms
 			                       	   ? a::get($_FILES, $key)
 			                           : str::sanitize(r::request($key, $default), $type);
 
-			$status                = (v::check($value, $type) and a::get($value, 'error', 0) == 0);
+			$status                = (valid::check($value, $type) and a::get($value, 'error', 0) == 0);
 			$this->status[$key]    = $status ? 'success' : 'error';
 
 			$result[$key]          = $value;

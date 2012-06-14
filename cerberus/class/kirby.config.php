@@ -110,7 +110,7 @@ class config
 	 */
 	public static function change($file)
 	{
-		if(v::filename($file)) $config_file = $file;
+		if(valid::filename($file)) $config_file = $file;
 		if(file_exists($file)) self::load($file);
 	}
 

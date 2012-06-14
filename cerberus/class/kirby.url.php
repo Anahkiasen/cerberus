@@ -72,7 +72,7 @@ class url
      */
 	public static function valid($url)
 	{
-		return v::url($url);
+		return valid::url($url);
 	}
 
 	//////////////////////////////////////////////////////////////////

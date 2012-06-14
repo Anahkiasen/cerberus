@@ -74,7 +74,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testPassword($password = null)
 	{
-		$valid = v::password($password);
+		$valid = valid::password($password);
 
 		if(strlen($password) < 4) self::assertFalse($valid);
 		else self::assertTrue($valid);
@@ -85,7 +85,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testPasswords($password = null, $password2 = null)
 	{
-		$valid = v::passwords($password, $password2);
+		$valid = valid::passwords($password, $password2);
 
 		if(strlen($password) < 4 or strlen($password2) < 4) self::assertFalse($valid);
 		elseif($password != $password2) self::assertFalse($valid);
@@ -97,7 +97,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testDate($date = null, $isValid = false)
 	{
-		$valid = v::date($date);
+		$valid = valid::date($date);
 		$time = strtotime($date);
 
 		if($isValid) self::assertEquals($valid, $time);
@@ -109,7 +109,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testEmail($email = null, $isValid = false)
 	{
-		$valid = v::email($email);
+		$valid = valid::email($email);
 
 		if($isValid) self::assertTrue($valid);
 		else self::assertFalse($valid);
@@ -120,7 +120,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testUrl($url = null, $isValid = false)
 	{
-		$valid = v::url($url);
+		$valid = valid::url($url);
 
 		if($isValid) self::assertTrue($valid);
 		else self::assertFalse($valid);
@@ -131,7 +131,7 @@ class ValidTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testFilename($filename = null, $isValid = false)
 	{
-		$valid = v::filename($filename);
+		$valid = valid::filename($filename);
 
 		if($isValid) self::assertTrue($valid);
 		else self::assertFalse($valid);
