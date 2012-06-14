@@ -256,8 +256,7 @@ class Init
 	{
 		$this->module('config');
 
-		// Load the configuration default's value
-		config::set(config::$defaults);
+		new config();
 
 		// Create the config file if it doesn't exist
 		if(!file_exists(PATH_CONF)) f::write(PATH_CONF, '{'.PHP_EOL.'}');

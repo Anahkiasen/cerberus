@@ -64,6 +64,14 @@ class config
 		/* Navigation */
 		'index'               => 'index');
 
+	 /**
+	  * Load the configuration default's value
+	  */
+	 public function __construct()
+	 {
+		config::set(config::$defaults);
+	 }
+
 	/**
 	 * Gets a config value by key
 	 *
