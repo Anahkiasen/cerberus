@@ -32,11 +32,6 @@ class v
 				return !empty($string) and v::email($string);
 				break;
 
-			case 'phone':
-			case 'telephone':
-				return !empty($string) and v::phone($string);
-				break;
-
 			case 'nom':
 			case 'prenom':
 			case 'name':
@@ -155,19 +150,7 @@ class v
      */
 	public static function filename($filename)
 	{
-		$options = array('format' => 'a-zA-Z0-9_-', 'min_length' => 2);
+		$options = array('format' => 'a-zA-Z0-9_\-', 'min_length' => 2);
 		return self::string($filename, $options);
-	}
-
-	/**
-     * Checks for valid phone number
-     *
-     * @param  string  $string A phone number
-     * @return boolean
-     */
-	public static function phone($phone)
-	{
-		$regex = '#^[\d \+\(\)\-]+$#';
-		return (preg_match($regex, $phone));
 	}
 }
