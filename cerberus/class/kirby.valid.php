@@ -150,7 +150,7 @@ class v
      */
 	public static function filename($filename)
 	{
-		$options = array('format' => 'a-zA-Z0-9_\-', 'min_length' => 2);
+		$options = array('format' => 'a-zA-Z0-9_\-\.', 'min_length' => 2);
 		return self::string($filename, $options);
 	}
 }
