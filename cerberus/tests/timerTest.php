@@ -37,7 +37,8 @@ class TimerTest extends PHPUnit_Framework_TestCase
 		Timer::start();
 
 		// Get its number
-		$timerName = end(array_keys(Timer::$running));
+		$timerName = array_keys(Timer::$running);
+		$timerName = end($timerName);
 		self::assertEquals($timerName, 1);
 
 		// Check if it's a float
