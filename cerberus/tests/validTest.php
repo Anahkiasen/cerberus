@@ -1,5 +1,5 @@
 <?php
-class validTest extends PHPUnit_Framework_TestCase
+class ValidTest extends PHPUnit_Framework_TestCase
 {
 	// dataProviders ---------------------------------------------- /
 

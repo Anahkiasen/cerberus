@@ -1,5 +1,5 @@
 <?php
-class sessionTest extends PHPUnit_Framework_TestCase
+class SessionTest extends PHPUnit_Framework_TestCase
 {
 	// Destroy any existing session everytime a function ends
 

@@ -1,5 +1,5 @@
 <?php
-class mediaTest extends PHPUnit_Framework_TestCase
+class MediaTest extends PHPUnit_Framework_TestCase
 {
 	public function testImage()
 	{
