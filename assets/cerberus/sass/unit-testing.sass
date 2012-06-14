@@ -1,0 +1,72 @@
+// Imports --------------------------------------------------------- /
+
+@import base
+@import susy
+
+// Variables ------------------------------------------------------- /
+
+$columns : 2
+$omega   : 12 / $columns
+
+// Scaffolding ----------------------------------------------------- /
+
+h1,
+h2
+	font-family: $sansFontFamily
+	text-transform: uppercase
+	font-weight: 100
+	line-height: 1
+	margin: ms(0) 0
+h1
+	font-family: 'Raleway', $sansFontFamily
+	text-align: center
+	font-size: ms(4)
+
+h2
+	padding-bottom: ms(-2)
+	font-size: ms(2)
+	border-bottom: 1px solid grey(60)
+
+ul,
+li
+	list-style-type: lower-greek
+	margin: 0
+	padding: 0
+ul
+	margin: ms(0) 0
+li
+	margin-left: ms(1)
+	font-weight: 100
+	font-size: ms(0)
+	line-height: 1
+
+// Structure ------------------------------------------------------- /
+
+#corps
+	+container
+	max-width: 90%
+
+// Tests ----------------------------------------------------------- /
+
+#corps section
+	+clearfix
+	margin-top: ms(2)
+
+article
+	+span-columns($columns)
+	&:nth-child(#{$omega}n + #{$omega})
+		+omega
+
+.alert-info
+	font-size: ms(-1)
+
+// Responsive ------------------------------------------------------ /
+
++at-breakpoint($to-ipad)
+	h1
+		font-size: ms(2)
+	article
+		+reset-columns
+		width: 95%
+		&:nth-child(#{$omega}n + #{$omega})
+			float: none
