@@ -77,7 +77,7 @@ function readTests($tests)
 		<ul id ="toc" class="alert alert-block alert-info">
 			<?php
 			foreach($suites as $title => $osef)
-				echo '<li>' .str::link('#'.str::slugify($title), str::remove('Test', $title)). '</li>';
+				if($title != 'errors') echo '<li>' .str::link('#'.str::slugify($title), str::remove('Test', $title)). '</li>';
 			?>
 		</ul>
 
