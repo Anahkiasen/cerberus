@@ -1,4 +1,5 @@
 <?php
+define('SQL', false);
 $init = '../../';
 require('../init.php');
 
@@ -98,6 +99,7 @@ function readTests($tests)
 		<?php
 		foreach($suites as $title => $tests)
 		{
+			ksort($tests);
 			$testCount = sizeof($tests) - 1;
 			$passed = $testCount - intval(a::get($tests, 'errors'));
 
