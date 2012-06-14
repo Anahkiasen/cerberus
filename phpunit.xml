@@ -8,5 +8,13 @@
 	</testsuites>
 	<logging>
 		<log type="json" target="cerberus/tests/phpunit.json"/>
+		<log
+			type           = "coverage-html"
+			target         = "cerberus/tests/coverage/"
+			charset        = "UTF-8"
+			yui            = "true"
+			highlight      = "true"
+			lowUpperBound  = "35"
+			highLowerBound = "70"/>
 	</logging>
 </phpunit>

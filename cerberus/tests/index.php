@@ -33,7 +33,6 @@ function readTests($tests)
 	$errors  = 0;
 	$folder = dir::last(getcwd());
 
-
 	foreach($tests as $test)
 	{
 		$suite = a::get($test, 'suite');
