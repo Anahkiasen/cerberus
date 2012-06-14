@@ -132,7 +132,7 @@ class v
 	public static function email($email)
 	{
 		$regex = '#^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$#ix';
-		return (preg_match($regex, $email));
+		return preg_match($regex, $email) == 1 ? true : false;
 	}
 
 	/**
@@ -143,8 +143,8 @@ class v
      */
     public static function url($url)
 	{
-		$regex = '/^(https?|ftp|rmtp|mms|svn):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i';
-		return (preg_match($regex, $url));
+		$regex = '/^((https?|ftp|rmtp|mms|svn):\/\/)?(www.)?[a-z\-A-Z0-9]+\.[a-z]+/i';
+		return preg_match($regex, $url) == 1 ? true : false;
 	}
 
 	/**
