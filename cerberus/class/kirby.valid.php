@@ -16,8 +16,9 @@ class valid
 	 * @param  string $type   A string type
 	 * @return boolean        Whether the string is valid or not
 	 */
-	public static function check($string, $type)
+	public static function check($string = null, $type = null)
 	{
+
 		switch($type)
 		{
 			case 'facultative':
@@ -35,11 +36,13 @@ class valid
 			case 'nom':
 			case 'prenom':
 			case 'name':
-				return !empty($string) and preg_match('/\D+/', $string);
+				return !empty($string) and !preg_match('/[\d]+/', $string);
 				break;
 
+			case 'nombre':
 			case 'number':
-				return !empty($string) and preg_match('/\d+/', $string);
+				return !empty($string) and preg_match('/^[\d \.,]+$/', $string);
+				break;
 
 			default:
 				return !empty($string);
