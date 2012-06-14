@@ -67,7 +67,7 @@ class Timer
 	 * @param  string $key A timer
 	 * @return int         A time
 	 */
-	public function getRunning($key = null)
+	public static function getRunning($key = null)
 	{
 		return self::get('running', $key);
 	}
