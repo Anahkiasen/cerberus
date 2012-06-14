@@ -38,6 +38,7 @@ class f
 	 */
 	public static function write($file, $content = null, $append = false)
 	{
+		// If the folder containing the file isn't there, create it
 		$folder = dirname($file);
 		if(!file_exists($folder))
 		{
@@ -47,13 +48,19 @@ class f
 		}
 		else
 		{
+			// Define content, file and mode
 			if(is_array($content))
 				$content = a::json($content);
-					$mode = ($append) ? FILE_APPEND : false;
-					$write = @file_put_contents($file, $content, $mode);
+				$mode    = ($append) ? FILE_APPEND : false;
+				$write   = file_put_contents($file, $content, $mode);
 
-			if(file_exists($file)) @chmod($file, 0666);
-				return $write;
+			// If we had no content to put and the file is empty, then OK
+			if($content == null and $write == 0) $write = true;
+
+			// If the file was created, set permissions
+			if(file_exists($file)) chmod($file, 0666);
+
+			return $write;
 		}
 	}
 
