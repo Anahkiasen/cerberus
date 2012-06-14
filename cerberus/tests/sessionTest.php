@@ -35,6 +35,15 @@ class SessionTest extends PHPUnit_Framework_TestCase
 		self::assertEmpty($afterDestroy);
 	}
 
+	public function testRestart()
+	{
+		$_SESSION['testRestart'] = true;
+		self::assertArrayHasKey('testRestart', $_SESSION);
+
+		session::restart();
+		self::assertArrayNotHasKey('testRestart', $_SESSION);
+	}
+
 	public function testSessionId()
 	{
 		session_start();

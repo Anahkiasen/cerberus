@@ -36,6 +36,26 @@ class ContentTest extends PHPUnit_Framework_TestCase
 		self::assertEquals('This is a test', $return);
 	}
 
+	public function testEndEcho()
+	{
+		self::expectOutputString('This is a test');
+
+		content::start();
+			echo 'This is a test';
+		content::end();
+	}
+
+	public function testEndGet()
+	{
+		self::expectOutputString(null);
+
+		content::start();
+			echo 'This is a test';
+		$return = content::get();
+
+		self::assertEquals('This is a test', $return);
+	}
+
 	public function testEndFlush()
 	{
 		self::expectOutputString('This is a test');

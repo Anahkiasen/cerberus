@@ -95,6 +95,29 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		f::remove('temp.json');
 	}
 
+	public function testChangeLoad()
+	{
+		$tempFile = 'test.json';
+		f::write($tempFile, '{"testLoad":"true"}');
+
+		$change = config::change($tempFile);
+		self::assertFileExists($tempFile);
+		self::assertArrayHasKey('testLoad', config::get());
+		self::assertEquals('true', config::get('testLoad'));
+
+		f::remove($tempFile);
+	}
+
+	public function testChangeCreate()
+	{
+		$tempFile = 'test.json';
+
+		$change = config::change($tempFile);
+		self::assertFileExists($tempFile);
+
+		f::remove($tempFile);
+	}
+
 	public function testLoadErase()
 	{
 		$before = config::get('index');

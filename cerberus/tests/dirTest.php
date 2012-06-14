@@ -2,12 +2,7 @@
 class DirTest extends PHPUnit_Framework_TestCase
 {
 	private static $dummyFile = 'core.dispatch.php';
-	private static $dummyFolder = 'temp';
-
-	public static function setUpBeforeClass()
-	{
-		self::$dummyFolder .= DIRECTORY_SEPARATOR;
-	}
+	private static $dummyFolder = 'temp/';
 
 	public static function tearDownAfterClass()
 	{
@@ -62,7 +57,7 @@ class DirTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @depends testMaddkeSimple
+	 * @depends testMakeSimple
 	 */
 	public function testMove()
 	{
@@ -79,8 +74,7 @@ class DirTest extends PHPUnit_Framework_TestCase
 		// Check if the folder moved
 		$dir2 = dir::inspect($folder2);
 		self::assertArrayHasKey('children', $dir2);
-		var_dump($dir2);
-		self::assertContains($folder1, $dir2['children']);
+		self::assertContains('move1', $dir2['children']);
 	}
 
 	public function testMakeComplex()
