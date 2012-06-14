@@ -242,7 +242,7 @@ class dir
 	 * @param  string $filepath A file path
 	 * @return array            An exploded filepath
 	 */
-	public function explode($filepath)
+	public static function explode($filepath)
 	{
 		$folders = explode('/', $filepath);
 		if(sizeof($folders) == 1)
