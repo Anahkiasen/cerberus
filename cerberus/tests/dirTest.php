@@ -9,13 +9,22 @@ class DirTest extends PHPUnit_Framework_TestCase
 		dir::remove(self::$dummyFolder);
 	}
 
+	public function paths()
+	{
+		return array(
+			array('this/is/a/path/file.php', 'path'),
+			array('this/is/a/path', 'path'),
+			array('cerberus/file.php', 'cerberus'),
+			array('cerberus', 'cerberus'),
+			);
+	}
+
 	public function testMakeSimple()
 	{
 		$folder = self::$dummyFolder.'testFolder';
 		$create = dir::make($folder);
 
 		self::assertFileExists($folder);
-		@rmdir($folder.'/');
 	}
 
 	public function testRead()
@@ -77,12 +86,51 @@ class DirTest extends PHPUnit_Framework_TestCase
 		self::assertContains('move1', $dir2['children']);
 	}
 
+	public function testRemove()
+	{
+		$folder = self::$dummyFolder.'remove1';
+
+		$make = dir::make($folder);
+		self::assertTrue($make);
+		self::assertFileExists($folder);
+
+		$remove = dir::remove($folder);
+		self::assertTrue($remove);
+		self::assertFileNotExists($folder);
+	}
+
+	public function testEmpty()
+	{
+		$folder = self::$dummyFolder.'remove2';
+		$file = $folder.'/test.txt';
+
+		$make = dir::make($folder);
+		self::assertTrue($make);
+		self::assertFileExists($folder);
+
+		$create = f::create($file);
+		self::assertTrue($create);
+		self::assertFileExists($file);
+
+		dir::clean($folder);
+		self::assertFileExists($folder);
+		self::assertFileNotExists($file);
+	}
+
+	/**
+	 * @dataProvider paths
+	 */
+	public function testLast($path = null, $expected = null)
+	{
+		$last = dir::last($path);
+		self::assertEquals($expected, $last);
+	}
+
 	public function testMakeComplex()
 	{
 		$folder = self::$dummyFolder.'subTestFolder/subSubTestFolder/';
 		$create = dir::make($folder);
 
 		self::assertFileExists($folder);
-		@rmdir('testFolder');
 	}
 }
