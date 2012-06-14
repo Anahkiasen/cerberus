@@ -31,6 +31,31 @@ class PagerTest extends PHPUnit_Framework_TestCase
 
 	// Tests ------------------------------------------------------- /
 
+	public function testConstruct()
+	{
+		$pager = new Pager(10, 5, 2, 'page');
+
+		self::assertEquals($pager->entries, 10);
+		self::assertEquals($pager->limit, 5);
+		self::assertEquals($pager->page, 2);
+		self::assertEquals($pager->getVar, 'page');
+	}
+
+	public function testAutoGetVar()
+	{
+		$pager = new Pager(10, 5, 2);
+
+		self::assertEquals($pager->getVar, 'get_page');
+	}
+
+	public function testPageGetVar()
+	{
+		navigation::$page = 'test';
+		$pager = new Pager(10, 5, 2);
+
+		self::assertEquals($pager->getVar, 'test_page');
+	}
+
 	public function testNumberPages()
 	{
 		self::assertEquals(self::$pager->count(), 4);
