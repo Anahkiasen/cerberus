@@ -9,6 +9,11 @@ class DirTest extends PHPUnit_Framework_TestCase
 		self::$dummyFolder .= DIRECTORY_SEPARATOR;
 	}
 
+	public static function tearDownAfterClass()
+	{
+		dir::remove(self::$dummyFolder);
+	}
+
 	public function testMakeSimple()
 	{
 		$folder = self::$dummyFolder.'testFolder';
