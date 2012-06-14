@@ -63,7 +63,7 @@ class v
 		if(is_array($options))
 			extract($options);
 
-		if($format && !preg_match('/^[$format]*$/is', $string)) return false;
+		if($format && !preg_match('/^[' .$format. ']*$/is', $string)) return false;
 		if($min_length && str::length($string) < $min_length) return false;
 		if($max_length && str::length($string) > $max_length) return false;
 
