@@ -80,14 +80,31 @@ class dir
   /**
    * Moves a directory to a new location
    *
+	 * @param   string  $old The old name of the file
+	 * @param   string  $new The new name of the file
+	 * @return  boolean Whether the directory has been renamed or not
+	 */
+	public static function rename($old, $new)
+	{
+		if(!is_dir($old)) return false;
+
+		return (@rename($old, $new) and is_dir($new));
+	}
+
+	/**
+	 * Moves a directory to a new location
+	 *
    * @param   string  $old The current path of the directory
    * @param   string  $new The desired path where the dir should be moved to
    * @return  boolean True: the directory has been moved, false: moving failed
    */
 	public static function move($old, $new)
 	{
-		if(!is_dir($old)) return false;
-		return (@rename($old, $new) && is_dir($new));
+		if(!is_dir($old) or !is_dir($new)) return false;
+
+		$newPlace = $new.DIRECTORY_SEPARATOR.$old;
+		var_dump($newPlace);
+		return (@rename($old, $newPlace) and is_dir($newPlace));
 	}
 
   /**
