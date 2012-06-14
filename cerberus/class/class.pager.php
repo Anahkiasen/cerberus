@@ -35,7 +35,7 @@ class Pager
 	 * Name of the GET variable used to change page
 	 * @var string
 	 */
-	private $getVar    = null;
+	public $getVar    = null;
 
 	// Setup ------------------------------------------------------- /
 
@@ -43,14 +43,19 @@ class Pager
 	 * Setup Pager environnement
 	 *
 	 * @param int    $entries A number of entries
-	 * @param int    $page    Number of the current page
 	 * @param int    $limit   Number of entries per page
+	 * @param int    $page    Number of the current page
 	 * @param string $getVar A facultative GET var to use to change page
 	 */
 	public function __construct($entries, $limit, $page = null, $getVar = null)
 	{
 		// If no GET variable is given, defaults to {page}_page
-		$this->getVar   = !$getVar ? navigation::current(). '_page' : $getVar;
+		if(!$getVar)
+		{
+			$current = navigation::current();
+			$getVar  = $current ? $current.'_page' : 'get_page';
+		}
+		$this->getVar =  $getVar;
 
 		// Get the page number
 		if(!$page) $page = r::get($this->getVar, 1);
