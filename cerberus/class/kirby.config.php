@@ -65,10 +65,11 @@ class config
 		'index'               => 'index');
 
 	 /**
-	  * Load the configuration default's value
+	  * Reset config and load the configuration default's value
 	  */
 	 public function __construct()
 	 {
+	 	self::$config = array();
 		config::set(config::$defaults);
 	 }
 
@@ -150,52 +151,4 @@ class config
 			self::hardcode('db.name',     $online_name);
 		}
 	}
-}
-
-/**
- * Returns the status from a Kirby response
- *
- * @param   array   $response The Kirby response array
- * @return  string  "error" or "success"
- * @package Kirby
- */
-function status($response)
-{
-	return a::get($response, 'status');
-}
-
-/**
- * Returns the message from a Kirby response
- *
- * @param   array   $response The Kirby response array
- * @return	string  The message
- * @package Kirby
- */
-function msg($response)
-{
-	return a::get($response, 'msg');
-}
-
-/**
- * Checks if a Kirby response is an error response or not.
- *
- * @param   array   $response The Kirby response array
- * @return  boolean	Returns true if the response is an error, returns false if no error occurred
- * @package Kirby
- */
-function error($response)
-{
-	return status($response) == 'error';
-}
-
-/**
- * Checks if a Kirby response is a success response.
- *
- * @param   array    $response The Kirby response array
- * @return  boolean  Returns true if the response is a success, returns false if an error occurred
- * @package Kirby
- */
-function success($response)
-{
-	return !error($response);
 }
