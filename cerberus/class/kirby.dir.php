@@ -234,8 +234,11 @@ class dir
 		if(sizeof($folders) == 1) $folders = explode("\\", $folder);
 
 		// Folder
+		$last = end($folders);
+		if(str::find('.', $last))
+			$last = a::get($folders, (sizeof($folders) - 2));
 
-		return end($folders);
+		return $last;
 	}
 
 	/**
