@@ -20,7 +20,9 @@ class cookie
 	 */
 	public static function set($key, $value, $expires = 3600, $domain = '/')
 	{
+		// If we're trying to store an array, serialize it
 		if(is_array($value)) $value = a::json($value);
+
 		$_COOKIE[$key] = $value;
 		return @setcookie($key, $value, (time() + $expires), $domain);
 	}

@@ -36,6 +36,16 @@ class content
 	}
 
 	/**
+	 * Shortcut for content::end(true)
+	 *
+	 * @return string Content of the output buffer
+	 */
+	public function get()
+	{
+		return self::end(true);
+	}
+
+	/**
 	 * Loads content from a passed file
 	 *
 	 * @param  string  $file   The path to the file
@@ -55,7 +65,7 @@ class content
 	/**
 	 * Simplifies setting content type headers
 	 *
-	 * @param  string $ctype   The shortcut for the content type. See the keys of the $ctypes array for all available shortcuts
+	 * @param  string $ctype   Shortcut for the content type. See the $ctypes array for all available shortcuts
 	 * @param  string $charset The charset definition for the content type header. Default is "utf-8"
 	 */
 	public static function type()
