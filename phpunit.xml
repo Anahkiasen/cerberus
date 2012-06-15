@@ -8,6 +8,7 @@
 	</testsuites>
 	<logging>
 		<log type="json" target="cerberus/tests/phpunit.json"/>
+		<log type="coverage-clover" target="cerberus/tests/coverage.xml"/>
 		<log
 			type           = "coverage-html"
 			target         = "cerberus/tests/coverage/"
