@@ -810,9 +810,10 @@ class dispatch
 
 	/**
 	 * Close a block of Javascript buffer
+	 *
 	 * @param  array  $params Additional params for the scripts
 	 */
-	public function closeJS($params = array())
+	public static function closeJS($params = array())
 	{
 		$javascript = content::get();
 		self::inject('js', $javascript, $params);
