@@ -798,9 +798,23 @@ class dispatch
 
 	/**
 	 * Add Javascript after the links
+	 *
+	 * @param string $javascript A bit of Javascript code. If empty, starts an output buffer
+	 * @param array  $params     An array of params to assign the script block
 	 */
-	public static function addJS($javascript, $params = array())
+	public static function addJS($javascript = null, $params = array())
 	{
+		if($javascript) self::inject('js', $javascript, $params);
+		else content::start();
+	}
+
+	/**
+	 * Close a block of Javascript buffer
+	 * @param  array  $params Additional params for the scripts
+	 */
+	public function closeJS($params = array())
+	{
+		$javascript = content::get();
 		self::inject('js', $javascript, $params);
 	}
 
