@@ -25,6 +25,9 @@ class News
 	private $thumbHeight  = 100;
 	private $thumbCrop    = true;
 
+	// Pager object
+	private $pager        = null;
+
 	/*
 	###############################
 	FONCTIONS DE DEFINITION
@@ -52,10 +55,8 @@ class News
 			$entries = db::count($this->table, $this->multiWhere);
 			if($entries != 0)
 			{
-				pager::set($entries, 1, $limit, 'pagenews');
-
-				if(isset($_GET['pagenews']))
-					pager::set($entries, $_GET['pagenews'], $limit);
+				$page = r::get('pagenews', 1);
+				$this->pager = new Pager($entries, $limit, $page, 'pagenews');
 			}
 			else $this->newsPaginate = false;
 		}
@@ -108,8 +109,8 @@ class News
 		else
 		{
 			$limit = (!$this->newsPaginate)
-				? pager::$limit
-				: pager::db(). ',' .pager::$limit;
+				? $this->pager->limit
+				: $this->pager->db(). ',' .$this->pager->limit;
 
 			$news = db::select(
 				$this->table,
@@ -117,8 +118,8 @@ class News
 				$this->multiWhere,
 				$this->newsOrder. ' DESC',
 				null,
-				pager::db(),
-				pager::$limit);
+				$this->pager->db(),
+				$this->pager->limit);
 		}
 
 		// Récupération des news
@@ -215,6 +216,6 @@ class News
 	// Pagination
 	function paginate()
 	{
-		if($this->newsPaginate) pager::pagination();
+		if($this->newsPaginate) $this->pager->pagination();
 	}
 }
