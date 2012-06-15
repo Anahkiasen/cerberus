@@ -660,7 +660,7 @@ class db
     {
 		if(self::is_table($table))
 		{
-			$fields = @mysql_list_fields(self::$database, self::prefix($table), $connection);
+			$fields = @mysql_list_fields(self::$database, self::prefix($table), self::$connection);
 			if(!$fields) return self::error(l::get('db.errors.fields'));
 
 			$count	= @mysql_num_fields($fields);

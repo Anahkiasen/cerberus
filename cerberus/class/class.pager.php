@@ -190,7 +190,7 @@ class Pager
 		<div class="pagination pagination-centered">
 			<ul>
 				<?php
-				$previous = str::slink(null, '&laquo;', array($this->getVar => $this->previous()));
+				$previous = str::slink(null, '«', array($this->getVar => $this->previous()));
 				echo '<li>' .$previous. '</li>';
 
 				for($i = $this->first(); $i <= $this->last(); $i++)
@@ -199,7 +199,7 @@ class Pager
 					echo '<li' .$class. '>' .str::slink(null, $i, array($this->getVar => $i)). '</li>';
 				}
 
-				$next = str::slink(null, '&raquo;', array($this->getVar => $this->next()));
+				$next = str::slink(null, '»', array($this->getVar => $this->next()));
 				echo '<li>' .$next. '</li>';
 				?>
 			</ul>
