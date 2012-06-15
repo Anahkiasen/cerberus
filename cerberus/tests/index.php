@@ -2,90 +2,69 @@
 define('SQL', false);
 $init = '../../';
 require('../init.php');
+require('lib/unitParser.php');
 
 // Setting title
 head::title('Unit Testing Summary');
 
 // Main styles
-dispatch::assets('!styles', 'jquery', 'unit-testing');
+dispatch::setGuess(false);
+dispatch::assets('bootstrap', 'jquery', 'unit-testing');
 dispatch::googleFonts('Open Sans:100,400,700', 'Raleway:100');
 
+// Tablesorter
+dispatch::addJS('lib/jquery.tablesorter.min.js');
+dispatch::plugin('tablesorter', '.sortable');
+
+// Highlight.js
+dispatch::addCSS('lib/solarized_light.css');
+dispatch::addJS('lib/highlight.pack.js');
+dispatch::addJS();
+?><script>
+	$(document).ready(function() {
+	  $('.cover-detail').each(function(e) {hljs.highlightBlock(e)});
+	});
+</script><?
+dispatch::closeJS();
+
 // Reading available JSON tests
-$json   = parseTests('phpunit.json');
-$suites = readTests($json);
-
-// Parsing the misconstructed JSON reports (fuckers)
-function parseTests($test)
-{
-	$tests = f::read($test);
-	$tests = preg_replace('#{([^}]+)}#', '{$1}\n', $tests);
-	$tests = explode('\n', $tests);
-
-	foreach($tests as $k => $v)
-		$tests[$k] = str::parse($v, 'json');
-
-	return $tests;
-}
-
-// Rearranging the tests to readable stuff
-function readTests($tests)
-{
-	$results = array();
-	$errors  = 0;
-	$folder = dir::last(getcwd());
-
-	foreach($tests as $test)
-	{
-		$suite = a::get($test, 'suite');
-		$suite = explode('::', $suite);
-		$suite = a::get($suite, 0);
-		$event = a::get($test, 'event');
-
-		if($event == 'suiteStart' and $suite !== $folder)
-		{
-			if(isset($className) and isset($results[$className]))
-			{
-				$results[$className]['errors'] = $errors;
-				$errors = 0;
-			}
-			$className = $suite;
-		}
-		if($event == 'test')
-		{
-			$function = a::get($test, 'test');
-			$status   = a::get($test, 'status') == 'pass';
-			$message  = a::get($test, 'message');
-
-			if(!$status) $errors++;
-			$results[$className][$function] = array(
-				'status' => $status,
-				'message' => $message);
-		}
-	}
-
-	$results['errors'] = $errors;
-	return $results;
-}
+$json     = parseTests('phpunit.json');
+$suites   = readTests($json);
+$coverage = readCoverage();
 ?>
 </head>
 
 <body>
-	<section id="corps">
-		<h1>Unit Testing Results</h1>
-
-		<h2>Table of contents</h2>
-		<ul id ="toc" class="alert alert-block alert-info">
-			<?php
-			foreach($suites as $title => $osef)
-				if($title != 'errors')
-				{
-					$link = '#'.str::slugify($title);
-					$title = str::remove('Test', $title);
-					echo '<li>' .str::link($link, $title). '</li>';
-				}
-			?>
+	<nav id="toc">
+		<h3>Code coverage</h3>
+		<ul class="nav nav-pills">
+		<?php
+		foreach($coverage as $title => $osef)
+			if($title != 'errors')
+			{
+				$link = url::reload(array('coverage' => $title)).'#file-'.$title;
+				$title = str::remove('Test', $title);
+				echo '<li>' .str::link($link, ucfirst($title)). '</li>';
+			}
+		?>
 		</ul>
+		<div class="alert-block alert">
+			<h4 class="alert-header">Global coverage</h4><br />
+			<? progressBar(60) ?>
+		</div>
 
+		<h3>Unit testing results</h3>
+		<ul class="nav nav-pills">
+		<?php
+		foreach($suites as $title => $osef)
+			if($title != 'errors')
+			{
+				$link = url::reload('results').'#'.str::slugify($title);
+				$title = str::remove('Test', $title);
+				echo '<li>' .str::link($link, $title). '</li>';
+			}
+		?>
+		</ul>
 		<?php
 		$pass = a::extract($suites, 'errors');
 		$pass = array_sum($pass);
@@ -95,46 +74,64 @@ function readTests($tests)
 			' Number of errors found : ' .$pass, $color);
 		$suites = a::remove($suites, 'errors');
 		?>
+	</nav>
 
-		<?php
-		foreach($suites as $title => $tests)
-		{
-			ksort($tests);
-			$testCount = sizeof($tests) - 1;
-			$passed = $testCount - intval(a::get($tests, 'errors'));
 
-			$strippedTitle = str::remove('Test', $title);
-			echo '<section id="' .str::slugify($title). '">';
-				echo '<h2>' .$strippedTitle. ' (' .$passed. '/' .$testCount. ')</h2>'.PHP_EOL;
 
-				foreach($tests as $name => $infos)
-				{
-					if($name == 'errors' or $name == 'title') continue;
-					$name     = str::remove($title.'::test', $name);
-					$dataSet  = preg_replace('/(.+) with data set #([0-9]+) \(.+\)/is', '$2', $name);
-					$provider = preg_replace('/(.+) with data set #([0-9]+) \((.+)\)/is', '$3', $name);
-					$name     = preg_replace('/with data set #([0-9]+) \((.+)\)/', null, $name);
-					$message  = a::get($infos, 'message');
-
-					if(!$message) $message = a::get($infos, 'status') ? 'Success' : 'Error';
-
-					echo '<article>'.PHP_EOL;
-					echo '<h3>' .$name. '</h3>'.PHP_EOL;
-					if($provider != $name) echo str::display('#' .$dataSet.' -> ('.$provider.')', 'info');
-					echo a::get($infos, 'status')
-						? str::display($message, 'success')
-						: str::display($message, 'error');
-					echo '</article>'.PHP_EOL;
-				}
-			echo '</section>';
-		}
-		?>
-	</section>
 
 	<section id="coverage">
 		<h1>Tests coverage</h1>
 
+		<table class="sortable table table-condensed table-bordered">
+			<thead>
+				<th>Class</th>
+				<th>File</th>
+				<th>CRAP</th>
+				<th colspan="3">Lines</th>
+				<th colspan="3">Functions</th>
+				<th colspan="3">Classes</th>
+			</thead>
+			<tbody>
+		<?php
+		foreach($coverage as $class => $infos)
+		{
+			$metrics = a::get($infos, 'metrics');
+			if($metrics) extract($metrics);
+			$link = url::reload(array('coverage' => $class)).'#file-'.$class;
+			?>
+			<tr>
+				<td class="class"><?= str::link($link, ucfirst($class)) ?></td>
+				<td class="file"><?= $infos['file'] ?></td>
+
+				<td class="crap"><?= a::get($infos, 'CRAP') ?></td>
+
+				<td class="bar"><? progressBar($statementsPerc) ?></td>
+				<td class="<?= stateCoverage($statementsPerc) ?> covered"><?= $statementsPerc ?></td>
+				<td class="<?= stateCoverage($statementsPerc) ?> covered"><?= $statementsCovered. ' / ' .$statements ?></td>
+
+				<td class="bar"><? progressBar($methodsPerc) ?></td>
+				<td class="<?= stateCoverage($methodsPerc) ?> covered"><?= $methodsPerc ?></td>
+				<td class="<?= stateCoverage($methodsPerc) ?> covered"><?= $methodsCovered. ' / ' .$methods ?></td>
+
+				<td class="bar"><? progressBar($elementsPerc) ?></td>
+				<td class="<?= stateCoverage($elementsPerc) ?> covered"><?= $elementsPerc ?></td>
+				<td class="<?= stateCoverage($elementsPerc) ?> covered"><?= $elementsCovered. ' / ' .$elements ?></td>
+			</tr>
+			<?
+		}
+		?>
+			</tbody>
+		</table>
 	</section>
+
+	<section id="corps">
+		<?php if(isset($_GET['results'])) include('lib/testResults.php') ?>
+	</section>
+
+	<?php
+	$coveredClass = r::get('coverage');
+	if($coveredClass and isset($coverage[$coveredClass])) include('lib/classCoverage.php');
+	?>
 </body>
 </html>
 <?php require('../close.php');
