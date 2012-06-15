@@ -89,28 +89,28 @@ class str
 
 	public static function size($bytes, $precision = 2)
 	{
-	    $kilobyte = 1024;
-	    $megabyte = $kilobyte * 1024;
-	    $gigabyte = $megabyte * 1024;
-	    $terabyte = $gigabyte * 1024;
+			$kilobyte = 1024;
+			$megabyte = $kilobyte * 1024;
+			$gigabyte = $megabyte * 1024;
+			$terabyte = $gigabyte * 1024;
 
-	    if(($bytes >= 0) and ($bytes < $kilobyte))
-	        return $bytes.'b';
+			if(($bytes >= 0) and ($bytes < $kilobyte))
+					return $bytes.'b';
 
-	    elseif (($bytes >= $kilobyte) and ($bytes < $megabyte))
-	        return round($bytes / $kilobyte, $precision) . 'KB';
+			elseif (($bytes >= $kilobyte) and ($bytes < $megabyte))
+					return round($bytes / $kilobyte, $precision) . 'KB';
 
-	    elseif (($bytes >= $megabyte) and ($bytes < $gigabyte))
-	        return round($bytes / $megabyte, $precision) . 'MB';
+			elseif (($bytes >= $megabyte) and ($bytes < $gigabyte))
+					return round($bytes / $megabyte, $precision) . 'MB';
 
-	    elseif (($bytes >= $gigabyte) and ($bytes < $terabyte))
-	        return round($bytes / $gigabyte, $precision) . 'GB';
+			elseif (($bytes >= $gigabyte) and ($bytes < $terabyte))
+					return round($bytes / $gigabyte, $precision) . 'GB';
 
-	    elseif ($bytes >= $terabyte)
-	        return round($bytes / $terabyte, $precision) . 'TB';
+			elseif ($bytes >= $terabyte)
+					return round($bytes / $terabyte, $precision) . 'TB';
 
-	    else
-	        return $bytes . 'B';
+			else
+					return $bytes . 'B';
 	}
 
 	// Better alternative for explode()
@@ -226,7 +226,7 @@ class str
 				$result = (array)@json_decode($string, true);
 				break;
 			case 'xml':
-				$result = x::parse($string);
+				$result = str::parse_xml($string);
 				break;
 			case 'url':
 				$result = (array)@parse_url($string);
@@ -403,14 +403,14 @@ class str
 		return '<img ' .trim($attributes). ' />';
 	}
 
-  /**
-    * Creates a link tag
-    *
-    * @param  string  $link The URL
-    * @param  string  $text Specify a text for the link tag. If false the URL will be used
-    * @param  string  $attr The link tag attributes
-    * @return string
-    */
+	/**
+		* Creates a link tag
+		*
+		* @param  string  $link The URL
+		* @param  string  $text Specify a text for the link tag. If false the URL will be used
+		* @param  string  $attr The link tag attributes
+		* @return string
+		*/
 	public static function link($link, $text = false, $attr = null)
 	{
 		$text = ($text) ? $text : $link;
@@ -619,6 +619,21 @@ class str
 	############### NON TRIE ###############
 	########################################
 	*/
+
+	/**
+	 * Parses a XML string and returns an array
+	 *
+	 * @param  string  $xml
+	 * @return mixed
+	 */
+	static function parse_xml($xml)
+	{
+		$xml = preg_replace('/(<\/?)(\w+):([^>]*>)/', '$1$2$3', $xml);
+		$xml = @simplexml_load_string($xml, null, LIBXML_NOENT);
+		$xml = @json_encode($xml);
+		$xml = @json_decode($xml, true);
+		return (is_array($xml)) ? $xml : false;
+	}
 
 	/* Converts a string to a xml-safe string. Converts it to html-safe first and then it will replace html entities to xml entities */
 	public static function xml($text, $html = true)
