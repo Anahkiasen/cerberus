@@ -535,12 +535,21 @@ class navigation
 		}
 
 		// Imploding the rendered links with given glues
-		if(self::$renderNavigation)          self::$renderNavigation   = implode(self::$optionGlue,    self::$renderNavigation);
-		if(isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = implode(self::$optionGlueSub, self::$renderSubnav[$key]);
+		if(self::$renderNavigation)
+			self::$renderNavigation = implode(
+				self::$optionGlue,
+				self::$renderNavigation);
+
+		if(isset(self::$renderSubnav[self::$page]))
+			self::$renderSubnav[self::$page] = implode(
+				self::$optionGlueSub,
+				self::$renderSubnav[self::$page]);
 
 		// Wrap the navigations in an <ul> tag if Listed
-		if(self::$optionListed    and isset(self::$renderNavigation))   self::$renderNavigation   = '<ul>' .self::$renderNavigation.  '</ul>';
-		if(self::$optionListedSub and isset(self::$renderSubnav[$key])) self::$renderSubnav[$key] = '<ul>' .self::$renderSubnav[$key].'</ul>';
+		if(self::$optionListed    and isset(self::$renderNavigation))
+			self::$renderNavigation = '<ul>' .self::$renderNavigation.  '</ul>';
+		if(self::$optionListedSub and isset(self::$renderSubnav[self::$page]))
+			self::$renderSubnav[self::$page] = '<ul>' .self::$renderSubnav[self::$page].'</ul>';
 	}
 
 	//////////////////////////////////////////////////////////////////
