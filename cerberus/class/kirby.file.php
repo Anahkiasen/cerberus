@@ -298,12 +298,14 @@ class f
 		$types = array(
 			'archive'       => array('bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip'),
 			'audio'         => array('aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma'),
-			'code'          => array('css', 'htm', 'html', 'php', 'js'),
+			'code'          => array('htm', 'html', 'php'),
 			'document'      => array('doc', 'docx', 'docm', 'dotm', 'odt', 'pages', 'pdf', 'rtf', 'wp', 'wpd'),
 			'fonts'         => array('ttf', 'otf', 'eot', 'woff', 'svg', 'svgz'),
 			'image'         => array('jpeg', 'jpg', 'png', 'gif'),
 			'interactive'   => array('key', 'ppt', 'pptx', 'pptm', 'odp', 'swf'),
 			'spreadsheet'   => array('numbers', 'ods', 'xls', 'xlsx', 'xlsb', 'xlsm' ),
+			'stylesheet'    => array('css'),
+			'script'        => array('js'),
 			'text'          => array('asc', 'csv', 'tsv', 'txt'),
 			'video'         => array('asf', 'avi', 'divx', 'dv', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'mpv', 'ogm', 'ogv', 'qt', 'rm', 'vob', 'wmv')
 			);
