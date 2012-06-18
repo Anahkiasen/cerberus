@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1339775895">
-  <project timestamp="1339775895">
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/class.meta.php">
+<coverage generated="1340026319">
+  <project timestamp="1340026319">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/class.meta.php">
       <class name="meta" namespace="global" fullPackage="Cerberus" package="Cerberus">
         <metrics methods="6" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="12" elements="81" coveredelements="14"/>
       </class>
@@ -89,9 +89,9 @@
       <line num="229" type="stmt" count="1"/>
       <metrics loc="228" ncloc="100" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="12" elements="81" coveredelements="12"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/class.navigation.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/class.navigation.php">
       <class name="navigation" namespace="global" fullPackage="Cerberus" package="Cerberus">
-        <metrics methods="19" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="232" coveredstatements="4" elements="251" coveredelements="6"/>
+        <metrics methods="19" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="234" coveredstatements="4" elements="253" coveredelements="6"/>
       </class>
       <line num="105" type="method" name="__construct" crap="56" count="0"/>
       <line num="111" type="stmt" count="0"/>
@@ -289,64 +289,66 @@
       <line num="551" type="stmt" count="0"/>
       <line num="552" type="stmt" count="0"/>
       <line num="553" type="stmt" count="0"/>
-      <line num="565" type="method" name="addPage" crap="20" count="0"/>
+      <line num="565" type="method" name="addPage" crap="30" count="0"/>
       <line num="568" type="stmt" count="0"/>
       <line num="569" type="stmt" count="0"/>
-      <line num="570" type="stmt" count="0"/>
+      <line num="572" type="stmt" count="0"/>
       <line num="573" type="stmt" count="0"/>
       <line num="574" type="stmt" count="0"/>
-      <line num="575" type="stmt" count="0"/>
+      <line num="577" type="stmt" count="0"/>
+      <line num="578" type="stmt" count="0"/>
       <line num="579" type="stmt" count="0"/>
-      <line num="580" type="stmt" count="0"/>
-      <line num="581" type="stmt" count="0"/>
-      <line num="582" type="stmt" count="0"/>
       <line num="583" type="stmt" count="0"/>
       <line num="584" type="stmt" count="0"/>
+      <line num="585" type="stmt" count="0"/>
+      <line num="586" type="stmt" count="0"/>
       <line num="587" type="stmt" count="0"/>
       <line num="588" type="stmt" count="0"/>
-      <line num="589" type="stmt" count="0"/>
-      <line num="590" type="stmt" count="0"/>
       <line num="591" type="stmt" count="0"/>
       <line num="592" type="stmt" count="0"/>
+      <line num="593" type="stmt" count="0"/>
       <line num="594" type="stmt" count="0"/>
-      <line num="605" type="method" name="renderLink" crap="132" count="0"/>
-      <line num="608" type="stmt" count="0"/>
-      <line num="611" type="stmt" count="0"/>
+      <line num="595" type="stmt" count="0"/>
+      <line num="596" type="stmt" count="0"/>
+      <line num="598" type="stmt" count="0"/>
+      <line num="609" type="method" name="renderLink" crap="132" count="0"/>
       <line num="612" type="stmt" count="0"/>
-      <line num="614" type="stmt" count="0"/>
       <line num="615" type="stmt" count="0"/>
       <line num="616" type="stmt" count="0"/>
-      <line num="617" type="stmt" count="0"/>
       <line num="618" type="stmt" count="0"/>
+      <line num="619" type="stmt" count="0"/>
       <line num="620" type="stmt" count="0"/>
-      <line num="623" type="stmt" count="0"/>
+      <line num="621" type="stmt" count="0"/>
+      <line num="622" type="stmt" count="0"/>
       <line num="624" type="stmt" count="0"/>
-      <line num="625" type="stmt" count="0"/>
-      <line num="626" type="stmt" count="0"/>
+      <line num="627" type="stmt" count="0"/>
+      <line num="628" type="stmt" count="0"/>
       <line num="629" type="stmt" count="0"/>
       <line num="630" type="stmt" count="0"/>
       <line num="633" type="stmt" count="0"/>
       <line num="634" type="stmt" count="0"/>
-      <line num="636" type="stmt" count="0"/>
       <line num="637" type="stmt" count="0"/>
-      <line num="639" type="stmt" count="0"/>
-      <line num="649" type="method" name="extension" crap="56" count="0"/>
-      <line num="652" type="stmt" count="0"/>
-      <line num="655" type="stmt" count="0"/>
-      <line num="658" type="stmt" count="0"/>
+      <line num="638" type="stmt" count="0"/>
+      <line num="640" type="stmt" count="0"/>
+      <line num="641" type="stmt" count="0"/>
+      <line num="643" type="stmt" count="0"/>
+      <line num="653" type="method" name="extension" crap="56" count="0"/>
+      <line num="656" type="stmt" count="0"/>
       <line num="659" type="stmt" count="0"/>
-      <line num="660" type="stmt" count="0"/>
-      <line num="661" type="stmt" count="0"/>
       <line num="662" type="stmt" count="0"/>
+      <line num="663" type="stmt" count="0"/>
+      <line num="664" type="stmt" count="0"/>
       <line num="665" type="stmt" count="0"/>
-      <line num="668" type="stmt" count="0"/>
-      <line num="670" type="stmt" count="0"/>
-      <line num="671" type="stmt" count="0"/>
+      <line num="666" type="stmt" count="0"/>
+      <line num="669" type="stmt" count="0"/>
       <line num="672" type="stmt" count="0"/>
       <line num="674" type="stmt" count="0"/>
-      <metrics loc="676" ncloc="339" classes="1" methods="19" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="232" coveredstatements="4" elements="251" coveredelements="6"/>
+      <line num="675" type="stmt" count="0"/>
+      <line num="676" type="stmt" count="0"/>
+      <line num="678" type="stmt" count="0"/>
+      <metrics loc="680" ncloc="341" classes="1" methods="19" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="234" coveredstatements="4" elements="253" coveredelements="6"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/class.pager.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/class.pager.php">
       <class name="Pager" namespace="global">
         <metrics methods="13" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="44" coveredstatements="44" elements="57" coveredelements="57"/>
       </class>
@@ -409,7 +411,7 @@
       <line num="229" type="stmt" count="15"/>
       <metrics loc="231" ncloc="119" classes="1" methods="13" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="44" coveredstatements="44" elements="57" coveredelements="57"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/class.timer.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/class.timer.php">
       <class name="Timer" namespace="global" fullPackage="Cerberus" package="Cerberus">
         <metrics methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="43" coveredstatements="43" elements="52" coveredelements="52"/>
       </class>
@@ -468,7 +470,7 @@
       <line num="173" type="stmt" count="1"/>
       <metrics loc="172" ncloc="84" classes="1" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="43" coveredstatements="43" elements="52" coveredelements="52"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/core.dispatch.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/core.dispatch.php">
       <class name="dispatch" namespace="global" fullPackage="Cerberus" package="Cerberus">
         <metrics methods="31" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="358" coveredstatements="7" elements="389" coveredelements="8"/>
       </class>
@@ -863,7 +865,7 @@
       <line num="982" type="stmt" count="0"/>
       <metrics loc="983" ncloc="542" classes="1" methods="31" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="358" coveredstatements="7" elements="389" coveredelements="8"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/core.init.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/core.init.php">
       <class name="Init" namespace="global" fullPackage="Cerberus" package="Cerberus">
         <metrics methods="29" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="213" coveredstatements="0" elements="242" coveredelements="0"/>
       </class>
@@ -1099,7 +1101,7 @@
       <line num="576" type="stmt" count="0"/>
       <metrics loc="577" ncloc="311" classes="1" methods="28" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="205" coveredstatements="0" elements="233" coveredelements="0"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/core.media.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/core.media.php">
       <class name="media" namespace="global" fullPackage="Cerberus" package="Cerberus">
         <metrics methods="6" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="10" elements="45" coveredelements="12"/>
       </class>
@@ -1151,7 +1153,7 @@
       <line num="143" type="stmt" count="1"/>
       <metrics loc="142" ncloc="68" classes="1" methods="6" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="10" elements="45" coveredelements="12"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.array.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.array.php">
       <class name="a" namespace="global">
         <metrics methods="26" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="146" coveredstatements="15" elements="172" coveredelements="19"/>
       </class>
@@ -1329,7 +1331,7 @@
       <line num="523" type="stmt" count="0"/>
       <metrics loc="525" ncloc="289" classes="1" methods="26" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="146" coveredstatements="15" elements="172" coveredelements="17"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.cache.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.cache.php">
       <class name="cache" namespace="global" fullPackage="Cerberus" package="Cerberus">
         <metrics methods="8" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="121" coveredstatements="31" elements="129" coveredelements="34"/>
       </class>
@@ -1465,7 +1467,7 @@
       <line num="306" type="stmt" count="1"/>
       <metrics loc="305" ncloc="181" classes="1" methods="8" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="121" coveredstatements="31" elements="129" coveredelements="33"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.config.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.config.php">
       <class name="config" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="30" elements="37" coveredelements="37"/>
       </class>
@@ -1508,7 +1510,7 @@
       <line num="180" type="stmt" count="1"/>
       <metrics loc="181" ncloc="93" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="30" elements="37" coveredelements="37"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.content.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.content.php">
       <class name="content" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="27" elements="34" coveredelements="32"/>
       </class>
@@ -1549,7 +1551,7 @@
       <line num="98" type="stmt" count="1"/>
       <metrics loc="97" ncloc="58" classes="1" methods="5" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="27" elements="34" coveredelements="31"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.cookie.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.cookie.php">
       <class name="cookie" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="9" coveredelements="9"/>
       </class>
@@ -1565,7 +1567,7 @@
       <line num="55" type="stmt" count="1"/>
       <metrics loc="54" ncloc="21" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="9" coveredelements="9"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.dir.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.dir.php">
       <class name="dir" namespace="global">
         <metrics methods="11" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="81" coveredstatements="62" elements="92" coveredelements="71"/>
       </class>
@@ -1664,9 +1666,9 @@
       <line num="259" type="stmt" count="1"/>
       <metrics loc="258" ncloc="149" classes="1" methods="11" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="81" coveredstatements="62" elements="92" coveredelements="71"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.file.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.file.php">
       <class name="f" namespace="global" fullPackage="Kirby" package="Kirby">
-        <metrics methods="18" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="82" coveredstatements="27" elements="100" coveredelements="33"/>
+        <metrics methods="18" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="84" coveredstatements="27" elements="102" coveredelements="33"/>
       </class>
       <line num="25" type="method" name="create" crap="1" count="2"/>
       <line num="27" type="stmt" count="2"/>
@@ -1765,12 +1767,14 @@
       <line num="307" type="stmt" count="0"/>
       <line num="308" type="stmt" count="0"/>
       <line num="309" type="stmt" count="0"/>
+      <line num="310" type="stmt" count="0"/>
       <line num="311" type="stmt" count="0"/>
-      <line num="312" type="stmt" count="0"/>
       <line num="313" type="stmt" count="0"/>
-      <metrics loc="314" ncloc="173" classes="1" methods="18" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="82" coveredstatements="27" elements="100" coveredelements="31"/>
+      <line num="314" type="stmt" count="0"/>
+      <line num="315" type="stmt" count="0"/>
+      <metrics loc="316" ncloc="175" classes="1" methods="18" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="84" coveredstatements="27" elements="102" coveredelements="31"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.language.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.language.php">
       <class name="l" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="14" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="88" coveredstatements="14" elements="102" coveredelements="17"/>
       </class>
@@ -1879,7 +1883,7 @@
       <line num="303" type="stmt" count="1"/>
       <metrics loc="302" ncloc="153" classes="1" methods="14" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="88" coveredstatements="14" elements="102" coveredelements="17"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.request.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.request.php">
       <class name="r" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="16" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="61" coveredelements="0"/>
       </class>
@@ -1946,7 +1950,7 @@
       <line num="195" type="stmt" count="0"/>
       <metrics loc="197" ncloc="115" classes="1" methods="16" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="61" coveredelements="0"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.server.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.server.php">
       <class name="server" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="2" elements="23" coveredelements="3"/>
       </class>
@@ -1975,7 +1979,7 @@
       <line num="80" type="stmt" count="0"/>
       <metrics loc="82" ncloc="42" classes="1" methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="2" elements="23" coveredelements="3"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.session.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.session.php">
       <class name="session" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="20" elements="28" coveredelements="28"/>
       </class>
@@ -2009,7 +2013,7 @@
       <line num="114" type="stmt" count="1"/>
       <metrics loc="116" ncloc="48" classes="1" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="20" elements="28" coveredelements="28"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.string.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.string.php">
       <class name="str" namespace="global">
         <metrics methods="44" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="391" coveredstatements="106" elements="435" coveredelements="120"/>
       </class>
@@ -2450,7 +2454,7 @@
       <line num="771" type="stmt" count="0"/>
       <metrics loc="773" ncloc="628" classes="1" methods="44" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="391" coveredstatements="106" elements="435" coveredelements="115"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.url.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.url.php">
       <class name="url" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="12" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="112" coveredstatements="45" elements="124" coveredelements="47"/>
       </class>
@@ -2581,7 +2585,7 @@
       <line num="334" type="stmt" count="1"/>
       <metrics loc="333" ncloc="173" classes="1" methods="12" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="112" coveredstatements="45" elements="124" coveredelements="46"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/class/kirby.valid.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/class/kirby.valid.php">
       <class name="valid" namespace="global" fullPackage="Kirby" package="Kirby">
         <metrics methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="40" elements="48" coveredelements="48"/>
       </class>
@@ -2636,7 +2640,7 @@
       <line num="160" type="stmt" count="1"/>
       <metrics loc="159" ncloc="94" classes="1" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="40" elements="48" coveredelements="48"/>
     </file>
-    <file name="/Applications/MAMP/htdocs/Celsius/cerberus/tools/classloader.php">
+    <file name="/Applications/MAMP/htdocs/TrainPignes/cerberus/tools/classloader.php">
       <line num="0" type="stmt" count="7"/>
       <line num="10" type="stmt" count="7"/>
       <line num="13" type="stmt" count="7"/>
@@ -2649,6 +2653,6 @@
       <line num="24" type="stmt" count="7"/>
       <metrics loc="24" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="9" elements="9" coveredelements="9"/>
     </file>
-    <metrics files="22" loc="6729" ncloc="3791" classes="21" methods="297" coveredmethods="88" conditionals="0" coveredconditionals="0" statements="2214" coveredstatements="554" elements="2511" coveredelements="642"/>
+    <metrics files="22" loc="6735" ncloc="3795" classes="21" methods="297" coveredmethods="88" conditionals="0" coveredconditionals="0" statements="2218" coveredstatements="554" elements="2515" coveredelements="642"/>
   </project>
 </coverage>
