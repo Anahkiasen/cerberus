@@ -564,19 +564,23 @@ class navigation
 
 	private static function addPage($pageData, $parent = null, $cache = 0, $hidden = 0, $external_link = null)
 	{
+		// Slugify pagename
+		$page = is_array($pageData) ? a::get($pageData, 'page') : $pageData;
+		$page = str::slugify($page, '_');
+
 		// If we were given a simple page name or a pagedata array
 		if(!is_array($pageData))
 		{
-			$text = $page = $pageData;
+			$text = $pageData;
 
 			$pageData = array(
-				'page' => str::slugify($page, '_'),
+				'page' => $page,
 				'text' => $text);
 		}
 
 		// Writing main informations
 		$return = array(
-			'page'          => a::get($pageData, 'page'),
+			'page'          => $page,
 			'parent'        => a::get($pageData, 'parent',        $parent),
 			'text'          => a::get($pageData, 'text'),
 			'cache'         => a::get($pageData, 'cache',         $cache),
