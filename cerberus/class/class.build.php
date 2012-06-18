@@ -52,8 +52,9 @@ class Build
 	 * @var array
 	 */
 	private static $build = array(
-		'css'  => array(),
-		'js'   => array(),
+		'stylesheet' => array(),
+		'script'     => array(),
+		'image'      => array(),
 		'copy' => array());
 
 	/**
@@ -74,7 +75,7 @@ class Build
 		if(!class_exists('Init'))
 		{
 			require 'cerberus/class/core.init.php';
-			$init = new Init('constants autoloader config');
+			$init = new Init('paths autoloader config constants');
 		}
 
 		// Clean build cache
@@ -167,6 +168,9 @@ class Build
 				include self::$page;
 			self::$pageContent[$page] = content::end(true);
 
+			// Get images
+			self::readImages(self::$pageContent[$page]);
+
 			// Rename any links found
 			if($page) self::$moved[url::rewrite($page)] = $page.'.html';
 
@@ -186,36 +190,67 @@ class Build
 	 */
 	private function listAssets()
 	{
-		// Save assets
+		// Merge all assets found
 		$assets = array_merge(dispatch::currentCSS(), dispatch::currentJS(), self::$additionalFiles);
 		foreach($assets as $asset)
 		{
-			if(!file_exists($asset)) continue;
+			if(!file_exists(url::strip_query($asset))) continue;
 
 			// Filename
 			$filename = f::filename($asset);
 
 			// Filetype
-			$type = f::extension($asset);
+			$type = f::type($asset);
 			if(in_array($filename, self::$protectedFiles) or self::isMinified($filename))
 				$type = 'copy';
 
-			if(in_array($asset, self::$build[$type])) continue;
+			// If we already logged that file
+			if(isset(self::$build[$type]) and in_array($asset, self::$build[$type])) continue;
 
+			// Log the file in the build array
 			switch($type)
 			{
-				case 'css':
-					self::$build['css'][] = $asset;
+				case 'stylesheet':
+					self::$build['stylesheet'][] = $asset;
 					break;
 
-				case 'js':
-					self::$build['js'][] = $asset;
+				case 'script':
+					self::$build['script'][] = $asset;
+					break;
+
+				case 'image':
+					self::$build['image'][] = $asset;
 					break;
 
 				default:
 					self::$build['copy'][] = $asset;
 					break;
 			}
+		}
+	}
+
+	/**
+	 * List all images on a given page
+	 *
+	 * @param  buffer $buffer An output buffer of a page
+	 */
+	private function readImages($buffer)
+	{
+		$document = new DOMDocument();
+		if($buffer)
+		{
+		    libxml_use_internal_errors(true);
+		    $document->loadHTML($buffer);
+		    libxml_clear_errors();
+		}
+
+		// List images, add their path to the files
+		$tags = $document->getElementsByTagName('img');
+		foreach($tags as $tag)
+		{
+			$src = $tag->getAttribute('src');
+			if(!in_array($src, self::$additionalFiles))
+				self::$additionalFiles[] = $src;
 		}
 	}
 
@@ -232,16 +267,19 @@ class Build
 			switch($type)
 			{
 				// CSS
-				case 'css':
+				case 'stylesheet':
 					$concatenatedName = self::$folder.self::minifyName('styles.css');
 					self::minify($files, $concatenatedName);
 					break;
 
 				// Javascript
-				case 'js':
+				case 'script':
 					$concatenatedName = self::$folder.self::minifyName('scripts.js');
 					self::minify($files, $concatenatedName);
 					break;
+
+				case 'image':
+					copy($file, self::$folder.f::filename($file));
 
 				// Other
 				default:
@@ -352,6 +390,8 @@ class Build
 	 */
 	private function minify($files, $outputFile)
 	{
+		if(!$files) return false;
+
 		$serveOptions['minifiers']['application/x-javascript'] = array('Minify_JS_ClosureCompiler', 'minify');
 		$minify = Minify::combine($files, $serveOptions);
 		f::write($outputFile, $minify);
