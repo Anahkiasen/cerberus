@@ -8,9 +8,13 @@
 if(!class_exists('Init'))
 	require 'class/core.init.php';
 
+
 // Creating main object
-if(!isset($init)) $init = null;
-$init = new Init(null, $init);
+if(!isset($init))
+{
+	$init = null;
+	$init = new Init(null, $init);
+}
 
 // Build pages
 if(LOCAL and isset($_GET['cerberus_build']))

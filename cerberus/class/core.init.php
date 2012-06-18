@@ -274,7 +274,7 @@ class Init
 		if(!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
 
 		// Loading errorHandle
-		include(PATH_CORE.'tools/errorHandle.php');
+		if(!function_exists('errorHandle')) include(PATH_CORE.'tools/errorHandle.php');
 		set_error_handler('errorHandle');
 		set_exception_handler(array('Debug', 'handle'));
 

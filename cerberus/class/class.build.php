@@ -74,7 +74,6 @@ class Build
 	{
 		if(!class_exists('Init'))
 		{
-			require 'cerberus/class/core.init.php';
 			$init = new Init('paths autoloader config constants');
 		}
 
