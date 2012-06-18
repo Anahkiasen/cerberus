@@ -408,7 +408,7 @@ class navigation
 				// Getting the number of children
 				$subcount = SQL
 					? db::count('cerberus_structure', array('parent' => $index))
-					: 0;
+					: sizeof(a::get($values, 'submenu', array()));
 
 				// If the parent has no child and an external link, then it's an external link
 				if($subcount == 1 and !empty($values['external_link']))
