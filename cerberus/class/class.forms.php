@@ -93,6 +93,28 @@ class Forms
 		elseif(str::find('form-inline',     $formClass)) $this->optionFormType = 'inline';
 	}
 
+	public function parseForm($form)
+	{
+		if(!is_array($form)) $form = str::parse($form, 'json');
+		if(!is_array($form)) return false;
+
+		foreach($form as $fieldset => $value)
+		{
+			if(is_numeric($fieldset))
+			{
+				if(is_array($value)) $this->addElement($value);
+				else $this->insert($value);
+			}
+			else
+			{
+				$this->openFieldset($fieldset);
+				foreach($value as $field)
+					$this->addElement($field);
+				$this->closeFieldset();
+			}
+		}
+	}
+
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////// VALIDATION //////////////////////////
 	//////////////////////////////////////////////////////////////////
