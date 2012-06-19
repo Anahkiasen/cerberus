@@ -98,18 +98,25 @@ class Forms
 		if(!is_array($form)) $form = str::parse($form, 'json');
 		if(!is_array($form)) return false;
 
+		// Read parsed array
 		foreach($form as $fieldset => $value)
 		{
+			// If it's a flat form
 			if(is_numeric($fieldset))
 			{
 				if(is_array($value)) $this->addElement($value);
 				else $this->insert($value);
 			}
+
+			// If it's a form divided in fieldsets
 			else
 			{
 				$this->openFieldset($fieldset);
 				foreach($value as $field)
-					$this->addElement($field);
+				{
+					if(is_array($field)) $this->addElement($field);
+					else $this->insert($field);
+				}
 				$this->closeFieldset();
 			}
 		}
