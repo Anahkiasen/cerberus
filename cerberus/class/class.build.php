@@ -42,10 +42,10 @@ class Build
 	// Private parameters ------------------------------------------ /
 
 	/**
-	 * The current page's HTML content
-	 * @var string
+	 * List of assets (scripts/styles) already parsed
+	 * @var array
 	 */
-	private static $pageContent = null;
+	private static $parsedAssets = array();
 
 	/**
 	 * A list of assets to treat
@@ -55,7 +55,7 @@ class Build
 		'stylesheet' => array(),
 		'script'     => array(),
 		'image'      => array(),
-		'copy' => array());
+		'copy'       => array());
 
 	/**
 	 * An array referencing each asset's old and new path
@@ -72,8 +72,11 @@ class Build
 	 */
 	public function __construct()
 	{
+		set_time_limit(0);
+
 		if(!class_exists('Init'))
 		{
+			require 'cerberus/class/core.init.php';
 			$init = new Init('paths autoloader config constants');
 		}
 
@@ -155,29 +158,44 @@ class Build
 	{
 		// Setup list of pages to crawl
 		$pages = self::detectArguments(func_get_args());
-		if(!a::get($pages, 0)) $pages = array(f::name(self::$page, true));
+		if(!a::get($pages, 0)) $pages[0] = f::name(self::$page, true);
 
-		foreach($pages as $page)
+		foreach($pages as $_page)
 		{
 			$_GET = array();
-			if($page) $_GET['page'] = $page;
+			if($_page)
+			{
+				$get        = explode('-', $_page);
+				$getPageSub = a::get($get, 1);
+				$getPage    = a::get($get, 0);
+
+				if($getPage) $_GET['page'] = $getPage;
+				if($getPageSub) $_GET['pageSub'] = $getPageSub;
+			}
 
 			// Crawl the pages
 			content::start();
 				include self::$page;
-			self::$pageContent[$page] = content::end(true);
+			$content = content::end(true);
 
 			// Get images
-			self::readImages(self::$pageContent[$page]);
+			self::readImages($content);
 
 			// Rename any links found
-			if($page) self::$moved[url::rewrite($page)] = $page.'.html';
+			if($_page) self::$moved[url::rewrite($_page)] = $_page.'.html';
 
 			// List assets
 			self::listAssets();
+
+			// Write page
+			f::write(self::$folder.$_page.'.html', $content);
 		}
 
+		// Fetch page and assets
 		self::fetch();
+
+		// Correct paths
+		self::correctPaths();
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -193,6 +211,8 @@ class Build
 		$assets = array_merge(dispatch::currentCSS(), dispatch::currentJS(), self::$additionalFiles);
 		foreach($assets as $asset)
 		{
+			if(str::find(array('http://', 'https://'), $asset)) continue;
+
 			if(!file_exists(url::strip_query($asset))) continue;
 
 			// Filename
@@ -206,25 +226,12 @@ class Build
 			// If we already logged that file
 			if(isset(self::$build[$type]) and in_array($asset, self::$build[$type])) continue;
 
+			// If the image was resized on the go with TimThumb, resize it for good
+			if(str::find('timthumb.php', $asset)) $type = 'image';
+
 			// Log the file in the build array
-			switch($type)
-			{
-				case 'stylesheet':
-					self::$build['stylesheet'][] = $asset;
-					break;
-
-				case 'script':
-					self::$build['script'][] = $asset;
-					break;
-
-				case 'image':
-					self::$build['image'][] = $asset;
-					break;
-
-				default:
-					self::$build['copy'][] = $asset;
-					break;
-			}
+			if(in_array($type, array('stylesheet', 'script', 'image', 'fonts'))) self::$build[$type][] = $asset;
+			else self::$build['copy'][] = $asset;
 		}
 	}
 
@@ -235,6 +242,7 @@ class Build
 	 */
 	private function readImages($buffer)
 	{
+		// Read images from HTML
 		$document = new DOMDocument();
 		if($buffer)
 		{
@@ -251,6 +259,48 @@ class Build
 			if(!in_array($src, self::$additionalFiles))
 				self::$additionalFiles[] = $src;
 		}
+
+		// Get favicon
+		$favicon = $document->getElementsByTagName('link');
+		foreach($favicon as $f)
+		{
+			$rel = $tag->getAttribute('rel');
+			if($rel and $rel == 'sortcut icon')
+				self::$additionalFiles[] = $document->getAttribute('href');
+		}
+
+		// Read images from CSS
+		$css = dispatch::currentCSS();
+		foreach($css as $filepath)
+		{
+			if(in_array($filepath, self::$parsedAssets)) continue;
+
+			$file = f::read($filepath);
+			$css = preg_match_all("#url\(['\"]?([^\)]+)['\"']?\)#", $file, $matches);
+			$folder = dirname($filepath);
+
+			if(!empty($matches))
+			{
+				foreach($matches[1] as $match)
+				{
+					// Get filepath and treat it
+					$match = str::remove(array("'", '"'), $match);
+					$match = url::strip_query($match);
+
+					// Get real image path
+					$pattern = '/\w+\/\.\.\//';
+					$match = $folder.'/'.$match;
+					while(preg_match($pattern, $match))
+					    $match = preg_replace($pattern, '', $match);
+
+					// Add image to path
+					if(!in_array($match, self::$additionalFiles))
+						self::$additionalFiles[] = $match;
+				}
+			}
+
+			self::$parsedAssets[] = $filepath;
+		}
 	}
 
 	/**
@@ -261,24 +311,50 @@ class Build
 		foreach(self::$build as $type => $files)
 		{
 			$concatenatedName = null;
+			$folder = self::$subfolders
+				? self::$folder.f::type($files).'/'
+				: self::$folder;
 
 			// Minify or copy
 			switch($type)
 			{
 				// CSS
 				case 'stylesheet':
-					$concatenatedName = self::$folder.self::minifyName('styles.css');
+					$concatenatedName = $folder.self::minifyName('styles.css');
 					self::minify($files, $concatenatedName);
 					break;
 
 				// Javascript
 				case 'script':
-					$concatenatedName = self::$folder.self::minifyName('scripts.js');
+					$concatenatedName = $folder.self::minifyName('scripts.js');
 					self::minify($files, $concatenatedName);
 					break;
 
 				case 'image':
-					copy($file, self::$folder.f::filename($file));
+					foreach($files as $image)
+					{
+						if(str::find('timthumb.php', $image))
+						{
+							$timthumb = $image;
+							$image = self::unTimthumb($image);
+							self::$moved[$timthumb] = $image;
+						}
+						else self::$moved[$image] = f::filename($image);
+
+						$newImage = $folder.f::filename($image);
+						if(!file_exists($newImage))
+							copy($image, $newImage);
+					}
+					break;
+
+				case 'fonts':
+					foreach($files as $file)
+					{
+						$newPath = self::$folder.f::filename($file);
+						self::$moved[$file] = $newPath;
+						copy($file, $newPath);
+					}
+					break;
 
 				// Other
 				default:
@@ -286,11 +362,11 @@ class Build
 					{
 						if(!self::isMinified($file))
 						{
-							$concatenatedName = self::$folder.self::minifyName($file);
+							$concatenatedName = $folder.self::minifyName($file);
 							self::minify(array($file), $concatenatedName);
 						}
 
-						else copy($file, self::$folder.f::filename($file));
+						else copy($file, $folder.f::filename($file));
 					}
 					break;
 			}
@@ -299,25 +375,70 @@ class Build
 			foreach($files as $file)
 			{
 				if($concatenatedName) $newPath = $concatenatedName;
-				else $newPath = self::$folder.f::filename($file);
+				elseif(str::find('timthumb.php', $file)) $newPath = self::$moved[$file];
+				else $newPath = $folder.f::filename($file);
 				self::$moved[$file] = f::filename($newPath);
 			}
 		}
+	}
 
-		foreach(self::$pageContent as $page => $content)
+	/**
+	 * Corrects the paths to assets in the different files
+	 */
+	public function correctPaths()
+	{
+		$files = glob(self::$folder. '*.{html,js,css}', GLOB_BRACE);
+
+		// Correct assets paths in the HTML
+		foreach($files as $file)
 		{
-			// Correct assets paths in the HTML
+			$content = f::read($file);
 			foreach(self::$moved as $old => $new)
+			{
+				$content = str_replace('/TrainPignes/'.$old, $new, $content);
 				$content = str_replace($old, $new, $content);
+			}
 
 			// Write file
-			f::write(self::$folder.$page.'.html', $content);
+			f::write($file, $content);
 		}
 	}
 
 	//////////////////////////////////////////////////////////////////
 	////////////////////////////// HELPERS ///////////////////////////
 	//////////////////////////////////////////////////////////////////
+
+	public function copy($old, $new)
+	{
+		if(true == true)
+			return true;
+	}
+
+	public function unTimthumb($url)
+	{
+		$url = parse_url($url);
+		$query = a::get($url, 'query');
+		if($query)
+		{
+			// Get TimThumb parameters
+			$query = explode('&', $query);
+			foreach($query as $k => $v)
+			{
+				$v = explode('=', $v);
+				if(sizeof($v) == 2) $queryArgs[a::get($v, 0)] = a::get($v, 1);
+				else $queryArgs[] = a::get($v, 0);
+			}
+
+			// Get new path
+			$src = $queryArgs['src'];
+			$resized = PATH_CACHE.f::filename($src);
+
+			// Create image
+			new Resize($src, $resized, a::get($queryArgs, 'w'), a::get($queryArgs, 'h'), null, a::get($queryArgs, 'q'));
+
+			return $resized;
+		}
+	}
 
 	/**
 	 * Add a .min. tag to a filename
