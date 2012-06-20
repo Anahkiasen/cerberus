@@ -7,11 +7,11 @@
 		</testsuite>
 	</testsuites>
 	<logging>
-		<log type="json" target="cerberus/tests/phpunit.json"/>
-		<log type="coverage-clover" target="cerberus/tests/coverage.xml"/>
+		<log type="json" target="tests/cerberus.json"/>
+		<log type="coverage-clover" target="tests/cerberus.xml"/>
 		<log
 			type           = "coverage-html"
-			target         = "cerberus/tests/coverage/"
+			target         = "tests/ceberus_coverage/"
 			charset        = "UTF-8"
 			yui            = "true"
 			highlight      = "true"
