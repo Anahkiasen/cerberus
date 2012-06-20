@@ -1,20 +1,3 @@
-## SYSTEM ##
-############
-
-# System
-.DS_Store
-
-# Project files
-config.rb
-.project
-*.sublime-*
-sftp-config.json
-
-# Sass cache
-.sass-cache
-*.sassc
-*.scssc
-
 ## CERBERUS CORE FILES ##
 #########################
 
@@ -64,9 +47,26 @@ cerberus/build.json
 /*.txt
 /*.xml
 
+## SYSTEM ##
+############
+
+# System
+.DS_Store
+
+# Project files
+config.rb
+.project
+*.sublime-*
+sftp-config.json
+
+# Sass cache
+.sass-cache
+*.sassc
+*.scssc
+
 ## PHPUnit ##
 #############
 
 !/phpunit.xml
-logs/
+tests/
 cerberus/tests/coverage/
