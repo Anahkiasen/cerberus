@@ -159,8 +159,9 @@ class navigation
 
 		// Calculating subpage
 		$pageSubmenu = a::get(self::$data, $page.',submenu');
+		reset($pageSubmenu);
 		$sousPage = ($pageSubmenu)
-			?  a::get($pageSubmenu, r::get('pageSub'))
+			? a::get($pageSubmenu, r::get('pageSub'))
 				? r::get('pageSub')
 				: key($pageSubmenu)
 			: null;
