@@ -361,7 +361,8 @@ class Forms
 
 				case 'checkbox':
 					$this->rend('<label class="checkbox">');
-					$this->rend('<input ' .$this->paramRender($deploy). ' /> '.$label);
+					$checked = isset($_POST[a::get($deploy, 'name')]) ? ' checked="checked"' : null;
+					$this->rend('<input ' .$this->paramRender($deploy).$checked. ' /> '.$label);
 					$this->rend('</label>');
 					break;
 
