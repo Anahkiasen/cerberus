@@ -39,6 +39,12 @@ class Forms
 	 */
 	private $status = array();
 
+	/**
+	 * A list of the fields in the current form
+	 * @var array
+	 */
+	private $fields = array();
+
 	// Options ----------------------------------------------------- /
 
 	/**
@@ -151,11 +157,11 @@ class Forms
 			$type                  = a::get($params, 1, $key);
 			$default               = a::get($params, 2, null);
 			$value                 = $type == 'file'
-			                       	   ? a::get($_FILES, $key)
+			                           ? a::get($_FILES, $key)
 			                           : str::sanitize(r::request($key, $default), $type);
 
 			$status                = (valid::check($value, $type) and a::get($value, 'error', 0) == 0);
-			$this->status[$key]    = $status ? 'success' : 'error';
+			$this->status[$key]    = $status;
 
 			$result[$key]          = $value;
 			if(!$status) $errors[] = $key;
@@ -164,9 +170,15 @@ class Forms
 		// Display any found errors
 		if(!empty($errors))
 		{
+			$empty = array();
+			foreach($this->status as $field => $value)
+				if(!$value) $empty[] = a::get($this->fields, $field.',label');
+				$message = l::get('form.incomplete'). ' :<br />' .implode(', ', $empty);
+
 			return array(
-				'msg'    => l::get('form.incomplete'),
+				'msg'    => $message,
 				'result' => $result,
+				'state'  => $this->status,
 				'status' => false);
 		}
 
@@ -305,6 +317,9 @@ class Forms
 		$divClass[] = str::slugify($label);
 		$divClass[] = str::slugify($deploy['type']);
 		if($mandatory) $divClass[] = 'mandatory';
+
+		// Add field to global array
+		$this->fields[$deploy['name']] = array_merge($deploy, array('label' => $label));
 
 		////////////////////
 		/////// RENDU //////
