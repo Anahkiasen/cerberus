@@ -1,51 +1,76 @@
 <?php
+/**
+ *
+ * Mail
+ * Creates and send an email
+ *
+ * @package Cerberus
+ */
 class Smail
 {
-	// Core
-	private $destinataire;
-	private $sujet;
-	private $contenu;
-	private $messageText;
+	// Mail core --------------------------------------------------- /
 
-	// Options
-	private $absoluteURL;
-	private $messageHTML;
-	private $attachement;
-	private $expediteurAlias;
-	private $expediteurMail;
+	private $to          = null;
+	private $subject     = null;
+	private $content     = null;
+	private $messageRaw = null;
 
-	// Barrières
-	private $boundary;
-	private $boundaryAlt;
+	// Mail options ------------------------------------------------ /
 
-	// Constructeur
-	function __construct($destinataire, $sujet, $contenu)
+	private $absoluteURL = null;
+	private $messageHTML = null;
+	private $attachement = null;
+	private $fromAlias   = null;
+	private $fromMail    = null;
+
+	// Boundaries -------------------------------------------------- /
+
+	private $boundary    = null;
+	private $boundaryAlt = null;
+
+	/**
+	 * Creates an email to send
+	 *
+	 * @param string $to      To whom ?
+	 * @param string $subject The mail's subject
+	 * @param string $content Its content
+	 */
+	public function __construct($to, $subject, $content)
 	{
-		$this->destinataire = $destinataire;
-		$this->sujet = $sujet;
+		// Create boundaries
+		$this->boundary    = '-----=' .md5(rand());
+		$this->boundaryAlt = '-----=' .md5(rand());
 
-		// Formulaire ou texte
-		if(is_array($contenu))
+		// Map variables
+		$this->to      = $to;
+		$this->subjet  = $subject;
+		$this->content = $content;
+
+		// If the content to pass is an array, flatten it
+		if(is_array($this->content))
 		{
-			foreach($contenu as $key => $value)
+			foreach($this->content as $key => $value)
 			{
 				if(is_array($value))
 				{
-					$this->contenu .= $key. ' : <br />';
-					foreach($value as $v2) $this->contenu .= '- ' .$v2. '<br />';
-					$this->contenu .= '<br /><br />';
+					$this->contenu .= '<p>'.$key. ' : <br />';
+					foreach($value as $k2 => $v2)
+						$this->contenu .= is_numeric($k2)
+							? '- ' .$k2. ' : ' .$v2. '<br />'
+							: '- ' .$v2. '<br />';
+					$this->contenu .= '</p>';
 				}
-				else $this->contenu .= $key. ' : ' .$value. '<br /><br />';
+				else $this->contenu .= '<p>' .$key. ' : ' .$value. '</p>';
 			}
 		}
-		else $this->contenu = $contenu;
-		$this->messageText = str::unhtml($this->contenu);
 
-		if(!is_array($destinataire) and strpos($destinataire, ',') !== false)
-			$this->destinaire = explode(', ', $destinataire);
+		// Create raw version of the message
+		$this->messageRaw = str::unhtml($this->contenu);
 
-		$this->boundary = '-----=' .md5(rand());
-		$this->boundaryAlt = '-----=' .md5(rand());
+		if(!is_array($to) and strpos($to, ',') !== false)
+			$this->destinaire = explode(', ', $to);
+
+
 	}
 
 	// Message en HTML
@@ -64,7 +89,7 @@ class Smail
 		<body id="mail">
 			<div id="header"></div>
 			<div id="corps">
-				<h1>' .$this->sujet. '</h1>
+				<h1>' .$this->subject. '</h1>
 				<div id="message">
 					' .$this->contenu. '
 				</div>
@@ -87,11 +112,11 @@ class Smail
 	function send($header = null)
 	{
 		if(!empty($this->expediteurMail)) $header .= "From: \"" .$this->expediteurAlias. "\"<" .$this->expediteurMail. ">\r\n";
-		if(is_array($this->destinataire))
+		if(is_array($this->to))
 		{
-			foreach($this->destinataire as $key => $value) $destinataires[$key] = '<' .$value. '>';
-			$header .= "Bcc: " .implode(',', $destinataires). "\r\n";
-			$this->destinataire = null;
+			foreach($this->to as $key => $value) $tos[$key] = '<' .$value. '>';
+			$header .= "Bcc: " .implode(',', $tos). "\r\n";
+			$this->to = null;
 		}
 		$header .= "MIME-Version: 1.0\n";
 		$header .= "Content-Type: multipart/alternative; boundary=\"".$this->boundaryAlt."\"";
@@ -100,7 +125,7 @@ class Smail
 		$message .= "Content-Type: text/plain\n";
 		$message .= "charset=\"iso-8859-1\"\n";
 		$message .= "Content-Transfer-Encoding: 8bit\n\n";
-		$message .= $this->messageText;
+		$message .= $this->messageRaw;
 
 		// Message HTML
 		if($this->messageHTML)
@@ -129,7 +154,7 @@ class Smail
 		}*/
 		$message .= "\n--".$this->boundaryAlt."--";
 
-		if(mail($this->destinataire, $this->sujet, $message, $header)) return true;
+		if(mail($this->to, $this->subject, $message, $header)) return true;
 		else return false;
 	}
 

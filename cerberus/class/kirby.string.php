@@ -678,8 +678,8 @@ class str
 	/* Removes all html tags and encoded chars from a string */
 	public static function unhtml($string)
 	{
-			$string = strip_tags($string);
-			return html_entity_decode($string, ENT_COMPAT, 'utf-8');
+		$string = strip_tags($string);
+		return html_entity_decode($string, ENT_COMPAT, 'utf-8');
 	}
 
 	/* Encode a string (used for email addresses) */
