@@ -258,7 +258,7 @@ class navigation
 		if(isset(self::$data['contact']['submenu']['contact'])) $footer .= ' - ' .str::slink('contact', l::get('menu-contact'));
 		if(!empty($links))
 		{
-			foreach($links as $link => $text)
+			foreach($links as $text => $link)
 				$footer .= ' - ' .str::link($link, $text);
 		}
 		return $footer;
