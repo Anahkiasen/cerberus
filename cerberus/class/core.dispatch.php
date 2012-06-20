@@ -362,7 +362,7 @@ class dispatch
 		/* Listing available assets ------------------------------- */
 
 		global $switcher;
-		$templates = isset($switcher) ? 'assets/'.implode('/,asset/', $switcher->returnList()).'/' : null;
+		$templates = isset($switcher) ? 'assets/'.implode('/,asset/', $switcher->getPossible()).'/' : null;
 
 		// Creating a mask for authorized filepaths and file extensions
 		$allowedFiles =
