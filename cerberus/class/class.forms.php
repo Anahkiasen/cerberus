@@ -158,7 +158,7 @@ class Forms
 			$default               = a::get($params, 2, null);
 			$value                 = $type == 'file'
 			                           ? a::get($_FILES, $key)
-			                           : str::sanitize(r::request($key, $default), $type);
+			                           : str::sanitize(r::post($key, $default), $type);
 
 			$status                = (valid::check($value, $type) and a::get($value, 'error', 0) == 0);
 			$this->status[$key]    = $status;
@@ -198,6 +198,7 @@ class Forms
 		return array(
 			'status' => true,
 			'result' => $result,
+			'state'  => $this->status,
 			'mail'   => $mailBody);
 	}
 
@@ -369,7 +370,7 @@ class Forms
 				// Listes
 				case 'checkboxes':
 					$nameCheckbox = a::get($params, 'name').'[]';
-					$postCheckbox = a::get($_POST, $deploy['name'], array());
+					$postCheckbox = r::post($deploy['name'], array());
 					if($checkboxes) foreach($checkboxes as $checkIndex => $checkLabel)
 					{
 						$checked = in_array($checkIndex, $postCheckbox) ? ' checked="checked"' : null;
