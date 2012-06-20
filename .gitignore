@@ -68,4 +68,5 @@ cerberus/build.json
 #############
 
 !/phpunit.xml
+logs/
 cerberus/tests/coverage/
