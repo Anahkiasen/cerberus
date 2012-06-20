@@ -80,7 +80,7 @@ class meta
 				$variables = array('title', 'description', 'keywords', 'url');
 				foreach($variables as $v)
 				{
-					$page = $values['parent'].'-'.$values['page'];
+					$page = empty($values['parent']) ? $values['page'] : $values['parent'].'-'.$values['page'];
 					self::$meta[$page][$v] = a::get($values, $v);
 				}
 			}
@@ -128,9 +128,9 @@ class meta
 			// Fetch the page description in the meta array
 			$pageDescription = a::get(self::$meta, $current.',title');
 
-			if($page and $pageDescription)       $title = $page. ' - ' .$pageDescription;
-			elseif(!$page and $pageDescription)  $title = $pageDescription;
-			else                                  $title = $page;
+			if($page and $pageDescription)      $title = $page. ' - ' .$pageDescription;
+			elseif(!$page and $pageDescription) $title = $pageDescription;
+			else                                $title = $page;
 
 			self::$meta[$current]['title'] = $title;
 		}
