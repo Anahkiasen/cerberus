@@ -638,12 +638,16 @@ class navigation
 		$title = meta::page($index, 'title');
 		if($title) $attr['title'] = $title;
 
-		// Format the listed or flat version of the link
+		// Get link text and href
 		$link = a::get($value, 'link');
-		if(!a::get($value, 'external_link')) $link = url::rewrite($link);
+		$text = a::get($value, 'text');
+		if(!a::get($value, 'external_link'))
+			$link = url::rewrite($link);
+
+		// Format the listed or flat version of the link
 		$link = $isListed
-			? '<li' .$classList. '>' .str::link($link, $value['text'], $attr). '</li>'
-			: str::link($link, $value['text'], $attr);
+			? '<li' .$classList. '>' .str::link($link, $text, $attr). '</li>'
+			: str::link($link, $text, $attr);
 
 		return $link;
 	}
