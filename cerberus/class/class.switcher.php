@@ -29,11 +29,11 @@ class Switcher
 
 		// Check to see if one is currently selected
 		$switchSession = session::get('switch', $this->possible[0]);
-		if(isset($switchSession)) $this->current = $switchSession;
+		$this->current = $switchSession;
 
-		// Define current template
-		$this->current = r::get('switch');
-		session::set('switch', $this->current);
+		// Change template
+		$getSwitch = r::get('switch');
+		if($getSwitch) session::set('switch', $this->current);
 	}
 
 	/**
