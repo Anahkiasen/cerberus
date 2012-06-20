@@ -181,18 +181,19 @@ class navigation
 	/**
 	 * Go fetch the content related to the current page
 	 */
-	public static function content()
+	public static function content($include = false)
 	{
 		if(!self::$page) return false;
 
+		$filepath = null;
 		switch(self::$page)
 		{
 			case '404';
-				include(PATH_CORE.'include/404.php');
+				$filepath = PATH_CORE.'include/404.php';
 				break;
 
 			case 'sitemap':
-				include(PATH_CORE.'include/sitemap.php');
+				$filepath = PATH_CORE.'include/sitemap.php';
 				break;
 
 			case 'admin':
@@ -200,7 +201,7 @@ class navigation
 				break;
 
 			default:
-				if(self::$filepath and file_exists(self::$folder.self::$filepath)) include self::$folder.self::$filepath;
+				if(self::$filepath and file_exists(self::$folder.self::$filepath)) $filepath = self::$folder.self::$filepath;
 				else
 				{
 					$error = str_replace('{filepath}', self::$filepath. ' [' .self::$page. ']', l::get('error.filepath'));
@@ -209,6 +210,10 @@ class navigation
 				}
 				break;
 		}
+
+		// Return the found filepath
+		if($filepath and $include) include $filepath;
+		else return $filepath;
 	}
 
 	/**
