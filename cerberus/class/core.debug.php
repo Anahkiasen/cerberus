@@ -1,10 +1,35 @@
 <?php
 class Debug
 {
-	private static $e = null;
-	private static $errorType = null;
-	private static $errorCode = null;
+	/**
+	 * The current Exception
+	 * @var object
+	 */
+	private static $e            = null;
+
+	/**
+	 * The current error type
+	 * @var string
+	 */
+	private static $errorType    = null;
+
+	/**
+	 * The current error code
+	 * @var integer
+	 */
+	private static $errorCode    = 0;
+
+	/**
+	 * The current error message
+	 * @var string
+	 */
 	private static $errorMessage = null;
+
+	/**
+	 * Facultative additional params to display in the debug report
+	 * @var array
+	 */
+	private static $params       = array();
 
 	/**
 	 * Decides wether we should print or send the error log
@@ -12,7 +37,7 @@ class Debug
 	 * @param Exception $exception An exception that occured
 	 * @param integer   $type      An error code or type
 	 */
-	public static function handle($exception, $message = null, $type = null)
+	public static function handle($exception, $message = null, $type = null, $params = array())
 	{
 		// Error type
 		self::$e = $exception;
@@ -22,6 +47,9 @@ class Debug
 		self::$errorMessage = $message
 			? $message
 			: self::$e->getMessage();
+
+		// Additional parameters
+		self::$params = $params;
 
 		// Displaying error or sending it
 		if(defined('LOCAL') and LOCAL) echo self::render();
@@ -40,9 +68,11 @@ class Debug
 		$code = !empty($code) ? '['.$code.'] ' : null;
 
 		// Displaying error header
-		$render = '
-		<h1>' .self::$errorType. ' : ' .$code.self::$errorMessage. '</h1>
-		<h2>' .basename($e->getFile()). '[' .$e->getLine(). '] at <ins>' .date('H:i:s').'</ins> the <ins>' .date('Y-m-d'). '</ins></h2>';
+		$render = '<h1>' .self::$errorType. ' : ' .$code.self::$errorMessage. '</h1>';
+		$render .= '
+		<h2>' .basename($e->getFile()). '[' .$e->getLine(). ']
+		at <ins>' .date('H:i:s').'</ins>
+		the <ins>' .date('Y-m-d'). '</ins></h2>';
 
 		// Crawling backtrace
 		foreach($e->getTrace() as $i => $t)
@@ -62,6 +92,15 @@ class Debug
 				elseif(isset($t['function']))
 					$render .= '<p>' .$t['function'].'(' .$t['args']. ')</p>';
 			$render .= '</div>';
+		}
+
+		// Environnement
+		if(self::$params and is_array(self::$params))
+		{
+			$render .= '<pre style="word-wrap: break-word">';
+			foreach(self::$params as $param => $value)
+				$render .= '<p><strong>' .$param. '</strong> :<br/>' .htmlentities($value).'</p>';
+			$render .= '</pre>';
 		}
 
 		return '<div class="alert alert-block cerberus-debug">' .$render. '</div>';
