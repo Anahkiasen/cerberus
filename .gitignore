@@ -20,17 +20,13 @@ assets/*/
 # cache
 cerberus/cache
 
-# config
-cerberus/conf.php
-cerberus/conf.json
-
 ## PROJECT RELATED FILES ##
 ###########################
 
 # assets
 # !assets/common
 
-# configuration
+# config
 cerberus/conf.json
 cerberus/build.json
 
@@ -68,5 +64,4 @@ sftp-config.json
 #############
 
 !/phpunit.xml
-tests/
-cerberus/tests/coverage/
+/tests/
