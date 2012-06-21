@@ -25,20 +25,20 @@ class str
 	/* A set of sanitizer methods */
 	public static function sanitize($string, $type = 'str', $default = null)
 	{
-		$string = stripslashes((string)$string);
+		$string = stripslashes((string) $string);
 		$string = urldecode($string);
 		$string = str::utf8($string);
 
 		switch($type)
 		{
 			case 'int':
-				$string = (int)$string;
+				$string = (int) $string;
 				break;
 			case 'str':
-				$string = (string)$string;
+				$string = (string) $string;
 				break;
 			case 'array':
-				$string = (array)$string;
+				$string = (array) $string;
 				break;
 			case 'nohtml':
 				$string = self::unhtml($string);
@@ -350,14 +350,14 @@ class str
 	}
 
 	/**
-	 * Displays the value of a boolean, for debugging
+	 * Displays the readable value of a boolean
 	 *
 	 * @param boolean	$boolean The boolean to display
-	 * @return string	true or false
+	 * @return string	Yes or no
 	 */
 	public static function boolprint($boolean)
 	{
-		return $boolean ? 'true' : 'false';
+		return $boolean ? l::get('yes') : l::get('no');
 	}
 
 	/*

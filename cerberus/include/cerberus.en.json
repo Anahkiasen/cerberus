@@ -47,5 +47,8 @@
 	"upload.errors.missing-file"   : "The file has not been found",
 	"upload.errors.move-error"     : "The file could not be moved to the server",
 	"upload.errors.too-big"        : "The file is too big",
-	"upload.success"               : "The file has been correctly uploaded"
+	"upload.success"               : "The file has been correctly uploaded",
+
+	"yes"                           : "Yes",
+	"no"                            : "No"
 }
