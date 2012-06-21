@@ -116,9 +116,9 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 			$titre_email = $titre_email ? 'Cerberus - ' .$titre_email : 'CerberusDebug';
 
 			$mailTitle = '[DEBUG] ' .basename($errorFile). '::' .$errorLine;
-			$mail = new smail(config::get('developper.mail', 'maxime@stappler.fr'), $mailTitle, $DEBUG);
-			$mail->setExpediteur($titre_email, config::get('mail'));
-			$mail->messageHTML();
+			$mail = new Mail(config::get('developper.mail', 'maxime@stappler.fr'), $mailTitle, $DEBUG);
+			$mail->setSender($titre_email, config::get('mail'));
+			$mail->createHTML();
 			$mail->send();
 
 			return true;

@@ -119,9 +119,9 @@ class Debug
 
 		$mailObject = '[DEBUG] ' .basename($e->getFile()). '::' .$e->getLine();
 
-		$mail = new smail(config::get('developper.mail', 'maxime@stappler.fr'), $mailObject, self::render($e));
-		$mail->setExpediteur($mailTitle, config::get('mail'));
-		$mail->messageHTML();
+		$mail = new Mail(config::get('developper.mail', 'maxime@stappler.fr'), $mailObject, self::render($e));
+		$mail->setSender($mailTitle, config::get('mail'));
+		$mail->createHTML();
 		$mail->send();
 	}
 

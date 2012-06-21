@@ -11,7 +11,7 @@ class update
 	 * The last revision number to date
 	 * @var string
 	 */
-	private static $last = '2012-06-14,ab0b60cb0aa1178bd1f8ec3c102ded26beaf45db';
+	private static $last = '2012-06-21,9dbb0fca4e0482798349f4b3ceec4f42e8b36ce5';
 
 	/**
 	 * Sets the current revision number and updates the core
@@ -42,6 +42,12 @@ class update
 		{
 			self::codematch('v::', 'valid::');
 		}
+		if(self::outdate('2012-06-21'))
+		{
+			self::codematch('new smail\(', 'new Mail(');
+			self::codematch('->setExpediteur', '->setSender');
+			self::codematch('->messageHTML\(\)', '->createHTML()');
+		}
 
 		// Update config file format
 		$confPHP = PATH_CORE.'conf.php';
@@ -58,7 +64,11 @@ class update
 			// Change field name in cerberus_meta
 			if(db::is_table('cerberus_meta'))
 				if(db::is_field('titre', 'cerberus_meta'))
-					db::execute('ALTER TABLE cerberus_meta CHANGE `titre` `title` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;');
+					db::execute('
+						ALTER TABLE cerberus_meta
+						CHANGE `titre` `title` VARCHAR(200)
+						CHARACTER SET utf8
+						COLLATE utf8_unicode_ci NOT NULL;');
 		}
 
 		// Update revision number
@@ -81,7 +91,7 @@ class update
 		$revision = explode(',', $revision);
 
 		// Return only the date part
-		return a::get($revision, 0);
+		return a::get($revision, date('Y-m-d'));
 	}
 
 	/**
@@ -90,7 +100,7 @@ class update
 	 * @param  date     $date The date to match against the current revision number. Defaults to last revision number
 	 * @return boolean  Boolean stating if the project is outdated or not
 	 */
-	public static function outdate($date = NULL)
+	public static function outdate($date = null)
 	{
 		// If project still uses SVN Revision, update
 		if(is_numeric(self::$revision)) return true;
@@ -112,8 +122,8 @@ class update
 		$hardcode = config::hardcode($rev, $torev);
 
 		// Display result
-		if($hardcode) str::translate('update.success', NULL, 'success');
-		else str::translate('update.errror', NULL, 'error');
+		if($hardcode) str::translate('update.success', null, 'success');
+		else str::translate('update.errror', null, 'error');
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -146,7 +156,8 @@ class update
 			if($count >= 1)
 			{
 				// Affichage des matches trouvés
-				echo '<strong>' .$file. ' (' .$count. ' ' .str::plural($count, 'résultats', 'résultat', 'résultat'). ')</strong><br /><ul>';
+				$count = $count. ' ' .str::plural($count, 'résultats', 'résultat', 'résultat');
+				echo '<strong>' .$file. ' (' .$count. ')</strong><br /><ul>';
 				foreach($resultats as $nb => $match)
 				{
 					echo '<li>
