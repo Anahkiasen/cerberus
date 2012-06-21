@@ -248,6 +248,12 @@ class Forms
 		$this->values[$key] = $value;
 	}
 
+	// Gets the readable name of a field
+	public static function getReadable($field)
+	{
+		return ucfirst(l::get('form-' .$field, $field));
+	}
+
 	//////////////////////////////////////////////////////////////////
 	///////////////////////////// BUILDERS ///////////////////////////
 	//////////////////////////////////////////////////////////////////
@@ -271,10 +277,7 @@ class Forms
 		$deploy['type'] = a::get($params, 'type', 'text');
 
 		// Label du champ
-		$label = 	a::get($params, 'label',
-						l::get('form-' .a::get($params, 'name'),
-						ucfirst(a::get($params, 'name'))),
-						$deploy['type']);
+		$label = a::get($params, 'label', self::getReadable(a::get($params, 'name')));
 
 		// Attribut name
 		$deploy['name'] = 	a::get($params, 'name',
