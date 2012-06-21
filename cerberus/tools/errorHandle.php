@@ -110,7 +110,7 @@ function errorHandle($errorType = 'Unknown', $error = 'Une erreur est survenue',
 
 	// If in local, just display the error, if in production, send it
 	if(defined('LOCAL'))
-		if(!LOCAL and navigation::$page != 'admin')
+		if(!LOCAL and !navigation::isCurrent('admin'))
 		{
 			$titre_email = config::get('sitename');
 			$titre_email = $titre_email ? 'Cerberus - ' .$titre_email : 'CerberusDebug';

@@ -223,7 +223,7 @@ class dispatch
 	 */
 	private static function index()
 	{
-		if(self::$page != navigation::$page)
+		if(!navigation::isCurrent(self::$page))
 		{
 			self::$page     = navigation::current();
 			self::$category = navigation::$page;

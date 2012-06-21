@@ -520,7 +520,7 @@ class Init
 			// Determine if we should cache the page or not
 			// Exceptions are : page is administration ; page is set as not cached in the database ; in the $setCache
 			// Default is true
-			if(navigation::$page == 'admin') $caching = false;
+			if(navigation::isCurrent('admin')) $caching = false;
 			elseif(SQL and db::is_table('cerberus_structure'))
 				$caching = db::field(
 					'cerberus_structure',

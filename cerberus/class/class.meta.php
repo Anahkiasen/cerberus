@@ -204,7 +204,7 @@ class meta
 		$meta = self::page();
 		if(!$meta)
 		{
-			if(navigation::$page == 'admin' and r::get('admin'))
+			if(navigation::isCurrent('admin') and r::get('admin'))
 				$meta['title'] = 'Administration - Gestion ' .ucfirst(r::get('admin'));
 			else return false;
 		}

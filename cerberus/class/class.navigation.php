@@ -372,6 +372,19 @@ class navigation
 	}
 
 	/**
+	 * Checks if a page is the current page
+	 *
+	 * @param  string  $page A page index
+	 * @return boolean       Current page or not
+	 */
+	public static function isCurrent($page)
+	{
+		$type = explode('-', $page);
+		if(sizeof($type) == 1) return $page == self::$page;
+		else return $page == self::current();
+	}
+
+	/**
 	 * Returns a sring to use as CSS class for the page
 	 * @return string A CSS class as page page-subpage
 	 */
