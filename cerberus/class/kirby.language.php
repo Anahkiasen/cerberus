@@ -5,7 +5,7 @@
  *
  * Some handy methods to handle multi-language support
  *
- * @todo rework all but set() and get()
+ * @todo rework all but set() and r::get()
  * @package Kirby
  */
 class l
@@ -37,7 +37,7 @@ class l
 
 		// Admin language
 		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
-		if(isset($_GET['get_admin_langue']) && in_array($_GET['get_admin_langue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['get_admin_langue'];
+		if(isset($_GET['get_admin_langue']) and in_array($_GET['get_admin_langue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['get_admin_langue'];
 
 		// Attempt at loading a cached language file
 		$index = cache::fetch('lang');
