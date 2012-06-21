@@ -183,16 +183,7 @@ class Forms
 		}
 
 		// Create the mail body
-		foreach($result as $key => $value)
-		{
-			$mailBody .= '<strong>' .l::get('form-' .$key, ucfirst($key)). '</strong> : ';
-			if(is_array($value))
-			{
-				$mailBody .= '<br />';
-				$value = a::glue($value, '<br/>', ':');
-			}
-			$mailBody .= stripslashes($value). '<br />';
-		}
+		$mailBody = Mail::flatten($result);
 
 		// Return validated values
 		return array(
