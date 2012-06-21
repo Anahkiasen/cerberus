@@ -156,10 +156,13 @@ class Mail
 			foreach($this->to as $key => $email)
 				$tos[$key] = '<' .$email. '>';
 
+			// Implode
+			$this->to = implode(',', $this->to);
+
 			// Put them all into hidden copy if we want
 			if($this->useBcc)
 			{
-				$header .= "Bcc: " .implode(',', $tos). "\r\n";
+				$header .= "Bcc: " .$this->to. "\r\n";
 				$this->to = null;
 			}
 		}
