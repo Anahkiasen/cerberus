@@ -91,7 +91,7 @@ class update
 		$revision = explode(',', $revision);
 
 		// Return only the date part
-		return a::get($revision, date('Y-m-d'));
+		return a::get($revision, 0, date('Y-m-d'));
 	}
 
 	/**
@@ -123,7 +123,7 @@ class update
 
 		// Display result
 		if($hardcode) str::translate('update.success', null, 'success');
-		else str::translate('update.errror', null, 'error');
+		else str::translate('update.error', null, 'error');
 	}
 
 	//////////////////////////////////////////////////////////////////
