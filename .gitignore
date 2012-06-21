@@ -68,6 +68,5 @@ sftp-config.json
 #############
 
 !/phpunit.xml
-tests/*.*
-!tests/prettyunit/
+tests/
 cerberus/tests/coverage/

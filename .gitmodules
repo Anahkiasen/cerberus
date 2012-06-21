@@ -22,6 +22,3 @@
 [submodule "assets/plugins/nivoslider"]
 	path = assets/plugins/nivoslider
 	url = https://github.com/gilbitron/Nivo-Slider
-[submodule "tests/prettyunit"]
-	path = tests/prettyunit
-	url = https://Anahkiasen@github.com/Anahkiasen/prettyunit.git
