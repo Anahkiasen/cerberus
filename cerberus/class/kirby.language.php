@@ -36,8 +36,11 @@ class l
 		if(r::get('langue')) self::change(r::get('langue'));
 
 		// Admin language
-		if(!isset($_SESSION['admin']['langue'])) $_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
-		if(isset($_GET['get_admin_langue']) and in_array($_GET['get_admin_langue'], config::get('langues'))) $_SESSION['admin']['langue'] = $_GET['get_admin_langue'];
+		if(!isset($_SESSION['admin']['langue']))
+			$_SESSION['admin']['langue'] = config::get('langue_default', 'fr');
+
+		if(isset($_GET['get_admin_langue']) and in_array($_GET['get_admin_langue'], config::get('langues')))
+			$_SESSION['admin']['langue'] = $_GET['get_admin_langue'];
 
 		// Attempt at loading a cached language file
 		$index = cache::fetch('lang');
@@ -135,18 +138,20 @@ class l
 	 *
 	 * @return string Current website's language
 	 */
-	public static function current()
+	public static function current($match = null)
 	{
 		// If we have a language in session
 		if(session::get('langue_site')) return session::get('langue_site');
 
 		// Else, attempt at guessing it
-		$langue =  str::split(server::get('http_accept_language'), '-');
-		$langue =  str::trim(a::get($langue, 0));
+		$langue = str::split(server::get('http_accept_language'), '-');
+		$langue = str::trim(a::get($langue, 0));
 		$langue = self::sanitize($langue);
 
 		// Set new session
 		session::set('langue_site', $langue);
+
+		if($match) return $langue == $match;
 		return $langue;
 	}
 
