@@ -162,6 +162,10 @@ class Build
 
 		foreach($pages as $_page)
 		{
+			// Reset navigation state
+			navigation::reset();
+
+			// Set GET variables
 			$_GET = array();
 			if($_page)
 			{

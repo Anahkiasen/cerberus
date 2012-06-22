@@ -400,6 +400,18 @@ class navigation
 	//////////////////////////////////////////////////////////////////
 
 	/**
+	 * Reset the current navigation
+	 */
+	public static function reset()
+	{
+		self::$page             =
+		self::$sousPage         =
+		self::$renderNavigation =
+		self::$renderSubnav     =
+		self::$data             = null;
+	}
+
+	/**
 	 * Takes a raw flatten view of the navigation and rearrange it
 	 *
 	 * @param  array $dataRaw A flattened version of the navigation
