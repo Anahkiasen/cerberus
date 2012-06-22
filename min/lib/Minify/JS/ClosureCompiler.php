@@ -69,7 +69,7 @@ class Minify_JS_ClosureCompiler {
         }
         return $response;
     }
-    
+
     protected $_fallbackFunc = null;
 
     protected function _getResponse($postBody)
@@ -125,7 +125,7 @@ class Minify_JS_ClosureCompiler {
      */
     protected function _fallback($js)
     {
-        require_once 'JSMin.php';
+        require_once __DIR__.'/../../JSMin.php';
         return JSMin::minify($js);
     }
 }
