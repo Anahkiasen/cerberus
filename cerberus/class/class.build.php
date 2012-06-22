@@ -264,9 +264,9 @@ class Build
 		$favicon = $document->getElementsByTagName('link');
 		foreach($favicon as $f)
 		{
-			$rel = $tag->getAttribute('rel');
+			$rel = $f->getAttribute('rel');
 			if($rel and $rel == 'sortcut icon')
-				self::$additionalFiles[] = $document->getAttribute('href');
+				self::$additionalFiles[] = $f->getAttribute('href');
 		}
 
 		// Read images from CSS
