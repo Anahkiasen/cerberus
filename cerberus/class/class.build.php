@@ -269,7 +269,7 @@ class Build
 		foreach($favicon as $f)
 		{
 			$rel = $f->getAttribute('rel');
-			if($rel and $rel == 'sortcut icon')
+			if($rel and ($rel == 'shortcut icon'))
 				self::$additionalFiles[] = $f->getAttribute('href');
 		}
 
