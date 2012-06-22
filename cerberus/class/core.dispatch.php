@@ -790,7 +790,7 @@ class dispatch
 	/**
 	 * Add Javascript before the links
 	 */
-	public static function addJSBefore($javascript, $params = null)
+	public static function addJSBefore($javascript, $params = array())
 	{
 		$params = array_merge($params, array('place' => 'before'));
 		self::inject('js', $javascript, $params);
