@@ -23,7 +23,7 @@ class Forms
 	 *
 	 * @var boolean
 	 */
-	private $inFieldset = false;
+	private $openedTags = array();
 
 	/**
 	 * Current values of the different form fields
@@ -194,22 +194,45 @@ class Forms
 	}
 
 	//////////////////////////////////////////////////////////////////
-	//////////////////////////// FIELDSETS ///////////////////////////
+	//////////////////////////// WRAPPERS ////////////////////////////
 	//////////////////////////////////////////////////////////////////
+
+	public function wrap($tagHash, $attributes = array())
+	{
+		$tagHash = explode('.', $tagHash);
+
+		// Getting tag, classes and ID
+		$class = a::remove($tagHash, 0);
+		$tag   = a::get($tagHash, 0);
+
+		// Writing classes
+		$attributes = array_merge($attributes, array('class' => implode(' ', $class)));
+
+		// Writing tag
+		$this->opened[] = $tag;
+		$this->tab('<' .$tag. ' ' .$this->paramRender($attributes). '>');
+	}
+
+	public function close($tag = null)
+	{
+		if(empty($this->opened)) return true;
+
+		// Getting opened tag
+		if(!$tag) $tag = end($this->opened);
+		$this->untab('</' .$tag. '>');
+	}
 
 	// Open a fieldset
 	public function openFieldset($name)
 	{
-		$this->inFieldset = true;
-
-		$this->tab('<fieldset class="' .str::slugify($name). '">');
+		$this->wrap('fieldset.'.str::slugify($name));
 		$this->rend('<legend>' .l::get('form-'.$name, ucfirst($name)). '</legend>');
 	}
 
 	// Close a fieldset
 	public function closeFieldset()
 	{
-		$this->untab('</fieldset>');
+		$this->close('fieldset');
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -283,7 +306,7 @@ class Forms
 							a::get($this->values, $deploy['name'])));
 
 		// Paramètres auxiliaires et data-*
-		$auxiliaires = array('placeholder', 'min', 'max', 'step', 'style', 'rel', 'rows', 'id', 'disabled', 'select');
+		$auxiliaires = array('placeholder', 'pattern', 'min', 'max', 'step', 'style', 'rel', 'rows', 'id', 'disabled', 'select');
 		foreach($params as $key => $value)
 			if(in_array($key, $auxiliaires) or str::find('data-', $key)) $deploy[$key] = $value;
 			if(a::get($deploy, 'data-provide') == 'typeahead') $deploy['autocomplete'] = 'off';
