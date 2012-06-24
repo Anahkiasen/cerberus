@@ -301,6 +301,13 @@ class navigation
 	 */
 	public static function alterTree($key, $alterValue = null, $alterKey = 'link')
 	{
+		// Recursive mode
+		if(is_array($key))
+		{
+			foreach($key as $k) self::alterTree($k, $alterValue, $alterKey);
+			return true;
+		}
+
 		// Alter a sub page
 		if(str::find('-', $key))
 		{
