@@ -201,6 +201,24 @@ class url
 	//////////////////////////////////////////////////////////////////
 
 	/**
+	 * Creates a call to an API
+	 */
+	public static function api($website = null, $params = array(), $parse = null)
+	{
+		// Build API url
+		$url = $website.'?';
+		$url .= a::glue($params, '&', '=');
+
+		// Fetch content
+		$content = file_get_contents($url);
+
+		// Parse content
+		if($parse) $content = str::parse($content, $parse);
+
+		return $content;
+	}
+
+	/**
 	 * Uses the website's structure to create an URL from a page index
 	 *
 	 * @param   string $page   A page index, can be page or page-subpage
