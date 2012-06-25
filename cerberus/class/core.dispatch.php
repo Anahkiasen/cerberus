@@ -90,6 +90,8 @@ class dispatch
 	 */
 	private static $pluginFiles = array(
 		'bootstrap'   => array(
+			'css/bootstrap.min.css',
+			'css/bootstrap-responsive.min.css',
 			'img/*',
 			'js/*'),
 		'chosen'      => array(
