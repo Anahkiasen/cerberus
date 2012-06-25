@@ -53,7 +53,7 @@ class db
 	 * A list of all the queries executed
 	 * @var array
 	 */
-	public  static $trace      = array();
+	public static $trace      = array();
 
 	/**
 	 * PDO Object holding the current connection

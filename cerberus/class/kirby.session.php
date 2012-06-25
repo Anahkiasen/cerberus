@@ -81,8 +81,8 @@ class session
 	/**
      * Gets a session value by key
      *
-     * @param  mixed $key     The key to look for. Pass false or null to return the entire session array.
-     * @param  mixed $default Optional default value, which should be returned if no element has been found
+     * @param mixed $key     The key to look for. Pass false or null to return the entire session array.
+     * @param mixed $default Optional default value, which should be returned if no element has been found
      *
      * @return mixed
      */
@@ -100,7 +100,7 @@ class session
 	/**
      * Removes a value from the session by key
      *
-     * @param  mixed $key The key to remove by
+     * @param mixed $key The key to remove by
      *
      * @return array The session array without the value
      */

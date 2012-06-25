@@ -9,7 +9,7 @@ class htaccess
 		'cookie_settings_iframes',
 		'force_www');
 
-	function __construct()
+	public function __construct()
 	{
 		$constructors = get_class_methods('htaccess');
 		foreach($constructors as $c)
@@ -22,7 +22,7 @@ class htaccess
 		f::write('.htaccess', self::$htaccess);
 	}
 
-	function __toString()
+	public function __toString()
 	{
 		return self::$htaccess;
 	}
@@ -31,7 +31,7 @@ class htaccess
 	///////////////////////// CONSTRUCTORS ///////////////////////
 	//////////////////////////////////////////////////////////////
 
-	function betterIE7()
+	public function betterIE7()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function crossDomainAjaxRequests()
+	public function crossDomainAjaxRequests()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function corsEnabledImage()
+	public function corsEnabledImage()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function webfontAssets()
+	public function webfontAssets()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -109,7 +109,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function properMime()
+	public function properMime()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -156,7 +156,7 @@ class htaccess
 		AddType text/x-vcard                        vcf';
 	}
 
-	function allowConcatenation()
+	public function allowConcatenation()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -185,7 +185,7 @@ class htaccess
 		</FilesMatch>';
 	}
 
-	function gzipCompression()
+	public function gzipCompression()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -237,7 +237,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function expiresHeaders()
+	public function expiresHeaders()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -304,7 +304,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function etagRemoval()
+	public function etagRemoval()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -324,7 +324,7 @@ class htaccess
 		FileETag None';
 	}
 
-	function stopScreenFlicker()
+	public function stopScreenFlicker()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -341,7 +341,7 @@ class htaccess
 		SetEnvIf brokenvary 1 force-no-vary';
 	}
 
-	function cookieSettingsIframes()
+	public function cookieSettingsIframes()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -358,7 +358,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function startRewriteEngine()
+	public function startRewriteEngine()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -374,7 +374,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function forceWWW()
+	public function forceWWW()
 	{
 		return '
 		# Option 2:
@@ -389,7 +389,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function suppressWWW()
+	public function suppressWWW()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -419,7 +419,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function builtinCachebusting()
+	public function builtinCachebusting()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -441,7 +441,7 @@ class htaccess
 		</IfModule>';
 	}
 
-	function preventSSLWarnings()
+	public function preventSSLWarnings()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -458,7 +458,7 @@ class htaccess
 		# </IfModule>';
 	}
 
-	function prevent404()
+	public function prevent404()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -471,7 +471,7 @@ class htaccess
 		Options -MultiViews';
 	}
 
-	function custom404()
+	public function custom404()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -482,7 +482,7 @@ class htaccess
 		ErrorDocument 404 index.php?page=404';
 	}
 
-	function forceUTF8()
+	public function forceUTF8()
 	{
 		return '
 		# ----------------------------------------------------------------------
@@ -496,7 +496,7 @@ class htaccess
 		AddCharset utf-8 .css .js .xml .json .rss .atom';
 	}
 
-	function additionalSecurity()
+	public function additionalSecurity()
 	{
 		return '
 		# ----------------------------------------------------------------------

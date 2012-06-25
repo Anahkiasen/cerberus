@@ -14,7 +14,7 @@ class r
 		*
 		* @var array
 		*/
-	static private $_ = false;
+	private static $_ = false;
 
 	// fetch all data from the request and sanitize it
 	public static function data()

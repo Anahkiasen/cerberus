@@ -51,6 +51,4 @@ class MediaTest extends PHPUnit_Framework_TestCase
 		self::assertEquals($tt, PATH_CORE.'class/plugins/timthumb.php?src=' .$file. '&w=' .$size. '&h=' .$size);
 	}
 
-
 }
-?>

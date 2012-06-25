@@ -13,20 +13,20 @@ class dispatch
 	 * The page we're currently in
 	 * @var string
 	 */
-	static private $page     = null;
+	private static $page     = null;
 
 	/**
 	 *  The category we're currently in
 	 * @var string
 	 */
-	static private $category = null;
+	private static $category = null;
 
 	/**
 	 * Whether Dispatch should try and add assets automatically or not
 	 * Dispatch by default will add any asset matching the current page and base names (styles.css, scripts.js)
 	 * @var boolean
 	 */
-	static private $guess    = true;
+	private static $guess    = true;
 
 	/* Current ressources ----------------------------------------- */
 
@@ -34,43 +34,43 @@ class dispatch
 	 * Table containing the ressources to minify
 	 * @var array
 	 */
-	static private $minify   = array();
+	private static $minify   = array();
 
 	/**
 	 * Table containing the scripts and styles of the current page
 	 * @var array
 	 */
-	static private $scripts  = array();
+	private static $scripts  = array();
 
 	/**
 	 * The current CSS ressources
 	 * @var array
 	 */
-	static private $CSS      = array();
+	private static $CSS      = array();
 
 	/**
 	 * The current JS ressources
 	 * @var array
 	 */
-	static private $JS       = array();
+	private static $JS       = array();
 
 	/**
 	 * A Typekit ID if available
 	 * @var string
 	 */
-	static private $typekit  = null;
+	private static $typekit  = null;
 
 	/**
 	 * Paths to every ressource available
 	 * @var array
 	 */
-	static private $paths    = array();
+	private static $paths    = array();
 
 	/**
 	 * A list of aliases for different scripts
 	 * @var array
 	 */
-	static private $alias    = array(
+	private static $alias    = array(
 		// jQuery
 		'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
 		'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
@@ -88,7 +88,7 @@ class dispatch
 	 * of Bootstrap if no compiled version found
 	 * @var array
 	 */
-	static private $pluginFiles = array(
+	private static $pluginFiles = array(
 		'bootstrap'   => array(
 			'img/*',
 			'js/*'),
@@ -119,23 +119,23 @@ class dispatch
 	//////////////////////////////////////////////////////////////////
 
 	// Compass configuration file
-	static public $compass  = 'config.rb';
+	public static $compass  = 'config.rb';
 
 	// Assets folder
-	static public $assets   = 'assets';
-	static public $cerberus = 'cerberus';
-	static public $common   = 'common';
-	static public $plugins  = 'plugins';
+	public static $assets   = 'assets';
+	public static $cerberus = 'cerberus';
+	public static $common   = 'common';
+	public static $plugins  = 'plugins';
 
 	// Filetypes folders
-	static public $coffee   = 'coffee';
-	static public $css      = 'css';
-	static public $file     = 'file';
-	static public $fonts    = 'fonts';
-	static public $images   = 'img';
-	static public $js       = 'js';
-	static public $sass     = 'sass';
-	static public $swf      = 'swf';
+	public static $coffee   = 'coffee';
+	public static $css      = 'css';
+	public static $file     = 'file';
+	public static $fonts    = 'fonts';
+	public static $images   = 'img';
+	public static $js       = 'js';
+	public static $sass     = 'sass';
+	public static $swf      = 'swf';
 
 	//////////////////////////////////////////////////////////////////
 	/////////////////////////// CONSTRUCT ////////////////////////////

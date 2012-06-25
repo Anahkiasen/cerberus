@@ -18,7 +18,7 @@ class browser
 		*
 		* @var string
 		*/
-	static public $ua = false;
+	public static $ua = false;
 
 	/**
 		* The readable name of the browser
@@ -26,7 +26,7 @@ class browser
 		*
 		* @var string
 		*/
-	static public $name = false;
+	public static $name = false;
 
 	/**
 		* The readable browser engine name
@@ -34,7 +34,7 @@ class browser
 		*
 		* @var string
 		*/
-	static public $engine = false;
+	public static $engine = false;
 
 	/**
 		* The browser version number
@@ -42,7 +42,7 @@ class browser
 		*
 		* @var string
 		*/
-	static public $version = false;
+	public static $version = false;
 
 	/**
 		* The platform name
@@ -50,28 +50,28 @@ class browser
 		*
 		* @var string
 		*/
-	static public $platform = false;
+	public static $platform = false;
 
 	/**
 		* True or false if it is a mobile device or not
 		*
 		* @var boolean
 		*/
-	static public $mobile = false;
+	public static $mobile = false;
 
 	/**
 		* True or false if it is an iOS device or not
 		*
 		* @var boolean
 		*/
-	static public $ios = false;
+	public static $ios = false;
 
 	/**
 		* True or false if it is an iPhone or not
 		*
 		* @var boolean
 		*/
-	static public $iphone = false;
+	public static $iphone = false;
 
 	/**
 		* Returns the name of the browser

@@ -8,7 +8,6 @@
 if(!class_exists('Init'))
 	require 'class/core.init.php';
 
-
 // Creating main object
 if(!isset($init))
 {

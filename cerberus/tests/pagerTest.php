@@ -78,7 +78,6 @@ class PagerTest extends PHPUnit_Framework_TestCase
 		self::assertLessThanOrEqual(self::$pages, $current);
 	}
 
-
 	public function testFirst()
 	{
 		self::$pager->change(self::$pager->first());

@@ -14,31 +14,31 @@ class cache
    * The name of the current output buffer being cache, initialized by fetch() and retrieved by save()
    * @var string
    */
-  static private $cached_file = null;
+  private static $cached_file = null;
 
   /**
    * The folder where cached files go
    * @var string
    */
-  static private $folder = null;
+  private static $folder = null;
 
   /**
    * The amount of time in seconds to cache files
    * @var int
    */
-  static private $time = null;
+  private static $time = null;
 
   /**
    * Cache current GET variables or not (useful to cache dynamic pages)
    * @var boolean
    */
-  static private $cache_get_variables = false;
+  private static $cache_get_variables = false;
 
   /**
    * The GET variables to avoid caching
    * @var array
    */
-  static private $get_remove = array('PHPSESSID', 'gclid');
+  private static $get_remove = array('PHPSESSID', 'gclid');
 
   /**
    * Initialize the cache class, will go fetch the cache parameters in the config once

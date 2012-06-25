@@ -42,7 +42,7 @@ class url
 	/**
      * Checks if the URL has a query string attached
      *
-     * @param  string $url
+     * @param  string  $url
      * @return boolean
      */
 	public static function has_query($url)
@@ -67,7 +67,7 @@ class url
 	/**
      * Checks for a valid URL
      *
-     * @param  string $url
+     * @param  string  $url
      * @return boolean
      */
 	public static function valid($url)
@@ -83,10 +83,10 @@ class url
      * Shortens an URL
      * It removes http:// or https:// and uses str::short afterwards
      *
-     * @param  string  $url   The URL to be shortened
-     * @param  int     $chars The final number of characters the URL should have
-     * @param  boolean $base  True: only take the base of the URL.
-     * @param  string  $rep   The element, which should be added if the string is too long. Ellipsis is the default.
+     * @param string  $url   The URL to be shortened
+     * @param int     $chars The final number of characters the URL should have
+     * @param boolean $base  True: only take the base of the URL.
+     * @param string  $rep   The element, which should be added if the string is too long. Ellipsis is the default.
      *
      * @return string The shortened URL
      */

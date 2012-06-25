@@ -626,7 +626,7 @@ class str
 	 * @param  string  $xml
 	 * @return mixed
 	 */
-	static function parse_xml($xml)
+	public static function parse_xml($xml)
 	{
 		$xml = preg_replace('/(<\/?)(\w+):([^>]*>)/', '$1$2$3', $xml);
 		$xml = @simplexml_load_string($xml, null, LIBXML_NOENT);

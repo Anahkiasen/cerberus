@@ -17,12 +17,12 @@ class Admin extends Admin_Setup
 		'edit' => 'Modifier',
 		'delete' => 'Supprimer');
 
-	function __construct()
+	public function __construct()
 	{
 		$this->modeSQL = db::connection();
 		$this->defineMultilangue();
 	}
-	function getFieldsTable()
+	public function getFieldsTable()
 	{
 		return array($this->fields, $this->table);
 	}
@@ -33,7 +33,7 @@ class Admin extends Admin_Setup
 	########################################
 	*/
 
-	function setPage($table, $facultativeFields = array())
+	public function setPage($table, $facultativeFields = array())
 	{
 		// Information sur la table
 		$this->table = $table;
@@ -139,11 +139,11 @@ class Admin extends Admin_Setup
 
 	*/
 
-	function addRow($function, $name, $type = 'link')
+	public function addRow($function, $name, $type = 'link')
 	{
 		if($type == 'link') $this->tableRows = array($function => $name) + $this->tableRows;
 	}
-	function createList($fieldsDisplay, $manualQuery = null)
+	public function createList($fieldsDisplay, $manualQuery = null)
 	{
 		echo '<table class="table table-striped table-bordered table-condensed"><thead><tr>';
 
@@ -290,7 +290,7 @@ class Admin extends Admin_Setup
 	*/
 
 	// Détermine si le formulaire est en mode ajout ou modif
-	function addOrEdit(&$typeEdit = null, &$editText = null, &$urlAction = null)
+	public function addOrEdit(&$typeEdit = null, &$editText = null, &$urlAction = null)
 	{
 		if($this->getEdit)
 		{
@@ -305,14 +305,14 @@ class Admin extends Admin_Setup
 			$urlAction = 'add';
 		}
 	}
-	function formAddOrEdit($formulaire = null)
+	public function formAddOrEdit($formulaire = null)
 	{
 		if(!empty($formulaire))
 			if(isset($this->getEdit) or isset($this->getAdd)) return $formulaire;
 	}
 
 	// Vérifie si un champ est véritablement nul
-	function isBlank($value)
+	public function isBlank($value)
 	{
 		return empty($value) && !is_numeric($value);
 	}
@@ -332,7 +332,7 @@ class Admin extends Admin_Setup
 	# ID - L'image prend l'id de l'entrée pour reconnaissance
 		Une image
 	*/
-	function imageMode($table = null)
+	public function imageMode($table = null)
 	{
 		if(!$table) $table = $this->table;
 
@@ -347,7 +347,7 @@ class Admin extends Admin_Setup
 			return $storageMode;
 		}
 	}
-	function getImage($idpic)
+	public function getImage($idpic)
 	{
 		$mode = $this->imageMode();
 		switch($mode)
@@ -368,7 +368,7 @@ class Admin extends Admin_Setup
 	}
 
 	// Envoyer une image
-	function uploadImage($field = 'thumb')
+	public function uploadImage($field = 'thumb')
 	{
 		if(isset($_FILES[$field]['name']) and !empty($_FILES[$field]['name']))
 		{

@@ -15,25 +15,25 @@ class navigation
 	 * Whether the main navigation should be list-based or not
 	 * @var boolean
 	 */
-	static private $optionListed     = false;
+	private static $optionListed     = false;
 
 	/**
 	 * Whether the sub navigation should be list-based or not
 	 * @var boolean
 	 */
-	static private $optionListedSub  = false;
+	private static $optionListedSub  = false;
 
 	/**
 	 * A glue to insert between each element of the menu
 	 * @var string
 	 */
-	static private $optionGlue       = null;
+	private static $optionGlue       = null;
 
 	/**
 	 * A glue to insert between each element of the submenu
 	 * @var string
 	 */
-	static private $optionGlueSub    = null;
+	private static $optionGlueSub    = null;
 
 	// Current environnement --------------------------------------- /
 
@@ -41,31 +41,31 @@ class navigation
 	 * The website's homepage, used as default in case of error
 	 * @var string
 	 */
-	static private $homepage         = null;
+	private static $homepage         = null;
 
 	/**
 	 * The current page
 	 * @var string
 	 */
-	static public  $page             = null;
+	public static $page             = null;
 
 	/**
 	 * The current subpage
 	 * @var string
 	 */
-	static public  $sousPage         = null;
+	public static $sousPage         = null;
 
 	/**
 	 * The actual name of the page's file
 	 * @var string
 	 */
-	static private $filepath         = null;
+	private static $filepath         = null;
 
 	/**
 	 * A list of system pages that are in the tree but used as functions
 	 * @var array
 	 */
-	static private $system           = array('404', 'sitemap');
+	private static $system           = array('404', 'sitemap');
 
 	// Render ------------------------------------------------------ /
 
@@ -73,13 +73,13 @@ class navigation
 	 * HTML rendered version of the main tree
 	 * @var array
 	 */
-	static private $renderNavigation = array();
+	private static $renderNavigation = array();
 
 	/**
 	 * HTML rendered version of the sub tree
 	 * @var array
 	 */
-	static private $renderSubnav     = array();
+	private static $renderSubnav     = array();
 
 	// Private data ------------------------------------------------ /
 
@@ -87,13 +87,13 @@ class navigation
 	 * The main navigation tree
 	 * @var array
 	 */
-	static private $data             = array();
+	private static $data             = array();
 
 	/**
 	 * The name of the folder containing page files
 	 * @var string
 	 */
-	static private $folder           = 'pages/';
+	private static $folder           = 'pages/';
 
 	//////////////////////////////////////////////////////////////////
 	///////////////////////// NAVIGATION SETUP ///////////////////////

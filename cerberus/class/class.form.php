@@ -19,7 +19,7 @@ class form
 	*/
 
 	// Construction
-	function __construct($multilangue = null, $params = null)
+	public function __construct($multilangue = null, $params = null)
 	{
 		self::$multilangue = (isset($multilangue)) ? $multilangue : MULTILANGUE;
 
@@ -29,14 +29,14 @@ class form
 	}
 
 	// Rendu du formulaire
-	function __toString()
+	public function __toString()
 	{
 		$this->render .= '</form>';
 		return $this->render;
 	}
 
 	// Récupérer les valeurs à partir de la liste des champs
-	function getValues($fieldsTable)
+	public function getValues($fieldsTable)
 	{
 		if(isset($fieldsTable[1]))
 		{
@@ -57,19 +57,19 @@ class form
 	}
 
 	// Passer les valeurs à autrui
-	function passValues()
+	public function passValues()
 	{
 		return self::$valuesArray;
 	}
 
 	// Ajoute une valeur au tableau
-	function addValue($key, $value)
+	public function addValue($key, $value)
 	{
 		self::$valuesArray[$key] = $value;
 	}
 
 	// Changer le type de formulaire
-	function setType($type)
+	public function setType($type)
 	{
 		self::$formType = $type;
 	}
@@ -81,7 +81,7 @@ class form
 	*/
 
 	// Ouvrir et fermer un fieldset
-	function openFieldset($name, $mandatory = false)
+	public function openFieldset($name, $mandatory = false)
 	{
 		$fieldName = (!self::$multilangue) ? $name : l::get('form-' .$name);
 		self::$mandatory = $mandatory;
@@ -92,14 +92,14 @@ class form
 
 		if(self::$openedManual) self::$openedManual = false;
 	}
-	function closeFieldset()
+	public function closeFieldset()
 	{
 		if(self::$openedManual) $this->closeManualField();
 		$this->render .= PHP_EOL. '</fieldset>';
 	}
 
 	// Champs manuels
-	function manualField($name, $full = false)
+	public function manualField($name, $full = false)
 	{
 		$fieldName = (!self::$multilangue) ? $name : l::get('form-' .$name);
 		$mandatoryStar = (self::$mandatory)
@@ -115,18 +115,18 @@ class form
 
 		self::$openedManual = true;
 	}
-	function closeManualField()
+	public function closeManualField()
 	{
 		if(self::$formType != 'plain') $this->render .= '</dd></dl>';
 		self::$openedManual = false;
 	}
 
 	// Texte manuel
-	function insertText($text)
+	public function insertText($text)
 	{
 		$this->render .= $text;
 	}
-	function insertDText($text)
+	public function insertDText($text)
 	{
 		$this->render .= '<dl><dt>' .$text. '</dt></dl>';
 	}
@@ -138,7 +138,7 @@ class form
 	// fieldset > dl > dt label > dd input
 
 	// Fonction moteur
-	function addElement($label, $name, $type, $value = null, $additionalParams = null)
+	public function addElement($label, $name, $type, $value = null, $additionalParams = null)
 	{
 		$params = array("label" => $label, 'value' => $value, "type" => $type, "name" => $name);
 		if(!empty($additionalParams) && is_array($additionalParams)) foreach($additionalParams as $key => $value) $params[$key] = $value;
@@ -146,7 +146,7 @@ class form
 		$this->attachElement($params);
 	}
 	// Définitions
-	function defineNameLabel($name, $label)
+	public function defineNameLabel($name, $label)
 	{
 		$thisLabel = (empty($label))
 			? $name
@@ -160,7 +160,7 @@ class form
 
 		return array($thisName, $thisLabel);
 	}
-	function defineValue($thisName)
+	public function defineValue($thisName)
 	{
 		if(isset($_POST[$thisName])) return stripslashes($_POST[$thisName]);
 		if(isset(self::$valuesArray[$thisName])) return self::$valuesArray[$thisName];
@@ -169,7 +169,7 @@ class form
 	// -------------
 	// MOTHER METHOD
 	// -------------
-	function attachElement($params)
+	public function attachElement($params)
 	{
 		// Définitions
 		$type = $params['type'];
@@ -265,19 +265,19 @@ class form
 	######################################## */
 
 	// Raccourcis personnels
-	function addEdit()
+	public function addEdit()
 	{
 		$diff = isset($_GET['edit_' .$this->usable]) ? $_GET['edit_' .$this->usable] : 'add';
 		$this->addHidden('edit', $diff);
 	}
-	function addDate($name = 'Date', $date = null)
+	public function addDate($name = 'Date', $date = null)
 	{
 		$select = new select();
 		$select->newSelect($name);
 		$select->appendList($select->liste_date($date));
 		$this->render .= $select;
 	}
-	function addHour($name = 'Heure', $hour = null)
+	public function addHour($name = 'Heure', $hour = null)
 	{
 		$select = new select();
 		$select->newSelect($name);
@@ -286,32 +286,32 @@ class form
 	}
 
 	// Raccourcis généraux
-	function addRadio($name, $number, $label = null, $value = null, $additionalParams = null)
+	public function addRadio($name, $number, $label = null, $value = null, $additionalParams = null)
 	{
 		$additionalParams['number'] = $number;
 		$this->addElement($label, $name, "radio", $value, $additionalParams);
 	}
-	function addText($name, $label = null, $value = null, $additionalParams = null)
+	public function addText($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addElement($label, $name, "text", $value, $additionalParams);
 	}
-	function addPass($name, $label = null, $value = null, $additionalParams = null)
+	public function addPass($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addElement($label, $name, "password", $value, $additionalParams);
 	}
-	function addHidden($name, $value = null, $additionalParams = null)
+	public function addHidden($name, $value = null, $additionalParams = null)
 	{
 		$this->addElement('', $name, "hidden", $value, $additionalParams);
 	}
-	function addTextarea($name, $label = null, $value = null, $additionalParams = null)
+	public function addTextarea($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addElement($label, $name, "textarea", $value, $additionalParams);
 	}
-	function addSubmit($name = 'Valider', $label = null, $value = null, $additionalParams = null)
+	public function addSubmit($name = 'Valider', $label = null, $value = null, $additionalParams = null)
 	{
 		$this->addElement($label, $name, "submit", $value, $additionalParams);
 	}
-	function addFile($name, $label = null, $value = null, $additionalParams = null)
+	public function addFile($name, $label = null, $value = null, $additionalParams = null)
 	{
 		$this->render = str_replace('<form method' ,'<form enctype="multipart/form-data" method', $this->render);
 		$this->addElement($label, $name, "file", $value, $additionalParams);
@@ -340,14 +340,14 @@ class select extends form
 	private $render;
 
 	// Construction
-	function __construct($name = null)
+	public function __construct($name = null)
 	{
 		if(!isset(self::$valuesArray)) self::$valuesArray = array();
 		if(!empty($name)) $this->newSelect($name);
 	}
 
 	// Initialisation
-	function newSelect($name, $label = null)
+	public function newSelect($name, $label = null)
 	{
 		$this->render = null;
 		$this->liste =
@@ -357,7 +357,7 @@ class select extends form
 	}
 
 	// Accrochage de la liste au <select>
-	function appendList($liste, $overwrite = true)
+	public function appendList($liste, $overwrite = true)
 	{
 		if($overwrite)
 		{
@@ -375,7 +375,7 @@ class select extends form
 	}
 
 	// Rendu
-	function __toString()
+	public function __toString()
 	{
 		if(empty($this->render)) $this->createElement();
 		return $this->render;
@@ -386,13 +386,13 @@ class select extends form
 	*/
 
 	// Ajout de paramètres
-	function addParams($params = null)
+	public function addParams($params = null)
 	{
 		$this->params += $params;
 	}
 
 	// Régler la valeur du select sur
-	function setValue($value)
+	public function setValue($value)
 	{
 		$this->value = $value;
 	}
@@ -404,19 +404,19 @@ class select extends form
 	*/
 
 	// Liste à chiffres
-	function liste_number($end, $start = 0, $step = 1)
+	public function liste_number($end, $start = 0, $step = 1)
 	{
 		return range($start, $end, $step);
 	}
 
 	// Array manuel
-	function liste_array($list)
+	public function liste_array($list)
 	{
 		return $list;
 	}
 
 	// Champ date
-	function liste_date($date = null, $startingYear = 2010)
+	public function liste_date($date = null, $startingYear = 2010)
 	{
 		// Date dans les valeurs données ou manuelle, sinon date actuelle
 		if(isset(self::$valuesArray[strtolower($this->name)])) $date = self::$valuesArray[strtolower($this->name)];
@@ -438,7 +438,7 @@ class select extends form
 	}
 
 	// Champ heure
-	function liste_heure($hour = null)
+	public function liste_heure($hour = null)
 	{
 		if(empty($hour)) $hour = '-';
 		$valueHour = explode('-', $hour);
@@ -460,7 +460,7 @@ class select extends form
 	*/
 
 	// Création du champ
-	function createElement()
+	public function createElement()
 	{
 		$label = $this->label;
 		$stateField = (!self::$openedManual

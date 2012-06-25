@@ -33,7 +33,7 @@ class News
 	FONCTIONS DE DEFINITION
 	############################ */
 
-	function __construct()
+	public function __construct()
 	{
 		dispatch::addPHP('bbcode');
 
@@ -45,7 +45,7 @@ class News
 
 	// Réglages des principaux paramètres : actualité par page
 	// Pagination ou non, et ordre des actualités
-	function setNews($limit, $newsPaginate, $newsOrder)
+	public function setNews($limit, $newsPaginate, $newsOrder)
 	{
 		$this->newsPaginate = $newsPaginate;
 		$this->newsOrder = $newsOrder;
@@ -62,26 +62,26 @@ class News
 		}
 	}
 
-	function setTable($table)
+	public function setTable($table)
 	{
 		$this->table = $table;
 	}
 
-	function setDisplay($thumb, $date, $link)
+	public function setDisplay($thumb, $date, $link)
 	{
 		$this->displayThumb = $thumb;
 		$this->displayDate = $date;
 		$this->displayLink = $link;
 	}
 
-	function sizeThumb($width, $height, $crop)
+	public function sizeThumb($width, $height, $crop)
 	{
 		$this->thumbWidth = $width;
 		$this->thumbHeight = $height;
 		$this->thumbCrop = $crop;
 	}
 
-	function setTruncate($truncate, $mode)
+	public function setTruncate($truncate, $mode)
 	{
 		if($truncate)
 		{
@@ -96,7 +96,7 @@ class News
 	AFFICHAGE DES NEWS
 	############################ */
 
-	function selectNews($id = null)
+	public function selectNews($id = null)
 	{
 		// News seule ou toutes
 		if(!empty($id))
@@ -172,7 +172,7 @@ class News
 	}
 
 	// Liste des archives
-	function selectArchives()
+	public function selectArchives()
 	{
 		$news = db::select(
 			$this->table,
@@ -214,7 +214,7 @@ class News
 	}
 
 	// Pagination
-	function paginate()
+	public function paginate()
 	{
 		if($this->newsPaginate) $this->pager->pagination();
 	}

@@ -20,7 +20,7 @@ class Admin_Setup
 	########################################
 	*/
 
-	function __construct($customNavigation = null)
+	public function __construct($customNavigation = null)
 	{
 		global $connected;
 
@@ -76,7 +76,7 @@ class Admin_Setup
 	}
 
 	// Charger une page d'admin
-	function content()
+	public function content()
 	{
 		if(isset($_GET['admin']))
 		{
@@ -87,7 +87,7 @@ class Admin_Setup
 	}
 
 	// Admin en plusieures langues
-	function defineMultilangue($arrayLangues = null)
+	public function defineMultilangue($arrayLangues = null)
 	{
 		$this->arrayLangues = $arrayLangues;
 		if(MULTILANGUE)
@@ -106,7 +106,7 @@ class Admin_Setup
 	*/
 
 	// Formulaire d'identification et vérification
-	function adminLogin()
+	public function adminLogin()
 	{
 		$adminForm = new forms();
 		$adminForm->openFieldset('Identification');
@@ -139,7 +139,7 @@ class Admin_Setup
 	}
 
 	// Vérification des identifiants
-	function checkLogin($user, $password)
+	public function checkLogin($user, $password)
 	{
 		if(db::connection() and db::is_table('cerberus_admin'))
 		{
@@ -150,7 +150,7 @@ class Admin_Setup
 	}
 
 	// Recupération de l'identification
-	function accessGranted()
+	public function accessGranted()
 	{
 		return $this->granted;
 	}
@@ -160,7 +160,7 @@ class Admin_Setup
 	############## NAVIGATION ##############
 	########################################
 	*/
-	function adminNavigation()
+	public function adminNavigation()
 	{
 		echo '<div id="admin-navigation"><h4>Tableau de bord</h4>';
 
@@ -206,7 +206,7 @@ class Admin_Setup
 		echo '<a class="btn btn-warning" href="' .url::rewrite('admin', 'logoff'). '">Déconnexion</a></div></div>';
 	}
 
-	function get($variable)
+	public function get($variable)
 	{
 		return self::${$variable};
 	}
