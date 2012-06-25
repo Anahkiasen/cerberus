@@ -83,8 +83,12 @@ class Build
 		// Clean build cache
 		self::clean();
 
+		// Calculate build file wanted
+		$buildFile = r::get('cerberus_build', 'build');
+		if(!$buildFile) $buildFile = 'build';
+		$buildFile = PATH_CORE.$buildFile.'.json';
+
 		// Attempt at reading a build file
-		$buildFile = PATH_CORE.'build.json';
 		if(file_exists($buildFile))
 		{
 			$buildFile = f::read($buildFile, 'json');
