@@ -162,7 +162,8 @@ class Build
 	{
 		// Setup list of pages to crawl
 		$pages = self::detectArguments(func_get_args());
-		if(!a::get($pages, 0)) $pages[0] = f::name(self::$page, true);
+		// Add index page to the list of pages to build
+		array_unshift($pages, f::name(self::$page, true));
 
 		foreach($pages as $_page)
 		{
