@@ -98,7 +98,7 @@ class Build
 			$folder          = a::get($buildFile, 'folder',       self::$folder);
 			$additionalFiles = a::get($buildFile, 'addFiles',     self::$additionalFiles);
 			$protectedFiles  = a::get($buildFile, 'protectFiles', self::$protectedFiles);
-			$subfolders      = a::get($buildFile, 'subfolders');
+			self::$subfolders = a::get($buildFile, 'subfolders',   self::$subfolders);
 
 			// If we don't have any page to load, cancel
 			if(!$page) return true;
@@ -188,7 +188,6 @@ class Build
 			}
 
 			// Replace old pages array with the new
-			array_unshift($navigation, "");
 			$pages = $navigation;
 		}
 
@@ -348,57 +347,52 @@ class Build
 	public function fetch()
 	{
 		foreach(self::$build as $type => $files)
-		{
-			$concatenatedName = null;
-			$folder = self::$subfolders
-				? self::$folder.f::type($files).'/'
-				: self::$folder;
-
-			// Minify or copy
-			switch($type)
+			foreach($files as $file)
 			{
-				// CSS
-				case 'stylesheet':
-					$concatenatedName = $folder.self::minifyName('styles.css');
-					self::minify($files, $concatenatedName);
-					break;
+				$concatenatedName = null;
+				$subFolder        = self::$subfolders ? f::type($file).'/' : null;
+				$folder           = self::$folder.$subFolder;
 
-				// Javascript
-				case 'script':
-					$concatenatedName = $folder.self::minifyName('scripts.js');
-					self::minify($files, $concatenatedName);
-					break;
+				// Make sur the destination folder exists
+				dir::make($folder);
 
-				case 'image':
-					foreach($files as $image)
-					{
-						if(str::find('timthumb.php', $image))
+				// Minify or copy
+				switch($type)
+				{
+					// CSS
+					case 'stylesheet':
+						$concatenatedName = $folder.self::minifyName('styles.css');
+						self::minify($files, $concatenatedName);
+						break;
+
+					// Javascript
+					case 'script':
+						$concatenatedName = $folder.self::minifyName('scripts.js');
+						self::minify($files, $concatenatedName);
+						break;
+
+					case 'image':
+						if(str::find('timthumb.php', $file))
 						{
-							$timthumb = $image;
-							$image = self::unTimthumb($image);
-							self::$moved[$timthumb] = $image;
+							$timthumb = $file;
+							$file = self::unTimthumb($file);
+							self::$moved[$timthumb] = $subFolder.$file;
 						}
-						else self::$moved[$image] = f::filename($image);
+						else self::$moved[$file] = $subFolder.f::filename($file);
 
-						$newImage = $folder.f::filename($image);
+						$newImage = $folder.f::filename($file);
 						if(!file_exists($newImage))
-							copy($image, $newImage);
-					}
-					break;
+							copy($file, $newImage);
+						break;
 
-				case 'fonts':
-					foreach($files as $file)
-					{
+					case 'fonts':
 						$newPath = self::$folder.f::filename($file);
-						self::$moved[$file] = $newPath;
+						self::$moved[$file] = $subFolder.$newPath;
 						copy($file, $newPath);
-					}
-					break;
+						break;
 
-				// Other
-				default:
-					foreach($files as $file)
-					{
+					// Other
+					default:
 						if(!self::isMinified($file))
 						{
 							$concatenatedName = $folder.self::minifyName($file);
@@ -406,19 +400,17 @@ class Build
 						}
 
 						else copy($file, $folder.f::filename($file));
-					}
-					break;
-			}
+						break;
+				}
 
-			// Recording the new filepaths
-			foreach($files as $file)
-			{
+				// Calculate final destination and name
 				if($concatenatedName) $newPath = $concatenatedName;
 				elseif(str::find('timthumb.php', $file)) $newPath = self::$moved[$file];
 				else $newPath = $folder.f::filename($file);
-				self::$moved[$file] = f::filename($newPath);
+
+				// Save new path
+				self::$moved[$file] = $subFolder.f::filename($newPath);
 			}
-		}
 	}
 
 	/**
