@@ -264,6 +264,19 @@ class Build
 			// If we already logged that file
 			if(isset(self::$build[$type]) and in_array($asset, self::$build[$type])) continue;
 
+			// Inline @import in CSS files (only http for now)
+			if($type == 'stylesheet')
+			{
+				$content = f::read($asset);
+				preg_match_all('#@import url\((\'|")?(.+)(\'|")?\);#', $content, $matches);
+				foreach($matches[2] as $key => $match)
+				{
+					$import = file_get_contents($match);
+					if($import) $content = str_replace($matches[0][$key], $import, $content);
+				}
+				f::write($asset, $content);
+			}
+
 			// If the image was resized on the go with TimThumb, resize it for good
 			if(str::find('timthumb.php', $asset)) $type = 'image';
 
