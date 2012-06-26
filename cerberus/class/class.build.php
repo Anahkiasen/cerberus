@@ -84,15 +84,17 @@ class Build
 		self::clean();
 
 		// Calculate build file wanted
-		$buildFile = r::get('cerberus_build', 'build');
-		if(!$buildFile) $buildFile = 'build';
-		$buildFile = PATH_CORE.$buildFile.'.json';
+		$buildGet = r::get('cerberus_build', 'build');
+		$buildJson = PATH_CORE.$buildGet.'.json';
+		$buildIndex = $buildGet.'.php';
 
 		// Attempt at reading a build file
-		if(file_exists($buildFile))
-		{
-			$buildFile = f::read($buildFile, 'json');
+		if(file_exists($buildJson)) $buildFile = f::read($buildJson, 'json');
+		elseif(file_exists($buildIndex)) $buildFile = array('page' => $buildIndex);
 
+		// If we found a build config file or a page by that name
+		if(isset($buildFile))
+		{
 			// Getting given paramaters
 			$page             = a::get($buildFile, 'page');
 			$folder           = a::get($buildFile, 'folder',       self::$folder);
