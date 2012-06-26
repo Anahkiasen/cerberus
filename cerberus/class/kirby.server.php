@@ -89,8 +89,13 @@ class server
 		if(!$ip) $ip = self::ip();
 
 		// Fetch location from IPInfoDB
-		$country = file_get_contents('http://api.ipinfodb.com/v3/ip-country/?key=45af9a9ca62e018ed24abdb22adb47138ef319fa8227d6e1406c87fe7503b734&ip=' .$ip. '&format=json');
-		$country = str::parse($country, 'json');
+		$country = url::api(
+			'http://api.ipinfodb.com/v3/ip-country/',
+			array(
+				'key'    => '45af9a9ca62e018ed24abdb22adb47138ef319fa8227d6e1406c87fe7503b734',
+				'ip'     => $ip,
+				'format' => 'json'),
+			'json');
 
 		return $country;
    }
