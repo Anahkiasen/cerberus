@@ -380,9 +380,11 @@ class Build
 						}
 						else self::$moved[$file] = $subFolder.f::filename($file);
 
+						// Compress image and save it
 						$newImage = $folder.f::filename($file);
 						if(!file_exists($newImage))
-							copy($file, $newImage);
+							new Resize($file, $newImage, null, null, null, 70);
+
 						break;
 
 					case 'fonts':
