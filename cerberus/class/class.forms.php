@@ -363,6 +363,7 @@ class Forms
 			{
 				// Texte
 				case 'text':
+				case 'search':
 				case 'number':
 				case 'hidden':
 				case 'email':
