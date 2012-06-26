@@ -94,11 +94,11 @@ class Build
 			$buildFile = f::read($buildFile, 'json');
 
 			// Getting given paramaters
-			$page            = a::get($buildFile, 'page');
-			$folder          = a::get($buildFile, 'folder',       self::$folder);
-			$additionalFiles = a::get($buildFile, 'addFiles',     self::$additionalFiles);
-			$protectedFiles  = a::get($buildFile, 'protectFiles', self::$protectedFiles);
-			self::$subfolders = a::get($buildFile, 'subfolders',   self::$subfolders);
+			$page             = a::get($buildFile, 'page');
+			$folder           = a::get($buildFile, 'folder',       self::$folder);
+			$additionalFiles  = a::get($buildFile, 'addFiles',     self::$additionalFiles);
+			$protectedFiles   = a::get($buildFile, 'protectFiles', self::$protectedFiles);
+			self::$subfolders = a::get($buildFile, 'subfolders',  self::$subfolders);
 
 			// If we don't have any page to load, cancel
 			if(!$page) return true;
@@ -435,13 +435,16 @@ class Build
 	{
 		$files = glob(self::$folder. '*.{html,js,css}', GLOB_BRACE);
 
+		$folder = str::remove('cerberus/class', __DIR__);
+		$folder = dir::last($folder);
+
 		// Correct assets paths in the HTML
 		foreach($files as $file)
 		{
 			$content = f::read($file);
 			foreach(self::$moved as $old => $new)
 			{
-				$content = str_replace('/TrainPignes/'.$old, $new, $content);
+				$content = str_replace('/'.$folder.'/'.$old, $new, $content);
 				$content = str_replace($old, $new, $content);
 			}
 
