@@ -162,6 +162,36 @@ class Build
 	{
 		// Setup list of pages to crawl
 		$pages = self::detectArguments(func_get_args());
+
+		// In case we want to build everything
+		if(in_array('*', $pages))
+		{
+			// If not set yet, turn off SQL
+			if(!defined('SQL')) define('SQL', false);
+
+			// Create navigation tree
+			new navigation();
+
+			// Fetch main pages
+			$navigation = null;
+			foreach(navigation::get() as $page => $pageData)
+			{
+				$navigation[] = $page;
+
+				$subPages = a::get($pageData, 'submenu');
+				if($subPages)
+				{
+					$subPages = array_keys($subPages);
+					foreach($subPages as $subPage)
+						$navigation[] = $page.'-'.$subPage;
+				}
+			}
+
+			// Replace old pages array with the new
+			array_unshift($navigation, "");
+			$pages = $navigation;
+		}
+
 		// Add index page to the list of pages to build
 		array_unshift($pages, f::name(self::$page, true));
 
