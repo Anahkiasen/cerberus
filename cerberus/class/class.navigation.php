@@ -104,6 +104,8 @@ class navigation
 	 */
 	public function __construct()
 	{
+		// Reset existing data
+		self::reset();
 
 		// Creating the navigation tree ---------------------------- /
 
