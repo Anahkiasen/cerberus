@@ -243,7 +243,7 @@ class dir
 
 		// Folder
 		$last = end($folders);
-		if(str::find('.', $last))
+		if(str::find('.', $last) or empty($last))
 			$last = a::get($folders, (sizeof($folders) - 2));
 
 		return $last;

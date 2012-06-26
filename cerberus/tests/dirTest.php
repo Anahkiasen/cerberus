@@ -32,6 +32,7 @@ class DirTest extends PHPUnit_Framework_TestCase
 			array('this/is/a/path', 'path'),
 			array('cerberus/file.php', 'cerberus'),
 			array('cerberus', 'cerberus'),
+			array('this/is/a/path/', 'path')
 			);
 	}
 
