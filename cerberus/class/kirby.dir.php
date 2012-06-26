@@ -181,21 +181,29 @@ class dir
 	 * @param   boolean  $nice returns the size in a human readable size
 	 * @return  mixed
 	 */
-	public static function size($path, $recursive = true, $nice = false)
+	public static function size($path, $nice = false, $recursive = true)
 	{
+		// If unexisting file, return false
 		if(!file_exists($path)) return false;
-		if(is_file($path)) return self::size($path, $nice);
+
+		// If it's a file, return it size
+		elseif(file_exists($path) and !is_dir($path)) return f::size($path);
+
+		// Else, if it's a directory
 		$size = 0;
 
 		foreach(glob($path."/*") as $file)
 		{
 			if($file != "." and $file != "..")
 			{
-				$size += $recursive
-					? self::size($file, true)
-					: f::size($path);
+				$size += is_dir($file)
+					? $recursive
+						? self::size($file, $nice, true)
+						: 0
+					: f::size($file);
 			}
 		}
+
 		return ($nice) ? f::nice_size($size) : $size;
 	}
 
@@ -203,9 +211,9 @@ class dir
 	 * Recursively check when the dir and all
 	 * subfolders have been modified for the last time.
 	 *
-	 * @param   string   $dir The path of the directory
-	 * @param   int      $modified internal modified store
-	 * @return  int
+	 * @param  string $dir      The path of the directory
+	 * @param  int    $modified internal modified store
+	 * @return int
 	 */
 	public static function modified($dir, $modified = 0)
 	{
