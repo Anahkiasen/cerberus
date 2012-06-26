@@ -128,7 +128,21 @@ class navigation
 				if(!$navigation) $navigation = array('home');
 
 				// Rearrange the raw tree to conform it to the base structure
-				foreach($navigation as $page) $dataRaw[] = self::addPage($page);
+				foreach($navigation as $page)
+				{
+					$p = self::addPage($page);
+
+					// Precreated submenu
+					$submenu = a::get($p, 'submenu');
+					if($submenu)
+					{
+						$p = a::remove($p, 'submenu');
+						$dataRaw[] = $p;
+
+						if($submenu) foreach($submenu as $s) $dataRaw[] = $s;
+					}
+					else $dataRaw[] = $p;
+				}
 			}
 
 			// Build the navigation tree from raw data
@@ -142,7 +156,6 @@ class navigation
 
 		// Mark those pages as "active" in the navigations
 		self::active();
-
 	}
 
 	/**
