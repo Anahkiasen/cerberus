@@ -1,13 +1,29 @@
 <?php
 class DirTest extends PHPUnit_Framework_TestCase
 {
+	// Variables --------------------------------------------------- /
+
 	private static $dummyFile = 'core.dispatch.php';
 	private static $dummyFolder = 'temp/';
+
+	// Tests Setup ------------------------------------------------- /
+
+	public function setUp()
+	{
+		dir::make(self::$dummyFolder);
+	}
 
 	public static function tearDownAfterClass()
 	{
 		dir::remove(self::$dummyFolder);
 	}
+
+	public function tearDown()
+	{
+		dir::remove(self::$dummyFolder);
+	}
+
+	// Data providers  --------------------------------------------- /
 
 	public function paths()
 	{
@@ -18,6 +34,8 @@ class DirTest extends PHPUnit_Framework_TestCase
 			array('cerberus', 'cerberus'),
 			);
 	}
+
+	// Tests ------------------------------------------------------- /
 
 	public function testMakeSimple()
 	{
@@ -132,5 +150,37 @@ class DirTest extends PHPUnit_Framework_TestCase
 		$create = dir::make($folder);
 
 		self::assertFileExists($folder);
+	}
+
+	public function testSize()
+	{
+		$string = 'This is a test';
+
+		$file = self::$dummyFolder.'testFile.txt';
+		f::write($file, $string);
+		$size = dir::size(self::$dummyFolder);
+
+		self::assertEquals($size, strlen($string));
+	}
+
+	public function testSizeRecursive()
+	{
+		$string = 'This is a test';
+
+		$file = self::$dummyFolder.'subfolder/testFile.txt';
+		f::write($file, $string);
+		$size = dir::size(self::$dummyFolder, false, false);
+
+		self::assertEquals($size, 0);
+	}
+
+	public function testModified()
+	{
+		f::write(self::$dummyFolder.'subfolder/file.txt', 'This is a test');
+
+		$modified = dir::modified(self::$dummyFolder);
+		$time = time();
+
+		self::assertEquals($time, $modified);
 	}
 }
