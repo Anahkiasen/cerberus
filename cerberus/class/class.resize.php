@@ -31,7 +31,7 @@ class Resize
 
 			// Resize image
 			if($scale) $this->scale($scale);
-			else
+			if($width or $height)
 			{
 				if($width and $height) $this->resize($width, $height);
 				elseif($width and !$height) $this->resizeToWidth($width);
