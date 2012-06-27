@@ -56,3 +56,6 @@ content::start();
 		 * Back up database
 		 */
 		$init->startup('required language navigation debug cache backup');
+
+		// Get title
+		head::title();

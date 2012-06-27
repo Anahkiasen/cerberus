@@ -78,6 +78,9 @@ class head
 		// Adding META tags
 		meta::head();
 
+		// Adding title if none set
+		// TODO : Check if title exist
+
 		// Reordering the head tags
 		self::reorder();
 
@@ -158,13 +161,38 @@ class head
 	//////////////////////////////////////////////////////////////////
 
 	/**
+	 * Fetch in the database the title for a page
+	 *
+	 * @param  string $page    Current page
+	 * @param  string $subPage Current subpage
+	 * @return string          A title
+	 */
+	public static function getTitle($page = null, $subPage = null)
+	{
+		// Get default page (current)
+		if(!$page) $page = navigation::$page;
+		if(!$subPage) $subPage = navigation::$sousPage;
+
+		// Get title
+		return l::get('menu-' .$page.'-'.$subPage, l::get('menu-' .$page, ucfirst($page)));
+	}
+
+	/**
 	 * Set the current page title
 	 *
 	 * @param  string  $title  The page title
 	 */
-	public static function title($title)
+	public static function title($title = null)
 	{
-		self::set('title', array('value' => $title));
+		// Get the current title
+		$baseTitle = a::get(self::$head, 'title,value', self::getTitle());
+
+		// Change the title, and keep or not the old one
+		$newTitle = $title
+			? str_replace('{title}', $baseTitle, $title)
+			: $baseTitle;
+
+		self::set('title', array('value' => $newTitle));
 	}
 
 	/**
