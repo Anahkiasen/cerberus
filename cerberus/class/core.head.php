@@ -22,6 +22,12 @@ class head
 	private static $orderTags = array('base', 'title', 'meta', 'link', 'style');
 
 	/**
+	 * A list of tags that can only appear once in the header
+	 * @var array
+	 */
+	private static $uniqueTags = array('base', 'title');
+
+	/**
 	 * Adds a tag to the header
 	 *
 	 * @param string    $tag        The desired tag
@@ -29,9 +35,11 @@ class head
 	 */
 	public static function set($tag, $attributes)
 	{
-		$tag = array('tag' => $tag);
-		$tag = array_merge($tag, $attributes);
-		self::$head[] = $tag;
+		$attr = array('tag' => $tag);
+		$attr = array_merge($attr, $attributes);
+
+		if(in_array($tag, self::$uniqueTags)) self::$head[$tag] = $attr;
+		else self::$head[] = $attr;
 	}
 
 	/**
