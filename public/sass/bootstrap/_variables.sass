@@ -1,0 +1,218 @@
+//
+// Variables
+// --------------------------------------------------
+
+
+// Global values
+// --------------------------------------------------
+
+
+// Grays
+// -------------------------
+$black                            : black
+$grayDarker                       : #222
+$grayDark                         : #333
+$gray                             : #555
+$grayLight                        : #999
+$grayLighter                      : #eee
+$white                            : white
+
+// Accent colors
+// -------------------------
+$blue                             : #049cdb
+$blueDark                         : #0064cd
+$green                            : #46a546
+$red                              : #9d261d
+$yellow                           : #ffc40d
+$orange                           : #f89406
+$pink                             : #c3325f
+$purple                           : #7a43b6
+
+// Scaffolding
+// -------------------------
+$bodyBackground                   : $white !default
+$textColor                        : $grayDark !default
+
+// Links
+// -------------------------
+$linkColor                        : #0088cc !default
+$linkColorHover                   : darken($linkColor, 15%) !default
+
+// Typography
+// -------------------------
+$sansFontFamily                   : "Helvetica Neue", Helvetica, Arial, sans-serif !default
+$serifFontFamily                  : Georgia, "Times New Roman", Times, serif !default
+$monoFontFamily                   : Menlo, Monaco, Consolas, "Courier New", monospace !default
+
+$baseFontSize                     : 13px !default
+$baseFontFamily                   : $sansFontFamily !default
+$baseLineHeight                   : 18px !default
+$altFontFamily                    : $serifFontFamily !default
+
+// Empty default headings properties
+$headingsFontFamily               : inherit !default
+$headingsFontWeight               : bold !default
+$headingsColor                    : inherit !default
+
+// Tables
+// -------------------------
+// Background, Striped, Hover and Border colors
+$tableBackground                  : transparent !default
+$tableBackgroundAccent            : #f9f9f9 !default
+$tableBackgroundHover             : whitesmoke !default
+$tableBorder                      : #ddd !default
+
+// Buttons
+// -------------------------
+$btnBackground                    : $white !default
+$btnBackgroundHighlight           : darken($white, 10%) !default
+$btnBorder                        : #ccc !default
+
+$btnPrimaryBackground             : $linkColor !default
+$btnPrimaryBackgroundHighlight    : adjust-hue($btnPrimaryBackground, 15%) !default
+
+$btnInfoBackground                : #5bc0de !default
+$btnInfoBackgroundHighlight       : #2f96b4 !default
+
+$btnSuccessBackground             : #62c462 !default
+$btnSuccessBackgroundHighlight    : #51a351 !default
+
+$btnWarningBackground             : lighten($orange, 15%) !default
+$btnWarningBackgroundHighlight    : $orange !default
+
+$btnDangerBackground              : #ee5f5b !default
+$btnDangerBackgroundHighlight     : #bd362f !default
+
+$btnInverseBackground             : $gray !default
+$btnInverseBackgroundHighlight    : $grayDarker !default
+
+// Forms
+// -------------------------
+$inputBackground                  : $white !default
+$inputBorder                      : #ccc !default
+$inputBorderRadius                : 3px !default
+$inputDisabledBackground          : $grayLighter !default
+$formActionsBackground            : whitesmoke !default
+
+// Dropdowns
+// -------------------------
+$dropdownBackground               : $white !default
+$dropdownBorder                   : rgba(black, 0.2) !default
+
+$dropdownDividerTop               : #e5e5e5 !default
+$dropdownDividerBottom            : $white !default
+
+$dropdownLinkColor                : $grayDark !default
+
+$dropdownLinkColorHover           : $white !default
+$dropdownLinkBackgroundHover      : $grayLighter !default
+
+$dropdownLinkColorActive          : $dropdownLinkColor !default
+$dropdownLinkBackgroundActive     : $linkColor !default
+
+// COMPONENT VARIABLES
+// --------------------------------------------------
+
+// Z-index master list
+// -------------------------
+// Used for a bird's eye view of components dependent on the z-axis
+// Try to avoid customizing these : )
+$zindexDropdown                   : 1000
+$zindexPopover                    : 1010
+$zindexTooltip                    : 1020
+$zindexFixedNavbar                : 1030
+$zindexModalBackdrop              : 1040
+$zindexModal                      : 1050
+
+// Sprite icons path
+// -------------------------
+$iconSpritePath                   : "glyphicons-halflings.png" !default
+$iconWhiteSpritePath              : "glyphicons-halflings-white.png" !default
+
+// Input placeholder text color
+// -------------------------
+$placeholderText                  : $grayLight !default
+
+// Hr border color
+// -------------------------
+$hrBorder                         : $grayLighter !default
+
+// Wells
+// -------------------------
+$wellBackground                   : #f5f5f5
+
+// Navbar
+// -------------------------
+$navbarHeight                     : 40px !default
+$navbarBackground                 : $grayDarker !default
+$navbarBackgroundHighlight        : $grayDark !default
+
+$navbarText                       : $grayLight !default
+$navbarLinkColor                  : $grayLight !default
+$navbarLinkColorHover             : $white !default
+$navbarLinkColorActive            : $navbarLinkColorHover !default
+$navbarLinkBackgroundHover        : transparent !default
+$navbarLinkBackgroundActive       : $navbarBackground !default
+
+$navbarSearchBackground           : lighten($navbarBackground, 25%) !default
+$navbarSearchBackgroundFocus      : $white !default
+$navbarSearchBorder               : darken($navbarSearchBackground, 30%) !default
+$navbarSearchPlaceholderColor     : #ccc !default
+$navbarBrandColor                 : $navbarLinkColor !default
+
+// Hero unit
+// -------------------------
+$heroUnitBackground               : $grayLighter !default
+$heroUnitHeadingColor             : inherit !default
+$heroUnitLeadColor                : inherit !default
+
+// Form states and alerts
+// -------------------------
+$warningText                      : #c09853 !default
+$warningBackground                : #fcf8e3 !default
+$warningBorder                    : darken(adjust-hue($warningBackground, -10), 3%) !default
+
+$errorText                        : #b94a48 !default
+$errorBackground                  : #f2dede !default
+$errorBorder                      : darken(adjust-hue($errorBackground, -10), 3%) !default
+
+$successText                      : #468847 !default
+$successBackground                : #dff0d8 !default
+$successBorder                    : darken(adjust-hue($successBackground, -10), 5%) !default
+
+$infoText                         : #3a87ad !default
+$infoBackground                   : #d9edf7 !default
+$infoBorder                       : darken(adjust-hue($infoBackground, -10), 7%) !default
+
+// GRID
+// --------------------------------------------------
+
+
+// Default 940px grid
+// -------------------------
+$gridColumns                      : 12 !default
+$gridColumnWidth                  : 60px !default
+$gridGutterWidth                  : 20px !default
+$gridRowWidth                     : ($gridColumns * $gridColumnWidth) + ($gridGutterWidth * ($gridColumns - 1)) !default
+
+// 1200px min
+$gridColumnWidth1200              : 70px !default
+$gridGutterWidth1200              : 30px !default
+
+// 768px-979px
+$gridColumnWidth768               : 42px !default
+$gridGutterWidth768               : 20px !default
+
+
+// Fluid grid
+// -------------------------
+$fluidGridColumnWidth             : 6.382978723% !default
+$fluidGridGutterWidth             : 2.127659574% !default
+
+// 1200px min
+$fluidGridColumnWidth1200         : 5.982905983% !default
+$fluidGridGutterWidth1200         : 2.564102564% !default
+
+// 768px-979px
+$fluidGridColumnWidth768          : 5.801104972% !default
+$fluidGridGutterWidth768          : 2.762430939% !default
