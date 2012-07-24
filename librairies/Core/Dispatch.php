@@ -2,6 +2,7 @@
 namespace Cerberus\Core;
 
 use \Asset,
+\Basset,
 Cerberus\Toolkit\Arrays,
 Cerberus\Toolkit\String;
 
@@ -36,8 +37,8 @@ class Dispatch
    */
   public static function scripts()
   {
-    $scripts  = Asset::scripts();
-    $scripts .= Asset::container('reservations')->scripts();
+    $scripts  = Asset::styles();
+    $scripts .= Basset::show('scripts.js');
     $scripts .= '<script>'.PHP_EOL.implode(PHP_EOL, self::$javascript).PHP_EOL.'</script>';
 
     return $scripts;
@@ -50,8 +51,7 @@ class Dispatch
    */
   public static function styles()
   {
-    $styles  = Asset::styles();
-    $styles .= Asset::container('reservations')->styles();
+    $styles = Basset::show('styles.css');
 
     return $styles;
   }

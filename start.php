@@ -16,7 +16,7 @@ Event::listen('laravel.done', function()
   $content = Buffer::get();
 
   // Add styles
-  $content = str_replace('<head>', Dispatch::styles().'</head>', $content);
+  $content = str_replace('</head>', Dispatch::styles().'</head>', $content);
 
   // Add scripts
   $content = str_replace('</body>', Dispatch::scripts().'</head>', $content);
