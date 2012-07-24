@@ -6,84 +6,84 @@ use Cerberus\Toolkit\File;
 
 class BufferTests extends CerberusTests
 {
-	public function testStart()
-	{
-		Buffer::start();
+  public function testStart()
+  {
+    Buffer::start();
 
-		$handlers = ob_list_handlers();
-		self::assertArrayHasKey('0', $handlers);
-		self::assertEquals('default output handler', $handlers[0]);
+    $handlers = ob_list_handlers();
+    self::assertArrayHasKey('0', $handlers);
+    self::assertEquals('default output handler', $handlers[0]);
 
-		ob_end_flush();
-	}
+    ob_end_flush();
+  }
 
-	public function testNested()
-	{
-		Buffer::start();
-			Buffer::start();
-				Buffer::start();
-					$handlers = ob_list_handlers();
-				Buffer::end();
-			Buffer::end();
-		Buffer::end();
+  public function testNested()
+  {
+    Buffer::start();
+      Buffer::start();
+        Buffer::start();
+          $handlers = ob_list_handlers();
+        Buffer::end();
+      Buffer::end();
+    Buffer::end();
 
-		self::assertCount(5, $handlers);
-	}
+    self::assertCount(5, $handlers);
+  }
 
-	public function testEndReturn()
-	{
-		self::expectOutputString(null);
+  public function testEndReturn()
+  {
+    self::expectOutputString(null);
 
-		Buffer::start();
-			echo 'This is a test';
-		$return = Buffer::end(true);
+    Buffer::start();
+      echo 'This is a test';
+    $return = Buffer::end(true);
 
-		self::assertEquals('This is a test', $return);
-	}
+    self::assertEquals('This is a test', $return);
+  }
 
-	public function testEndEcho()
-	{
-		self::expectOutputString('This is a test');
+  public function testEndEcho()
+  {
+    self::expectOutputString('This is a test');
 
-		Buffer::start();
-			echo 'This is a test';
-		Buffer::end();
-	}
+    Buffer::start();
+      echo 'This is a test';
+    Buffer::end();
+  }
 
-	public function testEndGet()
-	{
-		self::expectOutputString(null);
+  public function testEndGet()
+  {
+    self::expectOutputString(null);
 
-		Buffer::start();
-			echo 'This is a test';
-		$return = Buffer::get();
+    Buffer::start();
+      echo 'This is a test';
+    $return = Buffer::get();
 
-		self::assertEquals('This is a test', $return);
-	}
+    self::assertEquals('This is a test', $return);
+  }
 
-	public function testEndFlush()
-	{
-		self::expectOutputString('This is a test');
-		Buffer::start();
-			echo 'This is a test';
-		Buffer::end();
-	}
+  public function testEndFlush()
+  {
+    self::expectOutputString('This is a test');
+    Buffer::start();
+      echo 'This is a test';
+    Buffer::end();
+  }
 
-	public function testLoad()
-	{
-		$file = 'test.php';
-		file::write($file, '<?php echo "This is a test" ?>');
+  public function testLoad()
+  {
+    $file = 'test.php';
+    file::write($file, '<?php echo "This is a test" ?>');
 
-		$test = Buffer::load($file);
+    $test = Buffer::load($file);
 
-		self::assertEquals('This is a test', $test);
-		file::remove($file);
-	}
+    self::assertEquals('This is a test', $test);
+    file::remove($file);
+  }
 
-	public function testHeaders()
-	{
-		$type = Buffer::type('json');
+  public function testHeaders()
+  {
+    $type = Buffer::type('json');
 
-		self::assertEquals('Content-type: application/json; charset=UTF-8', $type);
-	}
+    self::assertEquals('Content-type: application/json; charset=UTF-8', $type);
+  }
 }
