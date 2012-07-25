@@ -52,15 +52,11 @@ class String
   public static function find($needle, $haystack, $absolute = false, $caseSensitive = false)
   {
     // If several needles
-    if(is_array($needle) or is_array($haystack))
-    {
-      if(is_array($needle))
-      {
+    if (is_array($needle) or is_array($haystack)) {
+      if (is_array($needle)) {
         $from = $needle;
         $to   = $haystack;
-      }
-      else
-      {
+      } else {
         $from = $haystack;
         $to   = $needle;
       }
@@ -68,19 +64,18 @@ class String
       foreach($from as $need)
         if(self::find($need, $to, $absolute, $caseSensitive))
           $found++;
+
       return ($absolute) ? count($from) == $found : $found > 0;
-    }
-    else
-    {
+    } else {
       // If not case sensitive
-      if(!$caseSensitive)
-      {
+      if (!$caseSensitive) {
         $haystack = strtolower($haystack);
         $needle   = strtolower($needle);
       }
 
       // If string found
       $pos = strpos($haystack, $needle);
+
       return !($pos === false);
     }
   }

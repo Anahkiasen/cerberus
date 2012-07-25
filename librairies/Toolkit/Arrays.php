@@ -31,14 +31,15 @@ class Arrays
 
     // If the key is plain, just return the value/fallback
     if(!is_array($key))
+
       return (isset($array[$key])) ? $array[$key] : $fallback;
 
     // Else crawl the array for the right key
-    foreach($key as $k)
-    {
+    foreach ($key as $k) {
       $array = self::get($array, $k, $fallback);
       if($array == $fallback) break;
     }
+
     return $array;
   }
 }

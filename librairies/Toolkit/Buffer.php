@@ -30,9 +30,9 @@ class Buffer
    */
   public static function end($return = false)
   {
-    if($return)
-    {
+    if ($return) {
       $content = ob_get_clean();
+
       return $content;
     }
     ob_end_flush();

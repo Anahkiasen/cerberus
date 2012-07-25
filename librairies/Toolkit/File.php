@@ -29,14 +29,10 @@ class File extends \File
     $folder = dirname($file);
 
     // If it doesn't exist, try to create it
-    if(!file_exists($folder))
-    {
-      try
-      {
+    if (!file_exists($folder)) {
+      try {
         Directory::make($folder);
-      }
-      catch(Exception $e)
-      {
+      } catch (Exception $e) {
         var_dump($e);
       }
     }
@@ -74,12 +70,10 @@ class File extends \File
       $file = Arrays::get($file, 0);
 
     // If we have an array, recursively call itself
-    if(is_array($file))
-    {
+    if (is_array($file)) {
       // Remove each files and check it all went well
       $return = 0;
-      foreach($file as $f)
-      {
+      foreach ($file as $f) {
         $remove = self::remove($f);
         if($remove) $return++;
       }
