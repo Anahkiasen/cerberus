@@ -34,7 +34,7 @@ class String
   }
 
   ////////////////////////////////////////////////////////////////////
-  ///////////////////////// INFORMATIONS /////////////////////////////
+  //////////////////////////// INFORMATIONS //////////////////////////
   ////////////////////////////////////////////////////////////////////
 
   /**
@@ -78,5 +78,17 @@ class String
 
       return !($pos === false);
     }
+  }
+
+  /**
+   * Determine if a given string begins with a given value.
+   *
+   * @param  string  $haystack The string to look in
+   * @param  string  $needle   The string to look for
+   * @return boolean
+   */
+  public static function startsWith($haystack, $needle)
+  {
+    return strpos($haystack, $needle) === 0;
   }
 }
