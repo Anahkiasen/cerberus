@@ -2,9 +2,9 @@
 namespace Cerberus\Core;
 
 use \Asset,
-\Basset,
-Cerberus\Toolkit\Arrays,
-Cerberus\Toolkit\String;
+    \Basset,
+    Cerberus\Toolkit\Arrays,
+    Cerberus\Toolkit\String;
 
 class Dispatch
 {
@@ -30,6 +30,10 @@ class Dispatch
    */
   private static $javascript = array();
 
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// PUBLIC API //////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
   /**
    * Render the page's scripts
    *
@@ -37,7 +41,7 @@ class Dispatch
    */
   public static function scripts()
   {
-    $scripts  = Asset::styles();
+    $scripts  = Asset::scripts();
     $scripts .= Basset::show('scripts.js');
     $scripts .= '<script>'.PHP_EOL.implode(PHP_EOL, self::$javascript).PHP_EOL.'</script>';
 
@@ -51,7 +55,8 @@ class Dispatch
    */
   public static function styles()
   {
-    $styles = Basset::show('styles.css');
+    $styles  = Asset::styles();
+    $styles .= Basset::show('styles.css');
 
     return $styles;
   }
@@ -72,8 +77,7 @@ class Dispatch
     $string = $plugin. '(' .json_encode($params). ')';
 
     // Getting selector
-    if($selector !== null)
-    {
+    if ($selector !== null) {
       $selector = empty($selector) ? '$' : "$('" .addslashes($selector). "')";
       $string = $selector.'.'.$string;
     }
@@ -99,12 +103,23 @@ class Dispatch
     self::$javascript[] = $javascript;
   }
 
+  /**
+   * Closes an opened Javascript block
+   *
+   * @return string The gathered Javascript code
+   */
   public static function closeJavascript()
   {
     $javascript = Buffer::get();
+
     return self::javascript($javascript);
   }
 
+  /**
+   * Add all the styles from a container to the main container
+   *
+   * @param  string $package The container's name
+   */
   public static function container($package)
   {
     $container = Asset::container($package);
@@ -126,26 +141,38 @@ class Dispatch
     $files = func_get_args();
 
     // If one file
-    if(sizeof($files) != 1)
-      foreach($filees as $file)
+    if (sizeof($files) != 1) {
+      foreach($files as $file)
         self::inject($file);
-    else
-      $file = Arrays::get($files, 0);
+      return true;
+    }
 
+    $file = Arrays::get($files, 0);
     $fullPath = path('public').'vendor/'.$file;
 
-    if(isset(self::$aliases[$file]))
+    if (isset(self::$aliases[$file])) {
       Asset::add($file, Arrays::get(self::$aliases, $file));
-
-    elseif(file_exists($fullPath) and is_dir($fullPath))
-    {
+    }
+    elseif (file_exists($fullPath) and is_dir($fullPath)) {
       $glob = glob($fullPath.'/{css,js}/*', GLOB_BRACE);
-      foreach($glob as $file) {
+      foreach ($glob as $file) {
         $file = String::remove(path('public'), $file);
         Asset::add(basename($file), $file);
       }
     }
-    else
-      Asset::add(basename($file), $file);
+    else {
+      Asset::style(basename($file), $file);
+    }
+  }
+
+  // Shortcuts
+  public static function __callStatic($method, $parameters)
+  {
+    switch ($method) {
+      case 'script':
+      case 'stylesheet':
+        return call_user_func_array('self::inject', $parameters);
+        break;
+    }
   }
 }
