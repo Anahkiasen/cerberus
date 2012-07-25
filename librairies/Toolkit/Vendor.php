@@ -20,8 +20,8 @@ class Vendor
    */
   public static function typekit($typekit)
   {
-    Dispatch::script('//use.typekit.net/xky6uxx.js');
-    Dispatch::javascript('try {Typekit.load();} catch (e) {}');
+    Dispatch::script('//use.typekit.net/' .$typekit. '.js');
+    Dispatch::javascript('try{Typekit.load();}catch(e){}');
   }
 
   /**
