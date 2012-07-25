@@ -42,7 +42,8 @@ class Dispatch
   public static function scripts()
   {
     $scripts  = Asset::scripts();
-    $scripts .= Basset::show('scripts.js');
+    if(class_exists('Basset'))
+      $scripts .= Basset::show('scripts.js');
     $scripts .= '<script>'.PHP_EOL.implode(PHP_EOL, self::$javascript).PHP_EOL.'</script>';
 
     return $scripts;
