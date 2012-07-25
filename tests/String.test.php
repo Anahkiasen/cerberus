@@ -7,6 +7,14 @@ class StringTests extends CerberusTests
 
   // Data providers ------------------------------------------------ /
 
+  public function provideStartsWith()
+  {
+    return array(
+      array('foobar', 'foo', true),
+      array('foobar', 'bar', false)
+    );
+  }
+
   // Wrappers ------------------------------------------------------ /
 
   // Tests --------------------------------------------------------- /
@@ -23,5 +31,15 @@ class StringTests extends CerberusTests
     $return = String::remove(array('foo', 'son'), self::$remove);
 
     $this->assertEquals('bar  kal ter', $return);
+  }
+
+  /**
+   * @dataProvider provideStartsWith
+   */
+  public function testStartsWith($haystack, $needle, $expect)
+  {
+    $result = String::startsWith($haystack, $needle);
+
+    $this->assertEquals($expect, $result);
   }
 }
