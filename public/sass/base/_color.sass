@@ -33,8 +33,8 @@ $cerberus  : $base01
 
 // Website's main color
 $mainColor : $cerberus !default
-$mainLight : lighten($main, 15)
-$mainDark  : darken($main, 15)
+$mainLight : lighten($mainColor, 15)
+$mainDark  : darken($mainColor, 15)
 
 // Text colors
-$textColor : contrast-color($main) !default
+$textColor : contrast-color($mainColor) !default
