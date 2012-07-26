@@ -1,6 +1,6 @@
-//////////////////////////////////////////////////////////////
-///////////////////////// FUNCTIONS //////////////////////////
-//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+///////////////////////////// FUNCTIONS //////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 // Shortcut for rgba() with a percentage-based $opacity
 @function fade($color, $opacity)
@@ -10,11 +10,11 @@
 @function grey($lightness)
 	@return lighten(black, $lightness)
 
-//////////////////////////////////////////////////////////////
-/////////////////////////// MIXINS ///////////////////////////
-//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+////////////////////////////// MIXINS ////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
-// CSS3 ---------------------------------------------------- /
+// CSS3 ------------------------------------------------------------ /
 
 // Changes the current selection color
 =selection($background, $color: white)
@@ -55,7 +55,7 @@
 =double-shadow($size: 2px, $blur: 0)
 	+box-shadow(double-shadow($size, $blur))
 
-// Gradients ----------------------------------------------- /
+// Gradients ------------------------------------------------------- /
 
 // Main mixin
 =gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical, $borders: $cerberus-gradient-borders)
@@ -85,7 +85,7 @@
 =gradient-auto-radial($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
 	+gradient-auto($color, $difference, radial, $borders)
 
-// Utilities ------------------------------------------------ /
+// Utilities ------------------------------------------------------- /
 
 // Drops a text-shadow of a contrast color
 =text-drop($color, $size: 2px)
