@@ -141,6 +141,6 @@ class Vendor
       $file .= "require '" .$e. "'" . PHP_EOL;
 
     // Write core configuration file in root
-    File::write($writePath.'compass.rb', $file);
+    return File::write($writePath.'compass.rb', $file);
   }
 }
