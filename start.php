@@ -11,7 +11,7 @@ use Cerberus\Toolkit\Buffer,
 Buffer::start();
 
 // Rewrite file
-Event::listen('laravel.done', function()
+Event::listen('laravel.NO', function()
 {
   $content = Buffer::get();
 
