@@ -74,8 +74,10 @@ class Vendor
    */
   public static function compass($writePath = null, $configuration = array(), $plugins = array())
   {
+    $fileName = 'config.rb';
+
     // Check if the file already exists
-    if(file_exists($writePath.'compass.rb')) return true;
+    if(file_exists($writePath.$fileName)) return true;
 
     // Create an empty file
     $file = null;
@@ -141,6 +143,6 @@ class Vendor
       $file .= "require '" .$e. "'" . PHP_EOL;
 
     // Write core configuration file in root
-    return File::write($writePath.'compass.rb', $file);
+    return File::write($writePath.$fileName, $file);
   }
 }
