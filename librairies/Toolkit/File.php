@@ -8,6 +8,8 @@
  */
 namespace Cerberus\Toolkit;
 
+use Cerberus\Toolkit\String;
+
 class File extends \File
 {
 
@@ -86,5 +88,68 @@ class File extends \File
     return (file_exists($file) and is_file($file) and !empty($file))
       ? @unlink($file)
       : false;
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  /////////////////////////// INFORMATIONS ///////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Extracts the filename from a file path
+   *
+   * @param  string $file The path
+   * @return string       The file name only
+   */
+  public static function filename($name)
+  {
+    return basename($name);
+  }
+
+  /**
+   * Extracts the core name from a path/filename
+   *
+   * @param  string  $file       The path or filename
+   * @param  boolean $removePath Remove the path from the name
+   * @return string
+   */
+  public static function name($name, $removePath = true)
+  {
+    if($removePath)
+      $name = self::filename($name);
+
+    $dot = strrpos($name,'.');
+    if($dot) $name = substr($name, 0, $dot);
+
+    return $name;
+  }
+
+  /**
+   * Gets a file's extension
+   *
+   * @param  string $filename A filename
+   * @return string           An extension
+   */
+  public static function extension($filename)
+  {
+    return pathinfo($filename, PATHINFO_EXTENSION);
+  }
+
+  /**
+   * Sanitizes a file's name while preserving its extension
+   *
+   * @param  string $filename The filename
+   * @return string           Sanitized filename
+   */
+  public static function sanitize($filename)
+  {
+    // Get extension
+    $extension = self::extension($filename);
+
+    // Remove extension, sanitize name, put back extension
+    $filename  = String::remove($extension, $filename);
+    $filename  = String::slugify($filename);
+    $filename .= '.' . $extension;
+
+    return $filename;
   }
 }
