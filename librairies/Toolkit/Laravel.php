@@ -14,9 +14,14 @@ class Laravel
   {
     if(!$fallback) $fallback = $key;
 
-    return
-      \Lang::line($key)->get(null,
+    // Search for the key itself
+    $translation = \Lang::line($key)->get(null, '');
+
+    // If not found, search in the field attributes
+    if(!$translation) $translation =
       \Lang::line('validation.attributes.'.$key)->get(null,
-      $fallback));
+      $fallback);
+
+    return $translation;
   }
 }
