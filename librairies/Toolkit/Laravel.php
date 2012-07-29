@@ -10,7 +10,7 @@ namespace Cerberus\Toolkit;
 
 class Laravel
 {
-  public static function translate($key, $fallback)
+  public static function translate($key, $fallback = null)
   {
     if(!$fallback) $fallback = $key;
 
