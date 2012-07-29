@@ -145,4 +145,13 @@ class Vendor
     // Write core configuration file in root
     return File::write($writePath.$fileName, $file);
   }
+
+  public static function timthumb($image, $width = null, $height = null, $attributes = array())
+  {
+    $image = 'timthumb.php?src=cooperphoto/'.$image;
+    if($width) $image .= '&w='.$width;
+    if($height) $image .= '&h='.$height;
+
+    return \HTML::image($image);
+  }
 }
