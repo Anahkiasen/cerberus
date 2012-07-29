@@ -15,8 +15,8 @@ class Laravel
     if(!$fallback) $fallback = $key;
 
     return
-      Lang::line($key)->get(null,
-      Lang::line('validation.attributes.'.$key)->get(null,
+      \Lang::line($key)->get(null,
+      \Lang::line('validation.attributes.'.$key)->get(null,
       $fallback));
   }
 }
