@@ -3,6 +3,7 @@ namespace Cerberus\Core;
 
 use \Asset,
     \Basset,
+    Cerberus\Toolkit\File,
     Cerberus\Toolkit\Arrays,
     Cerberus\Toolkit\String;
 
@@ -137,18 +138,10 @@ class Dispatch
    *
    * @param  string $link An alias/path
    */
-  public static function inject()
+  public static function inject($file, $name = null)
   {
-    $files = func_get_args();
+    if(!$name) $name = File::name($file);
 
-    // If one file
-    if (sizeof($files) != 1) {
-      foreach($files as $file)
-        self::inject($file);
-      return true;
-    }
-
-    $file = Arrays::get($files, 0);
     $fullPath = path('public').'vendor/'.$file;
 
     if (isset(self::$aliases[$file])) {
@@ -158,11 +151,11 @@ class Dispatch
       $glob = glob($fullPath.'/{css,js}/*', GLOB_BRACE);
       foreach ($glob as $file) {
         $file = String::remove(path('public'), $file);
-        Asset::add(basename($file), $file);
+        Asset::add($name, $file);
       }
     }
     else {
-      Asset::style(basename($file), $file);
+      Asset::add($name, $file);
     }
   }
 

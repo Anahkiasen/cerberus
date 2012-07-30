@@ -22,7 +22,7 @@ class Vendor
    */
   public static function typekit($typekit)
   {
-    Dispatch::script('//use.typekit.net/' .$typekit. '.js');
+    Dispatch::inject('http://use.typekit.net/' .$typekit. '.js');
     Dispatch::javascript('try{Typekit.load();}catch(e){}');
   }
 
