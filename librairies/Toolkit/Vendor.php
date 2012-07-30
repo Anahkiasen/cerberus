@@ -158,8 +158,11 @@ class Vendor
    */
   public static function timthumb($image, $width = null, $height = null, $attributes = array())
   {
-    $image = 'timthumb.php?src=cooperphoto/'.$image;
-    if($width) $image .= '&w='.$width;
+    // Account for the bug with Windows
+    if(\Request::env() == 'home') $image = 'cooperphoto/'.$image;
+
+    $image = 'timthumb.php?src='.$image;
+    if($width)  $image .= '&w='.$width;
     if($height) $image .= '&h='.$height;
 
     return \HTML::image($image);
