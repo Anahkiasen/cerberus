@@ -9,7 +9,8 @@
 namespace Cerberus\Toolkit;
 
 use Cerberus\Core\Dispatch,
-    Cerberus\Toolkit\File;
+    Cerberus\Toolkit\File,
+    Cerberus\Toolkit\Arrays;
 
 class Vendor
 {
@@ -146,6 +147,15 @@ class Vendor
     return File::write($writePath.$fileName, $file);
   }
 
+  /**
+   * Resize and crop an image using TimThumb
+   *
+   * @param  string  $image      Path to an image
+   * @param  integer $width      The new width
+   * @param  integer $height     The new height
+   * @param  array   $attributes An array of supplementary attributes
+   * @return string              Path to an image
+   */
   public static function timthumb($image, $width = null, $height = null, $attributes = array())
   {
     $image = 'timthumb.php?src=cooperphoto/'.$image;
@@ -153,5 +163,35 @@ class Vendor
     if($height) $image .= '&h='.$height;
 
     return \HTML::image($image);
+  }
+
+  /**
+   * Generates a placeholder image
+   *
+   * @param  integer $width      Image width
+   * @param  integer $height     Image height
+   * @param  string  $text       Facultative text
+   * @param  array   $attributes Supplementary attributes (text, format, background, foreground)
+   * @return string              An img tag
+   */
+  public function placeholder($width, $height = null, $attributes = array())
+  {
+    // Fetch supplementary attributes
+    $supplementary = array('format', 'text', 'bgc', 'tc');
+    foreach($supplementary as $s)
+      ${$s} = Arrays::get($attributes, $s);
+
+    // Create URL
+    $image = 'http://placehold.it/'.$width;
+    if($height) $image .= 'x'.$height;
+    if($bgc)    $image .= '/'.$bgc;
+    if($tc)     $image .= '/'.$tc;
+    if($text)   $image .= '&text='.$text;
+    if($format) $image .= '.'.$format;
+
+    // Create alt attribute
+    $alt = $text ? $text : 'placeholder';
+
+    return \HTML::image($image, $alt);
   }
 }
