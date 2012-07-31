@@ -5,6 +5,7 @@ use \Asset,
     \Basset,
     Cerberus\Toolkit\File,
     Cerberus\Toolkit\Arrays,
+    Cerberus\Toolkit\Buffer,
     Cerberus\Toolkit\String;
 
 class Dispatch
@@ -99,7 +100,7 @@ class Dispatch
     if(!$javascript) return Buffer::start();
 
     // Clean up the script from any wrapping tag
-    $javascript = preg_replace('#(<script>|</script>)#', null, $javascript);
+    $javascript = preg_replace('#(<script( type="text/javascript")?>|</script>)#', null, $javascript);
     $javascript = trim($javascript);
 
     self::$javascript[] = $javascript;

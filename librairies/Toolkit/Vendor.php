@@ -20,8 +20,33 @@ class Vendor
    * Adds embed code for a Typekit account
    * @param  string $typekit A Typekit ID
    */
-  public static function typekit($typekit)
+  public static function typekit($typekit, $async = false)
   {
+    // Asynchronous embed code
+    if($async) {
+      Dispatch::javascript();
+      ?>
+      <script type="text/javascript">
+        (function() {
+          var config = {
+            kitId: '<?= $typekit ?>',
+            scriptTimeout: 3000
+          };
+          var h=document.getElementsByTagName("html")[0];h.className+=" wf-loading";var t=setTimeout(function()
+            {h.className=h.className.replace(/(\s|^)wf-loading(\s|$)/g," ");h.className+=" wf-inactive"},
+            config.scriptTimeout);var tk=document.createElement("script"),d=false;tk.src='//use.typekit.net/'+
+          config.kitId+'.js';tk.type="text/javascript";tk.async="true";tk.onload=tk.onreadystatechange=function()
+          {var a=this.readyState;if(d||a&&a!="complete"&&a!="loaded")return;d=true;clearTimeout(t);try{
+            Typekit.load(config)}catch(b){}};var s=document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(tk,s)
+        })();
+      </script>
+      <?php
+      Dispatch::closeJavascript();
+      return true;
+    }
+
+    // Normal embed code
     Dispatch::inject('http://use.typekit.net/' .$typekit. '.js');
     Dispatch::javascript('try{Typekit.load();}catch(e){}');
   }
