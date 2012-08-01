@@ -42,4 +42,23 @@ class StringTests extends CerberusTests
 
     $this->assertEquals($expect, $result);
   }
+
+  public function testToggleMatch()
+  {
+    $firstToggle = String::toggle('foo', 'foo', 'bar');
+    $this->assertEquals('bar', $firstToggle);
+  }
+
+  public function testToggleUnmatchStrict()
+  {
+    $firstToggle = String::toggle('dei', 'foo', 'bar');
+    $this->assertEquals('dei', $firstToggle);
+  }
+
+  public function testToggleUnmatchLoose()
+  {
+    $firstToggle = String::toggle('dei', 'foo', 'bar', $loose = true);
+    $this->assertEquals('foo', $firstToggle);
+  }
+
 }

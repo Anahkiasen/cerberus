@@ -33,6 +33,23 @@ class String extends \Str
     return trim($string);
   }
 
+  /**
+   * Toggles a string between two states
+   *
+   * @param  string  $string      The string to toggle
+   * @param  string  $firstValue  First value
+   * @param  string  $secondValue Second value
+   * @param  boolean $loose       Whether a string neither matching 1 or 2 should be changed
+   * @return string               The toggled string
+   */
+  public static function toggle($string, $firstValue, $secondValue, $loose = false)
+  {
+    if(!$loose and !in_array($string, array($firstValue, $secondValue)))
+      return $string;
+
+    return $string == $firstValue ? $secondValue : $firstValue;
+  }
+
   ////////////////////////////////////////////////////////////////////
   //////////////////////////// INFORMATIONS //////////////////////////
   ////////////////////////////////////////////////////////////////////
