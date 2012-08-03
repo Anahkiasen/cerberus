@@ -13,6 +13,10 @@ use Cerberus\Toolkit\String;
 
 class Arrays
 {
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// ACTIONS /////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
   /**
    * Gets an element of an array by key
    *
@@ -80,12 +84,26 @@ class Arrays
   /**
    * Removes an element by value
    *
-     * @param  array   $array  The source array
-     * @param  mixed   $search The value to look for
-     * @return array           The result array without the removed element
+   * @param  array   $array  The source array
+   * @param  mixed   $search The value to look for
+   * @return array           The result array without the removed element
    */
   public function removeValue($array, $search)
   {
     return self::remove($array, $search, false);
+  }
+
+  /**
+   * Extracts a single column from an array
+   *
+   * @param  array  $array The source array
+   * @param  string $key The key name of the column to extract
+   * @return array  The result array with all values from that column.
+   */
+  public static function pluck($array, $key)
+  {
+    return array_map(function($v) use ($key) {
+      return is_object($v) ? $v->$key : $v[$key];
+    }, $array);
   }
 }
