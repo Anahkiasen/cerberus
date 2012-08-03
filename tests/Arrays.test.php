@@ -90,4 +90,19 @@ class ArraysTests extends CerberusTests
 
     $this->assertEquals(array('key1' => 'subvalue1', 'key2' => 'subvalue1'), $return);
   }
+
+  public function testAverage()
+  {
+    $average1 = array(5, 10, 15, 20);
+    $average2 = array('foo', 'b', 'ar');
+    $average3 = array(array('lol'), 10, 20);
+
+    $average1 = Arrays::average($average1);
+    $average2 = Arrays::average($average2);
+    $average3 = Arrays::average($average3);
+
+    $this->assertEquals(13, $average1);
+    $this->assertEquals(0,  $average2);
+    $this->assertEquals(10, $average3);
+  }
 }

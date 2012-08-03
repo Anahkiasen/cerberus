@@ -84,9 +84,9 @@ class Arrays
   /**
    * Removes an element by value
    *
-   * @param  array   $array  The source array
-   * @param  mixed   $search The value to look for
-   * @return array           The result array without the removed element
+   * @param  array $array  The source array
+   * @param  mixed $search The value to look for
+   * @return array         The result array without the removed element
    */
   public function removeValue($array, $search)
   {
@@ -97,13 +97,29 @@ class Arrays
    * Extracts a single column from an array
    *
    * @param  array  $array The source array
-   * @param  string $key The key name of the column to extract
-   * @return array  The result array with all values from that column.
+   * @param  string $key   The key name of the column to extract
+   * @return array         The result array with all values from that column.
    */
   public static function pluck($array, $key)
   {
     return array_map(function($v) use ($key) {
       return is_object($v) ? $v->$key : $v[$key];
     }, $array);
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////// INFORMATIONS ////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Returns the average value of an array
+   *
+   * @param  array   $array    The source array
+   * @param  integer $decimals The number of decimals to return
+   * @return integer           The average value
+   */
+  public static function average($array, $decimals = 0)
+  {
+    return round((array_sum($array) / sizeof($array)), $decimals);
   }
 }
