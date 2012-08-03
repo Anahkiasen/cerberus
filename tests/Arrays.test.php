@@ -79,4 +79,15 @@ class ArraysTests extends CerberusTests
 
     $this->assertEquals(array('key1' => 'value1'), $return);
   }
+
+  public function testPluck()
+  {
+    $array = array(
+     'key1' => array('subkey1' => 'subvalue1', 'subkey2' => 'subvalue2'),
+     'key2' => array('subkey1' => 'subvalue1', 'subkey2' => 'subvalue2')
+    );
+    $return = Arrays::pluck($array, 'subkey1');
+
+    $this->assertEquals(array('key1' => 'subvalue1', 'key2' => 'subvalue1'), $return);
+  }
 }
