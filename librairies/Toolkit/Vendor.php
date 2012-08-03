@@ -64,7 +64,10 @@ class Vendor
     $fonts = str_replace(' ' , '+', $fonts);
     $fonts = str_replace('*' , '100,200,300,400,500,600,700,800,900', $fonts);
 
-    Dispatch::stylesheet('http://fonts.googleapis.com/css?family=' .$fonts);
+    $fonts = 'http://fonts.googleapis.com/css?family=' .$fonts;
+    Dispatch::stylesheet($fonts);
+
+    return $fonts;
   }
 
   // Statistics ---------------------------------------------------- /
