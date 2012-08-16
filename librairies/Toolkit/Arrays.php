@@ -122,4 +122,37 @@ class Arrays
   {
     return round((array_sum($array) / sizeof($array)), $decimals);
   }
+
+  ////////////////////////////////////////////////////////////////////
+  ///////////////////// MULTIDIMENSIONNAL ARRAYS /////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+    * Sorts a multi-dimensional array by a certain column
+    *
+    * @param  array   $array     The source array
+    * @param  string  $field     The name of the column
+    * @param  string  $direction desc (descending) or asc (ascending)
+    * @param  const   $method    A PHP sort method flag.
+    * @return array              The sorted array
+    */
+  public static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
+  {
+  	// Get correct PHP constant for direction
+    $direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
+    
+    // Create 
+    $helper = array();
+    foreach($array as $key => $row) {
+      $helper[$key] = (is_object($row))
+        ? (method_exists($row, $field))
+          ? String::lower($row -> $field())
+          : String::lower($row -> $field)
+        : String::lower($row[$field]);
+    }
+
+    array_multisort($helper, $direction, $method, $array);
+
+    return $array;
+  }
 }
