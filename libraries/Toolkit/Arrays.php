@@ -34,9 +34,9 @@ class Arrays
       $key = explode('.', $key);
 
     // If the key is plain, just return the value/fallback
-    if(!is_array($key))
-
+    if(!is_array($key)) {
       return (isset($array[$key])) ? $array[$key] : $fallback;
+    }
 
     // Else crawl the array for the right key
     foreach ($key as $k) {
@@ -138,10 +138,13 @@ class Arrays
     */
   public static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
   {
+  	// Make sur the passed argument is an array
+  	if(!is_array($array)) return $array;
+
   	// Get correct PHP constant for direction
     $direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
-    
-    // Create 
+
+    // Create
     $helper = array();
     foreach($array as $key => $row) {
       $helper[$key] = (is_object($row))

@@ -1,7 +1,7 @@
 <?php
 // Autoload Cerberus
 Autoloader::namespaces(array(
-  'Cerberus' => Bundle::path('cerberus') . 'librairies'
+  'Cerberus' => Bundle::path('cerberus') . 'libraries'
 ));
 
 use Cerberus\Toolkit\Buffer,
