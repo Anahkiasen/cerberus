@@ -12,7 +12,7 @@ class BufferTests extends CerberusTests
 
     $handlers = ob_list_handlers();
     self::assertArrayHasKey('0', $handlers);
-    self::assertEquals('default output handler', $handlers[0]);
+    self::assertEquals('mb_output_handler', $handlers[0]);
 
     ob_end_flush();
   }
@@ -27,7 +27,7 @@ class BufferTests extends CerberusTests
       Buffer::end();
     Buffer::end();
 
-    self::assertCount(5, $handlers);
+    self::assertCount(6, $handlers);
   }
 
   public function testEndReturn()
