@@ -151,7 +151,9 @@ class Arrays
         ? (method_exists($row, $field))
           ? String::lower($row -> $field())
           : String::lower($row -> $field)
-        : String::lower($row[$field]);
+        : (isset($row[$field]))
+          ? String::lower($row[$field])
+          : $row;
     }
 
     array_multisort($helper, $direction, $method, $array);
