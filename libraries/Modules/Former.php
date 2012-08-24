@@ -139,6 +139,10 @@ class Former extends \Bootstrapper\Form
             break;
           case 'max':
             self::$rules[$field]['maxlength'] = array_get($parameters, 0);
+            break;
+          case 'no_numeric':
+            self::$rules[$field]['pattern'] = '[^0-9]+';
+            break;
         }
       }
     }
