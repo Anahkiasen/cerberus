@@ -118,9 +118,30 @@ class Former extends \Bootstrapper\Form
    * Pass a main object to the form for it to fetch rules
    * @param array $rules An array of rules
    */
-  public static function setRules($rules)
+  public static function setRules($rulesArray)
   {
-    self::$rules = $rules;
+    // Parse the rules strings into arrays
+    foreach($rulesArray as $field => $rules) {
+      $rulesArray[$field] = array();
+      $rules = explode('|', $rules);
+      foreach($rules as $rule) {
+        list($rule, $parameters) = self::parse($rule);
+        $rulesArray[$field][$rule] = $parameters;
+      }
+    }
+
+    // Loop through rules and gather the one we can render live
+    foreach($rulesArray as $field => $rules) {
+      foreach($rules as $rule => $parameters) {
+        switch($rule) {
+          case 'required':
+            self::$rules[$field]['required'] = '';
+            break;
+          case 'max':
+            self::$rules[$field]['maxlength'] = array_get($parameters, 0);
+        }
+      }
+    }
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -160,8 +181,7 @@ class Former extends \Bootstrapper\Form
       $attributes = array($attributes);
 
     // Adding rules to the attributes array
-    $rules = explode('|', array_get(self::$rules, $fieldname));
-    if(in_array('required', $rules)) $attributes['required'] = '';
+    $attributes = array_merge($attributes, array_get(self::$rules, $fieldname));
 
     // Creating the input
     switch ($type) {
@@ -202,6 +222,27 @@ class Former extends \Bootstrapper\Form
       $state,
       $help
     );
+  }
+
+  /**
+   * Extract the rule name and parameters from a rule.
+   *
+   * @param  string  $rule
+   * @return array
+   */
+  protected static function parse($rule)
+  {
+    $parameters = array();
+
+    // The format for specifying validation rules and parameters follows a
+    // {rule}:{parameters} formatting convention. For instance, the rule
+    // "max:3" specifies that the value may only be 3 characters long.
+    if (($colon = strpos($rule, ':')) !== false)
+    {
+      $parameters = str_getcsv(substr($rule, $colon + 1));
+    }
+
+    return array(is_numeric($colon) ? substr($rule, 0, $colon) : $rule, $parameters);
   }
 
   ////////////////////////////////////////////////////////////////////
