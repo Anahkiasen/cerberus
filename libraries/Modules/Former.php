@@ -160,7 +160,7 @@ class Former extends \Bootstrapper\Form
       $attributes = array($attributes);
 
     // Adding rules to the attributes array
-    $rules = explode('|', self::$rules[$fieldname]);
+    $rules = explode('|', array_get(self::$rules, $fieldname));
     if(in_array('required', $rules)) $attributes['required'] = '';
 
     // Creating the input
