@@ -43,9 +43,16 @@ class Dispatch
    */
   public static function scripts()
   {
+    // Fetch Laravel scripts
     $scripts  = Asset::scripts();
-    if(class_exists('Basset'))
-      $scripts .= Basset::show('scripts.js');
+
+    // Fetch Basset scripts
+    if(class_exists('Basset')){
+      if(isset(Basset::$routes['basset/scripts.js'])) {
+        $scripts .= Basset::show('scripts.js');
+      }
+    }
+
     $scripts .= '<script>'.PHP_EOL.implode(PHP_EOL, self::$javascript).PHP_EOL.'</script>';
 
     return $scripts;
@@ -58,8 +65,15 @@ class Dispatch
    */
   public static function styles()
   {
-    $styles  = Asset::styles();
-    $styles .= Basset::show('styles.css');
+    // Fetch Laravel styles
+    $scripts  = Asset::styles();
+
+    // Fetch Basset styles
+    if(class_exists('Basset')){
+      if(isset(Basset::$routes['basset/styles.css'])) {
+        $scripts .= Basset::show('styles.css');
+      }
+    }
 
     return $styles;
   }
