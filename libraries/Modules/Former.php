@@ -185,7 +185,7 @@ class Former extends \Bootstrapper\Form
       $attributes = array($attributes);
 
     // Adding rules to the attributes array
-    $attributes = array_merge($attributes, array_get(self::$rules, $fieldname));
+    $attributes = array_merge($attributes, array_get(self::$rules, $fieldname, array()));
 
     // Creating the input
     switch ($type) {
