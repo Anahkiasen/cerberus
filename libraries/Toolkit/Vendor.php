@@ -205,7 +205,7 @@ class Vendor
    * @param  array   $attributes Supplementary attributes (text, format, background, foreground)
    * @return string              An img tag
    */
-  public function placeholder($width, $height = null, $attributes = array())
+  public static function placeholder($width, $height = null, $attributes = array())
   {
     // Fetch supplementary attributes
     $supplementary = array('format', 'text', 'bgc', 'tc');

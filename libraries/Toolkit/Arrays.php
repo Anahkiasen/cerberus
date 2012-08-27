@@ -30,8 +30,9 @@ class Arrays
   public static function get($array, $key, $fallback = null)
   {
     // If the key is an array of keys
-    if(String::find('.', $key))
+    if(String::find('.', $key)) {
       $key = explode('.', $key);
+    }
 
     // If the key is plain, just return the value/fallback
     if(!is_array($key)) {
@@ -88,7 +89,7 @@ class Arrays
    * @param  mixed $search The value to look for
    * @return array         The result array without the removed element
    */
-  public function removeValue($array, $search)
+  public static function removeValue($array, $search)
   {
     return self::remove($array, $search, false);
   }
