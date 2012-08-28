@@ -82,11 +82,11 @@ class String extends \Str
    *
    * @param  mixed   $needle        The needle(s) to search for
    * @param  mixed   $haystack      The haystack(s) to search in
-   * @param  boolean $absolute      Whether all needle need to be found or whether one is enough
    * @param  boolean $caseSensitive Whether the function is case sensitive or not
+   * @param  boolean $absolute      Whether all needle need to be found or whether one is enough
    * @return boolean Found or not
    */
-  public static function find($needle, $haystack, $absolute = false, $caseSensitive = false)
+  public static function find($needle, $haystack, $caseSensitive = false, $absolute = false)
   {
     // If several needles
     if (is_array($needle) or is_array($haystack)) {
