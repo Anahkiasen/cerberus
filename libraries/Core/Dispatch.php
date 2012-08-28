@@ -67,12 +67,12 @@ class Dispatch
   public static function styles()
   {
     // Fetch Laravel styles
-    $scripts  = Asset::styles();
+    $styles  = Asset::styles();
 
     // Fetch Basset styles
     if(class_exists('Basset')){
       if(isset(Basset::$routes['basset/styles.css'])) {
-        $scripts .= Basset::show('styles.css');
+        $styles .= Basset::show('styles.css');
       }
     }
 
