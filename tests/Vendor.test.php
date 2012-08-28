@@ -74,4 +74,12 @@ class VendorTest extends CerberusTests
 
     self::assertTag($match, $placeholder);
   }
+
+  public function testGoogleFonts()
+  {
+    $fonts = Vendor::googleFonts('Open Sans');
+    $fonts = Vendor::googleFonts('Open Sans', 'Droid Serif');
+
+    $container = Asset::container();
+  }
 }

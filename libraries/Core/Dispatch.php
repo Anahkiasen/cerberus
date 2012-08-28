@@ -15,8 +15,9 @@ class Dispatch
    * @var array
    */
   private static $aliases = array(
+
     // jQuery
-    'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+    'jquery'      => 'https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js',
     'jqueryui'    => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
 
     // SWFObject
@@ -47,7 +48,7 @@ class Dispatch
     $scripts  = Asset::scripts();
 
     // Fetch Basset scripts
-    if(class_exists('Basset')){
+    if(class_exists('Basset')) {
       if(isset(Basset::$routes['basset/scripts.js'])) {
         $scripts .= Basset::show('scripts.js');
       }
@@ -153,24 +154,24 @@ class Dispatch
    *
    * @param  string $link An alias/path
    */
-  public static function inject($file, $name = null)
+  public static function inject($file, $name = null, $filetype = 'add')
   {
     if(!$name) $name = File::name($file);
 
     $fullPath = path('public').'vendor/'.$file;
 
     if (isset(self::$aliases[$file])) {
-      Asset::add($file, Arrays::get(self::$aliases, $file));
+      call_user_func('Asset::'.$filetype, $file, Arrays::get(self::$aliases, $file));
     }
     elseif (file_exists($fullPath) and is_dir($fullPath)) {
       $glob = glob($fullPath.'/{css,js}/*', GLOB_BRACE);
       foreach ($glob as $file) {
         $file = String::remove(path('public'), $file);
-        Asset::add($name, $file);
+        call_user_func('Asset::'.$filetype, $name, $file);
       }
     }
     else {
-      Asset::add($name, $file);
+      call_user_func('Asset::'.$filetype, $name, $file);
     }
   }
 
@@ -180,6 +181,8 @@ class Dispatch
     switch ($method) {
       case 'script':
       case 'stylesheet':
+        if($method == 'stylesheet') $method = 'style';
+        $parameters[] = $method;
         return call_user_func_array('self::inject', $parameters);
         break;
     }
