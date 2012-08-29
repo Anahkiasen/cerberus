@@ -1,4 +1,7 @@
 <?php
+
+// Setup and starting up ------------------------------------------- /
+
 // Autoload Cerberus
 Autoloader::namespaces(array(
   'Cerberus' => Bundle::path('cerberus') . 'libraries'
@@ -6,6 +9,15 @@ Autoloader::namespaces(array(
 
 use Cerberus\Toolkit\Buffer,
     Cerberus\Core\Dispatch;
+
+// Custom Cerberus macros ------------------------------------------ /
+
+HTML::macro('favicon', function($favicon)
+{
+  return "<link href='" .URL::to_asset($favicon). "' rel='shortcut icon' />";
+});
+
+// Post-processing ------------------------------------------------- /
 
 // Start output buffer
 Buffer::start();
