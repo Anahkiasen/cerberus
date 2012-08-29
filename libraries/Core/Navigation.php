@@ -1,8 +1,36 @@
 <?php
 namespace Cerberus\Core;
 
+use Cerberus\Toolkit\Arrays;
+
 class Navigation
 {
+  /**
+   * Returns the current controller/route
+   *
+   * @param  boolean $returnAction Whether the script should return the action too
+   * @return mixed                 An array or a string
+   */
+  public static function current($returnAction = false)
+  {
+    // Get Request object
+    $request = \Request::route();
+
+    // Get controller, action and route
+    if ($request->controller) {
+      $controller = $request->controller;
+      $action     = $request->controller_action;
+    } else {
+      $action = null;
+      $route = \Request::route()->uri;
+      $route = explode('/', $route);
+      $controller = Arrays::get($route, 1);
+      if(empty($controller)) $controller = 'home';
+    }
+
+    return $returnAction ? array($controller, $action) : $controller;
+  }
+
   /**
    * Gets classes for the current page as controller controller-action
    *
@@ -10,13 +38,9 @@ class Navigation
    */
   public static function classes()
   {
-    $current = \Request::route();
-    $current =
-      $current->controller. ' ' .
-      $current->controller.'/'.$current->controller_action;
-    $current = str_replace('/', '-', $current);
+    list($controller, $action) = self::current(true);
 
-    return $current;
+    return $action ? $controller. '-' .$action : $controller;
   }
 
   /**
@@ -27,6 +51,6 @@ class Navigation
    */
   public static function isCurrent($route = null)
   {
-    return \URL::to($route) == \Request::route()->controller;
+    return \URL::to($route) == self::current();
   }
 }
