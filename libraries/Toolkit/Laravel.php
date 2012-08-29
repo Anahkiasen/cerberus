@@ -22,6 +22,6 @@ class Laravel
       \Lang::line('validation.attributes.'.$key)->get(null,
       $fallback);
 
-    return $translation;
+    return ucfirst($translation);
   }
 }
