@@ -24,7 +24,7 @@ class Navigation
       $action = null;
       $route = \Request::route()->uri;
       $route = explode('/', $route);
-      $controller = Arrays::get($route, 1);
+      $controller = Arrays::get($route, 1, Arrays::get($route, 0));
       if(empty($controller)) $controller = 'home';
     }
 
