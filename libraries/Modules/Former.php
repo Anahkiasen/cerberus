@@ -120,6 +120,12 @@ class Former extends \Bootstrapper\Form
    */
   public static function setRules($rulesArray)
   {
+    // In case we just passed the object's name
+    if(is_string($rulesArray)) {
+      $object = new $rulesArray();
+      $rulesArray = $object->getRules();
+    }
+
     // Parse the rules strings into arrays
     foreach($rulesArray as $field => $rules) {
       $rulesArray[$field] = array();
