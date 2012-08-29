@@ -125,4 +125,18 @@ class StringTests extends CerberusTests
 
     $this->assertEquals('04', $result);
   }
+
+  public function testNumberPadNegative()
+  {
+    $result = String::numberPad(5780, -5);
+
+    $this->assertEquals('5780', $result);
+  }
+
+  public function testNumberPadDecimal()
+  {
+    $result = String::numberPad(5.45, 2);
+
+    $this->assertEquals('05.45', $result);
+  }
 }

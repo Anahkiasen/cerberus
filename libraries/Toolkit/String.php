@@ -79,8 +79,9 @@ class String extends \Str
    */
   public static function numberPad($number, $padding = 2)
   {
-    // Convert whatever we were given to a straight integer
-    $number = number_format($number);
+    // Remove already present padding
+    $number = ltrim($number, 0);
+    if(self::find('.', $number)) $number = rtrim($number, 0);
 
     return str_pad($number, $padding, '0', STR_PAD_LEFT);
   }
