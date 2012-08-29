@@ -70,6 +70,21 @@ class String extends \Str
     return $string == $firstValue ? $secondValue : $firstValue;
   }
 
+  /**
+   * Adds zeroes as padding to a number, defaults to a two digits number
+   *
+   * @param  int $number  A number
+   * @param  int $padding The number of zeroes to pad with
+   * @return int          A X-digits number
+   */
+  public static function numberPad($number, $padding = 2)
+  {
+    // Convert whatever we were given to a straight integer
+    $number = number_format($number);
+
+    return str_pad($number, $padding, '0', STR_PAD_LEFT);
+  }
+
   ////////////////////////////////////////////////////////////////////
   //////////////////////////// INFORMATIONS //////////////////////////
   ////////////////////////////////////////////////////////////////////

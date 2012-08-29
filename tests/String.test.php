@@ -111,4 +111,18 @@ class StringTests extends CerberusTests
 
     $this->assertEquals($expect, $result);
   }
+
+  public function testNumberPad()
+  {
+    $result = String::numberPad(4);
+
+    $this->assertEquals('04', $result);
+  }
+
+  public function testNumberPadAlreadyPadded()
+  {
+    $result = String::numberPad('004', 2);
+
+    $this->assertEquals('04', $result);
+  }
 }
