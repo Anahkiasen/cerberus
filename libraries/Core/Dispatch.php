@@ -134,22 +134,6 @@ class Dispatch
   }
 
   /**
-   * Add all the styles from a container to the main container
-   *
-   * @param  string $package The container's name
-   */
-  public static function container($package)
-  {
-    $container = Asset::container($package);
-    $container = $container->assets;
-
-    foreach($container['style'] as $name => $link)
-      Asset::bundle('application')->add($name, $link['source']);
-    foreach($container['script'] as $name => $link)
-      Asset::bundle('application')->add($name, $link['source']);
-  }
-
-  /**
    * Add script/styles to the page
    *
    * @param  string $link An alias/path
