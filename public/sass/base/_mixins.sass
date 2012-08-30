@@ -29,6 +29,88 @@
 =font-smoothing($smooth)
   +experimental(font-smoothing, $smooth)
 
+// Create a ribbon
+=ribbon($color, $padding: 1em)
+  position: absolute
+  text-align: center
+  font-size: $padding * 2
+  background-color: $color
+  +background-image(linear-gradient(lighten($color, 10), darken($color, 10)))
+  +box-shadow(rgba(black, 0.3) 0 1px 1px)
+  h1
+    font-size: $padding * 1.5
+  &:before, &:after
+    content: ''
+    position: absolute
+    display: block
+    bottom: -1em
+    border: 1.5em solid darken($color, 5)
+    z-index: -1
+  &:before
+    left: -2em
+    border-right-width: 1.5em
+    border-left-color: transparent
+    +box-shadow(1px 1px 1px rgba(black, 0.4))
+  &:after
+    right: -2em
+    border-left-width: 1.5em
+    border-right-color: transparent
+    +box-shadow(-1px 1px 1px rgba(black, 0.4))
+  .content
+    text-shadow: lighten($color, 10) 0 1px 0
+    padding: ($padding * 0.7) $padding
+    color: darken($color, 20)
+    &:before, &:after
+      border-color: darken($color, 20) transparent transparent transparent
+      position: absolute
+      z-index: -2
+      display: block
+      border-style: solid
+      bottom: -1em
+      content: ''
+    &:before
+      left: 0
+      border-width: 1em 0 0 1em
+    &:after
+      right: 0
+      border-width: 1em 1em 0 0
+
+  // Stitches ------ /
+
+  $stitchesSize   : 3px
+  $stitchesShadow : 2px $stitchesSize rgba(white, 0.2)
+  $stitchesWhite  : 0 0 2px rgba(black, 0.3)
+
+  .stitches-top,
+  .stitches-bottom
+    border-top: 1px dashed rgba(white, 0.2)
+    +box-shadow($stitchesWhite, 0px $stitchesSize $stitchesShadow)
+  .stitches-top
+    +box-shadow($stitchesWhite, 0px (-1 * $stitchesSize) $stitchesShadow)
+    margin-top: 2px
+  .stitches-bottom
+    margin-bottom: 2px
+
+// Paper curl
+=paper-curl($angleRaw: 10, $opacity: 0.5)
+  +box-shadow(10px 10px 20px fade(black, 20))
+  $angle: unquote($angleRaw+'deg')
+  &:before, &:after
+    position: absolute
+    width: 40%
+    height: 10px
+    content: ' '
+    left: 12px
+    bottom: ($angleRaw * 4px)
+    background: transparent
+    +transform(skew(-$angle) rotate(-$angle))
+    +box-shadow(0 6px 12px rgba(black, $opacity))
+    z-index: -1
+  &:after
+    left: auto
+    right: 12px
+    +transform(skew($angle) rotate($angle))
+
 // Folded corners (triangles)
 =folded-corners($size, $color, $offset: 0)
   position: relative
@@ -90,11 +172,11 @@
 // Drops a text-shadow of a contrast color
 =text-drop($color, $size: 2px)
   color: $color
-  +text-shadow(0 $size 0 rgba(contrast-color($color), 0.5))
+  text-shadow: 0 $size 0 rgba(contrast-color($color), 0.5)
 
 // Creates a beveling text-shadow
 =bevel($size, $opacity: 20)
-  +text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
+  text-shadow: 0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity)
 
 // Loads a webfont using the +font-face mixin
 =webfont($name, $font_path, $weight: normal, $style: normal)
