@@ -33,9 +33,19 @@ class Dispatch
    */
   private static $javascript = array();
 
+  /**
+   * A list of Basset containers to display
+   * @var array
+   */
+  private static $basset = array(
+    'css' => array('styles'),
+    'js' => array('scripts'));
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// PUBLIC API //////////////////////////
   ////////////////////////////////////////////////////////////////////
+
+  // Show scripts and styles --------------------------------------- /
 
   /**
    * Render the page's scripts
@@ -49,9 +59,8 @@ class Dispatch
 
     // Fetch Basset scripts
     if(class_exists('Basset')) {
-      if(isset(Basset::$routes['basset/scripts.js'])) {
-        $scripts .= Basset::show('scripts.js');
-      }
+      foreach(self::$basset['js'] as $script)
+        $scripts .= self::fetchBasset($script, 'js');
     }
 
     $scripts .= '<script>'.PHP_EOL.implode(PHP_EOL, self::$javascript).PHP_EOL.'</script>';
@@ -70,14 +79,15 @@ class Dispatch
     $styles  = Asset::styles();
 
     // Fetch Basset styles
-    if(class_exists('Basset')){
-      if(isset(Basset::$routes['basset/styles.css'])) {
-        $styles .= Basset::show('styles.css');
-      }
+    if(class_exists('Basset')) {
+      foreach(self::$basset['css'] as $style)
+        $styles .= self::fetchBasset($style, 'css');
     }
 
     return $styles;
   }
+
+  // Add scripts or styles ----------------------------------------- /
 
   /**
    * Add a basic jQuery plugin
@@ -159,6 +169,30 @@ class Dispatch
     }
   }
 
+  /**
+   * Add a Basset container to the list of containers to display
+   *
+   * @param  string $name The Basset container name
+   * @param  string $type The extension to show (css/js)
+   */
+  public static function injectBasset($name, $type = null)
+  {
+    // If no type is specified, try to gather type from extension
+    if(!$type) {
+      $type = File::extension($name);
+      $name = String::remove('.'.$type, $name);
+    }
+
+    // If we don't have a correct type, forget it
+    if(!in_array($type, array('css', 'js')))
+      return false;
+
+    // Add container to the list
+    self::$basset[$type][] = $name;
+
+    return true;
+  }
+
   // Shortcuts
   public static function __callStatic($method, $parameters)
   {
@@ -170,5 +204,26 @@ class Dispatch
         return call_user_func_array('self::inject', $parameters);
         break;
     }
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// HELPERS /////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Check if an asset of a given type exists in Basset
+   *
+   * @param  string $asset The asset's name
+   * @param  string $type  The asset's extension
+   * @return string        Tags to include the asset, or null
+   */
+  private static function fetchBasset($asset, $type)
+  {
+    $asset .= '.'.$type;
+    $asset = isset(Basset::$routes['basset/'.$asset])
+      ? Basset::show($asset)
+      : null;
+
+    return $asset;
   }
 }
