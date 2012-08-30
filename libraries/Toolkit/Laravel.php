@@ -24,12 +24,4 @@ class Laravel
 
     return ucfirst($translation);
   }
-
-  public static function paginate($object, $perPage = 20)
-  {
-    $pagination = \Paginator::make($object, $object->count(), $perPage);
-    $object     = $pagination->results->for_page($pagination->page, $perPage)->get();
-
-    return array($object, $pagination);
-  }
 }
