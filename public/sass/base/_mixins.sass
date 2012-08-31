@@ -201,5 +201,14 @@
   margin-right: $margin
 
 =margin-v($margin)
-  margin-top: $margin
   margin-bottom: $margin
+  margin-top: $margin
+
+=reset-bootstrap-icons
+  [class^="icon-"],
+  [class*=" icon-"]
+    background: none !important
+    height: auto
+    width: auto
+    &:before
+      opacity: 1
