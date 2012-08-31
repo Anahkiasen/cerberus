@@ -17,11 +17,8 @@
 // CSS3 ------------------------------------------------------------ /
 
 // Changes the current selection color
-=selection($background, $color: white)
-  ::selection
-    background: $background
-    color: $color
-  ::-moz-selection
+=selectionColor($background, $color: white)
+  +selection
     background: $background
     color: $color
 
