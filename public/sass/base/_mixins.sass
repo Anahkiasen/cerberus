@@ -169,6 +169,34 @@
 
 // Utilities ------------------------------------------------------- /
 
+// Transforms a table into a responsive table
+=responsive-table($data-title: true)
+  thead, tbody, th, tr, td
+    display: block
+    width: 100%
+  @if $data-title
+    thead
+      display: none
+    td:before
+      position: absolute
+      top: 3px
+      left: 10px
+      width: 45%
+      padding-right: 10px
+      white-space: nowrap
+      text-align: left
+      font-weight: 700
+      content: attr(data-title)
+  th, td, td.id, td.action
+    padding: ms(-2) 0
+    @if $data-title
+      width: 50%
+      position: relative
+      padding-left: 50%
+      text-align: left
+    @else
+      width: 100%
+
 // Drops a text-shadow of a contrast color
 =text-drop($color, $size: 2px)
   color: $color
