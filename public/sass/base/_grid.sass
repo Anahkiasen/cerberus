@@ -20,16 +20,16 @@ $to-ipad    : 0 $ipad
 $to-mobile  : 0 $mobile
 
 // Min-width
-$from-wide    : $wide $total-columns
+$from-wide    : $wide    $total-columns
 $from-desktop : $desktop $total-columns
-$from-ipad    : $ipad $total-columns
-$from-mobile  : $mobile $total-columns
+$from-ipad    : $ipad    $total-columns
+$from-mobile  : $mobile  $total-columns
 
 // Bridges
 $from-desktop-to-wide : $desktop $total-columns $wide
-$from-ipad-to-desktop : $ipad $total-columns $desktop
-$from-mobile-to-ipad  : $mobile $total-columns $desktop
-$from-ipad-to-wide    : $ipad $total-columns $wide
+$from-ipad-to-wide    : $ipad    $total-columns $wide
+$from-ipad-to-desktop : $ipad    $total-columns $desktop
+$from-mobile-to-ipad  : $mobile  $total-columns $ipad
 
 // Define a number of items per row
 =perRow($perRow, $numberColumns: $total-columns, $padding: 0em)
@@ -54,6 +54,6 @@ $from-ipad-to-wide    : $ipad $total-columns $wide
 
   // Bridges
   $from-desktop-to-wide : $desktop $total-columns $wide
-  $from-ipad-to-desktop : $ipad $total-columns $desktop
-  $from-mobile-to-ipad  : $mobile $total-columns $desktop
-  $from-ipad-to-wide    : $ipad $total-columns $wide
+  $from-ipad-to-wide    : $ipad    $total-columns $wide
+  $from-ipad-to-desktop : $ipad    $total-columns $desktop
+  $from-mobile-to-ipad  : $mobile  $total-columns $ipad
