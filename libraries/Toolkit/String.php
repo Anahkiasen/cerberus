@@ -79,6 +79,9 @@ class String extends \Str
    */
   public static function numberPad($number, $padding = 2)
   {
+    // Replace french delimiter with english
+    $number = self::replace(',', '.', $number);
+
     // Remove already present padding
     $number = ltrim($number, 0);
     if(self::find('.', $number)) $number = rtrim($number, 0);
@@ -148,6 +151,14 @@ class String extends \Str
   ////////////////////////////////////////////////////////////////////
   //////////////////////////// ALIASES ///////////////////////////////
   ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Alias for str_replace
+   */
+  public static function replace($search, $replace, $subject, &$count = null)
+  {
+    return str_replace($search, $replace, $subject, $count);
+  }
 
   /**
    * Alias of String::slug
