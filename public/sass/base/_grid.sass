@@ -31,7 +31,15 @@ $from-ipad-to-desktop : $ipad $total-columns $desktop
 $from-mobile-to-ipad  : $mobile $total-columns $desktop
 $from-ipad-to-wide    : $ipad $total-columns $wide
 
+// Define a number of items per row
+=perRow($perRow)
+  $span: $total-columns / $perRow
+  +span-columns($span)
+  +nth-omega(#{$perRow}n, of-type)
+
+// Regenerate the breakpoints in case the $total-columns variable has changed
 =regenerate-breakpoints
+
   // Max-width
   $to-wide    : 0 $wide
   $to-desktop : 0 $desktop
