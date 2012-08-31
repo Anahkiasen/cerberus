@@ -8,7 +8,11 @@ Autoloader::namespaces(array(
 ));
 
 use Cerberus\Toolkit\Buffer,
+    Cerberus\Toolkit\Language,
     Cerberus\Core\Dispatch;
+
+// Set correct language
+$test = Language::locale();
 
 // Custom Cerberus macros ------------------------------------------ /
 
