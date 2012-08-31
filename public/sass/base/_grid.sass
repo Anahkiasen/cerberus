@@ -18,3 +18,14 @@ $to-wide    : 0 $wide
 $to-desktop : 0 $desktop
 $to-ipad    : 0 $ipad
 $to-mobile  : 0 $mobile
+
+// Min-width
+$from-wide    : $wide $total-columns
+$from-desktop : $desktop $total-columns
+$from-ipad    : $ipad $total-columns
+$from-mobile  : $mobile $total-columns
+
+// Bridges
+$from-desktop-to-wide : $desktop $total-columns $wide
+$from-ipad-to-desktop : $ipad $total-columns $desktop
+$from-mobile-to-ipad  : $mobile $total-columns $desktop
