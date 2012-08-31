@@ -167,7 +167,7 @@ class Former extends \Bootstrapper\Form
    */
   private static function createField($method, $parameters = array())
   {
-    $type   = strtolower(substr($method, 3));
+    $type = strtolower(substr($method, 3));
     list($label, $fieldname) =
       self::getLabelName(Arrays::get($parameters, 1), Arrays::get($parameters, 0));
 
@@ -176,7 +176,7 @@ class Former extends \Bootstrapper\Form
     $state  = self::getState($fieldname);
 
     // Get field parameters
-    $offset     = $type == 'select' ? 3 : 2;
+    $offset     = ($type == 'select' or String::find('checkbox', $type)) ? 3 : 2;
     $value      = self::getValue($fieldname, Arrays::get($parameters, $offset));
     $attributes = Arrays::get($parameters, $offset + 1, array());
     $help       = Arrays::get($parameters, $offset + 2);
@@ -197,6 +197,12 @@ class Former extends \Bootstrapper\Form
     switch ($type) {
       case 'password':
         $input = call_user_func('Form::'.$type, $fieldname, $attributes);
+        break;
+
+      case 'checkbox':
+        $type = 'inline_labelled_checkbox';
+        $checkboxText = Arrays::get($parameters, 2);
+        $input = call_user_func('Form::'.$type, $fieldname, $checkboxText, 1, $value, $attributes);
         break;
 
       case 'select';
