@@ -32,7 +32,7 @@ $from-ipad-to-desktop : $ipad    $total-columns $desktop
 $from-mobile-to-ipad  : $mobile  $total-columns $ipad
 
 // Define a number of items per row
-=perRow($perRow, $numberColumns: $total-columns, $padding: 0em)
+=perRow($perRow, $numberColumns: $total-columns, $padding: false)
   $span: $numberColumns / $perRow
   +span-columns($span, $numberColumns, $padding)
   +nth-omega(#{$perRow}n, of-type)
