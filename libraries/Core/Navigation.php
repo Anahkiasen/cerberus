@@ -51,6 +51,6 @@ class Navigation
    */
   public static function isCurrent($route = null)
   {
-    return \URL::to($route) == self::current();
+    return $route == self::current();
   }
 }
