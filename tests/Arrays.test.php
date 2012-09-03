@@ -106,7 +106,7 @@ class ArraysTests extends CerberusTests
     $array = $this->array;
     $csv = Arrays::toCsv($array);
 
-    $this->assertEquals('"bar1";"bar2"' . "\n" . '"kal1";"kal2"', $csv);
+    $this->assertEquals('"bar1";"bar2"' . PHP_EOL . '"kal1";"kal2"', $csv);
   }
 
   public function testCsvDelimiter()
@@ -114,7 +114,7 @@ class ArraysTests extends CerberusTests
     $array = $this->array;
     $csv = Arrays::toCsv($array, ',');
 
-    $this->assertEquals('"bar1","bar2"' . "\n" . '"kal1","kal2"', $csv);
+    $this->assertEquals('"bar1","bar2"' . PHP_EOL . '"kal1","kal2"', $csv);
   }
 
   public function testCsvHeaders()
@@ -122,7 +122,7 @@ class ArraysTests extends CerberusTests
     $array = $this->array;
     $csv = Arrays::toCsv($array, ',', true);
 
-    $this->assertEquals('foo1,foo2' . "\n" . '"bar1","bar2"' . "\n" . '"kal1","kal2"', $csv);
+    $this->assertEquals('foo1,foo2' . PHP_EOL . '"bar1","bar2"' . PHP_EOL . '"kal1","kal2"', $csv);
   }
 
   public function testFirst()
