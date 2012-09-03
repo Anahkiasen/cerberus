@@ -318,7 +318,7 @@ class Former extends \Bootstrapper\Form
    */
   public static function getLabel($label, $fieldname = null)
   {
-    list($label, $fieldname) = self::getLabelName('store_code', 'store_code');
+    list($label, $fieldname) = self::getLabelName($label, $label);
 
     return \Form::label($fieldname, $label);
   }
