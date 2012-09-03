@@ -337,4 +337,9 @@ class Former extends \Bootstrapper\Form
 
     return Input::get($fieldname, Input::old($fieldname, $value));
   }
+
+  public static function isChecked($fieldname)
+  {
+    return self::getValue($fieldname) == 1;
+  }
 }
