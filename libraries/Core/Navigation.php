@@ -40,7 +40,7 @@ class Navigation
   {
     list($controller, $action) = self::current(true);
 
-    return $action ? $controller. '-' .$action : $controller;
+    return $action ? $controller. ' ' .$controller. '-' .$action : $controller;
   }
 
   /**
