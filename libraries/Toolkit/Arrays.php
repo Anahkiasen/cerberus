@@ -161,4 +161,54 @@ class Arrays
 
     return $array;
   }
+
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////// EXPORT / IMPORT /////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+    * Converts an array to CSV format
+    *
+    * @param  array   $array         The source array
+    * @param  string  $delimiter     The delimiter between fields, default ;
+    * @param  boolean $exportHeaders Whether headers should be included in the table
+    * @return string                 The CSV string
+    */
+  public static function toCsv($array, $delimiter = ';', $exportHeaders = false)
+  {
+    $csv = null;
+
+    // Fetch headers if requested
+    if($exportHeaders) {
+      $headers = array_keys(self::first($array));
+      $csv .= implode($delimiter, $headers);
+    }
+
+    foreach ($array as $row) {
+      // Add line break if we're not on the first row
+      if(!empty($csv)) $csv .= PHP_EOL;
+
+      // Quote values and create row
+      foreach($row as $key => $value)
+        $row[$key] = '"' .stripslashes($value). '"';
+        $csv .= implode($delimiter, $row);
+    }
+
+    return $csv;
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  ///////////////////////////// ALIASES //////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Returns the first element of an array
+   *
+   * @param  array $array The source array
+   * @return mixed        The first element
+   */
+  public static function first($array)
+  {
+    return array_shift($array);
+  }
 }
