@@ -5,6 +5,15 @@ use Cerberus\Toolkit\Arrays;
 
 class ArraysTests extends CerberusTests
 {
+  public $arraySimple = array(
+    'key1' => 'value1',
+    'key2' => 'value2',
+    'key3' => 'value3');
+  public $array = array(
+    array('foo1' => 'bar1', 'foo2' => 'bar2'),
+    array('foo1' => 'kal1', 'foo2' => 'kal2'),
+  );
+
   // Data providers ------------------------------------------------ /
 
   public function provideGet()
@@ -39,20 +48,15 @@ class ArraysTests extends CerberusTests
 
   public function testRemoveKey()
   {
-    $array = array(
-      'key1' => 'value1',
-      'key2' => 'value2');
+    $array = $this->arraySimple;
     $return = Arrays::remove($array, 'key2');
 
-    $this->assertEquals(array('key1' => 'value1'), $return);
+    $this->assertEquals(array('key1' => 'value1', 'key3' => 'value3'), $return);
   }
 
   public function testRemoveKeyMultiple()
   {
-    $array = array(
-      'key1' => 'value1',
-      'key2' => 'value2',
-      'key3' => 'value3');
+    $array = $this->arraySimple;
     $return = Arrays::remove($array, array('key2', 'key3'));
 
     $this->assertEquals(array('key1' => 'value1'), $return);
@@ -60,21 +64,15 @@ class ArraysTests extends CerberusTests
 
   public function testRemoveValue()
   {
-    $array = array(
-      'key1' => 'value1',
-      'key2' => 'value2',
-      'key3' => 'value2');
+    $array = $this->arraySimple;
     $return = Arrays::removeValue($array, 'value2');
 
-    $this->assertEquals(array('key1' => 'value1'), $return);
+    $this->assertEquals(array('key1' => 'value1', 'key3' => 'value3'), $return);
   }
 
   public function testRemoveValueMultiple()
   {
-    $array = array(
-      'key1' => 'value1',
-      'key2' => 'value2',
-      'key3' => 'value3');
+    $array = $this->arraySimple;
     $return = Arrays::removeValue($array, array('value2', 'value3'));
 
     $this->assertEquals(array('key1' => 'value1'), $return);
@@ -82,13 +80,10 @@ class ArraysTests extends CerberusTests
 
   public function testPluck()
   {
-    $array = array(
-     'key1' => array('subkey1' => 'subvalue1', 'subkey2' => 'subvalue2'),
-     'key2' => array('subkey1' => 'subvalue1', 'subkey2' => 'subvalue2')
-    );
-    $return = Arrays::pluck($array, 'subkey1');
+    $array = $this->array;
+    $return = Arrays::pluck($array, 'foo1');
 
-    $this->assertEquals(array('key1' => 'subvalue1', 'key2' => 'subvalue1'), $return);
+    $this->assertEquals(array(0 => 'bar1', 1 => 'kal1'), $return);
   }
 
   public function testAverage()
@@ -104,5 +99,40 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(13, $average1);
     $this->assertEquals(0,  $average2);
     $this->assertEquals(10, $average3);
+  }
+
+  public function testCsv()
+  {
+    $array = $this->array;
+    $csv = Arrays::toCsv($array);
+
+    $this->assertEquals('"bar1";"bar2"' . "\n" . '"kal1";"kal2"', $csv);
+  }
+
+  public function testCsvDelimiter()
+  {
+    $array = $this->array;
+    $csv = Arrays::toCsv($array, ',');
+
+    $this->assertEquals('"bar1","bar2"' . "\n" . '"kal1","kal2"', $csv);
+  }
+
+  public function testCsvHeaders()
+  {
+    $array = $this->array;
+    $csv = Arrays::toCsv($array, ',', true);
+
+    $this->assertEquals('foo1,foo2' . "\n" . '"bar1","bar2"' . "\n" . '"kal1","kal2"', $csv);
+  }
+
+  public function testFirst()
+  {
+    $array = $this->arraySimple;
+    $first = Arrays::first($array);
+    $this->assertEquals('value1', $first);
+
+    $array = $this->array;
+    $first = Arrays::first($array);
+    $this->assertEquals(array('foo1' => 'bar1', 'foo2' => 'bar2'), $first);
   }
 }
