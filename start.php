@@ -11,8 +11,49 @@ use Cerberus\Toolkit\Buffer,
     Cerberus\Toolkit\Language,
     Cerberus\Core\Dispatch;
 
+// Cache and builds ------------------------------------------------ /
+
+/*
+if(Request::method() == 'GET') {
+
+  list($controller, $action) = Cerberus\Core\Navigation::current(true);
+  $identifier = ($controller and $action) ? $controller.'-'.$action : null;
+
+  // Create settings array
+  $cache = array(
+    'forget' => array('kit-create', 'jury'),
+  );
+
+  // If the page can be cached
+  if($identifier and !in_array($identifier, $cache['forget'])) {
+
+    // Create cache md5
+    $url = Request::method().URL::current();
+    $urlSlug = String::slugify($url);
+    $id = md5($urlSlug);
+
+    // Load cache if found
+    if(Cache::has($id)) {
+      if (!headers_sent()) header('Content-Type: text/html; charset=utf-8');
+      echo Cache::get($id);
+      exit();
+    }
+
+    // Else write cache and display
+    Event::listen('laravel.done', function($id) use ($id)
+    {
+      $content = Buffer::get();
+      Cache::forever($id, $content);
+      echo $content;
+    });
+  }
+}
+*/
+
+// Language and localization --------------------------------------- /
+
 // Set correct language
-$test = Language::locale();
+$locale = Language::locale();
 
 // Custom Cerberus macros ------------------------------------------ /
 
@@ -32,21 +73,3 @@ HTML::macro('responsive', function()
   return $meta;
 });
 
-// Post-processing ------------------------------------------------- /
-
-// Start output buffer
-Buffer::start();
-
-// Rewrite file
-Event::listen('laravel.NO', function()
-{
-  $content = Buffer::get();
-
-  // Add styles
-  $content = str_replace('</head>', Dispatch::styles().'</head>', $content);
-
-  // Add scripts
-  $content = str_replace('</body>', Dispatch::scripts().'</head>', $content);
-
-  echo $content;
-});
