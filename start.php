@@ -25,7 +25,11 @@ HTML::macro('favicon', function($favicon)
 // Responsive design
 HTML::macro('responsive', function()
 {
-  return '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+  $meta  = "<meta name='apple-mobile-web-app-capable' content='yes' />".PHP_EOL;
+  $meta .= "<meta name='apple-touch-fullscreen' content='yes' />".PHP_EOL;
+  $meta .= "<meta name='viewport' content='width=device-width, initial-scale=1.0' />".PHP_EOL;
+
+  return $meta;
 });
 
 // Post-processing ------------------------------------------------- /
