@@ -13,19 +13,18 @@ use Cerberus\Toolkit\Buffer,
 
 // Cache and builds ------------------------------------------------ /
 
-/*
 if(Request::method() == 'GET') {
 
   list($controller, $action) = Cerberus\Core\Navigation::current(true);
   $identifier = ($controller and $action) ? $controller.'-'.$action : null;
 
   // Create settings array
-  $cache = array(
-    'forget' => array('kit-create', 'jury'),
-  );
+  $cacheSettings = Config::get('cerberus.cache', array());
 
   // If the page can be cached
-  if($identifier and !in_array($identifier, $cache['forget'])) {
+  if($identifier and
+    in_array($identifier, $cacheSettings) or
+    in_array($controller, $cacheSettings)) {
 
     // Create cache md5
     $url = Request::method().URL::current();
@@ -48,7 +47,7 @@ if(Request::method() == 'GET') {
     });
   }
 }
-*/
+
 
 // Language and localization --------------------------------------- /
 
