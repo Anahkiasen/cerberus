@@ -146,12 +146,29 @@ class Former extends \Bootstrapper\Form
           case 'max':
             self::$rules[$field]['maxlength'] = array_get($parameters, 0);
             break;
+          case 'numeric':
+            self::$rules[$field]['pattern'] = '[0-9]+';
+            break;
           case 'not_numeric':
             self::$rules[$field]['pattern'] = '[^0-9]+';
             break;
         }
       }
     }
+  }
+
+  /**
+   * Merge the rules for a field into an attributes array
+   *
+   * @param  string $fieldname  A fieldname
+   * @param  array  $attributes An attributes array
+   * @return array              A merged attributes array
+   */
+  public static function getRules($fieldname, $attributes)
+  {
+    return array_merge(
+      $attributes,
+      Arrays::get(self::$rules, $fieldname, array()));
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -191,7 +208,7 @@ class Former extends \Bootstrapper\Form
       $attributes = array($attributes);
 
     // Adding rules to the attributes array
-    $attributes = array_merge($attributes, array_get(self::$rules, $fieldname, array()));
+    $attributes = self::getRules($fieldname, $attributes);
 
     // Creating the input
     switch ($type) {
