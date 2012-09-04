@@ -13,7 +13,7 @@ use Cerberus\Toolkit\Buffer,
 
 // Cache and builds ------------------------------------------------ /
 
-if(Request::method() == 'GET') {
+/*if(Request::method() == 'GET') {
 
   list($controller, $action) = Cerberus\Core\Navigation::current(true);
   $identifier = ($controller and $action) ? $controller.'-'.$action : null;
@@ -46,8 +46,7 @@ if(Request::method() == 'GET') {
       echo $content;
     });
   }
-}
-
+}*/
 
 // Language and localization --------------------------------------- /
 
@@ -72,3 +71,9 @@ HTML::macro('responsive', function()
   return $meta;
 });
 
+// Validate length
+Validator::register('length', function($attribute, $value, $parameters)
+{
+  $length = Str::length(trim($value));
+  return $length == $parameters[0];
+});
