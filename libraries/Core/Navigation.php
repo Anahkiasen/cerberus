@@ -1,7 +1,8 @@
 <?php
 namespace Cerberus\Core;
 
-use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\Arrays,
+    Cerberus\Toolkit\String;
 
 class Navigation
 {
@@ -16,16 +17,36 @@ class Navigation
     // Get Request object
     $request = \Request::route();
 
-    // Get controller, action and route
-    if ($request->controller) {
-      $controller = $request->controller;
-      $action     = $request->controller_action;
+    // If we have a Request object ready
+    if (is_object($request)) {
+
+      // If in a controller
+      if($request->controller) {
+        $controller = $request->controller;
+        $action     = $request->controller_action;
+
+      // Else if in a route
+      } else {
+        $action = null;
+        $route = $request->uri;
+        $route = explode('/', $route);
+        $controller = Arrays::get($route, 1, Arrays::get($route, 0));
+        if(empty($controller)) $controller = 'home';
+      }
+
+    // If we don't have object, try and parse the URL
     } else {
-      $action = null;
-      $route = \Request::route()->uri;
-      $route = explode('/', $route);
-      $controller = Arrays::get($route, 1, Arrays::get($route, 0));
-      if(empty($controller)) $controller = 'home';
+      $url = \URL::current();
+      $url = String::remove(\URL::base(), $url);
+      $url = explode('/', $url);
+
+      // Remove hypothetical forward slash
+      if(empty($url[0])) {
+        array_shift($url);
+      }
+
+      $controller = Arrays::get($url, 0);
+      $action = Arrays::get($url, 1);
     }
 
     return $returnAction ? array($controller, $action) : $controller;
