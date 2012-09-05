@@ -77,3 +77,9 @@ Validator::register('length', function($attribute, $value, $parameters)
   $length = Str::length(trim($value));
   return $length == $parameters[0];
 });
+
+// Check if a field contains text only (spaces, alpha etc)
+Validator::register('not_numeric', function($attribute, $value)
+{
+  return preg_match('/^([^0-9]+)+$/i', $value);
+});
