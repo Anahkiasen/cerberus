@@ -21,7 +21,7 @@ class Navigation
     if (is_object($request)) {
 
       // If in a controller
-      if($request->controller) {
+      if ($request->controller) {
         $controller = $request->controller;
         $action     = $request->controller_action;
 
@@ -41,7 +41,7 @@ class Navigation
       $url = explode('/', $url);
 
       // Remove hypothetical forward slash
-      if(empty($url[0])) {
+      if (empty($url[0])) {
         array_shift($url);
       }
 

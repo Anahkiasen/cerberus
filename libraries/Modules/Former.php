@@ -52,8 +52,9 @@ class Former extends \Bootstrapper\Form
    */
   public static function __callStatic($method, $parameters)
   {
-    if(starts_with($method, 'add'))
+    if(starts_with($method, 'add')) {
       return self::createField($method, $parameters);
+    }
 
     $in = static::magic_input($method, $parameters);
     if($in !== null) return $in;
@@ -121,25 +122,25 @@ class Former extends \Bootstrapper\Form
   public static function setRules($rulesArray)
   {
     // In case we just passed the object's name
-    if(is_string($rulesArray)) {
+    if (is_string($rulesArray)) {
       $object = new $rulesArray();
       $rulesArray = $object->getRules();
     }
 
     // Parse the rules strings into arrays
-    foreach($rulesArray as $field => $rules) {
+    foreach ($rulesArray as $field => $rules) {
       $rulesArray[$field] = array();
       $rules = explode('|', $rules);
-      foreach($rules as $rule) {
+      foreach ($rules as $rule) {
         list($rule, $parameters) = self::parse($rule);
         $rulesArray[$field][$rule] = $parameters;
       }
     }
 
     // Loop through rules and gather the one we can render live
-    foreach($rulesArray as $field => $rules) {
-      foreach($rules as $rule => $parameters) {
-        switch($rule) {
+    foreach ($rulesArray as $field => $rules) {
+      foreach ($rules as $rule => $parameters) {
+        switch ($rule) {
           case 'required':
             self::$rules[$field]['required'] = '';
             break;
@@ -270,8 +271,7 @@ class Former extends \Bootstrapper\Form
     // The format for specifying validation rules and parameters follows a
     // {rule}:{parameters} formatting convention. For instance, the rule
     // "max:3" specifies that the value may only be 3 characters long.
-    if (($colon = strpos($rule, ':')) !== false)
-    {
+    if (($colon = strpos($rule, ':')) !== false) {
       $parameters = str_getcsv(substr($rule, $colon + 1));
     }
 

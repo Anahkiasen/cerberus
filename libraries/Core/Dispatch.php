@@ -58,7 +58,7 @@ class Dispatch
     $scripts  = Asset::scripts();
 
     // Fetch Basset scripts
-    if(class_exists('Basset')) {
+    if (class_exists('Basset')) {
       foreach(self::$basset['js'] as $script)
         $scripts .= self::fetchBasset($script, 'js');
     }
@@ -79,7 +79,7 @@ class Dispatch
     $styles  = Asset::styles();
 
     // Fetch Basset styles
-    if(class_exists('Basset')) {
+    if (class_exists('Basset')) {
       foreach(self::$basset['css'] as $style)
         $styles .= self::fetchBasset($style, 'css');
     }
@@ -156,15 +156,13 @@ class Dispatch
 
     if (isset(self::$aliases[$file])) {
       call_user_func('Asset::'.$filetype, $file, Arrays::get(self::$aliases, $file));
-    }
-    elseif (file_exists($fullPath) and is_dir($fullPath)) {
+    } elseif (file_exists($fullPath) and is_dir($fullPath)) {
       $glob = glob($fullPath.'/{css,js}/*', GLOB_BRACE);
       foreach ($glob as $file) {
         $file = String::remove(path('public'), $file);
         call_user_func('Asset::'.$filetype, $name, $file);
       }
-    }
-    else {
+    } else {
       call_user_func('Asset::'.$filetype, $name, $file);
     }
   }
@@ -178,14 +176,13 @@ class Dispatch
   public static function injectBasset($name, $type = null)
   {
     // If no type is specified, try to gather type from extension
-    if(!$type) {
+    if (!$type) {
       $type = File::extension($name);
       $name = String::remove('.'.$type, $name);
     }
 
     // If we don't have a correct type, forget it
-    if(!in_array($type, array('css', 'js')))
-      return false;
+    if(!in_array($type, array('css', 'js'))) return false;
 
     // Add container to the list
     self::$basset[$type][] = $name;
@@ -201,6 +198,7 @@ class Dispatch
       case 'stylesheet':
         if($method == 'stylesheet') $method = 'style';
         $parameters[] = $method;
+
         return call_user_func_array('self::inject', $parameters);
         break;
     }

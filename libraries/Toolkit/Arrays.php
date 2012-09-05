@@ -30,12 +30,12 @@ class Arrays
   public static function get($array, $key, $fallback = null)
   {
     // If the key is an array of keys
-    if(String::find('.', $key)) {
+    if (String::find('.', $key)) {
       $key = explode('.', $key);
     }
 
     // If the key is plain, just return the value/fallback
-    if(!is_array($key)) {
+    if (!is_array($key)) {
       return (isset($array[$key])) ? $array[$key] : $fallback;
     }
 
@@ -139,15 +139,15 @@ class Arrays
     */
   public static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
   {
-  	// Make sur the passed argument is an array
-  	if(!is_array($array)) return $array;
+      // Make sur the passed argument is an array
+      if(!is_array($array)) return $array;
 
-  	// Get correct PHP constant for direction
+      // Get correct PHP constant for direction
     $direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
 
     // Create
     $helper = array();
-    foreach($array as $key => $row) {
+    foreach ($array as $key => $row) {
       $helper[$key] = (is_object($row))
         ? (method_exists($row, $field))
           ? String::lower($row -> $field())
@@ -179,7 +179,7 @@ class Arrays
     $csv = null;
 
     // Fetch headers if requested
-    if($exportHeaders) {
+    if ($exportHeaders) {
       $headers = array_keys(self::first($array));
       $csv .= implode($delimiter, $headers);
     }

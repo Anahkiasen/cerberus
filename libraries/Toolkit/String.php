@@ -64,8 +64,10 @@ class String extends \Str
    */
   public static function toggle($string, $firstValue, $secondValue, $loose = false)
   {
-    if(!$loose and !in_array($string, array($firstValue, $secondValue)))
+    // If the string given match none of the other two, and we're in strict mode, return it
+    if(!$loose and !in_array($string, array($firstValue, $secondValue))) {
       return $string;
+    }
 
     return $string == $firstValue ? $secondValue : $firstValue;
   }

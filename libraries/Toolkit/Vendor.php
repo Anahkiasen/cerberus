@@ -23,7 +23,7 @@ class Vendor
   public static function typekit($typekit, $async = false)
   {
     // Asynchronous embed code
-    if($async) {
+    if ($async) {
       Dispatch::javascript('<script type="text/javascript">
         (function() {
           var config = {
@@ -138,16 +138,13 @@ class Vendor
     $plugins       = array_merge($plugins, $defaultsPlugins);
 
     // Writing options
-    foreach ($configuration as $k => $v)
-    {
+    foreach ($configuration as $k => $v) {
       // If value is comment
-      if (is_numeric($k))
-      {
+      if (is_numeric($k)) {
         if(!empty($file)) $file .= PHP_EOL;
         $file .= '# ' . $v . PHP_EOL;
         continue;
       }
-
 
       // If value is array
       elseif(is_array($v))
