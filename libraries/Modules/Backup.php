@@ -56,7 +56,7 @@ class Backup
   public function save()
   {
     $tables = $this->tables();
-    $savedTables = 0;
+    $unsavedTables = array();
 
     // If we have tables to save
     if ($tables) {
@@ -84,17 +84,20 @@ class Backup
         $write = File::write($filepath, $export);
         if ($write) {
           $this->debug('success', 'Table ' .$table. ' saved successfully (' .$numberRows. ' rows)');
-          $savedTables++;
         } else {
+          $unsavedTables[] = $table;
           $this->debug('error', 'An error occured saving table `' .$table. '`');
         }
       }
 
       // Make sure all tables were correctly saved
-      if ($savedTables == sizeof($tables)) {
+      if (empty($unsavedTables)) {
         $this->debug('success', 'Database saved successfully');
-      }
     } else {
+        $this->debug('error', 'The following tables could not be saved: ' .implode(', ', $unsavedTables));
+      }
+    }
+    else {
       $this->debug('info', 'No tables to save');
 
       return true;
