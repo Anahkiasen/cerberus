@@ -11,6 +11,7 @@ namespace Cerberus\Modules;
 
 use Cerberus\Toolkit\Directory,
     Cerberus\Toolkit\File,
+    Cerberus\Toolkit\String,
     Laravel\Database as DB;
 
 class Backup
@@ -49,9 +50,7 @@ class Backup
   }
 
   /**
-   * Save the current database if necessary
-   *
-   * @return boolean Whether the database was saved or not
+   * Save the database for the given date
    */
   public function save()
   {
@@ -66,14 +65,14 @@ class Backup
       $this->debug('info', 'Saving database `' .$database. '`');
 
       // Read dumps for current date
-      $dumps = $this->getFolderForDate();
+      $dumps = $this->getFolderForDate($this->date);
       $numberDumps = file_exists($dumps) ? sizeof(glob($dumps.'*')) : 0;
       if ($numberDumps > 0) {
         $this->debug(
           'success',
-          'A dump for today (' .$this->date. ') already exists (' .$numberDumps. ' tables in memory).');
+          'A dump this date (' .$this->date. ') already exists (' .$numberDumps. ' tables in memory).');
 
-        return true;
+        return $this;
       }
 
       // If no dumps, save tables
@@ -92,17 +91,12 @@ class Backup
       }
 
       // Make sure all tables were correctly saved
-      if (empty($unsavedTables)) {
-        $this->debug('success', 'Database saved successfully');
-      } else {
-        $this->debug('error', 'The following tables could not be saved: ' .implode(', ', $unsavedTables));
-      }
+      if (empty($unsavedTables)) $this->debug('success', 'Database saved successfully');
+      else $this->debug('error', 'The following tables could not be saved: ' .implode(', ', $unsavedTables));
     }
-    else {
-      $this->debug('info', 'No tables to save');
+    else $this->debug('info', 'No tables to save');
 
-      return true;
-    }
+    return $this;
   }
 
   /**
@@ -184,6 +178,8 @@ class Backup
         }
       }
     }
+
+    return $this;
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -200,6 +196,23 @@ class Backup
     if(!is_bool($debug)) return false;
 
     $this->debug = $debug;
+
+    return $this;
+  }
+
+  /**
+   * Change the current date in use
+   *
+   * @param string $date A date formatted YYYY-mm-dd
+   */
+  public function setDate($date)
+  {
+    // If given timestamp, parse it to date
+    if(!String::find('-', $date)) $date = date('Y-m-d', $date);
+
+    $this->date = $date;
+
+    return $this;
   }
 
   ////////////////////////////////////////////////////////////////////
