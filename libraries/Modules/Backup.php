@@ -353,10 +353,8 @@ class Backup
    * @param  boolean  $fetchAll Whether we fetch all results or one
    * @return array              An array of results
    */
-  private function pdo($sql, $style = null, $fetchAll = true)
+  private function pdo($sql, $style = \PDO::FETCH_NUM, $fetchAll = true)
   {
-    if(!$style) $style = \PDO::FETCH_NUM;
-
     // Return results
     $results = DB::connection()->pdo->query($sql);
 
