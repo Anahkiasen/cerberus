@@ -66,11 +66,12 @@ class Backup
       $this->debug('info', 'Saving database `' .$database. '`');
 
       // Read dumps for current date
-      $dumps = $this->readDumps();
-      if (!empty($dumps)) {
+      $dumps = $this->getFolderForDate();
+      $numberDumps = file_exists($dumps) ? sizeof(glob($dumps.'*')) : 0;
+      if ($numberDumps > 0) {
         $this->debug(
           'success',
-          'A dump for today (' .$this->date. ') already exists (' .sizeof($dumps). ' tables in memory).');
+          'A dump for today (' .$this->date. ') already exists (' .$numberDumps. ' tables in memory).');
 
         return true;
       }
@@ -93,7 +94,7 @@ class Backup
       // Make sure all tables were correctly saved
       if (empty($unsavedTables)) {
         $this->debug('success', 'Database saved successfully');
-    } else {
+      } else {
         $this->debug('error', 'The following tables could not be saved: ' .implode(', ', $unsavedTables));
       }
     }
@@ -119,6 +120,7 @@ class Backup
 
     // Fetch all dumps for that date
     $dumps = glob($folder.'*.sql');
+    $dumps = array_map(array('self', 'parseDump'), $dumps);
 
     return $dumps;
   }
@@ -203,6 +205,29 @@ class Backup
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// HELPERS /////////////////////////////
   ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Parse a dump name and return various informations about it
+   *
+   * @param  string $dump Path to a dump
+   * @return array        An array of informations
+   */
+  private function parseDump($dump)
+  {
+    $dump = basename($dump);
+
+    // Parse filename
+    preg_match('/([a-z_]+)_(\d{4})-(\d{2})-(\d{2})@(\d{2})-(\d{2})-(\d{2}).sql/', $dump, $matches);
+    $unix = mktime($matches[5], $matches[6], $matches[7], $matches[3], $matches[4], $matches[2]);
+
+    return array(
+      'dump'  => $dump,
+      'date'  => date('Y-m-d', $unix),
+      'hour'  => date('H:i:s', $unix),
+      'unix'  => $unix,
+      'table' => $matches[1],
+    );
+  }
 
   /**
    * Records a debug message
