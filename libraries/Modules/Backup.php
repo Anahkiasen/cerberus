@@ -97,8 +97,51 @@ class Backup
 
     return $this;
   }
+
+  /**
+   * Load the currently selected SQL dump
+   *
+   * @param  string  $date The date to load
+   * @return boolean       Whether the loading was successful or not
+   */
+  public function load($date = null)
+  {
+    // If date was specified, change it
+    if($date) $this->setDate($date);
+
+    // Fetch all dumps from the date
+    $dumps  = $this->readDumps();
+    $pdo    = DB::connection()->pdo;
+
+    foreach ($dumps as $dump) {
+
+      // Separate statements into array entries
+      $sql = trim($dump['content']);
+      $table = $pdo->quote($dump['table']);
+      $statements = array_filter(explode(';', $sql));
+
+      // Execute the current statement
+      foreach ($statements as $key => $statement) {
+        $statement = trim($statement);
+        $results = $pdo->exec($statement);
+
+        // Display corresponding message
+        switch ($key) {
+          case 1:
+            $this->debug('success', 'Table ' .$table. ' was successfully loaded');
+            break;
+          case 2:
+            $this->debug('info', $results. ' entries were added to ' .$table);
+            break;
+        }
+      }
+
+      // If the table was empty, say it
+      if (!isset($statements[2])) {
+        $this->debug('info', 'No entries were added to '.$table);
+      }
     }
-    else $this->debug('info', 'No tables to save');
+    $this->debug('success', 'The dump from ' .$this->date. ' was successfully loaded !');
 
     return $this;
   }
@@ -164,18 +207,18 @@ class Backup
   public function cleanup()
   {
     $folders = glob($this->storage.'*');
-    foreach($folders as $folder) {
+    foreach ($folders as $folder) {
       list($year, $month, $day) = explode('-', basename($folder));
       $month = intval($month);
       $day = intval($day);
 
       // If dump from last year, remove
-      if($year < date('Y')) {
+      if ($year < date('Y')) {
         Directory::remove($folder);
         $this->debug('info', 'Removed save from ' .basename($folder));
         continue;
       } else {
-        if($month < date('m') and !in_array($day, array(1, 15))) {
+        if ($month < date('m') and !in_array($day, array(1, 15))) {
           Directory::remove($folder);
           $this->debug('info', 'Removed save from ' .basename($folder));
           continue;
@@ -240,9 +283,9 @@ class Backup
     return array(
       'dump'    => $dumpName,
       'content' => File::get($dump),
-      'date'  => date('Y-m-d', $unix),
-      'hour'  => date('H:i:s', $unix),
-      'table' => $matches[1],
+      'date'    => date('Y-m-d', $unix),
+      'hour'    => date('H:i:s', $unix),
+      'table'   => $matches[1],
       'unix'    => $unix,
     );
   }
@@ -288,7 +331,7 @@ class Backup
     $results = $this->pdo($sql);
 
     // Gather table names
-    foreach($results as $result) {
+    foreach ($results as $result) {
       $tables[] = $result[0];
     }
 
