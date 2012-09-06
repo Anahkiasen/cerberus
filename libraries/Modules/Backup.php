@@ -12,6 +12,7 @@ namespace Cerberus\Modules;
 use Cerberus\Toolkit\Directory,
     Cerberus\Toolkit\File,
     Cerberus\Toolkit\String,
+    Laravel\Lang,
     Laravel\Database as DB;
 
 class Backup
@@ -62,7 +63,7 @@ class Backup
 
       // Get database name
       $database = DB::connection()->config['database'];
-      $this->debug('info', 'Saving database `' .$database. '`');
+      $this->debug('info', 'save_database', array('database' => $database));
 
       // Read dumps for current date
       $dumps = $this->getFolderForDate($this->date);
@@ -70,7 +71,8 @@ class Backup
       if ($numberDumps > 0) {
         $this->debug(
           'success',
-          'A dump this date (' .$this->date. ') already exists (' .$numberDumps. ' tables in memory).');
+          'dump_exists',
+           array('date' => $this->date, 'nbdumps' => $numberDumps));
 
         return $this;
       }
@@ -83,16 +85,16 @@ class Backup
 
         $write = File::write($filepath, $export);
         if ($write) {
-          $this->debug('success', 'Table ' .$table. ' saved successfully (' .$numberRows. ' rows)');
+          $this->debug('success','table_saved', array('table' => $table, 'nbrows' => $numberRows));
         } else {
           $unsavedTables[] = $table;
-          $this->debug('error', 'An error occured saving table `' .$table. '`');
+          $this->debug('error', 'error_saving_table', array('table' => $table));
         }
       }
 
       // Make sure all tables were correctly saved
-      if (empty($unsavedTables)) $this->debug('success', 'Database saved successfully');
-      else $this->debug('error', 'The following tables could not be saved: ' .implode(', ', $unsavedTables));
+      if (empty($unsavedTables)) $this->debug('success', 'database_saved', array('database' => $database));
+      else  $this->debug('error', 'tables_unsaved', array('tables' => implode(', ', $unsavedTables)));
     } else $this->debug('info', 'No tables to save');
 
     return $this;
@@ -128,20 +130,20 @@ class Backup
         // Display corresponding message
         switch ($key) {
           case 1:
-            $this->debug('success', 'Table ' .$table. ' was successfully loaded');
+            $this->debug('success', 'table_loaded', array('table' => $table));
             break;
           case 2:
-            $this->debug('info', $results. ' entries were added to ' .$table);
+            $this->debug('info', 'entries_loaded', array('table' => $table, 'entries' => $results));
             break;
         }
       }
 
       // If the table was empty, say it
       if (!isset($statements[2])) {
-        $this->debug('info', 'No entries were added to '.$table);
+        $this->debug('info', 'no_entries', array('table' => $table));
       }
     }
-    $this->debug('success', 'The dump from ' .$this->date. ' was successfully loaded !');
+    $this->debug('success', 'dump_loaded', array('date' => $this->date));
 
     return $this;
   }
@@ -206,21 +208,23 @@ class Backup
    */
   public function cleanup()
   {
+    $this->debug('info', 'cleaning');
     $folders = glob($this->storage.'*');
     foreach ($folders as $folder) {
-      list($year, $month, $day) = explode('-', basename($folder));
+      $date = basename($folder);
+      list($year, $month, $day) = explode('-', $date);
       $month = intval($month);
       $day = intval($day);
 
       // If dump from last year, remove
       if ($year < date('Y')) {
         Directory::remove($folder);
-        $this->debug('info', 'Removed save from ' .basename($folder));
+        $this->debug('info', 'dump_removed', array('date' => $date));
         continue;
       } else {
         if ($month < date('m') and !in_array($day, array(1, 15))) {
           Directory::remove($folder);
-          $this->debug('info', 'Removed save from ' .basename($folder));
+          $this->debug('info', 'dump_removed', array('date' => $date));
           continue;
         }
       }
@@ -293,13 +297,16 @@ class Backup
   /**
    * Records a debug message
    *
-   * @param  string $type    The alert type (info/error/success)
-   * @param  string $message The message
-   * @return string          An Alert message
+   * @param  string $type         The alert type (info/error/success)
+   * @param  string $message      The message
+   * @param  array  $replacements Translation replacements
+   * @return string               An Alert message
    */
-  private function debug($type, $message)
+  private function debug($type, $message, $replacements = array())
   {
     if(!$this->debug) return false;
+
+    $message = Lang::line('cerberus::backup.'.$message, $replacements)->get();
 
     echo call_user_func('\Bootstrapper\Alert::'.$type, $message, false);
   }
