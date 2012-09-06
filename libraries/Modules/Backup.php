@@ -93,6 +93,10 @@ class Backup
       // Make sure all tables were correctly saved
       if (empty($unsavedTables)) $this->debug('success', 'Database saved successfully');
       else $this->debug('error', 'The following tables could not be saved: ' .implode(', ', $unsavedTables));
+    } else $this->debug('info', 'No tables to save');
+
+    return $this;
+  }
     }
     else $this->debug('info', 'No tables to save');
 
@@ -227,18 +231,19 @@ class Backup
    */
   private function parseDump($dump)
   {
-    $dump = basename($dump);
+    $dumpName = basename($dump);
 
     // Parse filename
-    preg_match('/([a-z_]+)_(\d{4})-(\d{2})-(\d{2})@(\d{2})-(\d{2})-(\d{2}).sql/', $dump, $matches);
+    preg_match('/([a-z_]+)_(\d{4})-(\d{2})-(\d{2})@(\d{2})-(\d{2})-(\d{2}).sql/', $dumpName, $matches);
     $unix = mktime($matches[5], $matches[6], $matches[7], $matches[3], $matches[4], $matches[2]);
 
     return array(
-      'dump'  => $dump,
+      'dump'    => $dumpName,
+      'content' => File::get($dump),
       'date'  => date('Y-m-d', $unix),
       'hour'  => date('H:i:s', $unix),
-      'unix'  => $unix,
       'table' => $matches[1],
+      'unix'    => $unix,
     );
   }
 
@@ -304,6 +309,7 @@ class Backup
 
     // Return results
     $results = DB::connection()->pdo->query($sql);
+
     return $fetchAll ? $results->fetchAll($style) : $results->fetch($style);
   }
 }
