@@ -22,12 +22,6 @@ class Backup
   private $storage = null;
 
   /**
-   * PDO Object
-   * @var PDO
-   */
-  private $pdo;
-
-  /**
    * The current date
    * @var string
    */
@@ -49,9 +43,6 @@ class Backup
 
     // Create folder if it doesn't exist
     if(!file_exists($this->storage)) Directory::make($this->storage);
-
-    // Create PDO Object
-    $this->pdo = DB::connection()->pdo;
 
     // Cache current date
     $this->date = date('Y-m-d');
@@ -141,11 +132,11 @@ class Backup
     $dump .= 'DROP TABLE IF EXISTS `' .$table. '`;'.PHP_EOL;
 
     // Fetch creation query for this table
-    $showCreate = $this->pdo->query('SHOW CREATE TABLE `' .$table. '`')->fetch(\PDO::FETCH_NUM);
+    $showCreate = $this->pdo('SHOW CREATE TABLE `' .$table. '`', null, false);
     $dump .= $showCreate[1].';'.PHP_EOL;
 
     // Fetch the table's content
-    $tableContent = $this->pdo->query('SELECT * FROM '.$table)->fetchAll(\PDO::FETCH_ASSOC);
+    $tableContent = $this->pdo('SELECT * FROM ' .$table, \PDO::FETCH_ASSOC);
 
     // Create INSERT lines
     $numberInserts = 0;
@@ -248,13 +239,30 @@ class Backup
 
     // Fetch results
     $sql = "SHOW TABLES FROM `" .DB::connection()->config['database']. "`";
-    $results = $this->pdo->query($sql)->fetchAll(\PDO::FETCH_NUM);
+    $results = $this->pdo($sql);
 
     // Gather table names
-    array_walk($results, function($r) use (&$tables) {
-      $tables[] = $r[0];
-    });
+    foreach($results as $result) {
+      $tables[] = $result[0];
+    }
 
     return $tables;
+  }
+
+  /**
+   * Executes a PDO query
+   *
+   * @param  string   $sql      An SQL query
+   * @param  constant $style    A PDO fetching style
+   * @param  boolean  $fetchAll Whether we fetch all results or one
+   * @return array              An array of results
+   */
+  private function pdo($sql, $style = null, $fetchAll = true)
+  {
+    if(!$style) $style = \PDO::FETCH_NUM;
+
+    // Return results
+    $results = DB::connection()->pdo->query($sql);
+    return $fetchAll ? $results->fetchAll($style) : $results->fetch($style);
   }
 }
