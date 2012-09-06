@@ -9,8 +9,7 @@
 
 namespace Cerberus\Modules;
 
-use \Alert,
-    Cerberus\Toolkit\Directory,
+use Cerberus\Toolkit\Directory,
     Cerberus\Toolkit\File,
     Laravel\Database as DB;
 
@@ -222,7 +221,7 @@ class Backup
   {
     if(!$this->debug) return false;
 
-    echo call_user_func('Alert::'.$type, $message, false);
+    echo call_user_func('\Bootstrapper\Alert::'.$type, $message, false);
   }
 
   /**
