@@ -11,6 +11,7 @@ namespace Cerberus\Modules;
 
 use Cerberus\Toolkit\Directory,
     Cerberus\Toolkit\File,
+    Cerberus\Toolkit\Arrays,
     Cerberus\Toolkit\String,
     Laravel\Lang,
     Laravel\Database as DB;
@@ -46,7 +47,7 @@ class Backup
     // Create folder if it doesn't exist
     if(!file_exists($this->storage)) Directory::make($this->storage);
 
-    // Cache current date
+    // Set current date as default date
     $this->date = date('Y-m-d');
   }
 
@@ -55,6 +56,9 @@ class Backup
    */
   public function save()
   {
+    // If we still don't have a valid date, cancel procedure
+    if (!$this->checkDate) return false;
+
     $tables = $this->tables();
     $unsavedTables = array();
 
@@ -94,8 +98,8 @@ class Backup
 
       // Make sure all tables were correctly saved
       if (empty($unsavedTables)) $this->debug('success', 'database_saved', array('database' => $database));
-      else  $this->debug('error', 'tables_unsaved', array('tables' => implode(', ', $unsavedTables)));
-    } else $this->debug('info', 'No tables to save');
+      else $this->debug('error', 'tables_unsaved', array('tables' => implode(', ', $unsavedTables)));
+    } else $this->debug('info', 'database_empty');
 
     return $this;
   }
@@ -110,6 +114,9 @@ class Backup
   {
     // If date was specified, change it
     if($date) $this->setDate($date);
+
+    // If we still don't have a valid date, cancel procedure
+    if (!$this->checkDate) return false;
 
     // Fetch all dumps from the date
     $dumps  = $this->readDumps();
@@ -261,6 +268,22 @@ class Backup
     // If given timestamp, parse it to date
     if(!String::find('-', $date)) $date = date('Y-m-d', $date);
 
+    // Check the date format
+    $checkdate = explode('-', $date);
+    $year  = Arrays::get($checkdate, 0);
+    $month = Arrays::get($checkdate, 1);
+    $day   = Arrays::get($checkdate, 2);
+
+    try {
+      $checkdate = checkdate($month, $day, $year);
+      if(!$checkdate) throw new \Exception('incorrect_date');
+    } catch (\Exception $e) {
+      $this->debug('error', $e->getMessage(), array('date' => $date));
+      $this->date = false;
+
+      return $this;
+    }
+
     $this->date = $date;
 
     return $this;
@@ -269,6 +292,22 @@ class Backup
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// HELPERS /////////////////////////////
   ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Simple check snippet to check if we should continue working
+   *
+   * @return boolean Whether the current date is valid or not
+   */
+  private function checkDate()
+  {
+    if (!$this->date) {
+      $this->debug('error', 'invalid_date');
+
+      return false;
+    }
+
+    return true;
+  }
 
   /**
    * Parse a dump name and return various informations about it
@@ -306,9 +345,15 @@ class Backup
   {
     if(!$this->debug) return false;
 
-    $message = Lang::line('cerberus::backup.'.$message, $replacements)->get();
+    // Try to translate the message
+    $message = Lang::line('cerberus::backup.'.$message, $replacements)->get(null, $message);
 
-    echo call_user_func('\Bootstrapper\Alert::'.$type, $message, false);
+    // Check if we have access to Bootstrapper, else just print out message
+    if (class_exists('\Bootstrapper\Alert')) {
+      echo call_user_func('\Bootstrapper\Alert::'.$type, $message, false);
+    } else {
+      echo '<pre>'.$message.'</pre>';
+    }
   }
 
   /**
