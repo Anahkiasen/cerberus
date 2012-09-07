@@ -57,7 +57,7 @@ class Backup
   public function save()
   {
     // If we still don't have a valid date, cancel procedure
-    if (!$this->checkDate) return false;
+    if (!$this->checkDate()) return false;
 
     $tables = $this->tables();
     $unsavedTables = array();
@@ -116,7 +116,7 @@ class Backup
     if($date) $this->setDate($date);
 
     // If we still don't have a valid date, cancel procedure
-    if (!$this->checkDate) return false;
+    if (!$this->checkDate()) return false;
 
     // Fetch all dumps from the date
     $dumps  = $this->readDumps();
@@ -215,13 +215,16 @@ class Backup
    */
   public function cleanup()
   {
+    // Fetch all dumps folders
     $this->debug('info', 'cleaning');
     $folders = glob($this->storage.'*');
+
+    // Parse the date for each one
     foreach ($folders as $folder) {
-      $date = basename($folder);
+      $date  = basename($folder);
       list($year, $month, $day) = explode('-', $date);
       $month = intval($month);
-      $day = intval($day);
+      $day   = intval($day);
 
       // If dump from last year, remove
       if ($year < date('Y')) {
@@ -229,6 +232,8 @@ class Backup
         $this->debug('info', 'dump_removed', array('date' => $date));
         continue;
       } else {
+
+        // If dump from last months, just keep main checkpoints
         if ($month < date('m') and !in_array($day, array(1, 15))) {
           Directory::remove($folder);
           $this->debug('info', 'dump_removed', array('date' => $date));
@@ -266,7 +271,9 @@ class Backup
   public function setDate($date)
   {
     // If given timestamp, parse it to date
-    if(!String::find('-', $date)) $date = date('Y-m-d', $date);
+    if(!String::find('-', $date)) {
+      $date = date('Y-m-d', $date);
+    }
 
     // Check the date format
     $checkdate = explode('-', $date);
