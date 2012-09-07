@@ -52,7 +52,7 @@ class Former extends \Bootstrapper\Form
    */
   public static function __callStatic($method, $parameters)
   {
-    if(starts_with($method, 'add')) {
+    if (starts_with($method, 'add')) {
       return self::createField($method, $parameters);
     }
 
