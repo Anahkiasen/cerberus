@@ -355,7 +355,7 @@ class Former extends \Bootstrapper\Form
     // Get value from either object or array
     $value = is_object(self::$values)
       ? self::$values->{$fieldname}
-      : array_get(self::$values[$fieldname]);
+      : Arrays::get(self::$values, $fieldname);
 
     return Input::get($fieldname, Input::old($fieldname, $value));
   }
