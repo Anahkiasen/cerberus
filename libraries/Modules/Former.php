@@ -71,7 +71,7 @@ class Former extends \Bootstrapper\Form
    * Closes any already opened fieldset before opening a new one
    *
    * @param  string $fieldname The fieldset's legend
-   * @return string       Fieldset opening tag
+   * @return string            Fieldset opening tag
    */
   public static function fieldset($fieldname)
   {
@@ -117,6 +117,7 @@ class Former extends \Bootstrapper\Form
 
   /**
    * Pass a main object to the form for it to fetch rules
+   *
    * @param array $rules An array of rules
    */
   public static function setRules($rulesArray)
@@ -286,19 +287,20 @@ class Former extends \Bootstrapper\Form
    * Get the errors for a field
    *
    * @param  string $fieldname A field name
-   * @return string        An error message
+   * @return string            An error message
    */
   private static function getErrors($fieldname)
   {
-    if(self::$errors)
-
+    if(self::$errors) {
       return self::$errors->first($fieldname);
+    }
   }
 
   /**
    * Get the Bootstrap state of a field
+   *
    * @param  string $fieldname A field name
-   * @return string        A Boostrap state
+   * @return string            A Boostrap state
    */
   public static function getState($fieldname)
   {
@@ -350,7 +352,10 @@ class Former extends \Bootstrapper\Form
   {
     if($value) return $value;
 
-    $value = is_object(self::$values) ? self::$values->{$fieldname} : null;
+    // Get value from either object or array
+    $value = is_object(self::$values)
+      ? self::$values->{$fieldname}
+      : array_get(self::$values[$fieldname]);
 
     return Input::get($fieldname, Input::old($fieldname, $value));
   }
