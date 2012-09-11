@@ -41,6 +41,18 @@ HTML::macro('responsive', function()
   return $meta;
 });
 
+// Datalist
+HTML::macro('datalist', function($name, $list)
+{
+  $datalist = '<datalist id="' .$name. '">';
+    foreach($list as $key => $value) {
+      $datalist .= '<option value="' .$value. '">' .$key. '</option>';
+    }
+  $datalist .= '</datalist>';
+
+  return $datalist;
+});
+
 // Validate length
 Validator::register('length', function($attribute, $value, $parameters)
 {
