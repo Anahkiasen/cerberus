@@ -99,7 +99,8 @@ class Dispatch
   public static function plugin($plugin, $selector = null, $params = null)
   {
     // Make sure jQuery is added
-    self::inject('jquery');
+    $existingScripts = Asset::container('default')->assets;
+    if(!isset($existingScripts['script']['jquery'])) self::inject('jquery');
 
     // Getting parameters
     $string = $plugin. '(' .json_encode($params). ')';
@@ -152,18 +153,18 @@ class Dispatch
   {
     if(!$name) $name = File::name($file);
 
-    $fullPath = path('public').'vendor/'.$file;
+    $fullPath = path('public').'components/'.$file;
 
     if (isset(self::$aliases[$file])) {
-      call_user_func('Asset::'.$filetype, $file, Arrays::get(self::$aliases, $file));
+      Asset::$filetype($file, Arrays::get(self::$aliases, $file));
     } elseif (file_exists($fullPath) and is_dir($fullPath)) {
       $glob = glob($fullPath.'/{css,js}/*', GLOB_BRACE);
       foreach ($glob as $file) {
         $file = String::remove(path('public'), $file);
-        call_user_func('Asset::'.$filetype, $name, $file);
+        Asset::$filetype($name, $file);
       }
     } else {
-      call_user_func('Asset::'.$filetype, $name, $file);
+      Asset::$filetype($name, $file);
     }
   }
 
