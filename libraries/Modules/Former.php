@@ -215,22 +215,22 @@ class Former extends \Bootstrapper\Form
     // Creating the input
     switch ($type) {
       case 'password':
-        $input = call_user_func('Form::'.$type, $fieldname, $attributes);
+        $input = static::$type($fieldname, $attributes);
         break;
 
       case 'checkbox':
         $type = 'inline_labelled_checkbox';
         $checkboxText = Arrays::get($parameters, 2);
-        $input = call_user_func('Form::'.$type, $fieldname, $checkboxText, 1, $value, $attributes);
+        $input = static::$type($fieldname, $checkboxText, 1, $value, $attributes);
         break;
 
       case 'select';
         $select = Arrays::get($parameters, 2, array());
-        $input = call_user_func('Form::'.$type, $fieldname, $select, $value, $attributes);
+        $input = static::$type($fieldname, $select, $value, $attributes);
         break;
 
       default:
-        $input = call_user_func('Form::'.$type, $fieldname, $value, $attributes);
+        $input = static::$type($fieldname, $value, $attributes);
         break;
     }
 
@@ -251,8 +251,8 @@ class Former extends \Bootstrapper\Form
     }
 
     // Return form
-    return \Form::control_group(
-      \Form::label($fieldname, $label),
+    return static::control_group(
+      static::label($fieldname, $label),
       $input,
       $state,
       $help
@@ -339,7 +339,7 @@ class Former extends \Bootstrapper\Form
   {
     list($label, $fieldname) = self::getLabelName($label, $label);
 
-    return \Form::label($fieldname, $label);
+    return static::label($fieldname, $label);
   }
 
   /**
