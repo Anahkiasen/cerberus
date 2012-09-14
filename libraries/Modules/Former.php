@@ -82,7 +82,7 @@ class Former extends \Bootstrapper\Form
     $fieldname = Laravel::translate($fieldname);
     $fieldname = ucfirst($fieldname);
 
-    return '<fieldset>'.PHP_EOL.'<legend>'. $fieldname. '</legend>';
+    return '<legend>'. $fieldname. '</legend>';
   }
 
   /**
@@ -92,7 +92,7 @@ class Former extends \Bootstrapper\Form
    */
   public static function closeFieldset()
   {
-    return '</fieldset>';
+    return null;
   }
 
   /**
