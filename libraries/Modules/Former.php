@@ -346,16 +346,16 @@ class Former extends \Bootstrapper\Form
    * Get the value of a field
    *
    * @param  string $fieldname A field name
-   * @return string            A fallback field value
+   * @param  string $fallback  A fallback value
+   * @return string            The field's value
    */
-  public static function getValue($fieldname, $value = null)
+  public static function getValue($fieldname, $fallback = null)
   {
-    if($value) return $value;
-
     // Get value from either object or array
     $value = is_object(self::$values)
       ? self::$values->{$fieldname}
       : Arrays::get(self::$values, $fieldname);
+    if(!$value) $value = $fallback;
 
     return Input::get($fieldname, Input::old($fieldname, $value));
   }
