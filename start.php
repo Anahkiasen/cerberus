@@ -53,6 +53,17 @@ HTML::macro('datalist', function($name, $list)
   return $datalist;
 });
 
+// Table action
+HTML::macro('action', function($action, $icon, $item)
+{
+  list($controller, $action) = explode('@', $action);
+
+  return
+    '<td class="action ' .$action. '">'.
+      HTML::decode(HTML::link_to_action($controller.'@'.$action, Icons::$icon(), array($item->id))).
+    '</td>';
+});
+
 // Validate length
 Validator::register('length', function($attribute, $value, $parameters)
 {
