@@ -32,10 +32,13 @@ $from-ipad-to-desktop : $ipad    $total-columns $desktop
 $from-mobile-to-ipad  : $mobile  $total-columns $ipad
 
 // Define a number of items per row
-=perRow($perRow, $numberColumns: $total-columns, $padding: false)
+=perRow($perRow, $numberColumns: $total-columns, $padding: false, $last: false)
   $span: $numberColumns / $perRow
   +span-columns($span, $numberColumns, $padding)
-  +nth-omega(#{$perRow}n, of-type)
+  @if $last
+    +nth-omega
+  @else
+    +nth-omega(#{$perRow}n, of-type)
 
 // Regenerate the breakpoints in case the $total-columns variable has changed
 =regenerate-breakpoints
