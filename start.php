@@ -11,6 +11,11 @@ Autoloader::namespaces(array(
   'Cerberus' => Bundle::path('cerberus') . 'libraries'
 ));
 
+// Map custom controller
+Autoloader::map(array(
+  'CerberusController' => Bundle::path('cerberus') . 'controllers' . DS . 'base.php',
+));
+
 use Cerberus\Toolkit\Buffer,
     Cerberus\Toolkit\Language,
     Cerberus\Core\Dispatch,
