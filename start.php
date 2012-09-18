@@ -69,15 +69,6 @@ HTML::macro('action', function($action, $icon, $item)
     '</td>';
 });
 
-// Full table row
-HTML::macro('fullRow', function($content, $attributes = array())
-{
-  return
-    '<tr' .HTML::attributes($attributes). '>
-      <td colspan="50">' .$content. '</td>
-    </tr>';
-});
-
 // Validate length
 Validator::register('length', function($attribute, $value, $parameters)
 {
