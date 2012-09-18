@@ -99,8 +99,7 @@ class Dispatch
   public static function plugin($plugin, $selector = null, $params = null)
   {
     // Make sure jQuery is added
-    $existingScripts = Asset::container('default')->assets;
-    if(!isset($existingScripts['script']['jquery'])) self::inject('jquery');
+    if(!self::issetScript('jquery')) self::inject('jquery');
 
     // Getting parameters
     $string = $plugin. '(' .json_encode($params). ')';
@@ -208,6 +207,21 @@ class Dispatch
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// HELPERS /////////////////////////////
   ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Check if a script already exists within Asset or Basset
+   *
+   * @param  string  $script The script's name
+   * @return boolean         Exists or not
+   */
+  private static function issetScript($script)
+  {
+    $asset  = Asset::container('default')->assets;
+    $asset  = Arrays::get($asset, 'script');
+    $basset = Basset\Container::$shared;
+
+    return isset($basset[$script]) or isset($asset[$script]);
+  }
 
   /**
    * Check if an asset of a given type exists in Basset
