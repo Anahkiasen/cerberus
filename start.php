@@ -69,6 +69,14 @@ HTML::macro('action', function($action, $icon, $item)
     '</td>';
 });
 
+// Table add button
+HTML::macro('addButton', function($link, $text, $supplementaryClasses = null)
+{
+  $buttonClass = 'block_large_primary_'.$supplementaryClasses.'link';
+
+  return Tables::full_row(Buttons::$buttonClass(action($link), $text));
+});
+
 // Validate length
 Validator::register('length', function($attribute, $value, $parameters)
 {
