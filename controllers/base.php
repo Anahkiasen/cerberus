@@ -48,12 +48,12 @@ class CerberusController extends Base_Controller
     return $model::$rules;
   }
 
-  public function post_update($item_id = null)
+  public function post_update()
   {
     // Fetch input and its rules
     $input = Input::get();
     $isAdd = !array_get($input, 'id');
-    $item  = $item_id ? $this->object->find($item_id) : new $this->model();
+    $item  = $isAdd ? new $this->model() : $this->object->find($input['id']);
 
     // Validate form
     $validation = Validator::make($input, $this->rules());
