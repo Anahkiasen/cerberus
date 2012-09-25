@@ -169,6 +169,12 @@
 
 // Utilities ------------------------------------------------------- /
 
+=debug($mainBlock)
+  body
+    +debug-vertical-alignment
+  #{$mainBlock}
+    +grid-background($total-columns, $column-width, $gutter-width, 19px, $grid-padding, $force-fluid: true)
+
 // Transforms a table into a responsive table
 =responsive-table($data-title: true)
   thead, tbody, th, tr, td
