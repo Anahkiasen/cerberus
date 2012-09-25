@@ -37,6 +37,48 @@ class CerberusController extends Base_Controller
   }
 
   /**
+   * Get the model's rules
+   *
+   * @return array An array of rules
+   */
+  public function rules()
+  {
+    $model = $this->model;
+
+    return $model::$rules;
+  }
+
+  public function post_update($item_id = null)
+  {
+    // Fetch input and its rules
+    $input = Input::get();
+    $isAdd = !array_get($input, 'id');
+    $item  = $item_id ? $this->object->find($item_id) : new $this->model();
+
+    // Validate form
+    $validation = Validator::make($input, $this->rules());
+    if ($validation->fails()) {
+
+      return Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item_id))
+        ->with_input()
+        ->with('items', $item->id)
+        ->with_errors($validation);
+    }
+
+    // Save attributes
+    foreach($input as $attribute => $value) {
+      $item->{$attribute} = $value;
+    }
+    $item->save();
+
+    // Create message
+    $message = $isAdd ? 'messages.' .$this->page. '.create' : 'messages.' .$this->page. '.update';
+    if(isset($input['name'])) $message = Lang::line($message, array('name' => $input['name']));
+
+    return $this->here;
+  }
+
+  /**
    * Delete an item
    *
    * @param  integer $item_id An item id
