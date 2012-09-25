@@ -31,7 +31,8 @@ $from-ipad-to-wide    : $ipad    $total-columns $wide
 $from-ipad-to-desktop : $ipad    $total-columns $desktop
 $from-mobile-to-ipad  : $mobile  $total-columns $ipad
 
-// Define a number of items per row
+// Define a number of items per row -------------------------------- /
+
 =perRow($perRow, $numberColumns: $total-columns, $padding: false, $last: false)
   $span: $numberColumns / $perRow
   +span-columns($span, $numberColumns, $padding)
@@ -39,6 +40,20 @@ $from-mobile-to-ipad  : $mobile  $total-columns $ipad
     +nth-omega
   @else
     +nth-omega(#{$perRow}n, of-type)
+
+// Breakpoint helpers ---------------------------------------------- /
+
+=from-to($from, $to)
+  +at-breakpoint($from $total-columns $to)
+    @content
+
+=to($breakpoint)
+  +at-breakpoint(0 $breakpoint)
+    @content
+
+=from($breakpoint)
+  +at-breakpoint($breakpoint $total-columns)
+    @content
 
 // Regenerate the breakpoints in case the $total-columns variable has changed
 =regenerate-breakpoints
