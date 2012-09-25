@@ -96,10 +96,14 @@ Validator::register('not_numeric', function($attribute, $value)
 |---------------------------------------------------------------------
  */
 
-$backup = new Backup;
+// If not in local or testing or whatever
+if(!Request::env()) {
 
-// Save database
-$backup->save();
+  $backup = new Backup;
 
-// Remove old saves
-$backup->cleanup();
+  // Save database
+  $backup->save();
+
+  // Remove old saves
+  $backup->cleanup();
+}
