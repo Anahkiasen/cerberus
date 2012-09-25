@@ -58,18 +58,16 @@ class CerberusController extends Base_Controller
     // Validate form
     $validation = Validator::make($input, $this->rules());
     if ($validation->fails()) {
-
-      return Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item_id))
+      return Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item->id))
         ->with_input()
         ->with('items', $item->id)
         ->with_errors($validation);
     }
 
     // Save attributes
-    foreach($input as $attribute => $value) {
-      $item->{$attribute} = $value;
-    }
-    $item->save();
+    $model = $this->model;
+    if(!$isAdd) $model::update($input['id'], $input);
+    else $model::create($input);
 
     // Create message
     $message = $isAdd ? 'messages.' .$this->page. '.create' : 'messages.' .$this->page. '.update';
