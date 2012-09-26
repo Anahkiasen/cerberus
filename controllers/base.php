@@ -54,6 +54,11 @@ class CerberusController extends Base_Controller
     return $model::$rules;
   }
 
+  public function get_index()
+  {
+    return View::make($this->page.'.index');
+  }
+
   public function post_update()
   {
     // Fetch input and its rules
