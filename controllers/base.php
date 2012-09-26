@@ -26,6 +26,12 @@ class CerberusController extends Base_Controller
 
   public function __construct()
   {
+    // Define page
+    if(!$this->page) {
+      $page = explode('_', get_called_class());
+      $this->page = strtolower($page[0]);
+    }
+
     // Define model
     $this->model  = ucfirst(substr($this->page, 0, -1));
     $this->object = new $this->model();
