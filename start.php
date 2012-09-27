@@ -59,13 +59,29 @@ HTML::macro('datalist', function($name, $list)
 });
 
 // Table action
-HTML::macro('action', function($action, $icon, $item)
+HTML::macro('action', function($link, $icon, $item)
 {
-  list($controller, $action) = explode('@', $action);
+  // If the link is to a controller
+  if(str_contains($link, '@')) {
+    $class = array_get(explode('@', $link), 1);
+    $link  = action($link, array($item->id));
+  }
+
+  // If the link is a route
+  elseif(Router::find($link)) {
+    $class = $link;
+    $link  = route($link, array($item->id));
+  }
+
+  // Else just point to it
+  else {
+    $class = $link;
+    $link = url($link, array($item->id));
+  }
 
   return
-    '<td class="action ' .$action. '">'.
-      HTML::decode(HTML::link_to_action($controller.'@'.$action, Icons::$icon(), array($item->id))).
+    '<td class="action ' .$class. '">'.
+      HTML::decode(HTML::link($link, Icons::$icon())).
     '</td>';
 });
 
