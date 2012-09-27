@@ -24,6 +24,12 @@ class CerberusController extends Base_Controller
    */
   public $object = null;
 
+  /**
+   * Where the main for for this model will be
+   * @var string
+   */
+  private $form = null;
+
   public function __construct()
   {
     // Define page
@@ -38,6 +44,9 @@ class CerberusController extends Base_Controller
 
     // Define fallback page
     $this->here = Redirect::to_action($this->page.'@index');
+
+    // Define form page
+    $this->form = $this->page.'.create';
 
     parent::__construct();
   }
@@ -54,11 +63,49 @@ class CerberusController extends Base_Controller
     return $model::$rules;
   }
 
+  /**
+   * Read all items
+   */
   public function get_index()
   {
     return View::make($this->page.'.index');
   }
 
+  /**
+   * Create an item
+   */
+  public function get_create()
+  {
+    return View::make($this->form)
+      ->with_item(new $this->model())
+      ->with_mode('create');
+  }
+
+  /**
+   * Edit an item
+   *
+   * @param integer $item_id An item id
+   */
+  public function get_update($item_id)
+  {
+    // If we gave an ID, fetch corresponding object
+    if(!is_object($item_id)) {
+
+      // Fetch data from item
+      $item = $this->object->find($item_id);
+
+      // If invalid item, redirect to create form
+      if(!$item) return Redirect::to_action($this->here.'@create');
+    } else $item = $item_id;
+
+    return View::make($this->form)
+      ->with_item($item)
+      ->with_mode('update');
+  }
+
+  /**
+   * Update an item's data
+   */
   public function post_update()
   {
     // Fetch input and its rules
@@ -90,7 +137,7 @@ class CerberusController extends Base_Controller
   /**
    * Delete an item
    *
-   * @param  integer $item_id An item id
+   * @param integer $item_id An item id
    */
   public function get_delete($item_id)
   {
