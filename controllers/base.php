@@ -48,6 +48,9 @@ class CerberusController extends Base_Controller
     // Define form page
     $this->form = $this->page.'.create';
 
+    // Share current page with view
+    View::share('page', $this->page);
+
     parent::__construct();
   }
 
