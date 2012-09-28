@@ -63,7 +63,7 @@ class CerberusController extends Base_Controller
   {
     $model = $this->model;
 
-    return $model::$rules;
+    return isset($model::$rules) ? $model::$rules : array();
   }
 
   /**
