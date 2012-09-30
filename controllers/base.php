@@ -101,6 +101,8 @@ class CerberusController extends Base_Controller
       if(!$item) return Redirect::to_action($this->here.'@create');
     } else $item = $item_id;
 
+    Former::populate($item);
+
     return View::make($this->form)
       ->with_item($item)
       ->with_mode('update');
