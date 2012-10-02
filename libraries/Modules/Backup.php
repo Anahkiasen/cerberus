@@ -9,12 +9,12 @@
 
 namespace Cerberus\Modules;
 
-use Cerberus\Toolkit\Directory,
-    Cerberus\Toolkit\File,
-    Cerberus\Toolkit\Arrays,
-    Cerberus\Toolkit\String,
-    Laravel\Lang,
-    Laravel\Database as DB;
+use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\Directory;
+use Cerberus\Toolkit\File;
+use Cerberus\Toolkit\String;
+use Laravel\Database as DB;
+use Laravel\Lang;
 
 class Backup
 {
@@ -271,7 +271,7 @@ class Backup
   public function setDate($date)
   {
     // If given timestamp, parse it to date
-    if(!String::find('-', $date)) {
+    if (!String::find('-', $date)) {
       $date = date('Y-m-d', $date);
     }
 

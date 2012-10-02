@@ -9,10 +9,10 @@
 
 namespace Cerberus\Modules;
 
-use Cerberus\Toolkit\Arrays,
-    Cerberus\Toolkit\String,
-    Cerberus\Toolkit\Laravel,
-    Laravel\Input;
+use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\Laravel;
+use Cerberus\Toolkit\String;
+use Laravel\Input;
 
 // Start Bootstrapper to extend Form
 \Bundle::start('bootstrapper');
@@ -291,7 +291,7 @@ class Former extends \Bootstrapper\Form
    */
   private static function getErrors($fieldname)
   {
-    if(self::$errors) {
+    if (self::$errors) {
       return self::$errors->first($fieldname);
     }
   }

@@ -39,7 +39,7 @@ class CerberusRestful extends CerberusBase
   public function get_update($item_id)
   {
     // If we gave an ID, fetch corresponding object
-    if(!is_object($item_id)) {
+    if (!is_object($item_id)) {
 
       // Fetch data from item
       $item = $this->object->find($item_id);

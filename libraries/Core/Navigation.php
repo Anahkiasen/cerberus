@@ -1,8 +1,8 @@
 <?php
 namespace Cerberus\Core;
 
-use Cerberus\Toolkit\Arrays,
-    Cerberus\Toolkit\String;
+use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\String;
 
 class Navigation
 {

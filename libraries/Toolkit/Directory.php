@@ -8,8 +8,8 @@
  */
 namespace Cerberus\Toolkit;
 
-use Cerberus\Toolkit\String,
-    Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\String;
 
 class Directory
 {

@@ -8,9 +8,9 @@
  */
 namespace Cerberus\Toolkit;
 
-use Cerberus\Core\Dispatch,
-    Cerberus\Toolkit\File,
-    Cerberus\Toolkit\Arrays;
+use Cerberus\Core\Dispatch;
+use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\File;
 
 class Vendor
 {

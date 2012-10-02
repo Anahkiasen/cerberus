@@ -1,12 +1,12 @@
 <?php
 namespace Cerberus\Core;
 
-use \Asset,
-    \Basset,
-    Cerberus\Toolkit\File,
-    Cerberus\Toolkit\Arrays,
-    Cerberus\Toolkit\Buffer,
-    Cerberus\Toolkit\String;
+use \Asset;
+use \Basset;
+use Cerberus\Toolkit\Arrays;
+use Cerberus\Toolkit\Buffer;
+use Cerberus\Toolkit\File;
+use Cerberus\Toolkit\String;
 
 class Dispatch
 {

@@ -36,7 +36,7 @@ class CerberusBase extends Base_Controller
   public function __construct()
   {
     // Define page
-    if(!$this->page) {
+    if (!$this->page) {
       $page = explode('_', get_called_class());
       $this->page = strtolower($page[0]);
     }
