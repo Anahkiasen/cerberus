@@ -30,6 +30,12 @@ class CerberusController extends Base_Controller
    */
   private $form = null;
 
+  /**
+   * Restful controllers
+   * @var boolean
+   */
+  public $restful = true;
+
   public function __construct()
   {
     // Define page
