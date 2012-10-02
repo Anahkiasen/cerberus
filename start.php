@@ -13,7 +13,8 @@ Autoloader::namespaces(array(
 
 // Map custom controller
 Autoloader::map(array(
-  'CerberusController' => Bundle::path('cerberus') . 'controllers' . DS . 'base.php',
+  'CerberusBase'    => Bundle::path('cerberus') . 'controllers' . DS . 'base.php',
+  'CerberusRestful' => Bundle::path('cerberus') . 'controllers' . DS . 'restful.php',
 ));
 
 use Cerberus\Toolkit\Buffer,
