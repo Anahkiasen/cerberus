@@ -42,7 +42,7 @@ class CerberusBase extends Base_Controller
     }
 
     // Define model
-    $this->model  = ucfirst(rtrim($this->page, 's'));
+    $this->model  = ucfirst(Str::singular($this->page));
     $this->object = new $this->model();
 
     // Define fallback page
