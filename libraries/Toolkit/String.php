@@ -53,6 +53,23 @@ class String extends \Str
     return $word;
   }
 
+  /**
+   * Generates a random date
+   *
+   * @param  integer $year  The year to use
+   * @param  integer $month The month to use
+   * @param  integer $day   The day to use
+   * @return string         A YYYY-mm-dd H:i:s date
+   */
+  public static function randomDate($year = null, $month = null, $day = null)
+  {
+    if(!$year)  $year = rand(2005, 2012);
+    if(!$month) $month = rand(1, 12);
+    if(!$day)   $day = rand(1, 30);
+
+    return $year.'-'.$month.'-'.$day. ' ' .rand(1,23).':'.rand(1,59).':'.rand(1,59);
+  }
+
   ////////////////////////////////////////////////////////////////////
   ///////////////////////////// ACTIONS //////////////////////////////
   ////////////////////////////////////////////////////////////////////
