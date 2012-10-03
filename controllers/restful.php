@@ -9,6 +9,14 @@ class CerberusRestful extends CerberusBase
    */
   private $form = null;
 
+  public function __construct()
+  {
+    parent::__construct();
+
+    // Define form page
+    $this->form = $this->page.'.create';
+  }
+
   /**
    * Get the model's rules
    *

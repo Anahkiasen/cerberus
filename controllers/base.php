@@ -48,9 +48,6 @@ class CerberusBase extends Base_Controller
     // Define fallback page
     $this->here = Redirect::to_action($this->page.'@index');
 
-    // Define form page
-    $this->form = $this->page.'.create';
-
     // Share current page with view
     View::share('page', $this->page);
 
