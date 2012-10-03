@@ -31,6 +31,28 @@ class String extends \Str
     else return $many;
   }
 
+  /**
+   * Generate a random string
+   *
+   * @param  integer $length      The length of the generated string
+   * @param  boolean $allowSpaces Whether spaces are allowed or not
+   * @param  boolean $capitalize  Whether the final string should be capitalized
+   * @return string               A random string
+   */
+  public static function random($length = 15, $allowSpaces = true, $capitalize = true)
+  {
+    // Generate random string
+    $spaces = $allowSpaces ? array_fill(0, 5, ' ') : array();
+    $words = array_merge($spaces, range('a', 'z'), range('A', 'Z'));
+    shuffle($words);
+
+    // Create word
+    $word = substr(implode($words), 0, $length);
+    if($capitalize) $word = ucwords(strtolower($word));
+
+    return $word;
+  }
+
   ////////////////////////////////////////////////////////////////////
   ///////////////////////////// ACTIONS //////////////////////////////
   ////////////////////////////////////////////////////////////////////
