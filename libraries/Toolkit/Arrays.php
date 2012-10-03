@@ -108,6 +108,17 @@ class Arrays
     }, $array);
   }
 
+  /**
+   * Get a random string from an array
+   *
+   * @param  array  $array The array to fetch from
+   * @return string        A random value inside it
+   */
+  public static function random($array)
+  {
+    return $array[array_rand($array)];
+  }
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////// INFORMATIONS ////////////////////////////
   ////////////////////////////////////////////////////////////////////
