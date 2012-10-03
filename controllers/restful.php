@@ -73,8 +73,17 @@ class CerberusRestful extends CerberusBase
     $isAdd = !array_get($input, 'id');
     $item  = $isAdd ? new $this->model() : $this->object->find($input['id']);
 
-    // Validate form
-    $validation = Validator::make($input, $this->rules());
+    // Autocomplete uniqueness rules
+    $rules = $this->rules();
+    foreach($rules as $field => $rulz) {
+      if(str_contains($rulz, 'unique:')) {
+        $modifiedRules = preg_replace('#unique:([^,]+)([^|,])(\||$)#', 'unique:$1$2,'.$field, $rulz);
+        $modifiedRules = preg_replace('#unique:([^,]+)(,[^,]+)(\||$)#', 'unique:$1$2,'.$input['id'], $modifiedRules);
+        $rules[$field] = $modifiedRules;
+      }
+    }
+
+    $validation = Validator::make($input, $rules);
     if ($validation->fails()) {
       return Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item->id))
         ->with_input()
