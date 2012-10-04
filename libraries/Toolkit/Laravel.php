@@ -18,20 +18,21 @@ class Laravel
    *
    * @param  string $key      The key/string to translate
    * @param  string $fallback A fallback to display
-   * @param  string $lookup   Where in the language files should Cerberus look
    * @return string           A translated string
    */
-  public static function translate($key, $fallback = null, $lookup = 'validation.attributes.')
+  public static function translate($key, $fallback = null)
   {
-    if(!$fallback) $fallback = $key;
+    if (!$fallback) $fallback = $key;
 
     // Search for the key itself
     $translation = Lang::line($key)->get(null, '');
 
     // If not found, search in the field attributes
-    if(!$translation) $translation =
-      Lang::line($lookup.$key)->get(null,
-      $fallback);
+    if (!$translation) {
+      $translation =
+        Lang::line('validation.attributes.'.$key)->get(null,
+        $fallback);
+    }
 
     return ucfirst($translation);
   }
@@ -44,7 +45,7 @@ class Laravel
    */
   public static function title($title = null)
   {
-    $title = static::translate($title, null, $title.'.login');
+    $title = Lang::line($title, null)->get();
 
     Section::inject('title', $title);
   }
