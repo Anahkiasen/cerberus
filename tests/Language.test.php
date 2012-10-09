@@ -12,10 +12,10 @@ class LanguageTests extends CerberusTests
 
   public function testLocale()
   {
-    $locale = Language::locale('fr');
+    $locale = Language::locale('en');
     $translatedString = strftime('%B', mktime(0, 0, 0, 1, 1, 2012));
 
-    $this->assertEquals('fr_FR', $locale);
-    $this->assertEquals('janvier', $translatedString);
+    $this->assertEquals('en_EN', $locale);
+    $this->assertEquals('january', $translatedString);
   }
 }
