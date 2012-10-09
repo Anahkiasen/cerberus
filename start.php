@@ -56,24 +56,29 @@ HTML::macro('datalist', function($name, $list) {
 });
 
 // Table action
-HTML::macro('action', function($link, $icon, $item) {
+HTML::macro('action', function($link, $icon, $parameters) {
+
+  // If we didn't directly pass an array of parameters
+  if(!is_array($parameters)) {
+    $parameters = array($parameters->id);
+  }
 
   // If the link is to a controller
   if (str_contains($link, '@')) {
     $class = array_get(explode('@', $link), 1);
-    $link  = action($link, array($item->id));
+    $link  = action($link, $parameters);
   }
 
   // If the link is a route
   elseif (Router::find($link)) {
     $class = $link;
-    $link  = route($link, array($item->id));
+    $link  = route($link, $parameters);
   }
 
   // Else just point to it
   else {
     $class = $link;
-    $link = url($link, array($item->id));
+    $link = url($link, $parameters);
   }
 
   return
