@@ -15,7 +15,7 @@ class LanguageTests extends CerberusTests
     $locale = Language::locale('en');
     $translatedString = strftime('%B', mktime(0, 0, 0, 1, 1, 2012));
 
-    $this->assertEquals('en_EN', $locale);
+    $this->assertEquals('en_US.UTF8', $locale);
     $this->assertEquals('january', $translatedString);
   }
 }
