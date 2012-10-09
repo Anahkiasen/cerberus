@@ -45,8 +45,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
 
   public function testMakeSimple()
   {
-    $folder = self::$dummyFolder.'testFolder';
-    $create = Directory::create($folder);
+    $create = Directory::create(self::$dummyFolder);
 
     self::assertFileExists($folder);
   }

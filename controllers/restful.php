@@ -29,6 +29,11 @@ class CerberusRestful extends CerberusBase
     return isset($model::$rules) ? $model::$rules : array();
   }
 
+  public function get_index()
+  {
+    return View::make($this->page.'.index');
+  }
+
   /**
    * Create an item
    */
