@@ -47,7 +47,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
   {
     $create = Directory::create(self::$dummyFolder);
 
-    self::assertFileExists($folder);
+    self::assertFileExists($create);
   }
 
   public function testMakeComplex()
