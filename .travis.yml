@@ -10,5 +10,6 @@ before_install:
   - mv ./Anahkiasen/cerberus-laravel ./laravel/bundles/cerberus
   - echo "<?php return array('cerberus' => array('auto' => true));" > ./laravel/application/bundles.php
   - cd ./laravel
+  - (echo "" && echo "Request::set_env('test');" && echo "" && echo "Bundle::start('cerberus');") >> ./application/start.php
 
 script: "php artisan test cerberus --env=local"
