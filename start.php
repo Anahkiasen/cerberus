@@ -78,7 +78,7 @@ HTML::macro('action', function($link, $icon, $item) {
 
   return
     '<td class="action ' .$class. '">'.
-      HTML::decode(HTML::link($link, Icons::$icon())).
+      d(HTML::link($link, Icons::$icon())).
     '</td>';
 });
 
@@ -100,6 +100,23 @@ Validator::register('length', function($attribute, $value, $parameters) {
 Validator::register('not_numeric', function($attribute, $value) {
   return preg_match('/^([^0-9]+)+$/i', $value);
 });
+
+/*
+|---------------------------------------------------------------------
+| Helpers
+|---------------------------------------------------------------------
+ */
+
+/**
+ * Alias for HTML::decode
+ *
+ * @param  mixed  $content Content to unparse
+ * @return string          Decoded content
+ */
+function d($content)
+{
+  return HTML::decode($content);
+}
 
 /*
 |---------------------------------------------------------------------
