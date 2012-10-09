@@ -15,7 +15,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
 
   public function setUp()
   {
-    Directory::make(self::$dummyFolder);
+    Directory::create(self::$dummyFolder);
   }
 
   public static function tearDownAfterClass()
@@ -46,7 +46,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
   public function testMakeSimple()
   {
     $folder = self::$dummyFolder.'testFolder';
-    $create = directory::make($folder);
+    $create = Directory::create($folder);
 
     self::assertFileExists($folder);
   }
@@ -54,7 +54,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
   public function testMakeComplex()
   {
     $folder = self::$dummyFolder.'subTestFolder/subSubTestFolder/';
-    $create = directory::make($folder);
+    $create = Directory::create($folder);
 
     self::assertFileExists($folder);
   }

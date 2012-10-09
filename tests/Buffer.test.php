@@ -34,7 +34,7 @@ class BufferTests extends CerberusTests
       Buffer::end();
     Buffer::end();
 
-    self::assertCount(6, $handlers);
+    self::assertCount(5, $handlers);
   }
 
   /**

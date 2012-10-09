@@ -31,12 +31,12 @@ class File extends \Laravel\File
     $folder = dirname($file);
 
     // If it doesn't exist, try to create it
-    if (!file_exists($folder)) Directory::make($folder);
+    if (!file_exists($folder)) Directory::create($folder);
 
     // Transform array to JSON if necessary
     if(is_array($content)) $content = Arrays::json($content);
 
-    return \File::write($file, $content);
+    return \File::put($file, $content);
   }
 
   /**

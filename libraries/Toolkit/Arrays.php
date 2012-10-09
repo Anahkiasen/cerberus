@@ -18,37 +18,6 @@ class Arrays
   ////////////////////////////////////////////////////////////////////
 
   /**
-   * Gets an element of an array by key
-   *
-   * @param  array $array    The source array
-   * @param  mixed $key      The key to look for, or a path through a
-   *                         multidimensionnal array under the form
-   *                         key1.key2... or array[key1,key2,...]
-   * @param  mixed $fallback Optional default value, which will be returned if no element has been found
-   * @return mixed           The wanted key
-   */
-  public static function get($array, $key, $fallback = null)
-  {
-    // If the key is an array of keys
-    if (String::find('.', $key)) {
-      $key = explode('.', $key);
-    }
-
-    // If the key is plain, just return the value/fallback
-    if (!is_array($key)) {
-      return (isset($array[$key])) ? $array[$key] : $fallback;
-    }
-
-    // Else crawl the array for the right key
-    foreach ($key as $k) {
-      $array = self::get($array, $k, $fallback);
-      if($array == $fallback) break;
-    }
-
-    return $array;
-  }
-
-  /**
    * Removes an element by key or value
    *
    * @param  array   $array  The source array
@@ -67,7 +36,7 @@ class Arrays
     }
 
     // If it's a key, plainly use unset
-    if($key) unset($array[$search]);
+    if($key) array_forget($array, $search);
 
     // If it's a value, use array_search
     else {
@@ -92,20 +61,6 @@ class Arrays
   public static function removeValue($array, $search)
   {
     return self::remove($array, $search, false);
-  }
-
-  /**
-   * Extracts a single column from an array
-   *
-   * @param  array  $array The source array
-   * @param  string $key   The key name of the column to extract
-   * @return array         The result array with all values from that column.
-   */
-  public static function pluck($array, $key)
-  {
-    return array_map(function($v) use ($key) {
-      return is_object($v) ? $v->$key : $v[$key];
-    }, $array);
   }
 
   /**
@@ -173,6 +128,8 @@ class Arrays
     return $array;
   }
 
+
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////// EXPORT / IMPORT /////////////////////////
   ////////////////////////////////////////////////////////////////////
@@ -213,6 +170,22 @@ class Arrays
   ////////////////////////////////////////////////////////////////////
 
   /**
+   * Alias for array_get
+   */
+  public static function get($array, $key, $fallback = null)
+  {
+    return array_get($array, $key, $fallback);
+  }
+
+  /**
+   * Alias for array_set
+   */
+  public static function set($array, $key, $value)
+  {
+    return array_set($array, $key, $value);
+  }
+
+  /**
    * Returns the first element of an array
    *
    * @param  array $array The source array
@@ -221,5 +194,13 @@ class Arrays
   public static function first($array)
   {
     return array_shift($array);
+  }
+
+  /**
+   * Alias for array_pluck
+   */
+  public static function pluck($array, $key)
+  {
+    return array_pluck($array, $key);
   }
 }
