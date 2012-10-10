@@ -130,7 +130,7 @@ function d($content)
  */
 
 // If not in local or testing or whatever
-if (!Request::env()) {
+if (!Request::env() and !Request::cli()) {
 
   $backup = new Backup;
 
