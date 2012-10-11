@@ -17,6 +17,7 @@ Autoloader::namespaces(array(
 Autoloader::map(array(
   'CerberusBase'    => Bundle::path('cerberus') . 'controllers' . DS . 'base.php',
   'CerberusRestful' => Bundle::path('cerberus') . 'controllers' . DS . 'restful.php',
+  'Elegant'         => Bundle::path('cerberus') . 'models'      . DS . 'elegant.php',
 ));
 
 
