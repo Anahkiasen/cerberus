@@ -2,15 +2,20 @@
 class Elegant extends Eloquent
 {
   public static $polyglot = false;
-  public $includes = array('lang');
 
   // Localization -------------------------------------------------- /
 
+  /**
+   * Reroutes functions to the language in use
+   *
+   * @param  string  $lang A language to use
+   * @return Has_One
+   */
   public function lang($lang = null)
   {
     if(!$lang) $lang = Config::get('application.language');
 
-    return $this->has_one(get_called_class().'Lang')->where_lang($lang);
+    return $this->$lang();
   }
 
   public function fr()
@@ -35,7 +40,7 @@ class Elegant extends Eloquent
     if(static::$polyglot) {
       if(static::langValid($key)) return $this->lang($key)->first();
       if(in_array($key, static::$polyglot)) {
-        $lang = $this->lang;
+        $lang = $this->lang()->first();
         return $lang ? $lang->$key : null;
       }
     }
