@@ -38,10 +38,9 @@ class Elegant extends Eloquent
   public function __get($key)
   {
     if(static::$polyglot) {
-      if(static::langValid($key)) return $this->lang($key)->first();
       if(in_array($key, static::$polyglot)) {
-        $lang = $this->lang()->first();
-        return $lang ? $lang->$key : null;
+        $lang = Config::get('application.language');
+        return $this->lang ? $this->lang->$key : null;
       }
     }
 

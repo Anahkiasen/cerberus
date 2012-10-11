@@ -47,4 +47,25 @@ class Language
 
     return setlocale(LC_ALL, 0);
   }
+
+  /**
+   * Apply the correct language constraint to an array of eager load relationships
+   *
+   * @return array An array of relationships
+   */
+  public static function eager()
+  {
+    $relationships = array();
+    foreach(func_get_args() as $r) {
+      if(String::find('lang', $r)) {
+        $relationships[$r] = function($query) {
+          $query->where_lang(static::current());
+        };
+      } else {
+        $relationships[] = $r;
+      }
+    }
+
+    return $relationships;
+  }
 }
