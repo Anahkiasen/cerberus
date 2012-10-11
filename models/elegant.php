@@ -13,6 +13,16 @@ class Elegant extends Eloquent
     return $this->has_one(get_called_class().'Lang')->where_lang($lang);
   }
 
+  public function fr()
+  {
+    return $this->has_one(get_called_class().'Lang')->where_lang('fr');
+  }
+
+  public function en()
+  {
+    return $this->has_one(get_called_class().'Lang')->where_lang('en');
+  }
+
   public function __isset($key)
   {
     if(static::$polyglot and static::langValid($key)) return true;
