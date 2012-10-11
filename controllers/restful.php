@@ -96,6 +96,7 @@ class CerberusRestful extends CerberusBase
         ->with_errors($validation);
 
       return array(
+        'new'    => $isAdd,
         'errors' => $validation,
         'model'  => null,
         'return' => $return,
@@ -113,6 +114,7 @@ class CerberusRestful extends CerberusBase
     if(isset($input['name'])) $message = Lang::line($message, array('name' => $input['name']));
 
     return array(
+      'new'    => $isAdd,
       'errors' => false,
       'model'  => $model,
       'return' => $this->here,
