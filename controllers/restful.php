@@ -69,9 +69,9 @@ class CerberusRestful extends CerberusBase
   }
 
   /**
-   * Update an item's data
+   * Custom post action to build upon
    */
-  public function post_update()
+  public function custom_update()
   {
     // Fetch input and its rules
     $input = Input::get();
@@ -90,22 +90,44 @@ class CerberusRestful extends CerberusBase
 
     $validation = Validator::make($input, $rules);
     if ($validation->fails()) {
-      return Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item->id))
+      $return = Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item->id))
         ->with_input()
         ->with('items', $item->id)
         ->with_errors($validation);
+
+      return array(
+        'errors' => $validation,
+        'model'  => null,
+        'return' => $return,
+        'state'  => false,
+      );
     }
 
     // Save attributes
     $model = $this->model;
-    if(!$isAdd) $model::update($input['id'], $input);
-    else $model::create($input);
+    if(!$isAdd) $model = $model::update($input['id'], $input);
+    else $model = $model::create($input);
 
     // Create message
     $message = $isAdd ? 'messages.' .$this->page. '.create' : 'messages.' .$this->page. '.update';
     if(isset($input['name'])) $message = Lang::line($message, array('name' => $input['name']));
 
-    return $this->here;
+    return array(
+      'errors' => false,
+      'model'  => $model,
+      'return' => $this->here,
+      'state'  => true,
+    );
+  }
+
+  /**
+   * Update an item's data
+   */
+  public function post_update()
+  {
+    extract($this->custom_update());
+
+    return $return;
   }
 
   /**
