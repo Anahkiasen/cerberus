@@ -156,6 +156,9 @@ class Siri
   public static function accordArticle($noun, $article)
   {
     switch(static::lang()) {
+      case 'fr':
+        if(static::startsWithVowel($noun)) $article = substr($article, 0, -1)."'";
+        break;
       case 'en':
         if(static::startWithVowel($noun)) $article .= 'n';
         break;
@@ -226,11 +229,7 @@ class Siri
       // Get the right article
       $sex = static::isFemale($this->noun) ? 'female' : 'male';
       $article = __('cerberus::siri.articles.'.$article.'.'.$sex);
-
-      // Set le/la to l' if word starts with a vowel in french
-      if(static::lang() == 'fr' and static::startWithVowel($noun)) {
-        $article = substr($article, 0, 1)."'";
-      }
+      $article = static::accordArticle($this->noun, $article);
 
       // Add space
       $article .= ' ';
