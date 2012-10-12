@@ -114,7 +114,7 @@ class CerberusRestful extends CerberusBase
 
     // Create message
     $verb = $isAdd ? 'create' : 'update';
-    $message = Siri::message($this->page, $input['name'], $verb);
+    $message = Siri::restful($this->page, $input['name'], $verb);
 
     return array(
       'errors'  => false,
@@ -156,7 +156,7 @@ class CerberusRestful extends CerberusBase
     }
 
     // Create message
-    $message = Siri::message($this->page, $name, 'delete', $state);
+    $message = Siri::restful($this->page, $name, 'delete', $state);
 
     return $this->here
       ->with('message', $message);
