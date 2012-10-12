@@ -21,7 +21,7 @@ class Siri
    * @var array
    */
   private static $female = array(
-    'categories',
+    'category',
   );
 
   /**
@@ -103,6 +103,8 @@ class Siri
    */
   public static function isFemale($noun)
   {
+    $noun = \Str::singular($noun);
+
     return in_array($noun, static::$female);
   }
 
@@ -112,7 +114,7 @@ class Siri
    * @param  string  $word A word
    * @return boolean
    */
-  public static function startWithVowel($word)
+  public static function startsWithVowel($word)
   {
     $letter = substr($word, 0, 1);
 
@@ -160,7 +162,7 @@ class Siri
         if(static::startsWithVowel($noun)) $article = substr($article, 0, -1)."'";
         break;
       case 'en':
-        if(static::startWithVowel($noun)) $article .= 'n';
+        if(static::startsWithVowel($noun)) $article .= 'n';
         break;
     }
 
