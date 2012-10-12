@@ -92,7 +92,7 @@ HTML::macro('action', function($link, $icon, $parameters) {
 HTML::macro('addButton', function($link, $text, $supplementaryClasses = null) {
   $buttonClass = 'block_large_primary_'.$supplementaryClasses.'link';
 
-  return Tables::full_row(Buttons::$buttonClass(action($link), $text));
+  return Buttons::$buttonClass(action($link.'@create'), $text);
 });
 
 // Validate length
