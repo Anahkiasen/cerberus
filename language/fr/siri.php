@@ -1,10 +1,21 @@
 <?php return array(
 
+  'articles' => array(
+    'the' => array(
+      'male'   => 'le',
+      'female' => 'la',
+    ),
+    'a' => array(
+      'male'   => 'un',
+      'female' => 'une',
+    ),
+  ),
+
   'nouns' => array(
-    'albums'     => "L'album",
-    'categories' => 'La catégorie',
-    'documents'  => 'Le document',
-    'users'      => "L'utilisateur",
+    'albums'     => 'album',
+    'categories' => 'catégorie',
+    'documents'  => 'document',
+    'users'      => 'utilisateur'
   ),
 
   'state' => array(
@@ -13,8 +24,9 @@
   ),
 
   'verbs' => array(
-    'create' => 'crée',
-    'delete' => 'supprimé',
-    'update' => 'modifié',
+    'add'    => 'ajouter',
+    'create' => 'créer',
+    'delete' => 'supprimer',
+    'update' => 'modifier',
   ),
 );

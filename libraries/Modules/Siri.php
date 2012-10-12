@@ -17,10 +17,32 @@ class Siri
   private static $message;
 
   /**
+   * An array of female nouns
+   * @var array
+   */
+  private static $female = array(
+    'categories',
+  );
+
+  /**
+   * Vowels
+   * @var array
+   */
+  private static $vowels = array(
+    'a', 'e', 'i', 'o', 'u', 'y',
+  );
+
+  /**
    * The different parts of the sentence being created
    * @var array
    */
   private $sentence = array();
+
+  /**
+   * The untranslated noun for helpers
+   * @var string
+   */
+  private $noun = null;
 
   /**
    * Builds a restful message
@@ -37,11 +59,24 @@ class Siri
     $bool  = $state ? 'success' : 'error';
 
     static::$message = new static();
-    static::$message->noun($page);
+    static::$message->noun($page, 'the');
     if($object) static::$message->subject($object);
     static::$message->state($bool)->verb($verb);
 
     return \Alert::$bool(static::$message, false);
+  }
+
+  /**
+   * Creates an "Add a [something]" message
+   *
+   * @param string $noun The base noun
+   */
+  public static function add($noun)
+  {
+    static::$message = new static();
+    static::$message->verb('add')->noun($noun, 'a');
+
+    return static::$message->__toString();
   }
 
   /**
@@ -56,28 +91,120 @@ class Siri
     }
   }
 
-  /**
-   * Accord a verb to its subject
-   *
-   * @param  string $subject A subject
-   * @param  string $verb    A verb
-   * @return string          An accorded subject
-   */
-  public static function accord($subject, $verb)
-  {
-    if(!$subject) return $verb;
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// HELPERS /////////////////////////////
+  ////////////////////////////////////////////////////////////////////
 
-    $language = \Config::get('application.language');
-    switch($language) {
+  /**
+   * Checks if a noun is male or female
+   *
+   * @param  string  $noun A noun
+   * @return boolean
+   */
+  public static function isFemale($noun)
+  {
+    return in_array($noun, static::$female);
+  }
+
+  /**
+   * Check if a word starts with a vowel
+   *
+   * @param  string  $word A word
+   * @return boolean
+   */
+  public static function startWithVowel($word)
+  {
+    $letter = substr($word, 0, 1);
+
+    return in_array($letter, static::$vowels);
+  }
+
+  /**
+   * Check if a word ends with a vowel
+   *
+   * @param  string  $word A word
+   * @return boolean
+   */
+  public static function endsWithVowel($word)
+  {
+    $letter = substr($word, -1);
+
+    return in_array($letter, static::$vowels);
+  }
+
+  /**
+   * Get the current language
+   *
+   * @return string The language in use
+   */
+  public static function lang()
+  {
+    return \Config::get('application.language');
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  ///////////////////////////////// RULES ////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Accord an article to its noun
+   *
+   * @param  string $noun    A noun
+   * @param  string $article An article
+   * @return string          An accorded article
+   */
+  public static function accordArticle($noun, $article)
+  {
+    switch(static::lang()) {
+      case 'en':
+        if(static::startWithVowel($noun)) $article .= 'n';
+        break;
+    }
+
+    return $article;
+  }
+
+  /**
+   * Accord a verb to its noun
+   *
+   * @param  string $noun A noun
+   * @param  string $verb A verb
+   * @return string       An accorded verb
+   */
+  public static function accordVerb($noun, $verb)
+  {
+    switch(static::lang()) {
       case 'fr':
-        if(in_array($subject, array('categories'))) {
-          $verb .= 'e';
-        }
+        if(static::isFemale($noun)) $verb .= 'e';
         break;
     }
 
     return $verb;
   }
+
+  /**
+   * Conjugate a verb according to a noun
+   *
+   * @param  string $noun The noun
+   * @param  string $verb The verb
+   * @return string       The conjugated verb
+   */
+  public static function conjugate($noun, $verb)
+  {
+    switch(static::lang()) {
+      case 'fr':
+        $verb = substr($verb, 0, -2).'é';
+        $verb = static::accordVerb($noun, $verb);
+        break;
+      case 'en':
+        if(!static::endsWithVowel($verb)) $verb .= 'e';
+        $verb .= 'd';
+        break;
+    }
+
+    return $verb;
+  }
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// CORE METHODS ////////////////////////
   ////////////////////////////////////////////////////////////////////
@@ -85,11 +212,31 @@ class Siri
   /**
    * Add a noun to the sentence
    *
-   * @param  string $noun A noun
+   * @param  string $noun     A noun
+   * @param  boolean $article Whether an article should be prepended
    */
-  public function noun($noun)
+  public function noun($noun, $article = null)
   {
-    $this->sentence['noun'] = __('cerberus::siri.nouns.'.$noun);
+    // Get noun
+    $this->noun = $noun;
+    $noun = __('cerberus::siri.nouns.'.$noun);
+
+    if($article) {
+
+      // Get the right article
+      $sex = static::isFemale($this->noun) ? 'female' : 'male';
+      $article = __('cerberus::siri.articles.'.$article.'.'.$sex);
+
+      // Set le/la to l' if word starts with a vowel in french
+      if(static::lang() == 'fr' and static::startWithVowel($noun)) {
+        $article = substr($article, 0, 1)."'";
+      }
+
+      // Add space
+      $article .= ' ';
+    }
+
+    $this->sentence['noun'] = $article.$noun;
 
     return $this;
   }
@@ -126,7 +273,11 @@ class Siri
   public function verb($verb)
   {
     $verb = __('cerberus::siri.verbs.'.$verb);
-    $verb = static::accord(array_get($this->sentence, 'subject'), $verb);
+
+    // Conjugates if a noun precedes the verb
+    if($this->noun) {
+      $verb = static::conjugate($this->noun, $verb);
+    }
 
     $this->sentence['verb'] = $verb;
 
@@ -140,6 +291,6 @@ class Siri
    */
   public function __toString()
   {
-    return implode(' ', $this->sentence);
+    return ucfirst(implode(' ', $this->sentence));
   }
 }
