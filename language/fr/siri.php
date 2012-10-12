@@ -12,10 +12,10 @@
   ),
 
   'nouns' => array(
-    'albums'     => 'album',
-    'categories' => 'catégorie',
-    'documents'  => 'document',
-    'users'      => 'utilisateur'
+    'album'    => 'album',
+    'category' => 'catégorie',
+    'document' => 'document',
+    'user'     => 'utilisateur'
   ),
 
   'state' => array(
@@ -28,5 +28,14 @@
     'create' => 'créer',
     'delete' => 'supprimer',
     'update' => 'modifier',
+  ),
+
+  'numbers' => array(
+    0 => 'aucun',
+    1 => 'un',
+  ),
+
+  'bits' => array(
+    'to_display' => 'à afficher',
   ),
 );

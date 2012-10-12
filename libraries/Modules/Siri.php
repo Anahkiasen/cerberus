@@ -8,6 +8,8 @@
  */
 namespace Cerberus\Modules;
 
+use \Str;
+
 class Siri
 {
   /**
@@ -51,10 +53,9 @@ class Siri
    * @param  string  $object The object's name
    * @param  string  $verb   The CRUD verb
    * @param  boolean $string The state of the action (failed or succeeded)
-   * @param  string  $accord An accord to append the verb
    * @return string          A text message
    */
-  public static function restful($page, $object, $verb, $state = true, $accord = null)
+  public static function restful($page, $object, $verb, $state = true)
   {
     $bool  = $state ? 'success' : 'error';
 
@@ -75,6 +76,16 @@ class Siri
   {
     static::$message = new static();
     static::$message->verb('add')->noun($noun, 'a');
+
+    return static::$message->__toString();
+  }
+
+  public static function nothing($noun)
+  {
+    static::$message = new static();
+    static::$message->noun = $noun;
+
+    static::$message->number(0)->noun($noun)->bit('to_display');
 
     return static::$message->__toString();
   }
@@ -103,7 +114,7 @@ class Siri
    */
   public static function isFemale($noun)
   {
-    $noun = \Str::singular($noun);
+    $noun = Str::singular($noun);
 
     return in_array($noun, static::$female);
   }
@@ -159,7 +170,9 @@ class Siri
   {
     switch(static::lang()) {
       case 'fr':
-        if(static::startsWithVowel($noun)) $article = substr($article, 0, -1)."'";
+        if(starts_with($article, 'l')) {
+          if(static::startsWithVowel($noun)) $article = substr($article, 0, -1)."'";
+        }
         break;
       case 'en':
         if(static::startsWithVowel($noun)) $article .= 'n';
@@ -172,7 +185,6 @@ class Siri
   /**
    * Accord a verb to its noun
    *
-   * @param  string $noun A noun
    * @param  string $verb A verb
    * @return string       An accorded verb
    */
@@ -185,6 +197,17 @@ class Siri
     }
 
     return $verb;
+  }
+
+  public static function accordNumber($noun, $number)
+  {
+    switch(static::lang()) {
+      case 'fr':
+        if(static::isFemale($noun)) $number .= 'e';
+        break;
+    }
+
+    return $number;
   }
 
   /**
@@ -224,7 +247,7 @@ class Siri
   {
     // Get noun
     $this->noun = $noun;
-    $noun = __('cerberus::siri.nouns.'.$noun);
+    $noun = __('cerberus::siri.nouns.'.Str::singular($noun));
 
     if($article) {
 
@@ -233,8 +256,8 @@ class Siri
       $article = __('cerberus::siri.articles.'.$article.'.'.$sex);
       $article = static::accordArticle($this->noun, $article);
 
-      // Add space
-      $article .= ' ';
+      // Add space if necessary
+      if(substr($article, -1) != "'") $article .= ' ';
     }
 
     $this->sentence['noun'] = $article.$noun;
@@ -262,6 +285,31 @@ class Siri
   public function state($state)
   {
     $this->sentence['state'] = __('cerberus::siri.state.'.$state);
+
+    return $this;
+  }
+
+  /**
+   * Add a number
+   *
+   * @param  integer $number The number to add
+   */
+  public function number($number)
+  {
+    $number = __('cerberus::siri.numbers.'.$number);
+    $this->sentence['number'] = static::accordNumber($this->noun, $number);
+
+    return $this;
+  }
+
+  /**
+   * Add a bit of sentence
+   *
+   * @param  string $bit The bit to display
+   */
+  public function bit($bit)
+  {
+    $this->sentence[] = __('cerberus::siri.bits.'.$bit);
 
     return $this;
   }

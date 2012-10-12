@@ -89,10 +89,10 @@ HTML::macro('action', function($link, $icon, $parameters) {
 });
 
 // Table add button
-HTML::macro('addButton', function($link, $text, $supplementaryClasses = null) {
+HTML::macro('addButton', function($link, $supplementaryClasses = null) {
   $buttonClass = 'block_large_primary_'.$supplementaryClasses.'link';
 
-  return Buttons::$buttonClass(action($link.'@create'), $text);
+  return Buttons::$buttonClass(action($link.'@create'), Siri::add($link));
 });
 
 // Validate length

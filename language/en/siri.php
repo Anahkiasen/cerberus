@@ -12,10 +12,10 @@
   ),
 
   'nouns' => array(
-    'albums'     => 'album',
-    'categories' => 'category',
-    'documents'  => 'document',
-    'users'      => 'user'
+    'album'    => 'album',
+    'category' => 'category',
+    'document' => 'document',
+    'user'     => 'user'
   ),
 
   'state' => array(
@@ -28,5 +28,10 @@
     'create' => 'create',
     'delete' => 'delete',
     'update' => 'update',
+  ),
+
+  'numbers' => array(
+    0 => 'no',
+    1 => 'one',
   ),
 );
