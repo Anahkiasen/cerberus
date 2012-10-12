@@ -113,15 +113,16 @@ class CerberusRestful extends CerberusBase
     else $model = $model::create($input);
 
     // Create message
-    $message = $isAdd ? 'messages.' .$this->page. '.create' : 'messages.' .$this->page. '.update';
-    if(isset($input['name'])) $message = Lang::line($message, array('name' => $input['name']));
+    $verb = $isAdd ? 'create' : 'update';
+    $message = Siri::message($this->page, $input['name'], $verb);
 
     return array(
-      'new'    => $isAdd,
-      'errors' => false,
-      'model'  => $model,
-      'return' => $this->here,
-      'state'  => true,
+      'errors'  => false,
+      'message' => $message,
+      'model'   => $model,
+      'new'     => $isAdd,
+      'return'  => $this->here,
+      'state'   => true,
     );
   }
 
@@ -132,7 +133,7 @@ class CerberusRestful extends CerberusBase
   {
     extract($this->custom_update());
 
-    return $return;
+    return $return->with('message', $message);
   }
 
   /**
@@ -143,15 +144,19 @@ class CerberusRestful extends CerberusBase
   public function get_delete($item_id)
   {
     $item = $this->object->find($item_id);
-    if(!$item) return $this->here;
+    if(!$item) $state = false;
+
+    // Get item name
+    $name = $item ? $item->name : null;
 
     // Remove item
-    $item->delete();
+    if($item) {
+      $state = $item->delete();
+      $state = $state == 1;
+    }
 
     // Create message
-    $message = Lang::line(
-      'messages.' .$this->page. '.delete',
-      array('name' => $item->name));
+    $message = Siri::message($this->page, $name, 'delete', $state);
 
     return $this->here
       ->with('message', $message);
