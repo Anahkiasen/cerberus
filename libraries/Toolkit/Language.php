@@ -21,6 +21,23 @@ class Language
   }
 
   /**
+   * Get the URL to switch language, keeping the current page
+   *
+   * @param  string  $lang  The new lang
+   * @param  boolean $reset Whether navigation should be reset
+   * @return string         An URL
+   */
+  public static function url($lang, $reset = false)
+  {
+    if($reset) return \URL::base().'/'.$lang;
+
+    $url = str_replace(\URL::base(), null, \URL::current());
+    $url = \URL::base().'/'.$lang.$url;
+
+    return $url;
+  }
+
+  /**
    * Sets the locale according to the current language
    *
    * @param  string $language A language string to use
