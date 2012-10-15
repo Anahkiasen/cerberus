@@ -114,7 +114,7 @@ class CerberusRestful extends CerberusBase
 
     // Create message
     $verb = $isAdd ? 'create' : 'update';
-    $message = Babel::restful($this->page, $input['name'], $verb);
+    $message = Babel::restful(Str::singular($this->page), array_get($input, 'name'), $verb);
 
     return array(
       'errors'  => false,
@@ -156,7 +156,7 @@ class CerberusRestful extends CerberusBase
     }
 
     // Create message
-    $message = Babel::restful($this->page, $name, 'delete', $state);
+    $message = Babel::restful(Str::singular($this->page), $name, 'delete', $state);
 
     return $this->here
       ->with('message', $message);
