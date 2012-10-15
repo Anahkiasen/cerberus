@@ -47,6 +47,30 @@ class Elegant extends Eloquent
     return parent::__get($key);
   }
 
+  // Functions ----------------------------------------------------- /
+
+  /**
+   * Localize a model with an array of lang arrays
+   *
+   * @param  array $localization An array in the form [field][lang][value]
+   */
+  public function localize($localization)
+  {
+    $langs = array_keys($localization[key($localization)]);
+
+    // Build lang arrays
+    foreach($localization as $key => $value) {
+      foreach($langs as $lang) {
+        ${$lang}[$key] = array_get($value, $lang);
+      }
+    }
+
+    // Update
+    foreach($langs as $lang) {
+      $this->$lang()->update($$lang);
+    }
+  }
+
   // Attributes ---------------------------------------------------- /
 
   public function __toString()

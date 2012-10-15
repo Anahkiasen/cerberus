@@ -88,6 +88,14 @@ class CerberusRestful extends CerberusBase
       }
     }
 
+    // Get localized fields
+    $model = $this->model;
+    if(isset($model::$polyglot)) {
+      $localization = Input::only($model::$polyglot);
+      $input = Input::except($model::$polyglot);
+    }
+
+    // Validate input
     $validation = Validator::make($input, $rules);
     if ($validation->fails()) {
       $return = Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item->id))
@@ -111,6 +119,11 @@ class CerberusRestful extends CerberusBase
       $model = $model::find($input['id']);
     }
     else $model = $model::create($input);
+
+    // Update localized fields
+    if($localization) {
+      $model->localize($localization);
+    }
 
     // Create message
     $verb = $isAdd ? 'create' : 'update';
