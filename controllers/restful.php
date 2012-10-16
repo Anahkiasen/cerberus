@@ -134,7 +134,7 @@ class CerberusRestful extends CerberusBase
       'message' => $message,
       'model'   => $model,
       'new'     => $isAdd,
-      'return'  => $this->here,
+      'return'  => $this->here->with('message', $message),
       'state'   => true,
     );
   }
@@ -146,15 +146,10 @@ class CerberusRestful extends CerberusBase
   {
     extract($this->custom_update());
 
-    return $return->with('message', $message);
+    return $return;
   }
 
-  /**
-   * Delete an item
-   *
-   * @param integer $item_id An item id
-   */
-  public function get_delete($item_id)
+  public function custom_delete($item_id)
   {
     $item = $this->object->find($item_id);
     if(!$item) $state = false;
@@ -171,7 +166,23 @@ class CerberusRestful extends CerberusBase
     // Create message
     $message = Babel::restful(Str::singular($this->page), $name, 'delete', $state);
 
-    return $this->here
-      ->with('message', $message);
+    return array(
+      'message' => $message,
+      'model'   => $item,
+      'return'  => $this->here->with('message', $message),
+      'state'   => $state,
+    );
+  }
+
+  /**
+   * Delete an item
+   *
+   * @param integer $item_id An item id
+   */
+  public function get_delete($item_id)
+  {
+    extract($this->custom_delete($item_id));
+
+    return $return;
   }
 }
