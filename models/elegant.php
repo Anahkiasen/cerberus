@@ -62,12 +62,14 @@ class Elegant extends Eloquent
     foreach($localization as $key => $value) {
       foreach($langs as $lang) {
         ${$lang}[$key] = array_get($value, $lang);
+        ${$lang}['lang'] = $lang;
       }
     }
 
     // Update
     foreach($langs as $lang) {
-      $this->$lang()->update($$lang);
+      if($this->$lang) $this->$lang()->update($$lang);
+      else $this->$lang()->insert($$lang);
     }
   }
 
