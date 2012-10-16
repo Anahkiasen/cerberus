@@ -84,7 +84,7 @@ HTML::macro('action', function($link, $icon, $parameters) {
 
   return
     '<td class="action ' .$class. '">'.
-      d(HTML::link($link, Icons::$icon())).
+      d(HTML::link($link, Icon::$icon())).
     '</td>';
 });
 
