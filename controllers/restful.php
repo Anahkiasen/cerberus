@@ -121,7 +121,7 @@ class CerberusRestful extends CerberusBase
     else $model = $model::create($input);
 
     // Update localized fields
-    if($localization) {
+    if(isset($localization)) {
       $model->localize($localization);
     }
 
