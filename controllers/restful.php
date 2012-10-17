@@ -104,11 +104,12 @@ class CerberusRestful extends CerberusBase
         ->with_errors($validation);
 
       return array(
-        'new'    => $isAdd,
-        'errors' => $validation,
-        'model'  => null,
-        'return' => $return,
-        'state'  => false,
+        'new'     => $isAdd,
+        'errors'  => $validation,
+        'message' => null,
+        'model'   => null,
+        'return'  => $return,
+        'state'   => false,
       );
     }
 
