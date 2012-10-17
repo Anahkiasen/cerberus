@@ -73,8 +73,8 @@ class Language
   public static function eager()
   {
     $relationships = array();
-    foreach(func_get_args() as $r) {
-      if(String::find('lang', $r)) {
+    foreach (func_get_args() as $r) {
+      if (String::find('lang', $r)) {
         $relationships[$r] = function($query) {
           $query->where_lang(static::current());
         };

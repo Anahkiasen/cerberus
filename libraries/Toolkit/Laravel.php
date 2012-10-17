@@ -9,7 +9,7 @@
 namespace Cerberus\Toolkit;
 
 use Lang;
-use Resized;
+use Resizer;
 use Section;
 
 class Laravel
@@ -66,7 +66,7 @@ class Laravel
 
     // Thumb generation
     $thumb = 'cache/'.md5($path.$width.$height).'.jpg';
-    if(!file_exists('public/'.$thumb)) {
+    if (!file_exists('public/'.$thumb)) {
       Resizer::open('public/'.$path)
         ->resize($width, $height, 'crop')
         ->save('public/'.$thumb, 75);

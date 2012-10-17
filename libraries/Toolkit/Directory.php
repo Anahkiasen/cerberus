@@ -84,10 +84,10 @@ class Directory
   public static function create($directory, $recursive = true)
   {
     // Explode each directory of the path and create them
-    if($recursive) {
+    if ($recursive) {
       $path = null;
       $directories = self::explode($directory);
-      foreach($directories as $directory) {
+      foreach ($directories as $directory) {
         $path .= $directory.'/';
         static::create($path, false);
       }

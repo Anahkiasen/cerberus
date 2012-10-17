@@ -55,7 +55,7 @@ class File extends \Laravel\File
 
     // Remove each file
     $return = 0;
-    foreach($files as $file) {
+    foreach ($files as $file) {
       $remove = static::delete($file);
       if($remove) $return++;
     }
