@@ -65,9 +65,9 @@ class Laravel
     if(!$height) $height = $width;
 
     // Thumb generation
-    $thumb = 'cache/'.md5($path.$width.$height).'.jpg';
+    $thumb = 'cache/'.md5($image.$width.$height).'.jpg';
     if (!file_exists('public/'.$thumb)) {
-      Resizer::open('public/'.$path)
+      Resizer::open('public/'.$image)
         ->resize($width, $height, 'crop')
         ->save('public/'.$thumb, 75);
     }
