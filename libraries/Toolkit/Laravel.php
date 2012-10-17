@@ -9,6 +9,7 @@
 namespace Cerberus\Toolkit;
 
 use Lang;
+use Resized;
 use Section;
 
 class Laravel
@@ -48,5 +49,29 @@ class Laravel
     $title = Lang::line($title, null)->get();
 
     Section::inject('title', $title);
+  }
+
+  /**
+   * Generates a thumb with Resizer and cache it
+   *
+   * @param  string  $image  The image path
+   * @param  integer $width  The desired width
+   * @param  integer $height The desired height (defaults to width)
+   * @return string          An image path to the thumb
+   */
+  public static function thumb($image, $width = 200, $height = null)
+  {
+    // Square by default
+    if(!$height) $height = $width;
+
+    // Thumb generation
+    $thumb = 'cache/'.md5($path.$width.$height).'.jpg';
+    if(!file_exists('public/'.$thumb)) {
+      Resizer::open('public/'.$path)
+        ->resize($width, $height, 'crop')
+        ->save('public/'.$thumb, 75);
+    }
+
+    return $thumb;
   }
 }
