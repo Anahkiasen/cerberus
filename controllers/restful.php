@@ -134,7 +134,7 @@ class CerberusRestful extends CerberusBase
       'message' => $message,
       'model'   => $model,
       'new'     => $isAdd,
-      'return'  => $this->here->with('message', $message),
+      'return'  => $this->here,
       'state'   => true,
     );
   }
@@ -146,7 +146,7 @@ class CerberusRestful extends CerberusBase
   {
     extract($this->custom_update());
 
-    return $return;
+    return $return->with('message', $message);
   }
 
   public function custom_delete($item_id)
