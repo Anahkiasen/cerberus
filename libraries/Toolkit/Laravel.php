@@ -61,6 +61,7 @@ class Laravel
    */
   public static function thumb($image, $width = 200, $height = null)
   {
+    $image = 'public/'.$image;
     if(!file_exists($image)) return $image;
 
     // Square by default
@@ -69,7 +70,7 @@ class Laravel
     // Thumb generation
     $thumb = 'cache/'.md5($image.$width.$height).'.jpg';
     if (!file_exists('public/'.$thumb)) {
-      Resizer::open('public/'.$image)
+      Resizer::open($image)
         ->resize($width, $height, 'crop')
         ->save('public/'.$thumb, 75);
     }
