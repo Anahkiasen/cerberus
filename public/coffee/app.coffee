@@ -5,6 +5,10 @@ window.action = (link, event, callback) ->
     url: link.attr 'href'
   .done (result) ->
 
+    # Parse JSON if it isn't already
+    if Object.prototype.toString.call(result) != '[object Array]'
+      result = JSON.parse(result)
+
     # Display any message in the results --------------------------- /
 
     if result.message
