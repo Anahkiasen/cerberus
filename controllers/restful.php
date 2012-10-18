@@ -150,9 +150,12 @@ class CerberusRestful extends CerberusBase
     return $return->with('message', $message);
   }
 
-  public function custom_delete($item_id)
+  /**
+   * Delete an item
+   */
+  public function custom_delete($item)
   {
-    $item = $this->object->find($item_id);
+    if(!is_object($item)) $item = $this->object->find($item_id);
     if(!$item) $state = false;
 
     // Get item name
