@@ -42,7 +42,7 @@ class Backup
   public function __construct()
   {
     // Set correct storage path
-    $this->storage = path('storage').'sql/';
+    $this->storage = path('storage').'database/';
 
     // Create folder if it doesn't exist
     if(!file_exists($this->storage)) Directory::create($this->storage);
