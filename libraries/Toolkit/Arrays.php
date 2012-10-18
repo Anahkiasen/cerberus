@@ -74,6 +74,35 @@ class Arrays
     return $array[array_rand($array)];
   }
 
+  /**
+   * Flattens an array to dot notation
+   *
+   * @param  array  $array  An array
+   * @param  string $parent The parent passed to the child (private)
+   * @return array          Flattened array to one level
+   */
+  public static function flatten($array, $parent = null)
+  {
+    if(!is_array($array)) return $array;
+
+    $_flattened = array();
+
+    // Rewrite keys
+    foreach($array as $key => $value) {
+      if($parent) $key = $parent.'.'.$key;
+      $_flattened[$key] = static::flatten($value, $key);
+    }
+
+    // Flatten
+    $flattened = array();
+    foreach($_flattened as $key => $value) {
+      if(is_array($value)) $flattened = array_merge($flattened, $value);
+      else $flattened[$key] = $value;
+    }
+
+    return $flattened;
+  }
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////// INFORMATIONS ////////////////////////////
   ////////////////////////////////////////////////////////////////////
@@ -150,14 +179,16 @@ class Arrays
       $csv .= implode($delimiter, $headers);
     }
 
-    foreach ($array as $row) {
+    foreach ($array as $header => $row) {
       // Add line break if we're not on the first row
       if(!empty($csv)) $csv .= PHP_EOL;
 
       // Quote values and create row
-      foreach($row as $key => $value)
-        $row[$key] = '"' .stripslashes($value). '"';
-        $csv .= implode($delimiter, $row);
+      if(is_array($row)) {
+        foreach($row as $key => $value)
+          $row[$key] = '"' .stripslashes($value). '"';
+          $csv .= implode($delimiter, $row);
+      } else $csv .= $header.$delimiter.$row;
     }
 
     return $csv;
