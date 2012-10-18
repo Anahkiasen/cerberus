@@ -85,4 +85,37 @@ class Language
 
     return $relationships;
   }
+
+  /**
+   * Flattens out all language string in the current language for easier export
+   *
+   * @return array A flattened lang array
+   */
+  public static function compile($output = null)
+  {
+    $files = glob('application/language/' .static::current(). '/*');
+
+    // Fetch the content of all the language files
+    foreach($files as $file) {
+      $file = File::name($file);
+      if($file == 'validation') {
+        $lang[$file] = \Lang::line($file.'.custom')->get();
+        $lang[$file] = \Lang::line($file.'.attributes')->get();
+      } else $lang[$file] = \Lang::line($file)->get();
+    }
+
+    // Flatten the final array$return = array();
+    $lang = Arrays::flatten($lang);
+
+    // Sort the array
+    ksort($lang);
+
+    // If we provided an output file, save to it
+    if($output) {
+      $lang = Arrays::toCsv($lang);
+      \File::put(path('storage').'work'.DS.$output, $lang);
+    }
+
+    return $lang;
+  }
 }
