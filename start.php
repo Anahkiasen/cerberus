@@ -126,11 +126,18 @@ function d($content)
 
 /*
 |---------------------------------------------------------------------
-| Database backup
+| Database and language backup
 |---------------------------------------------------------------------
  */
 
-// If not in local or testing or whatever
+// Save language file every day ------------------------------------ /
+
+Cache::remember('language', function() {
+  return Language::compile('language.csv');
+}, 60 * 24);
+
+// Save database every day ----------------------------------------- /
+
 if (!Request::env() and !Request::cli()) {
 
   $backup = new Backup;
