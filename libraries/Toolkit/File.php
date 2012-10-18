@@ -121,7 +121,7 @@ class File extends \Laravel\File
 
     // Remove extension, sanitize name, put back extension
     $filename  = String::remove($extension, $filename);
-    $filename  = String::slugify($filename);
+    $filename  = String::slugify($filename, '-');
     $filename .= '.' . $extension;
 
     return $filename;
