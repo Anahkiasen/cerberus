@@ -8,6 +8,7 @@
  */
 namespace Cerberus\Toolkit;
 
+use \Input;
 use Cerberus\Toolkit\String;
 
 class File extends \Laravel\File
@@ -124,5 +125,30 @@ class File extends \Laravel\File
     $filename .= '.' . $extension;
 
     return $filename;
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  ///////////////////////////// UTILITIES ////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Get the results from a multiple files upload, and rearrange it
+   *
+   * @param  string $field The field name
+   * @return array        An array of files
+   */
+  public static function getMultipleFiles($field)
+  {
+    // Iterate over the files
+    $_files = Input::file($field);
+
+    // Recreate the files array
+    foreach ($_files as $column => $keys) {
+      foreach ($keys as $key => $value) {
+        $files[$key][$column] = $value;
+      }
+    }
+
+    return $files;
   }
 }
