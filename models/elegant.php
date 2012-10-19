@@ -56,6 +56,8 @@ class Elegant extends Eloquent
    */
   public function localize($localization)
   {
+    if(!$localization) return false;
+
     $langs = array_keys($localization[key($localization)]);
 
     // Build lang arrays
