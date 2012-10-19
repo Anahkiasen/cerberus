@@ -8,6 +8,8 @@
 
 namespace Cerberus\Toolkit;
 
+use \URL;
+
 class Language
 {
   /**
@@ -21,20 +23,20 @@ class Language
   }
 
   /**
-   * Get the URL to switch language, keeping the current page
+   * Get the URL to switch language, keeping the current page or not
    *
-   * @param  string  $lang  The new lang
+   * @param  string  $lang  The new language
    * @param  boolean $reset Whether navigation should be reset
    * @return string         An URL
    */
-  public static function url($lang, $reset = false)
+  public static function to($lang, $reset = false)
   {
-    if($reset) return \URL::base().'/'.$lang;
+    if($reset) return URL::base().'/'.$lang;
 
-    $url = str_replace(\URL::base(), null, \URL::current());
-    $url = \URL::base().'/'.$lang.$url;
-
-    return $url;
+    return str_replace(
+      URL::base(),
+      URL::base().'/'.$lang,
+      URL::current());
   }
 
   /**
