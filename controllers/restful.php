@@ -74,16 +74,17 @@ class CerberusRestful extends CerberusBase
   public function custom_update()
   {
     // Fetch input and its rules
-    $input = Input::get();
-    $isAdd = !array_get($input, 'id');
-    $item  = $isAdd ? new $this->model() : $this->object->find($input['id']);
+    $input   = Input::get();
+    $item_id = array_get($input, 'id');
+    $isAdd   = !$item_id;
+    $item    = $isAdd ? new $this->model() : $this->object->find($item_id);
 
     // Autocomplete uniqueness rules
     $rules = $this->rules();
     foreach($rules as $field => $rulz) {
       if(str_contains($rulz, 'unique:')) {
         $modifiedRules = preg_replace('#unique:([^,]+)([^|,])(\||$)#', 'unique:$1$2,'.$field, $rulz);
-        $modifiedRules = preg_replace('#unique:([^,]+)(,[^,]+)(\||$)#', 'unique:$1$2,'.$input['id'], $modifiedRules);
+        $modifiedRules = preg_replace('#unique:([^,]+)(,[^,]+)(\||$)#', 'unique:$1$2,'.$item_id, $modifiedRules);
         $rules[$field] = $modifiedRules;
       }
     }
