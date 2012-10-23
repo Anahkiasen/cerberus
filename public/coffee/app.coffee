@@ -6,7 +6,7 @@ window.action = (link, event, callback) ->
   .done (result) ->
 
     # Parse JSON if it isn't already
-    if Object.prototype.toString.call(result) != '[object Array]'
+    if Object.prototype.toString.call(result) != '[object Object]'
       result = JSON.parse(result)
 
     # Display any message in the results --------------------------- /
@@ -19,7 +19,7 @@ window.action = (link, event, callback) ->
         result.message = '<div class="alert alert-'+alert+'">' +result.message+ '</div>'
 
       # Prepend to main form/table
-      $('form, table').prepend result.message
+      $('#content form, #content table').prepend result.message
 
     # Execute the user's callback ---------------------------------- /
 
