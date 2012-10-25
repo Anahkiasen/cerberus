@@ -238,6 +238,10 @@
   margin-bottom: $margin
   margin-top: $margin
 
+//////////////////////////////////////////////////////////////////////
+///////////////////////// TWITTER BOOTSTRAP //////////////////////////
+//////////////////////////////////////////////////////////////////////
+
 =reset-bootstrap-icons
   [class^="icon-"],
   [class*=" icon-"]
@@ -246,3 +250,20 @@
     width: auto
     &:before
       opacity: 1
+
+=input-shadow($color)
+  textarea,
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime"],
+  input[type="date"],
+  input[type="time"],
+  input[type="number"],
+  input[type="email"],
+  input[type="url"],
+  input[type="search"],
+  input[type="color"],
+  .uneditable-input
+    &:focus
+      border-color: rgba($color, .8)
+      +box-shadow(inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba($color, 0.6))
