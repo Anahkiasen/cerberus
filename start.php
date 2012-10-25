@@ -30,6 +30,13 @@ $locale = Language::locale();
 |---------------------------------------------------------------------
  */
 
+// Link in another tab/window
+HTML::macro('blank_link', function($url, $link, $attributes = array()) {
+  $attributes['target'] = '_blank';
+
+  return HTML::link($url, $link, $attributes);
+});
+
 // Favicon
 HTML::macro('favicon', function($favicon) {
   return "<link href='" .URL::to_asset($favicon). "' rel='shortcut icon' />";
