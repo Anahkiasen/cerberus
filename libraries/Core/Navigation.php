@@ -6,7 +6,7 @@ use Cerberus\Toolkit\String;
 
 class Navigation
 {
-  public static $default = 'home';
+  public static $home = 'home';
 
   /**
    * Returns the current controller/route
@@ -33,7 +33,7 @@ class Navigation
         $route = $request->uri;
         $route = explode('/', $route);
         $controller = Arrays::get($route, 1, Arrays::get($route, 0));
-        if(empty($controller)) $controller = static::$default;
+        if(empty($controller)) $controller = static::$home;
       }
 
     // If we don't have object, try and parse the URL
