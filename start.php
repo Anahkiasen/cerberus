@@ -31,7 +31,7 @@ $locale = Language::locale();
  */
 
 // Link in another tab/window
-HTML::macro('blank_link', function($url, $link, $attributes = array()) {
+HTML::macro('blank_link', function($url, $link = null, $attributes = array()) {
   $attributes['target'] = '_blank';
 
   return HTML::link($url, $link, $attributes);
