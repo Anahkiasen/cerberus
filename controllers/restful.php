@@ -7,14 +7,16 @@ class CerberusRestful extends CerberusBase
    * Where the main for for this model will be
    * @var string
    */
-  private $form = null;
+  protected $form = null;
 
   public function __construct()
   {
     parent::__construct();
 
-    // Define form page
-    $this->form = $this->page.'.create';
+    // Define form page if it isn't already
+    if(!$this->form) {
+      $this->form = $this->page.'.create';
+    }
   }
 
   /**
