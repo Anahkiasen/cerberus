@@ -105,7 +105,13 @@ class File extends \Laravel\File
    */
   public static function extension($filename)
   {
-    return pathinfo($filename, PATHINFO_EXTENSION);
+    $extension = pathinfo($filename, PATHINFO_EXTENSION);
+    if(!$extension) {
+      var_dump($filename);
+      $extension = substr($filename, strpos('.', $filename));
+    }
+
+    return $extension;
   }
 
   /**
