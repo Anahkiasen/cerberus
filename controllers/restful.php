@@ -75,8 +75,12 @@ class CerberusRestful extends CerberusBase
    */
   public function custom_update()
   {
+    // Filter out foreign input that aren't model-related
+    $attributes = (array) DB::table($this->object->table())->first();
+    $attributes = array_keys($attributes);
+
     // Fetch input and its rules
-    $input   = Input::get();
+    $input   = Input::only($attributes);
     $item_id = array_get($input, 'id');
     $isAdd   = !$item_id;
     $item    = $isAdd ? new $this->model() : $this->object->find($item_id);
@@ -95,7 +99,6 @@ class CerberusRestful extends CerberusBase
     $model = $this->model;
     if(isset($model::$polyglot)) {
       $localization = Input::only($model::$polyglot);
-      $input = Input::except($model::$polyglot);
     }
 
     // Validate input
