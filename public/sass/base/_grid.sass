@@ -8,32 +8,35 @@
 
 // Responsive design ----------------------------------------------- /
 
-$wide       : 1200px
-$desktop    : 980px
-$ipad       : 768px
-$mobile     : 480px
-
-// Max-width
-$to-wide    : 0 $wide
-$to-desktop : 0 $desktop
-$to-ipad    : 0 $ipad
-$to-mobile  : 0 $mobile
-
-// Min-width
-$from-wide    : $wide    $total-columns
-$from-desktop : $desktop $total-columns
-$from-ipad    : $ipad    $total-columns
-$from-mobile  : $mobile  $total-columns
-
-// Bridges
-$from-desktop-to-wide : $desktop $total-columns $wide
-$from-ipad-to-wide    : $ipad    $total-columns $wide
-$from-ipad-to-desktop : $ipad    $total-columns $desktop
-$from-mobile-to-ipad  : $mobile  $total-columns $ipad
+$wider   : 1500px
+$wide    : 1200px
+$desktop : 980px
+$tablet  : 768px
+$mobile  : 480px
 
 // Define a number of items per row -------------------------------- /
 
 =perRow($perRow, $numberColumns: $total-columns, $padding: false, $last: false)
+  $span: $numberColumns / $perRow
+  +span-columns($span, $numberColumns, $padding)
+  @if $last
+    +nth-omega
+  @else
+    +nth-omega(#{$perRow}n, of-type)
+
+// Breakpoint helpers ---------------------------------------------- /
+
+=from-to($from, $to)
+  +at-breakpoint($from $total-columns $to)
+    @content
+
+=to($breakpoint)
+  +at-breakpoint(0 $breakpoint)
+    @content
+
+=from($breakpoint)
+  +at-breakpoint($breakpoint $total-columns)
+    @contentumberColumns: $total-columns, $padding: false, $last: false)
   $span: $numberColumns / $perRow
   +span-columns($span, $numberColumns, $padding)
   @if $last
