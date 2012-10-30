@@ -107,7 +107,6 @@ class File extends \Laravel\File
   {
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
     if(!$extension) {
-      var_dump($filename);
       $extension = substr($filename, strpos('.', $filename));
     }
 
