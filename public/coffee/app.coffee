@@ -1,3 +1,6 @@
+redirect = (link) ->
+  window.location = link
+
 window.action = (link, event, callback) ->
   event.preventDefault()
 
