@@ -36,45 +36,4 @@ $mobile  : 480px
 
 =from($breakpoint)
   +at-breakpoint($breakpoint $total-columns)
-    @contentumberColumns: $total-columns, $padding: false, $last: false)
-  $span: $numberColumns / $perRow
-  +span-columns($span, $numberColumns, $padding)
-  @if $last
-    +nth-omega
-  @else
-    +nth-omega(#{$perRow}n, of-type)
-
-// Breakpoint helpers ---------------------------------------------- /
-
-=from-to($from, $to)
-  +at-breakpoint($from $total-columns $to)
     @content
-
-=to($breakpoint)
-  +at-breakpoint(0 $breakpoint)
-    @content
-
-=from($breakpoint)
-  +at-breakpoint($breakpoint $total-columns)
-    @content
-
-// Regenerate the breakpoints in case the $total-columns variable has changed
-=regenerate-breakpoints
-
-  // Max-width
-  $to-wide    : 0 $wide
-  $to-desktop : 0 $desktop
-  $to-ipad    : 0 $ipad
-  $to-mobile  : 0 $mobile
-
-  // Min-width
-  $from-wide    : $wide $total-columns
-  $from-desktop : $desktop $total-columns
-  $from-ipad    : $ipad $total-columns
-  $from-mobile  : $mobile $total-columns
-
-  // Bridges
-  $from-desktop-to-wide : $desktop $total-columns $wide
-  $from-ipad-to-wide    : $ipad    $total-columns $wide
-  $from-ipad-to-desktop : $ipad    $total-columns $desktop
-  $from-mobile-to-ipad  : $mobile  $total-columns $ipad
