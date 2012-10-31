@@ -61,7 +61,7 @@ class Laravel
    */
   public static function thumb($image, $width = 200, $height = null)
   {
-    $image = 'public/'.$image;
+    if(!starts_with($image, 'public/')) $image = 'public/'.$image;
     if(!file_exists($image)) return $image;
 
     // Square by default
