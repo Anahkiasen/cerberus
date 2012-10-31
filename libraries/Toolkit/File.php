@@ -147,6 +147,9 @@ class File extends \Laravel\File
     // Iterate over the files
     $_files = Input::file($field);
 
+    // Abort if no files
+    if(!$_files) return false;
+
     // Recreate the files array
     foreach ($_files as $column => $keys) {
       foreach ($keys as $key => $value) {
