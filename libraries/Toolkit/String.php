@@ -185,6 +185,7 @@ class String extends \Str
   public static function slugify($string, $separator = '-')
   {
     $string = str_replace('_', ' ', $string);
+    $string = preg_replace('/([a-z])([A-Z])/', '$1 $2', $string);
 
     return self::slug($string, $separator);
   }
