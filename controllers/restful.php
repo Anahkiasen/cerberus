@@ -127,12 +127,8 @@ class CerberusRestful extends CerberusBase
     }
 
     // Save attributes
-    $model = $this->model;
-    if(!$isAdd) {
-      $model::update($input['id'], $input);
-      $model = $model::find($input['id']);
-    }
-    else $model = $model::create($input);
+    $model = $item->fill($input);
+    $model->save();
 
     // Update localized fields
     if(isset($localization)) {
