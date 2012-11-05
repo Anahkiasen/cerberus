@@ -79,8 +79,13 @@ class CerberusRestful extends CerberusBase
     $attributes = (array) DB::table($this->object->table())->first();
     $attributes = array_keys($attributes);
 
+    // If no model already exists, attempt a SHOW COLUMNS
+    if(!$attributes) {
+      $attributes = array_pluck(DB::query('SHOW COLUMNS FROM documents'), 'field');
+    }
+
     // Fetch input and its rules
-    $input   = Input::only($attributes);
+    $input   = $attributes ? Input::only($attributes) : Input::get();
     $item_id = array_get($input, 'id');
     $isAdd   = !$item_id;
     $item    = $isAdd ? new $this->model() : $this->object->find($item_id);
