@@ -110,7 +110,7 @@ class CerberusRestful extends CerberusBase
     if($rules) {
       $validation = Validator::make($input, $rules);
       if ($validation->fails()) {
-        $return = Redirect::to_action($this->page.'@'.($isAdd ? 'create' : 'update'), array($item->id))
+        $return = Redirect::to_action($this->controller.'@'.($isAdd ? 'create' : 'update'), array($item->id))
           ->with_input()
           ->with('items', $item->id)
           ->with_errors($validation);

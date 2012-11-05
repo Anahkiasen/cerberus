@@ -37,8 +37,17 @@ class CerberusBase extends Base_Controller
   {
     // Define page
     if (!$this->page) {
-      $page = explode('_', get_called_class());
-      $this->page = strtolower($page[0]);
+      $class = get_called_class();
+
+      // Compute controller
+      $controller = str_replace('_', '.', $class);
+      $controller = str_replace('.Controller', null, $controller);
+      $this->controller = strtolower($controller);
+
+      // Compute main page
+      $page = explode('_', $class);
+      $page = $page[sizeof($page) - 2];
+      $this->page = strtolower($page);
     }
 
     // Define model
@@ -46,7 +55,7 @@ class CerberusBase extends Base_Controller
     $this->object = new $this->model();
 
     // Define fallback page
-    $this->here = Redirect::to_action($this->page.'@index');
+    $this->here = Redirect::to_action($this->controller.'@index');
 
     // Share current page with view
     View::share('page', $this->page);
@@ -61,7 +70,7 @@ class CerberusBase extends Base_Controller
   {
     // Get view name
     $view = array_get(explode('_', $method), 1, $method);
-    $view = $this->page.'.'.$view;
+    $view = $this->controller.'.'.$view;
 
     // Return view if found
     if(View::exists($view)) return View::make($view);
