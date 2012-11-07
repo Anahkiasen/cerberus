@@ -40,6 +40,15 @@ $opacity: 0 25 50 75 100
   %opacity#{$o}
     +opacity($o / 100)
 
+// Reset lists to their default state
+%reset-list
+  list-style: none
+  margin: 0
+  padding: 0
+  li
+    margin: 0
+    padding: 0
+
 // Properties ------------------------------------------------------ /
 
 // Add basic transition to an element
