@@ -106,10 +106,10 @@ class Vendor
     // Create an empty file
     $file = null;
 
-    // Default configuration and plugins
+    // Default configuration
     $defaults = array(
       '0'                  => 'Folders',
-        'project_path'     => 'public/',
+        'project_path'     => './public/app/',
         'images_dir'       => 'img',
         'css_dir'          => 'css',
         'javascripts_dir'  => 'js',
@@ -123,12 +123,14 @@ class Vendor
 
       '2'                  => 'Extensions'
     );
+
+    // Plugins
     $defaultsPlugins = array(
-      'susy',
       'animate',
-      'rgbapng',
       'modular-scale',
-      'normalize'
+      'normalize',
+      'rgbapng',
+      'susy',
     );
 
     // Merge with given configuration parameters
