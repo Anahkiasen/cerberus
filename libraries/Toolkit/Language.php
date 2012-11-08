@@ -97,7 +97,7 @@ class Language
    */
   public static function compile($output = null)
   {
-    $files = glob('application/language/' .static::current(). '/*');
+    $files = glob(path('app').'language/' .static::current(). '/*');
 
     // Fetch the content of all the language files
     foreach($files as $file) {
@@ -107,6 +107,9 @@ class Language
         $lang[$file] = \Lang::line($file.'.attributes')->get();
       } else $lang[$file] = \Lang::line($file)->get();
     }
+
+    // If the website isn't localized, cancel
+    if(!isset($lang)) return false;
 
     // Flatten the final array$return = array();
     $lang = Arrays::flatten($lang);
