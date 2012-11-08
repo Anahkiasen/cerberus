@@ -6,6 +6,12 @@
 
 // Links helpers --------------------------------------------------- /
 
+HTML::macro('image_link', function($url, $image, $alt = null, $attributes = array()) {
+  $image = HTML::image($image, $alt, $attributes);
+
+  return HTML::decode(HTML::link($url, $image));
+});
+
 /**
  * Creates an HTML link that opens in another tab
  */
