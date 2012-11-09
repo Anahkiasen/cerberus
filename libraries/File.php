@@ -6,10 +6,9 @@
  * This class makes it easy to
  * create/edit/delete files
  */
-namespace Cerberus\Toolkit;
+namespace Cerberus;
 
 use \Input;
-use Cerberus\Toolkit\String;
 
 class File extends \Laravel\File
 {
@@ -106,7 +105,7 @@ class File extends \Laravel\File
   public static function extension($filename)
   {
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
-    if(!$extension) {
+    if (!$extension) {
       $extension = substr($filename, strpos('.', $filename));
     }
 

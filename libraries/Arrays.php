@@ -6,10 +6,7 @@
  * This class provides helpers to manipulate
  * and gather informations on arrays
  */
-
-namespace Cerberus\Toolkit;
-
-use Cerberus\Toolkit\String;
+namespace Cerberus;
 
 class Arrays
 {
@@ -30,7 +27,7 @@ class Arrays
     // If we are looking for serveral keys/values
     if (is_array($search)) {
       foreach($search as $s)
-        $array = self::remove($array, $s, $key);
+        $array = static::remove($array, $s, $key);
 
       return $array;
     }
@@ -60,7 +57,7 @@ class Arrays
    */
   public static function removeValue($array, $search)
   {
-    return self::remove($array, $search, false);
+    return static::remove($array, $search, false);
   }
 
   /**
@@ -88,14 +85,14 @@ class Arrays
     $_flattened = array();
 
     // Rewrite keys
-    foreach($array as $key => $value) {
+    foreach ($array as $key => $value) {
       if($parent) $key = $parent.'.'.$key;
       $_flattened[$key] = static::flatten($value, $key);
     }
 
     // Flatten
     $flattened = array();
-    foreach($_flattened as $key => $value) {
+    foreach ($_flattened as $key => $value) {
       if(is_array($value)) $flattened = array_merge($flattened, $value);
       else $flattened[$key] = $value;
     }
@@ -175,7 +172,7 @@ class Arrays
 
     // Fetch headers if requested
     if ($exportHeaders) {
-      $headers = array_keys(self::first($array));
+      $headers = array_keys(static::first($array));
       $csv .= implode($delimiter, $headers);
     }
 
@@ -184,7 +181,7 @@ class Arrays
       if(!empty($csv)) $csv .= PHP_EOL;
 
       // Quote values and create row
-      if(is_array($row)) {
+      if (is_array($row)) {
         foreach($row as $key => $value)
           $row[$key] = '"' .stripslashes($value). '"';
           $csv .= implode($delimiter, $row);

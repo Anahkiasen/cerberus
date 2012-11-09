@@ -6,8 +6,7 @@
  * This class provides various helpers
  * to manipulate and gather informations about strings
  */
-
-namespace Cerberus\Toolkit;
+namespace Cerberus;
 
 class String extends \Str
 {
@@ -41,9 +40,9 @@ class String extends \Str
    */
   public static function randomDate($year = null, $month = null, $day = null)
   {
-    if(!$year)  $year = rand(2005, 2012);
+    if(!$year)  $year  = rand(2005, 2012);
     if(!$month) $month = rand(1, 12);
-    if(!$day)   $day = rand(1, 30);
+    if(!$day)   $day   = rand(1, 30);
 
     return $year.'-'.$month.'-'.$day. ' ' .rand(1,23).':'.rand(1,59).':'.rand(1,59);
   }
@@ -54,6 +53,7 @@ class String extends \Str
 
   /**
    * Removes a part of a string
+   *
    * @param  string $delete The part of the string to remove
    * @param  string $string The string to correct
    * @return string         The corrected string
@@ -155,21 +155,25 @@ class String extends \Str
     }
   }
 
-  /**
-   * Determine if a given string begins with a given value.
-   *
-   * @param  string  $haystack The string to look in
-   * @param  string  $needle   The string to look for
-   * @return boolean
-   */
-  public static function startsWith($haystack, $needle)
-  {
-    return strpos($haystack, $needle) === 0;
-  }
-
   ////////////////////////////////////////////////////////////////////
   //////////////////////////// ALIASES ///////////////////////////////
   ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Alias for str_contains
+   */
+  public static function contains($haystack, $needle)
+  {
+    return str_contains($haystack, $needle);
+  }
+
+  /**
+   * Alias for starts_with
+   */
+  public static function startsWith($haystack, $needle)
+  {
+    return starts_with($haystack, $needle);
+  }
 
   /**
    * Alias for str_replace

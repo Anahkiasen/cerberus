@@ -1,8 +1,11 @@
 <?php
-namespace Cerberus\Core;
-
-use Cerberus\Toolkit\Arrays;
-use Cerberus\Toolkit\String;
+/**
+ *
+ * Navigation
+ *
+ * Navigation helpers
+ */
+namespace Cerberus;
 
 class Navigation
 {

@@ -6,15 +6,10 @@
  * Does backup of the database, manage them
  * clean them and load them back
  */
+namespace Cerberus;
 
-namespace Cerberus\Modules;
-
-use Cerberus\Toolkit\Arrays;
-use Cerberus\Toolkit\Directory;
-use Cerberus\Toolkit\File;
-use Cerberus\Toolkit\String;
 use Laravel\Database as DB;
-use Laravel\Lang;
+use \Lang;
 
 class Backup
 {
@@ -58,6 +53,9 @@ class Backup
   {
     // If we still don't have a valid date, cancel procedure
     if (!$this->checkDate()) return false;
+
+    // Cancel on non MySQL databases
+    if (Config::get('database.default') != 'mysql') return false;
 
     $tables = $this->tables();
     $unsavedTables = array();

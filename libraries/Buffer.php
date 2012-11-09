@@ -6,10 +6,7 @@
  * This class handles output buffering,
  * content loading and setting content type headers.
  */
-
-namespace Cerberus\Toolkit;
-
-use Cerberus\Toolkit\Arrays;
+namespace Cerberus;
 
 class Buffer
 {

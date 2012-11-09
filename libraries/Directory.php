@@ -6,10 +6,7 @@
  * This class provides helpers to manipulate
  * and gather informations on directories
  */
-namespace Cerberus\Toolkit;
-
-use Cerberus\Toolkit\Arrays;
-use Cerberus\Toolkit\String;
+namespace Cerberus;
 
 class Directory
 {
