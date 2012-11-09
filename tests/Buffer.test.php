@@ -1,7 +1,5 @@
 <?php
 use Cerberus\Buffer;
-
-// Dependencies
 use Cerberus\File;
 
 class BufferTests extends CerberusTests
@@ -9,13 +7,13 @@ class BufferTests extends CerberusTests
   /**
    * Check if we're able to start an output buffer
    */
-  public function testStart()
+  public function testCanStartBuffer()
   {
     Buffer::start();
 
     $handlers = ob_list_handlers();
-    self::assertArrayHasKey('0', $handlers);
-    self::assertEquals('mb_output_handler', $handlers[0]);
+    $this->assertArrayHasKey('0', $handlers);
+    $this->assertEquals('mb_output_handler', $handlers[0]);
 
     ob_end_flush();
   }
@@ -24,7 +22,7 @@ class BufferTests extends CerberusTests
    * Check if we manage nested buffers, while accounting for
    * the 3 supplementary buffers started by Laravel
    */
-  public function testNested()
+  public function testCanNestBuffers()
   {
     Buffer::start();
       Buffer::start();
@@ -34,30 +32,30 @@ class BufferTests extends CerberusTests
       Buffer::end();
     Buffer::end();
 
-    self::assertCount(5, $handlers);
+    $this->assertCount(5, $handlers);
   }
 
   /**
    * Check if we're able to properly close a buffer and get its content
    */
-  public function testEndReturn()
+  public function testEndCanReturnBuffer()
   {
-    self::expectOutputString(null);
+    $this->expectOutputString(null);
 
     Buffer::start();
       echo 'This is a test';
     $return = Buffer::end(true);
 
-    self::assertEquals('This is a test', $return);
+    $this->assertEquals('This is a test', $return);
   }
 
   /**
    * Check if content within an output buffer is properly released
    * when the buffer ends
    */
-  public function testEndEcho()
+  public function testCanPrintOutBuffer()
   {
-    self::expectOutputString('This is a test');
+    $this->expectOutputString('This is a test');
 
     Buffer::start();
       echo 'This is a test';
@@ -67,23 +65,23 @@ class BufferTests extends CerberusTests
   /**
    * Check if the shortcut for end(true) works for getting a buffer's content
    */
-  public function testEndGet()
+  public function testCanReturnBuffer()
   {
-    self::expectOutputString(null);
+    $this->expectOutputString(null);
 
     Buffer::start();
       echo 'This is a test';
     $return = Buffer::get();
 
-    self::assertEquals('This is a test', $return);
+    $this->assertEquals('This is a test', $return);
   }
 
   /**
    * Check if we're able to release a buffer and have its content output
    */
-  public function testEndFlush()
+  public function testCanReleaseBufferContent()
   {
-    self::expectOutputString('This is a test');
+    $this->expectOutputString('This is a test');
 
     Buffer::start();
       echo 'This is a test';
@@ -93,14 +91,14 @@ class BufferTests extends CerberusTests
   /**
    * Check if we're able to load a file and execute its content
    */
-  public function testLoad()
+  public function testCanLoadFilesWithBuffer()
   {
     $file = 'test.php';
     File::write($file, '<?php echo "This is a test" ?>');
 
-    $test = Buffer::load($file);
+    $load = Buffer::load($file);
 
-    self::assertEquals('This is a test', $test);
+    $this->assertEquals('This is a test', $load);
     File::remove($file);
   }
 
@@ -111,6 +109,6 @@ class BufferTests extends CerberusTests
   {
     $type = Buffer::type('json');
 
-    self::assertEquals('Content-type: application/json; charset=UTF-8', $type);
+    $this->assertEquals('Content-type: application/json; charset=UTF-8', $type);
   }
 }

@@ -26,8 +26,9 @@ class Arrays
   {
     // If we are looking for serveral keys/values
     if (is_array($search)) {
-      foreach($search as $s)
+      foreach ($search as $s) {
         $array = static::remove($array, $s, $key);
+      }
 
       return $array;
     }
@@ -131,22 +132,23 @@ class Arrays
     */
   public static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR)
   {
-      // Make sur the passed argument is an array
-      if(!is_array($array)) return $array;
+    // Make sur the passed argument is an array
+    if(!is_array($array)) return $array;
 
-      // Get correct PHP constant for direction
+    // Get correct PHP constant for direction
     $direction = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
 
     // Create
     $helper = array();
     foreach ($array as $key => $row) {
-      $helper[$key] = (is_object($row))
-        ? (method_exists($row, $field))
-          ? String::lower($row -> $field())
-          : String::lower($row -> $field)
-        : (isset($row[$field]))
-          ? String::lower($row[$field])
-          : $row;
+      if (is_object($row)) {
+        if(method_exists($row, $field)) $row = $row->$field();
+        elseif(isset($row->$field)) $row = $row->$field;
+      } else {
+        if(isset($row[$field])) $row = $row[$field];
+      }
+
+      $helper[$key] = $row;
     }
 
     array_multisort($helper, $direction, $method, $array);

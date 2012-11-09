@@ -153,4 +153,31 @@ class ArraysTests extends CerberusTests
 
     $this->assertEquals($flatten, $flattened);
   }
+
+  public function testCanSortMultidimensionnalArray()
+  {
+    $entry1 = array('id' => 2,  'name' => 'loo');
+    $entry2 = array('id' => 1,  'name' => 'foo');
+    $entry3 = array('id' => 10, 'name' => 'bar');
+    $multi  = array($entry1, $entry2, $entry3);
+    $sorted = array($entry2, $entry1, $entry3);
+
+    $multi = Arrays::sort($multi, 'id', 'ASC');
+
+    $this->assertEquals($sorted, $multi);
+  }
+
+  public function testCanSortObjectCollections()
+  {
+    $entry1 = (object) array('id' => 2,  'name' => 'loo');
+    $entry2 = (object) array('id' => 1,  'name' => 'foo');
+    $entry3 = (object) array('id' => 10, 'name' => 'bar');
+    $entry4 = (object) array('foo' => 'bar');
+    $multi  = array($entry4, $entry3, $entry2, $entry1);
+    $sorted = array($entry4, $entry1, $entry2, $entry3);
+
+    $multi = Arrays::sort($multi, 'name', 'DESC');
+
+    $this->assertEquals($sorted, $multi);
+  }
 }
