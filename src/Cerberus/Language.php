@@ -70,6 +70,19 @@ class Language
   }
 
   /**
+   * Check whether a language is valid or not
+   *
+   * @param string $language The language
+   * @return boolean
+   */
+  public static function valid($language)
+  {
+    $languages = Config::get('application.languages');
+
+    return in_array($language, $languages);
+  }
+
+  /**
    * Get the URL to switch language, keeping the current page or not
    *
    * @param  string  $lang  The new language
@@ -78,7 +91,11 @@ class Language
    */
   public static function to($lang, $reset = false)
   {
+    // Reset path or not
     if($reset) return URL::base().'/'.$lang;
+
+    // Check for invalid languages
+    if(!static::valid($lang)) $lang = static::current();
 
     return str_replace(
       URL::base(),
@@ -135,7 +152,7 @@ class Language
     // If the website isn't localized, cancel
     if(!isset($lang)) return false;
 
-    // Flatten the final array$return = array();
+    // Flatten the final array
     $lang = Arrays::flatten($lang);
 
     // Sort the array
