@@ -7,7 +7,9 @@
  */
 namespace Cerberus;
 
-class HTML extends \HTML
+use \URL;
+
+class HTML extends \Laravel\HTML
 {
   /**
    * Generates an image wrapped in a link
