@@ -9,6 +9,7 @@ class ArraysTests extends CerberusTests
     'key1' => 'value1',
     'key2' => 'value2',
     'key3' => 'value3');
+
   public $array = array(
     array('foo1' => 'bar1', 'foo2' => 'bar2'),
     array('foo1' => 'kal1', 'foo2' => 'kal2'),
@@ -99,30 +100,6 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(13, $average1);
     $this->assertEquals(0,  $average2);
     $this->assertEquals(10, $average3);
-  }
-
-  public function testCsv()
-  {
-    $array = $this->array;
-    $csv = Arrays::toCsv($array);
-
-    $this->assertEquals('"bar1";"bar2"' . PHP_EOL . '"kal1";"kal2"', $csv);
-  }
-
-  public function testCsvDelimiter()
-  {
-    $array = $this->array;
-    $csv = Arrays::toCsv($array, ',');
-
-    $this->assertEquals('"bar1","bar2"' . PHP_EOL . '"kal1","kal2"', $csv);
-  }
-
-  public function testCsvHeaders()
-  {
-    $array = $this->array;
-    $csv = Arrays::toCsv($array, ',', true);
-
-    $this->assertEquals('foo1,foo2' . PHP_EOL . '"bar1","bar2"' . PHP_EOL . '"kal1","kal2"', $csv);
   }
 
   public function testFirst()
