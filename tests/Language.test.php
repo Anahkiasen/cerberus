@@ -3,19 +3,19 @@ use Cerberus\Language;
 
 class LanguageTests extends CerberusTests
 {
-  public function testCurrent()
+  public function testCanGetCurrentLanguage()
   {
     $current = Config::get('application.language');
 
     $this->assertEquals($current, Language::current());
   }
 
-  public function testLocale()
+  public function testCanSetLocaleFromLanguage()
   {
     $locale = Language::locale('en');
     $translatedString = strftime('%B', mktime(0, 0, 0, 1, 1, 2012));
 
-    $this->assertEquals('en_US.UTF8', $locale);
+    $this->assertContains($locale, array('en_US.UTF8', 'en_US'));
     $this->assertEquals('January', $translatedString);
   }
 }

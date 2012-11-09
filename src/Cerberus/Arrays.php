@@ -171,7 +171,9 @@ class Arrays
    */
   public static function set($array, $key, $value)
   {
-    return array_set($array, $key, $value);
+    array_set($array, $key, $value);
+
+    return $array;
   }
 
   /**

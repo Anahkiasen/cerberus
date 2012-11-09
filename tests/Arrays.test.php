@@ -1,10 +1,13 @@
 <?php
-require '_bootstrap.php';
+require 'startTests.php';
 
 use Cerberus\Arrays;
 
 class ArraysTests extends CerberusTests
 {
+
+  // Mock data ----------------------------------------------------- /
+
   public $arraySimple = array(
     'key1' => 'value1',
     'key2' => 'value2',
@@ -34,7 +37,7 @@ class ArraysTests extends CerberusTests
    * Test the get function
    * @dataProvider provideGet
    */
-  public function testGet($key, $fallback, $shouldBe)
+  public function testCanGetValueFromArray($key, $fallback, $shouldBe)
   {
     $array = array(
       'key1' => 'value1',
@@ -47,7 +50,16 @@ class ArraysTests extends CerberusTests
     $this->assertEquals($shouldBe, $returnValue);
   }
 
-  public function testRemoveKey()
+  public function testCanSetValueInArray()
+  {
+    $array = array('foo' => 'foo', 'bar' => 'bar');
+    $array = Arrays::set($array, 'kal.ter', 'foo');
+    $matcher = array('foo' => 'foo', 'bar' => 'bar', 'kal' => array('ter' => 'foo'));
+
+    $this->assertEquals($matcher, $array);
+  }
+
+  public function testCanRemoveKeyFromArray()
   {
     $array = $this->arraySimple;
     $return = Arrays::remove($array, 'key2');
@@ -55,7 +67,7 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(array('key1' => 'value1', 'key3' => 'value3'), $return);
   }
 
-  public function testRemoveKeyMultiple()
+  public function testCanRemoveMultipleKeysFromArray()
   {
     $array = $this->arraySimple;
     $return = Arrays::remove($array, array('key2', 'key3'));
@@ -63,7 +75,7 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(array('key1' => 'value1'), $return);
   }
 
-  public function testRemoveValue()
+  public function testCanRemoveValueFromArray()
   {
     $array = $this->arraySimple;
     $return = Arrays::removeValue($array, 'value2');
@@ -71,7 +83,7 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(array('key1' => 'value1', 'key3' => 'value3'), $return);
   }
 
-  public function testRemoveValueMultiple()
+  public function testCanRemoveMultipleValuesFromArray()
   {
     $array = $this->arraySimple;
     $return = Arrays::removeValue($array, array('value2', 'value3'));
@@ -79,7 +91,7 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(array('key1' => 'value1'), $return);
   }
 
-  public function testPluck()
+  public function testCanPluckColumns()
   {
     $array = $this->array;
     $return = Arrays::pluck($array, 'foo1');
@@ -87,7 +99,7 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(array(0 => 'bar1', 1 => 'kal1'), $return);
   }
 
-  public function testAverage()
+  public function testCanCalculateAverageValue()
   {
     $average1 = array(5, 10, 15, 20);
     $average2 = array('foo', 'b', 'ar');
@@ -102,7 +114,15 @@ class ArraysTests extends CerberusTests
     $this->assertEquals(10, $average3);
   }
 
-  public function testFirst()
+  public function testCanGetRandomValue()
+  {
+    $array = array(5, 10, 15, 20);
+    $random = Arrays::random($array);
+
+    $this->assertContains($random, $array);
+  }
+
+  public function testCanGetFirstValue()
   {
     $array = $this->arraySimple;
     $first = Arrays::first($array);
@@ -111,5 +131,26 @@ class ArraysTests extends CerberusTests
     $array = $this->array;
     $first = Arrays::first($array);
     $this->assertEquals(array('foo1' => 'bar1', 'foo2' => 'bar2'), $first);
+  }
+
+  public function testCanFlattenArraysToDotNotation()
+  {
+    $array = array(
+      'foo' => 'bar',
+      'kal' => array(
+        'foo' => array(
+          'bar', 'ter',
+        ),
+      ),
+    );
+    $flattened = array(
+      'foo' => 'bar',
+      'kal.foo.0' => 'bar',
+      'kal.foo.1' => 'ter',
+    );
+
+    $flatten = Arrays::flatten($array);
+
+    $this->assertEquals($flatten, $flattened);
   }
 }
