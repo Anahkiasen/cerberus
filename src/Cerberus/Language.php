@@ -143,7 +143,7 @@ class Language
 
     // If we provided an output file, save to it
     if ($output) {
-      $lang = Arrays::toCsv($lang);
+      $lang = Parse::toCSV($lang);
       \File::put(path('storage').'work'.DS.$output, $lang);
     }
 
