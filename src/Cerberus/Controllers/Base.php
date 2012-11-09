@@ -1,8 +1,13 @@
 <?php
+namespace Cerberus\Controllers;
 
-class CerberusBase extends Base_Controller
+use \Redirect;
+use \Base_Controller;
+use \Str;
+use \View;
+
+class Base extends Base_Controller
 {
-
   /**
    * The current page
    *

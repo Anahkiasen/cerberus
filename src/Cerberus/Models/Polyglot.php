@@ -1,5 +1,9 @@
 <?php
-class Elegant extends Eloquent
+namespace Cerberus\Models;
+
+use \Config;
+
+class Polyglot extends Elegant
 {
   public static $polyglot = false;
 
@@ -37,9 +41,10 @@ class Elegant extends Eloquent
 
   public function __get($key)
   {
-    if(static::$polyglot) {
-      if(in_array($key, static::$polyglot)) {
+    if (static::$polyglot) {
+      if (in_array($key, static::$polyglot)) {
         $lang = Config::get('application.language');
+
         return $this->lang ? $this->lang->$key : null;
       }
     }
@@ -61,25 +66,18 @@ class Elegant extends Eloquent
     $langs = array_keys($localization[key($localization)]);
 
     // Build lang arrays
-    foreach($localization as $key => $value) {
-      foreach($langs as $lang) {
+    foreach ($localization as $key => $value) {
+      foreach ($langs as $lang) {
         ${$lang}[$key] = array_get($value, $lang);
         ${$lang}['lang'] = $lang;
       }
     }
 
     // Update
-    foreach($langs as $lang) {
+    foreach ($langs as $lang) {
       if($this->$lang) $this->$lang()->update($$lang);
       else $this->$lang()->insert($$lang);
     }
-  }
-
-  // Attributes ---------------------------------------------------- /
-
-  public function __toString()
-  {
-    return (string) $this->name;
   }
 
   // Helpers ------------------------------------------------------- /

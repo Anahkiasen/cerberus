@@ -1,6 +1,16 @@
 <?php
+namespace Cerberus\Controllers;
 
-class CerberusRestful extends CerberusBase
+use \Babel;
+use \DB;
+use \Former;
+use \Input;
+use \Redirect;
+use \Str;
+use \Validator;
+use \View;
+
+class Restful extends Base
 {
 
   /**
@@ -14,7 +24,7 @@ class CerberusRestful extends CerberusBase
     parent::__construct();
 
     // Define form page if it isn't already
-    if(!$this->form) {
+    if (!$this->form) {
       $this->form = $this->page.'.create';
     }
   }
@@ -63,7 +73,10 @@ class CerberusRestful extends CerberusBase
       if(!$item) return Redirect::to_action($this->here.'@create');
     } else $item = $item_id;
 
-    Former::populate($item);
+    // Populate form if Former is installed
+    if (class_exists('Former')) {
+      Former::populate($item);
+    }
 
     return View::make($this->form)
       ->with_item($item)
@@ -80,7 +93,7 @@ class CerberusRestful extends CerberusBase
     $attributes = array_keys($attributes);
 
     // If no model already exists, attempt a SHOW COLUMNS
-    if(!$attributes) {
+    if (!$attributes) {
       $attributes = array_pluck(DB::query('SHOW COLUMNS FROM documents'), 'field');
     }
 
@@ -92,8 +105,8 @@ class CerberusRestful extends CerberusBase
 
     // Autocomplete uniqueness rules
     $rules = $this->rules();
-    foreach($rules as $field => $rulz) {
-      if(str_contains($rulz, 'unique:')) {
+    foreach ($rules as $field => $rulz) {
+      if (str_contains($rulz, 'unique:')) {
         $modifiedRules = preg_replace('#unique:([^,]+)([^|,])(\||$)#', 'unique:$1$2,'.$field, $rulz);
         $modifiedRules = preg_replace('#unique:([^,]+)(,[^,]+)(\||$)#', 'unique:$1$2,'.$item_id, $modifiedRules);
         $rules[$field] = $modifiedRules;
@@ -102,12 +115,12 @@ class CerberusRestful extends CerberusBase
 
     // Get localized fields
     $model = $this->model;
-    if(isset($model::$polyglot)) {
+    if (isset($model::$polyglot)) {
       $localization = Input::only($model::$polyglot);
     }
 
     // Validate input
-    if($rules) {
+    if ($rules) {
       $validation = Validator::make($input, $rules);
       if ($validation->fails()) {
         $return = Redirect::to_action($this->controller.'@'.($isAdd ? 'create' : 'update'), array($item->id))
@@ -131,7 +144,7 @@ class CerberusRestful extends CerberusBase
     $model->save();
 
     // Update localized fields
-    if(isset($localization)) {
+    if (isset($localization)) {
       $model->localize($localization);
     }
 
@@ -171,7 +184,7 @@ class CerberusRestful extends CerberusBase
     $name = $item ? $item->name : null;
 
     // Remove item
-    if($item) {
+    if ($item) {
       $state = $item->delete();
       $state = $state == 1;
     }
