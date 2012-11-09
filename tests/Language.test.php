@@ -1,5 +1,5 @@
 <?php
-use Cerberus\Toolkit\Language;
+use Cerberus\Language;
 
 class LanguageTests extends CerberusTests
 {

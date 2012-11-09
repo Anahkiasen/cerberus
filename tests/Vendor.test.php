@@ -1,5 +1,5 @@
 <?php
-use Cerberus\Toolkit\Vendor;
+use Cerberus\Vendor;
 
 class VendorTest extends CerberusTests
 {

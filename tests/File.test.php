@@ -1,5 +1,5 @@
 <?php
-use Cerberus\Toolkit\File;
+use Cerberus\File;
 
 class FileTests extends CerberusTests
 {

@@ -1,7 +1,7 @@
 <?php
 require '_bootstrap.php';
 
-use Cerberus\Toolkit\Arrays;
+use Cerberus\Arrays;
 
 class ArraysTests extends CerberusTests
 {

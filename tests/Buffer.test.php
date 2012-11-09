@@ -1,8 +1,8 @@
 <?php
-use Cerberus\Toolkit\Buffer;
+use Cerberus\Buffer;
 
 // Dependencies
-use Cerberus\Toolkit\File;
+use Cerberus\File;
 
 class BufferTests extends CerberusTests
 {

@@ -1,8 +1,8 @@
 <?php
-use Cerberus\Toolkit\Directory;
+use Cerberus\Directory;
 
 // Dependencies
-use Cerberus\Toolkit\File;
+use Cerberus\File;
 
 class DirectoryTest extends PHPUnit_Framework_TestCase
 {

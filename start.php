@@ -1,6 +1,6 @@
 <?php
-use Cerberus\Modules\Backup;
-use Cerberus\Toolkit\Language;
+use Cerberus\Backup;
+use Cerberus\Language;
 
 /*
 |---------------------------------------------------------------------
@@ -19,7 +19,6 @@ Autoloader::map(array(
   'CerberusRestful' => Bundle::path('cerberus') . 'controllers' . DS . 'restful.php',
   'Elegant'         => Bundle::path('cerberus') . 'models'      . DS . 'elegant.php',
 ));
-
 
 // Set correct language
 $locale = Language::locale();

@@ -1,5 +1,5 @@
 <?php
-use Cerberus\Toolkit\String;
+use Cerberus\String;
 
 class StringTests extends CerberusTests
 {
