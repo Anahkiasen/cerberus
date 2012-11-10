@@ -22,8 +22,10 @@ class Thumb
    */
   public static function cacheRemote($image)
   {
+    if(!$image) return $image;
+
     // Put remote image in cache if we haven't already
-    $path = 'public/cache/remote/'.static::hash($image);
+    $path = 'public/'.static::hash($image);
     if (!file_exists($path)) {
       File::put($path, file_get_contents($image));
     }
@@ -96,6 +98,7 @@ class Thumb
   private static function hash($image)
   {
     $hash  = 'cache/';
+    if (String::contains($image, 'http')) $hash .= 'remote/';
     $hash .= md5($image).'.'.File::extension($image);
 
     return $hash;
