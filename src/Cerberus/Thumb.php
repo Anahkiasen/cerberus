@@ -15,17 +15,28 @@ use \Imwg;
 class Thumb
 {
   /**
+   * The folder where thumbs reside
+   * @var string
+   */
+  public static $folder = 'cache/';
+
+  /**
    * Cache a remote image
    *
-   * @param string $image The image to cache
+   * @param  string $image The image to cache
    * @return string A path to the cached image
    */
-  public static function cacheRemote($image)
+  public static function cacheRemote($image, $filename = null)
   {
     if(!$image) return $image;
 
+    // Create filename
+    $path = 'public/';
+    $path .= $filename
+      ? static::hash($filename.'.'.File::extension($image), false)
+      : static::hash($image);
+
     // Put remote image in cache if we haven't already
-    $path = 'public/'.static::hash($image);
     if (!file_exists($path)) {
       File::put($path, file_get_contents($image));
     }
@@ -72,10 +83,27 @@ class Thumb
     // Thumb generation
     Imwg::open(path('public').$image)
       ->resize($width, $height, 'crop')
-      ->save('public/cache/'.$thumb, 75);
+      ->save('public/' .static::$folder.$thumb, 75);
 
-    return 'cache/'.$thumb;
+    return static::$folder.$thumb;
   }
+
+  /**
+   * Whether a thumb for a given image exists
+   *
+   * @param  string $thumb The image to check for
+   * @return boolean
+   */
+  public static function exists($thumb)
+  {
+    if (!String::contains($thumb, '.')) $thumb .= '.jpg';
+    $thumb = File::sanitize($thumb);
+    $thumb = static::$folder.$thumb;
+
+    return file_exists(path('public').$thumb) ? $thumb : false;
+  }
+
+  // Helpers ------------------------------------------------------- /
 
   /**
    * Get the path to an image
@@ -95,11 +123,19 @@ class Thumb
    * @param array $image An image generated
    * @return string A cache hash
    */
-  private static function hash($image)
+  private static function hash($image, $crypt = true)
   {
-    $hash  = 'cache/';
-    if (String::contains($image, 'http')) $hash .= 'remote/';
-    $hash .= md5($image).'.'.File::extension($image);
+    $hash  = static::$folder;
+
+    // If the image is remote, put it in a separate folder
+    if (String::contains($image, 'http')) {
+      $hash .= 'remote/';
+    }
+
+    // Crypt the name if asked
+    $hash .= $crypt
+      ? md5($image).'.'.File::extension($image)
+      : File::sanitize($image);
 
     return $hash;
   }
