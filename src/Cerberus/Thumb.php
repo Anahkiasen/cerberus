@@ -8,12 +8,29 @@
  */
 namespace Cerberus;
 
+use \Closure;
 use \Config;
 use \Imwg;
-use \Closure;
 
 class Thumb
 {
+  /**
+   * Cache a remote image
+   *
+   * @param string $image The image to cache
+   * @return string A path to the cached image
+   */
+  public static function cacheRemote($image)
+  {
+    // Put remote image in cache if we haven't already
+    $path = 'public/cache/remote/'.static::hash($image);
+    if (!file_exists($path)) {
+      File::put($path, file_get_contents($image));
+    }
+
+    return String::remove('public/', $path);
+  }
+
   public static function closure($from, Closure $closure)
   {
     // Generates a hash for this image
@@ -41,17 +58,17 @@ class Thumb
     if (!str_contains($image, 'http')) {
       $image = static::path($image);
       if(!file_exists($image)) return $image;
-    }
+    } else $image = static::cacheRemote($image);
+
+    // Generate hash
+    $thumb  = md5($image.$width.$height);
+    $thumb .= '.'.File::extension($image);
 
     // Square by default
     if(!$height) $height = $width;
 
-    // Generate hash
-    $thumb = md5($image.$width.$height);
-    $thumb .= '.'.File::extension($image);
-
     // Thumb generation
-    Imwg::open($image)
+    Imwg::open(path('public').$image)
       ->resize($width, $height, 'crop')
       ->save('public/cache/'.$thumb, 75);
 
