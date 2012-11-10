@@ -39,6 +39,14 @@ class Thumb
     // Put remote image in cache if we haven't already
     if (!file_exists($path)) {
       File::put($path, file_get_contents($image));
+
+      // Convert to JPG
+      if (String::contains($path, 'png')) {
+        $jpg = str_replace('png', 'jpg', $path);
+        Imwg::open($path)->convert('JPG')->save($jpg);
+        File::remove($path);
+        $path = $jpg;
+      }
     }
 
     return String::remove('public/', $path);
