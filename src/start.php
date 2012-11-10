@@ -59,6 +59,26 @@ function d($content)
 
 /*
 |---------------------------------------------------------------------
+| Illuminate\Glow
+|---------------------------------------------------------------------
+ */
+
+Route::get('glow.js', function() {
+
+  Config::set('application.profiler', false);
+
+  // Get Illuminate's glow
+  $js = File::get('public/bundles/cerberus/js/glow.js');
+  $js = str_replace('%BASE%', URL::base().'/', $js);
+
+  // Set correct header
+  $headers['Content-Type'] = 'application/javascript; charset=utf-8';
+
+  return new Response($js, 200, $headers);
+});
+
+/*
+|---------------------------------------------------------------------
 | Database and language backup
 |---------------------------------------------------------------------
  */
