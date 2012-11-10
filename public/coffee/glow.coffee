@@ -1,4 +1,4 @@
-Glow =
+window.Glow =
 
   # ATTRIBUTES -----------------------------------
 
