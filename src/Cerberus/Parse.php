@@ -26,6 +26,32 @@ class Parse
     return json_decode($data, true);
   }
 
+  /**
+   * Converts data from CSV
+   *
+   * @param string $data The data to parse
+   *
+   * @return mixed
+   */
+  public static function fromCSV($data)
+  {
+    // Explodes rows
+    $array = explode("\r", $string);
+    if (count($array == 1)) $array = explode("\n", $string);
+
+    // Parse the columns in each row
+    foreach ($array as $row => $rawColumns) {
+
+      // Prepare for the various separators
+      $columns = explode("\t", $rawColumns);
+      if(sizeof($columns) == 1) $columns = explode(';', $rawColumns);
+
+      $array[$row] = $columns;
+    }
+
+    return $array;
+  }
+
   ////////////////////////////////////////////////////////////////////
   //////////////////////////////// TO ////////////////////////////////
   ////////////////////////////////////////////////////////////////////
