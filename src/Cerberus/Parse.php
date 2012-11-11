@@ -92,8 +92,13 @@ class Parse
     // Quote values and create row
     foreach ($data as $header => $row) {
 
-      if (!is_array($row)) $csv[] = $header.$delimiter.$row;
+      // If single column
+      if (!is_array($row)) {
+        $csv[] = '"'.$header.'"'.$delimiter.'"'.$row.'"';
+        continue;
+      }
 
+      // Else add values
       foreach($row as $key => $value) {
         $row[$key] = '"' .stripslashes($value). '"';
       }
