@@ -80,30 +80,27 @@ class Parse
     // Convert objects to arrays
     if(is_object($data)) $data = (array) $data;
 
-    // Convert arrays
-    if(is_string($data)) return $data;
-    elseif (is_array($data)) {
-      $csv = null;
+    // Don't convert if it's not an array
+    if(!is_array($data)) return $data;
 
-      // Fetch headers if requested
-      if ($exportHeaders) {
-        $headers = array_keys(Arrays::first($data));
-        $csv .= implode($delimiter, $headers);
-      }
-
-      foreach ($data as $header => $row) {
-        // Add line break if we're not on the first row
-        if(!empty($csv)) $csv .= PHP_EOL;
-
-        // Quote values and create row
-        if (is_array($row)) {
-          foreach($row as $key => $value)
-            $row[$key] = '"' .stripslashes($value). '"';
-            $csv .= implode($delimiter, $row);
-        } else $csv .= $header.$delimiter.$row;
-      }
-
-      return $csv;
+    // Fetch headers if requested
+    if ($exportHeaders) {
+      $headers = array_keys(Arrays::first($data));
+      $csv[] = implode($delimiter, $headers);
     }
+
+    // Quote values and create row
+    foreach ($data as $header => $row) {
+
+      if (!is_array($row)) $csv[] = $header.$delimiter.$row;
+
+      foreach($row as $key => $value) {
+        $row[$key] = '"' .stripslashes($value). '"';
+      }
+
+      $csv[] = implode($delimiter, $row);
+    }
+
+    return implode(PHP_EOL, $csv);
   }
 }
