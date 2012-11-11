@@ -1,7 +1,7 @@
 <?php
 use Cerberus\String;
 
-class StringTests extends CerberusTests
+class StringTest extends CerberusTest
 {
   public static $remove = 'foo foo bar foo kal ter son';
 

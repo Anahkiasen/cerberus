@@ -1,7 +1,7 @@
 <?php
 use Cerberus\Vendor;
 
-class VendorTest extends CerberusTests
+class VendorTest extends CerberusTest
 {
   // Helpers ------------------------------------------------------- /
 

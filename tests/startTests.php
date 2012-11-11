@@ -1,5 +1,5 @@
 <?php
-abstract class CerberusTests extends PHPUnit_Framework_TestCase
+abstract class CerberusTest extends PHPUnit_Framework_TestCase
 {
   // Wrappers ------------------------------------------------------ /
 

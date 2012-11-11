@@ -2,7 +2,7 @@
 use Cerberus\Buffer;
 use Cerberus\File;
 
-class BufferTests extends CerberusTests
+class BufferTest extends CerberusTest
 {
   /**
    * Check if we're able to start an output buffer

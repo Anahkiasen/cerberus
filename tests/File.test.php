@@ -1,7 +1,7 @@
 <?php
 use Cerberus\File;
 
-class FileTests extends CerberusTests
+class FileTest extends CerberusTest
 {
   // Tests --------------------------------------------------------- /
 

@@ -1,7 +1,7 @@
 <?php
 use Cerberus\Parse;
 
-class ParseTests extends CerberusTests
+class ParseTest extends CerberusTest
 {
   public $array = array(
     array('foo1' => 'bar1', 'foo2' => 'bar2'),

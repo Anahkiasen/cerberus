@@ -3,7 +3,7 @@ require 'startTests.php';
 
 use Cerberus\Arrays;
 
-class ArraysTests extends CerberusTests
+class ArraysTest extends CerberusTest
 {
 
   // Mock data ----------------------------------------------------- /

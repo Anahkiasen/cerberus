@@ -1,7 +1,7 @@
 <?php
 use Cerberus\Language;
 
-class LanguageTests extends CerberusTests
+class LanguageTest extends CerberusTest
 {
   public function testCanGetCurrentLanguage()
   {
