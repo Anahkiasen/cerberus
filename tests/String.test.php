@@ -50,14 +50,14 @@ class StringTest extends CerberusTest
 
   // Tests --------------------------------------------------------- /
 
-  public function testRemove()
+  public function testCanRemoveTextFromString()
   {
     $return = String::remove('bar', self::$remove);
 
     $this->assertEquals('foo foo  foo kal ter son', $return);
   }
 
-  public function testRemoveMultiple()
+  public function testCanRemoveMultipleTextsFromString()
   {
     $return = String::remove(array('foo', 'son'), self::$remove);
 
@@ -67,26 +67,26 @@ class StringTest extends CerberusTest
   /**
    * @dataProvider provideStartsWith
    */
-  public function testStartsWith($haystack, $needle, $expect)
+  public function testCanCheckIfAStringStartsWith($haystack, $needle, $expect)
   {
     $result = String::startsWith($haystack, $needle);
 
     $this->assertEquals($expect, $result);
   }
 
-  public function testToggleMatch()
+  public function testCanToggleBetweenTwoStrings()
   {
     $firstToggle = String::toggle('foo', 'foo', 'bar');
     $this->assertEquals('bar', $firstToggle);
   }
 
-  public function testToggleUnmatchStrict()
+  public function testCannotLooselyToggleBetweenStrings()
   {
     $firstToggle = String::toggle('dei', 'foo', 'bar');
     $this->assertEquals('dei', $firstToggle);
   }
 
-  public function testToggleUnmatchLoose()
+  public function testCanLooselyToggleBetweenStrings()
   {
     $firstToggle = String::toggle('dei', 'foo', 'bar', $loose = true);
     $this->assertEquals('foo', $firstToggle);
@@ -95,7 +95,7 @@ class StringTest extends CerberusTest
   /**
    * @dataProvider provideAccord
    */
-  public function testAccord($number, $expect)
+  public function testCanAccordAStringToItsNumeral($number, $expect)
   {
     $result = String::accord($number, $number. ' things', 'one thing', 'nothing');
 
@@ -105,35 +105,35 @@ class StringTest extends CerberusTest
   /**
    * @dataProvider provideFind
    */
-  public function testFind($expect, $needle, $haystack, $caseSensitive = false, $absoluteFinding = false)
+  public function testCanFindStringsInStrings($expect, $needle, $haystack, $caseSensitive = false, $absoluteFinding = false)
   {
     $result = String::find($needle, $haystack, $caseSensitive, $absoluteFinding);
 
     $this->assertEquals($expect, $result);
   }
 
-  public function testNumberPad()
+  public function testCanAddPaddingToNumber()
   {
     $result = String::numberPad(4);
 
     $this->assertEquals('04', $result);
   }
 
-  public function testNumberPadAlreadyPadded()
+  public function testCanAddPaddingToAlreadyPaddedNumber()
   {
     $result = String::numberPad('004', 2);
 
     $this->assertEquals('04', $result);
   }
 
-  public function testNumberPadNegative()
+  public function testCanAddNegativePadding()
   {
     $result = String::numberPad(5780, -5);
 
     $this->assertEquals('5780', $result);
   }
 
-  public function testNumberPadDecimal()
+  public function testCanAddPaddingToFloats()
   {
     $result = String::numberPad(5.45, 2);
 

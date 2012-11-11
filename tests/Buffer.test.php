@@ -105,7 +105,7 @@ class BufferTest extends CerberusTest
   /**
    * Check if we're able to change a buffer's mime type
    */
-  public function testHeaders()
+  public function testCanSetCorrectHeaders()
   {
     $type = Buffer::type('json');
 

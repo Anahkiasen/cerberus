@@ -43,14 +43,14 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
 
   // Tests ------------------------------------------------------- /
 
-  public function testMakeSimple()
+  public function testCanCreateASimpleDirectory()
   {
     $create = Directory::create(self::$dummyFolder);
 
     self::assertFileExists(self::$dummyFolder);
   }
 
-  public function testMakeComplex()
+  public function testCanCreateAWholePath()
   {
     $folder = self::$dummyFolder.'subTestFolder/subSubTestFolder/';
     $create = Directory::create($folder);
@@ -61,7 +61,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
   /**
    * @dataProvider paths
    */
-  public function testLast($path = null, $expected = null)
+  public function testCanGetTheLastFolderOfAPath($path = null, $expected = null)
   {
     $last = Directory::last($path);
     self::assertEquals($expected, $last);
@@ -70,7 +70,7 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
   /**
    * @dataProvider paths
    */
-  public function testNth($path = null, $expectedLast = null, $nth = null, $expected = null)
+  public function testCanGetTheNthFolderFromAPath($path = null, $expectedLast = null, $nth = null, $expected = null)
   {
     $nth = Directory::nth($path, $nth);
     self::assertEquals($expected, $nth);

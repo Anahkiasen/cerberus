@@ -8,7 +8,7 @@ class ParseTest extends CerberusTest
     array('foo1' => 'kal1', 'foo2' => 'kal2'),
   );
 
-  public function testCsv()
+  public function testCanCreateCsvFiles()
   {
     $array = $this->array;
     $csv = Parse::toCSV($array);
@@ -16,7 +16,7 @@ class ParseTest extends CerberusTest
     $this->assertEquals('"bar1";"bar2"' . PHP_EOL . '"kal1";"kal2"', $csv);
   }
 
-  public function testCsvDelimiter()
+  public function testCanUseCustomCsvDelimiter()
   {
     $array = $this->array;
     $csv = Parse::toCSV($array, ',');
@@ -24,7 +24,7 @@ class ParseTest extends CerberusTest
     $this->assertEquals('"bar1","bar2"' . PHP_EOL . '"kal1","kal2"', $csv);
   }
 
-  public function testCsvHeaders()
+  public function testCanOutputCsvHeaders()
   {
     $array = $this->array;
     $csv = Parse::toCSV($array, ',', true);
