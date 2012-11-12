@@ -16,11 +16,18 @@ class Cerberus_Clear_Task
    */
   public function cache()
   {
+    // If we provided a list of folders to clear
+    $folders = func_get_args();
+    $folders = $folders[0];
+    if (!$folders) $folders = glob(path('storage').'*/');
+
     // List of folders in the storage folder
-    $folders = glob(path('storage').'*/');
     foreach ($folders as $folder) {
-      if (basename($folder) == 'work') continue;
-      File::cleandir($folder);
+
+      $folder = basename($folder);
+      if ($folder == 'work') continue;
+
+      File::cleandir(path('storage').$folder);
     }
 
     echo 'The cache was successfully cleared';
