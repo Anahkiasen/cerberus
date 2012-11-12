@@ -101,6 +101,19 @@ class Arrays
     return $flattened;
   }
 
+  /**
+   * str_repeat for arrays
+   *
+   * @param mixed   $data  The content to repeat
+   * @param integer $times The number of times to repeat it
+   *
+   * @return array A filled array
+   */
+  public static function repeat($data, $times)
+  {
+    return array_fill(0, $times, $data);
+  }
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////// INFORMATIONS ////////////////////////////
   ////////////////////////////////////////////////////////////////////
