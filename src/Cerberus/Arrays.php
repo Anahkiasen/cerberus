@@ -111,7 +111,10 @@ class Arrays
    */
   public static function repeat($data, $times)
   {
-    return array_fill(0, abs($times), $data);
+    $times = abs($times);
+    if ($times == 0) return array();
+
+    return array_fill(0, $times, $data);
   }
 
   ////////////////////////////////////////////////////////////////////
