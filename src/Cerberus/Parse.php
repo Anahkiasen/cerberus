@@ -99,7 +99,7 @@ class Parse
       }
 
       // Else add values
-      foreach($row as $key => $value) {
+      foreach ($row as $key => $value) {
         $row[$key] = '"' .stripslashes($value). '"';
       }
 
