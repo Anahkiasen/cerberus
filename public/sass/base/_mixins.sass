@@ -17,17 +17,17 @@
 // CSS3 ------------------------------------------------------------ /
 
 // Changes the current selection color
-=selectionColor($background, $color: white)
+@mixin selectionColor($background, $color: white)
   +selection
     background: $background
     color: $color
 
 // Changes the current font-smoothing mode
-=font-smoothing($smooth)
+@mixin font-smoothing($smooth)
   +experimental(font-smoothing, $smooth)
 
 // Create a ribbon
-=ribbon($color, $padding: 1em)
+@mixin ribbon($color, $padding: 1em)
   +background-image(linear-gradient(lighten($color, 10), darken($color, 10)))
   +box-shadow(rgba(black, 0.3) 0 1px 1px)
   background-color: $color
@@ -92,7 +92,7 @@
     margin-bottom: 2px
 
 // Paper curl
-=paper-curl($angleRaw: 10, $opacity: 0.5)
+@mixin paper-curl($angleRaw: 10, $opacity: 0.5)
   $angle: unquote($angleRaw+'deg')
   +box-shadow(10px 10px 20px fade(black, 20))
   &:before, &:after
@@ -112,7 +112,7 @@
     right: 12px
 
 // Folded corners (triangles)
-=folded-corners($size, $color, $offset: 0)
+@mixin folded-corners($size, $color, $offset: 0)
   position: relative
   &:before,
   &:after
@@ -134,13 +134,13 @@
 @function double-shadow($size: 2px, $blur: 0)
   @return 0 $size $blur fade(black, 10), inset 0 (-$size) $blur fade(black, 20)
 
-=double-shadow($size: 2px, $blur: 0)
+@mixin double-shadow($size: 2px, $blur: 0)
   +box-shadow(double-shadow($size, $blur))
 
 // Gradients ------------------------------------------------------- /
 
 // Main mixin
-=gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical, $borders: $cerberus-gradient-borders)
+@mixin gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical, $borders: $cerberus-gradient-borders)
   @if $type == vertical
     +gradient-vertical(lighten($color, $difference), darken($color, $difference))
   @else if $type == vertical-inverse
@@ -158,25 +158,25 @@
     border-bottom: $borders solid darken($color, $difference + 10)
 
 // Individual directional mixins
-=gradient-auto-vertical($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
+@mixin gradient-auto-vertical($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
   +gradient-auto($color, $difference, vertical, $borders)
 
-=gradient-auto-horizontal($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
+@mixin gradient-auto-horizontal($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
   +gradient-auto($color, $difference, horizontal, $borders)
 
-=gradient-auto-radial($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
+@mixin gradient-auto-radial($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
   +gradient-auto($color, $difference, radial, $borders)
 
 // Utilities ------------------------------------------------------- /
 
-=debug($mainBlock)
+@mixin debug($mainBlock)
   body
     +baseline-grid-background($base-line-height)
   #{$mainBlock}
     +grid-background($total-columns, $column-width, $gutter-width, $base-line-height, $grid-padding, $force-fluid: true)
 
 // Transforms a table into a responsive table
-=responsive-table($data-title: true)
+@mixin responsive-table($data-title: true)
   thead, tbody, th, tr, td
     display: block
     width: 100%
@@ -204,37 +204,37 @@
       width: 100%
 
 // Drops a text-shadow of a contrast color
-=text-drop($color, $size: 2px)
+@mixin text-drop($color, $size: 2px)
   color: $color
   text-shadow: 0 $size 0 rgba(contrast-color($color), 0.5)
 
 // Creates a beveling text-shadow
-=bevel($size, $opacity: 20)
+@mixin bevel($size, $opacity: 20)
   text-shadow: 0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity)
 
 // Loads a webfont using the +font-face mixin
-=webfont($name, $font_path, $weight: normal, $style: normal)
+@mixin webfont($name, $font_path, $weight: normal, $style: normal)
   +font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, $style)
 
 // Percentage-based version of rba-background
-=background-fade($color, $opacity)
+@mixin background-fade($color, $opacity)
   +rgba-background($color, $opacity / 100)
 
 // Padding mixins
-=padding-h($padding)
+@mixin padding-h($padding)
   padding-left: $padding
   padding-right: $padding
 
-=padding-v($padding)
+@mixin padding-v($padding)
   padding-bottom: $padding
   padding-top: $padding
 
 // Margin mixins
-=margin-h($margin)
+@mixin margin-h($margin)
   margin-left: $margin
   margin-right: $margin
 
-=margin-v($margin)
+@mixin margin-v($margin)
   margin-bottom: $margin
   margin-top: $margin
 
@@ -242,7 +242,7 @@
 ///////////////////////// TWITTER BOOTSTRAP //////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-=reset-bootstrap-icons
+@mixin reset-bootstrap-icons
   [class^="icon-"],
   [class*=" icon-"]
     background: none !important
@@ -251,7 +251,7 @@
     &:before
       opacity: 1
 
-=input-shadow($color)
+@mixin input-shadow($color)
   textarea,
   input[type="text"],
   input[type="password"],
