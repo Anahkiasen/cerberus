@@ -25,6 +25,7 @@ class Cerberus_Clear_Task
     // Get pattern
     $pattern = array_get($arguments, '0.1', null);
     $pattern = $pattern ? '*'.$pattern.'*' : '*';
+    echo 'Clearing files matching : '.$pattern.PHP_EOL;
     $cleared = 0;
 
     // List of folders in the storage folder
@@ -36,7 +37,10 @@ class Cerberus_Clear_Task
 
       // Clean all the folder, or only certain files
       $folder = path('storage').$folder;
-      foreach (glob($folder.'/'.$pattern) as $file) {
+      $files = glob($folder.'/'.$pattern);
+      if (!$files) continue;
+
+      foreach ($files as $file) {
         if (basename($file) == '.gitignore') continue;
         $cleared++;
         File::delete($file);
@@ -44,7 +48,7 @@ class Cerberus_Clear_Task
     }
 
     echo 'The cache was successfully cleared'.PHP_EOL;
-    if ($cleared != 0) echo $cleared. ' files deleted'.PHP_EOL;
+    echo $cleared. ' files deleted'.PHP_EOL;
   }
 
   /**
