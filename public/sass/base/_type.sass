@@ -17,3 +17,22 @@ $base-line-height : $base-font-size * $line-height
 // Third party options --------------------------------------------- /
 
 $round-to-nearest-half-line : true
+
+// Base font sizes ------------------------------------------------- /
+
+$xxxsmall : ms(-4)
+$xxsmall  : ms(-3)
+$xsmall   : ms(-2)
+$small    : ms(-1)
+$normal   : $base-size
+$medium   : ms(1)
+$large    : ms(2)
+$xlarge   : ms(3)
+$xxlarge  : ms(5)
+$xxxlarge : ms(8)
+
+// Related mixins -------------------------------------------------- /
+
+// Alias for +adjust-font-size-to
+=font-size($font-size)
+  +adjust-font-size-to($font-size)
