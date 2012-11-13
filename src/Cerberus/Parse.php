@@ -36,8 +36,9 @@ class Parse
   public static function fromCSV($data)
   {
     // Explodes rows
-    $array = explode("\r", $data);
-    if (count($array == 1)) $array = explode("\n", $data);
+    $array = explode(PHP_EOL, $data);
+    if (sizeof($array) == 1) $array = explode("\r", $data);
+    if (sizeof($array) == 1) $array = explode("\n", $data);
 
     // Parse the columns in each row
     foreach ($array as $row => $rawColumns) {
