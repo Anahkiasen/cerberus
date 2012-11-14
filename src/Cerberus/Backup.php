@@ -8,8 +8,9 @@
  */
 namespace Cerberus;
 
-use Laravel\Database as DB;
+use \Config;
 use \Lang;
+use Laravel\Database as DB;
 
 class Backup
 {
@@ -219,6 +220,8 @@ class Backup
 
     // Parse the date for each one
     foreach ($folders as $folder) {
+      if (!is_dir($folder)) continue;
+
       $date  = basename($folder);
       list($year, $month, $day) = explode('-', $date);
       $month = intval($month);
