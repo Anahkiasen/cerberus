@@ -23,19 +23,16 @@ window.Glow =
     base: ->
       Glow.base
 
-
     ###
     Retrieve the URL to a route.
     @param  String  uri
     @param  Boolean   https
     @return String
     ###
-    to: (uri, https) ->
-      https = (if (typeof https is "undefined") then false else https)
+    to: (uri, https = false) ->
       url = Glow.base + "/" + uri
-      url.replace "http://", "https://"  if https
-      url
-
+      url.replace "http://", "https://" if https
+      return url
 
     ###
     Retrieve the secure URL to a route.
@@ -43,4 +40,4 @@ window.Glow =
     @return String
     ###
     to_secure: (uri) ->
-      Glow.URL.to uri, true
+      return Glow.URL.to uri, true
