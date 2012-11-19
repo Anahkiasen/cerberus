@@ -3,6 +3,10 @@ namespace Cerberus;
 
 class Objectable
 {
+  /**
+   * The working array
+   * @var array
+   */
   private $array = array();
 
   /**
@@ -73,7 +77,7 @@ class Objectable
    *
    * @return array
    */
-  public function get()
+  public function obtain()
   {
     return $this->array;
   }
