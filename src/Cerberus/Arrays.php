@@ -212,4 +212,12 @@ class Arrays
   {
     return array_pluck($array, $key);
   }
+
+  /**
+   * Alias for array_sum
+   */
+  public static function sum($array)
+  {
+    return array_sum($array);
+  }
 }
