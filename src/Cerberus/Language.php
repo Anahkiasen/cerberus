@@ -60,6 +60,17 @@ class Language
   ////////////////////////////////////////////////////////////////////
 
   /**
+   * Whether a given language is the current one
+   *
+   * @param string $language The language to check
+   * @return boolean
+   */
+  public static function isActive($language)
+  {
+    return $language == Language::current();
+  }
+
+  /**
    * Returns the current language being used
    *
    * @return string A language index
