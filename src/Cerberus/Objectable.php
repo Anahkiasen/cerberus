@@ -56,7 +56,7 @@ class Objectable
    * @param string $key The value to get
    * @return mixed
    */
-  public function _get($key)
+  public function __get($key)
   {
     return $this->array[$key];
   }
@@ -93,7 +93,7 @@ class Objectable
    */
   public function swap($replace, $with, $value)
   {
-    $this->$with = $value;
+    $this->array[$with] = $value;
     $this->remove($replace);
 
     return $this;
