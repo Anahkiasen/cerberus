@@ -73,6 +73,14 @@ class Objectable
   }
 
   /**
+   * If printed out
+   */
+  public function __toString()
+  {
+    return Parse::toJSON($this->array);
+  }
+
+  /**
    * Return this object as an array
    *
    * @return array
@@ -125,6 +133,9 @@ class Objectable
     return array_pop($array);
   }
 
+  /**
+   * Get the number of elements in the current array
+   */
   public function count()
   {
     return sizeof($this->array);
