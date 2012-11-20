@@ -1,9 +1,9 @@
 <?php
 namespace Cerberus\Controllers;
 
-use \Babel;
+use \Babel\Babel;
 use \DB;
-use \Former;
+use \Former\Former;
 use \Input;
 use \Redirect;
 use \Str;
