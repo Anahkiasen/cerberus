@@ -40,6 +40,12 @@ $opacity: 0 25 50 75 100
   %opacity#{$o}
     +opacity($o / 100)
 
+// Reset links to base text
+%reset-link
+  text-decoration: none
+  &:hover
+    text-decoration: none
+
 // Reset lists to their default state
 %reset-list
   list-style: none
