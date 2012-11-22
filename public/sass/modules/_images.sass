@@ -16,8 +16,8 @@ $image-wrap-depth: $image-wrap-depth * -1
   vertical-align: bottom
 
   &:after
-    +border-radius($image-wrap-border-radius)
     +box-shadow(inset 0 0 1px fade(white, 40), inset 0 1px 0 fade(white, 40), 0 1px 2px fade(black, 30))
+    border-radius: $image-wrap-border-radius
     border: solid 1px #1b1b1b
     content: ' '
     height: 100%
@@ -27,8 +27,8 @@ $image-wrap-depth: $image-wrap-depth * -1
     width: 100%
 
   img
-    +border-radius($image-wrap-border-radius)
     +box-shadow(0 1px 2px fade(black, 40))
+    border-radius: $image-wrap-border-radius
     vertical-align: bottom
 
   // Image styles -------------------------------------------------- /
@@ -56,4 +56,4 @@ $image-wrap-depth: $image-wrap-depth * -1
     &:after,
     &:before,
     img
-      +border-radius(0)
+      border-radius: 0
