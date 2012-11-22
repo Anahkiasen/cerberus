@@ -123,8 +123,8 @@ class Vendor
     // Plugins
     $defaultsPlugins = array(
       'animate',
+      'compass-normalize',
       'modular-scale',
-      'normalize',
       'rgbapng',
       'susy',
     );
