@@ -58,7 +58,7 @@ class Objectable
    */
   public function __get($key)
   {
-    return $this->array[$key];
+    return Arrays::get($this->array, $key);
   }
 
   /**
