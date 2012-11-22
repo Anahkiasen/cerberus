@@ -70,6 +70,7 @@ Route::get('glow.js', function() {
   // Get Illuminate's glow
   $js = File::get('public/bundles/cerberus/js/glow.js');
   $js = str_replace('%BASE%', URL::base().'/', $js);
+  $js = str_replace('%ASSET%', URL::to_asset(''), $js);
 
   // Set correct header
   $headers['Content-Type'] = 'application/javascript; charset=utf-8';
