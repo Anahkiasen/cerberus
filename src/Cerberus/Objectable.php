@@ -107,6 +107,20 @@ class Objectable
     return $this;
   }
 
+  /**
+   * Apply a callback to all functions of an array
+   *
+   * @param Closure $closure A Closure to use
+   */
+  public function each(\Closure $closure)
+  {
+    foreach ($this->array as $key => $value) {
+      $this->array[$key] = $closure($value, $key);
+    }
+
+    return $this;
+  }
+
   // Getters ------------------------------------------------------- /
 
   /**
