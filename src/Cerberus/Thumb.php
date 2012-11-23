@@ -120,9 +120,9 @@ class Thumb
    */
   private static function path($image)
   {
-    $path = Config::get('imwg::settings.image_path', path('public'));
+    $path = Config::get('imwg.image_path', Config::get('imwg::settings.image_path', path('public')));
 
-    return $path.'/'.$image;
+    return rtrim($path, '/').'/'.$image;
   }
 
   /**
