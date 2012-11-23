@@ -10,6 +10,7 @@ namespace Cerberus;
 use \Babel\Babel;
 use \Bootstrapper\Button;
 use \Bootstrapper\Icon;
+use \Router;
 use \URL;
 
 class HTML extends \Laravel\HTML
