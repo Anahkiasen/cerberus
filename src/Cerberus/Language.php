@@ -81,6 +81,16 @@ class Language
   }
 
   /**
+   * Get all available languages
+   *
+   * @return array An array of languages
+   */
+  public static function available()
+  {
+    return Config::get('application.languages');
+  }
+
+  /**
    * Check whether a language is valid or not
    *
    * @param string $language The language
@@ -88,9 +98,7 @@ class Language
    */
   public static function valid($language)
   {
-    $languages = Config::get('application.languages');
-
-    return in_array($language, $languages);
+    return in_array($language, static::available());
   }
 
   /**
