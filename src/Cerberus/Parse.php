@@ -7,6 +7,8 @@
  */
 namespace Cerberus;
 
+use \Underscore\Arrays;
+
 class Parse
 {
 

@@ -10,7 +10,8 @@ namespace Cerberus;
 
 use \Config;
 use \Lang;
-use Laravel\Database as DB;
+use \Laravel\Database as DB;
+use \Underscore\Arrays;
 
 class Backup
 {

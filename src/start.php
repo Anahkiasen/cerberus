@@ -2,6 +2,9 @@
 use Cerberus\Backup;
 use Cerberus\Language;
 
+// Add underscore starter
+Bundle::start('underscore');
+
 /*
 |---------------------------------------------------------------------
 | Setup and loadings
@@ -39,23 +42,6 @@ Validator::register('length', function($attribute, $value, $parameters) {
 Validator::register('not_numeric', function($attribute, $value) {
   return preg_match('/^([^0-9]+)+$/i', $value);
 });
-
-/*
-|---------------------------------------------------------------------
-| Helpers
-|---------------------------------------------------------------------
- */
-
-/**
- * Alias for HTML::decode
- *
- * @param  mixed  $content Content to unparse
- * @return string          Decoded content
- */
-function d($content)
-{
-  return HTML::decode($content);
-}
 
 /*
 |---------------------------------------------------------------------

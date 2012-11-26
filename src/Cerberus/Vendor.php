@@ -8,6 +8,8 @@
  */
 namespace Cerberus;
 
+use \Underscore\Arrays;
+
 class Vendor
 {
   // Webfonts ------------------------------------------------------ /

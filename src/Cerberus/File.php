@@ -9,6 +9,7 @@
 namespace Cerberus;
 
 use \Input;
+use \Underscore\Arrays;
 
 class File extends \Laravel\File
 {

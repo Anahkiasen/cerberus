@@ -7,6 +7,8 @@
  */
 namespace Cerberus;
 
+use \Underscore\Arrays;
+
 class Navigation
 {
   public static $home = 'home';

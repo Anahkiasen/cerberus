@@ -10,6 +10,7 @@ namespace Cerberus;
 use \Config;
 use \Lang;
 use \Section;
+use \Underscore\Arrays;
 use \URL;
 
 class Language
