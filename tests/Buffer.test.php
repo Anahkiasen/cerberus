@@ -1,4 +1,6 @@
 <?php
+include 'startTests.php';
+
 use Cerberus\Buffer;
 use Cerberus\File;
 
