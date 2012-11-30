@@ -22,6 +22,10 @@
     background: $background
     color: $color
 
+// Add basic Webkit-only reflect
+@mixin reflect
+  -webkit-box-reflect: below 0 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(fade(white, 20)))
+
 // Changes the current font-smoothing mode
 @mixin font-smoothing($smooth)
   +experimental(font-smoothing, $smooth)
