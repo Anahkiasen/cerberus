@@ -55,6 +55,23 @@ class Parse
     return $array;
   }
 
+  /**
+   * Converts data from XML
+   *
+   * @param string $xml The data to parse
+   *
+   * @return array
+   */
+  public static function fromXML($xml)
+  {
+    $xml = simplexml_load_string($xml);
+    $xml = json_encode($xml);
+    $xml = json_decode($xml, true);
+
+    return $xml;
+  }
+
+
   ////////////////////////////////////////////////////////////////////
   //////////////////////////////// TO ////////////////////////////////
   ////////////////////////////////////////////////////////////////////
