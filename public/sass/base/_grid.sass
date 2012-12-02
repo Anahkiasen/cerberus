@@ -31,10 +31,10 @@ $mini    : 300px
   +at-breakpoint($from $total-columns $to)
     @content
 
-=to($breakpoint)
-  +at-breakpoint(0 $breakpoint)
+=to($to)
+  +at-breakpoint(0 $total-columns $to)
     @content
 
-=from($breakpoint)
-  +at-breakpoint($breakpoint $total-columns)
+=from($from)
+  +at-breakpoint($from $total-columns)
     @content
