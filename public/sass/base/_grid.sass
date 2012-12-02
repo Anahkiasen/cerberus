@@ -15,6 +15,13 @@ $tablet  : 768px
 $mobile  : 480px
 $mini    : 300px
 
+// Define a wide container ----------------------------------------- /
+
+=container-wide
+  +container
+  max-width: 100%
+  padding: 0
+
 // Define a number of items per row -------------------------------- /
 
 =perRow($perRow, $numberColumns: $total-columns, $padding: false, $last: false)
