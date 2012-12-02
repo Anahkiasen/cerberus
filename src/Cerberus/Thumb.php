@@ -89,9 +89,12 @@ class Thumb
     if(!$height) $height = $width;
 
     // Thumb generation
-    Imwg::open($image)
-      ->resize($width, $height, 'crop')
-      ->save('public/' .static::$folder.$thumb, 75);
+    $image = Imwg::open($image);
+    if ($width == $height) $image = $image->square($width);
+    else $image = $image->resize($width, $height);
+
+    // Save image
+    $image->save('public/' .static::$folder.$thumb, 75);
 
     return static::$folder.$thumb;
   }
