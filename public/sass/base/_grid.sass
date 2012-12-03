@@ -24,7 +24,7 @@ $mini    : 300px
 
 // Define a number of items per row -------------------------------- /
 
-=perRow($perRow, $numberColumns: $total-columns, $padding: false, $last: false)
+=per-row($perRow, $numberColumns: $total-columns, $padding: false, $last: false)
   $span: $numberColumns / $perRow
   +span-columns($span, $numberColumns, $padding)
   @if $last
