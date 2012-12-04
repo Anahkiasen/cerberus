@@ -4,7 +4,7 @@ use Cerberus\Directory;
 // Dependencies
 use Cerberus\File;
 
-class DirectoryTest extends PHPUnit_Framework_TestCase
+class DirectoryTest extends CerberusTest
 {
   // Variables --------------------------------------------------- /
 
