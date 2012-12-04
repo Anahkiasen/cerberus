@@ -20,8 +20,11 @@ abstract class Elegant extends Eloquent
    * @param  array $input The user input
    * @return Validator
    */
-  public static function validate($input)
+  public static function validate($input = null)
   {
+    // If no input given, fetch all
+    if (!$input) $input = Input::get();
+
     return Validator::make($input, static::$rules);
   }
 
