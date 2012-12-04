@@ -2,6 +2,7 @@
 namespace Cerberus\Models;
 
 use \Eloquent;
+use \Input;
 use \Validator;
 
 abstract class Elegant extends Eloquent
