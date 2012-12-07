@@ -7,7 +7,9 @@
  */
 namespace Cerberus;
 
+use \Request;
 use \Underscore\Arrays;
+use \URL;
 
 class Navigation
 {
@@ -22,7 +24,7 @@ class Navigation
   public static function current($returnAction = false)
   {
     // Get Request object
-    $request = \Request::route();
+    $request = Request::route();
 
     // If we have a Request object ready
     if (is_object($request)) {
@@ -43,8 +45,8 @@ class Navigation
 
     // If we don't have object, try and parse the URL
     } else {
-      $url = \URL::current();
-      $url = String::remove(\URL::base(), $url);
+      $url = URL::current();
+      $url = String::remove($url, URL::base());
       $url = explode('/', $url);
 
       // Remove hypothetical forward slash
