@@ -155,7 +155,7 @@ class HTML extends \Laravel\HTML
 
     return
       '<td class="action ' .$class. '">'.
-        d(HTML::link($link, Icon::$icon())).
+        HTML::decode(HTML::link($link, Icon::$icon())).
       '</td>';
   }
 }
