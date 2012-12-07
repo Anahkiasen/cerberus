@@ -49,6 +49,10 @@ $xxxlarge : ms(5)
 
 // Related mixins -------------------------------------------------- /
 
+// Modular rems
+=mr($property, $ms)
+  +rem($property ms($ms))
+
 // Alias for +adjust-font-size-to
 =font-size($font-size)
   +adjust-font-size-to($font-size)
