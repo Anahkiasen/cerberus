@@ -117,9 +117,13 @@ class Language
     // Check for invalid languages
     if(!static::valid($lang)) $lang = static::current();
 
+    // Compute base URL with language added
+    $base = trim(URL::base(), '/');
+    $base .= '/'.$lang. '/';
+
     return str_replace(
       URL::base(),
-      URL::base().'/'.$lang,
+      $base,
       URL::current());
   }
 
