@@ -18,9 +18,11 @@ class Cerberus_Clear_Task
   {
     // If we provided a list of folders to clear
     $arguments = func_get_args();
-    $folders = array_get($arguments, '0.0', '');
-    $folders = explode(',', $folders);
-    if (!$folders) $folders = glob(path('storage').'*/');
+    $folders = array_get($arguments, '0.0', null);
+
+    // Else get all folders
+    if ($folders) $folders = explode(',', $folders);
+    else $folders = glob(path('storage').'*');
 
     // Get pattern
     $pattern = array_get($arguments, '0.1', null);
@@ -42,6 +44,7 @@ class Cerberus_Clear_Task
 
       foreach ($files as $file) {
         if (basename($file) == '.gitignore') continue;
+        if (basename($file) == 'application.sqlite') continue;
         $cleared++;
         File::delete($file);
       }
@@ -56,7 +59,7 @@ class Cerberus_Clear_Task
    */
   public function run()
   {
-    $this->db();
     $this->cache(array());
+    $this->db();
   }
 }
