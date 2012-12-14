@@ -118,9 +118,12 @@ class Language
     if(!static::valid($lang)) $lang = static::current();
 
     // Compute base URL with language added
-    $base    = URL::base().'/'.$lang;
+    $base    = trim(URL::base(), '/');
+    $base   .= '/'.$lang.'/';
     $current = URL::current();
-    $final   = str_replace(URL::base(), $base, $current);
+
+    // Replace base with localized base
+    $final = preg_replace('#' .URL::base(). '/?#', $base, $current);
 
     return $final;
   }
