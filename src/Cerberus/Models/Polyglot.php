@@ -2,6 +2,7 @@
 namespace Cerberus\Models;
 
 use \Config;
+use \Cerberus\Language;
 
 class Polyglot extends Elegant
 {
@@ -17,7 +18,7 @@ class Polyglot extends Elegant
    */
   public function lang($lang = null)
   {
-    if(!$lang) $lang = Config::get('application.language');
+    if(!$lang) $lang = Language::current();
 
     return $this->$lang();
   }
@@ -34,7 +35,7 @@ class Polyglot extends Elegant
 
   public function __isset($key)
   {
-    if(static::$polyglot and static::langValid($key)) return true;
+    if(static::$polyglot and Language::valid($key)) return true;
 
     return parent::__isset($key);
   }
@@ -78,19 +79,6 @@ class Polyglot extends Elegant
       if($this->$lang) $this->$lang()->update($$lang);
       else $this->$lang()->insert($$lang);
     }
-  }
-
-  // Helpers ------------------------------------------------------- /
-
-  /**
-   * Whether a given language is valid or not
-   *
-   * @param  string $lang  The language to valid
-   * @return boolean       Valid or not
-   */
-  public static function langValid($lang)
-  {
-    return in_array($lang, Config::get('application.languages'));
   }
 
 }
