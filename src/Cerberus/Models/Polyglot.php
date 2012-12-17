@@ -44,8 +44,6 @@ class Polyglot extends Elegant
   {
     if (static::$polyglot) {
       if (in_array($key, static::$polyglot)) {
-        $lang = Config::get('application.language');
-
         return $this->lang ? $this->lang->$key : null;
       }
     }
