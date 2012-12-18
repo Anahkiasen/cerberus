@@ -168,6 +168,7 @@ class Language
     // Fetch the content of all the language files
     foreach ($files as $file) {
       $file = File::name($file);
+      if ($file == 'pagination') continue;
       if ($file == 'validation') {
         $lang[$file] = Lang::line($file.'.custom')->get();
         $lang[$file] = Lang::line($file.'.attributes')->get();
