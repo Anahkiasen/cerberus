@@ -22,9 +22,6 @@ Autoloader::alias('Cerberus\Controllers\Restful', 'CerberusRestful');
 Autoloader::alias('Cerberus\Models\Elegant', 'Elegant');
 Autoloader::alias('Cerberus\Models\Polyglot', 'Polyglot');
 
-// Set correct language
-$locale = Language::locale();
-
 /*
 |---------------------------------------------------------------------
 | Custom macros and validators
@@ -69,12 +66,6 @@ Route::get('glow.js', function() {
 | Database and language backup
 |---------------------------------------------------------------------
  */
-
-// Save language file every day ------------------------------------ /
-
-Cache::remember('language', function() {
-  return Language::compile('language.csv');
-}, 60 * 24);
 
 // Save database every day ----------------------------------------- /
 
