@@ -8,7 +8,7 @@
 namespace Cerberus;
 
 use \Request;
-use \Underscore\Arrays;
+use \Underscore\Types\Arrays;
 use \URL;
 
 class Navigation

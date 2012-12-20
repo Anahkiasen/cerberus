@@ -8,7 +8,7 @@
  */
 namespace Cerberus;
 
-use \Underscore\Arrays;
+use \Underscore\Types\Arrays;
 
 class Vendor
 {
