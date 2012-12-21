@@ -54,7 +54,8 @@ class Base extends Base_Controller
     }
 
     // Define model
-    $this->model = $controller->explode('.')->last()->singular()->title()->obtain();
+    $this->model  = $controller->explode('.')->last()->singular()->title()->obtain();
+    $this->item   = String::lower($this->model);
     $this->object = new $this->model();
 
     // Define fallback page

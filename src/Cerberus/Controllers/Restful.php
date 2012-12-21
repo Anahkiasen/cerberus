@@ -155,7 +155,7 @@ class Restful extends Base
 
     // Create message
     $verb = $isAdd ? 'create' : 'update';
-    $message = Babel::restful(Str::singular($this->page), array_get($input, 'name'), $verb);
+    $message = Babel::restful($this->item, array_get($input, 'name'), $verb);
 
     return array(
       'errors'  => false,
@@ -195,7 +195,7 @@ class Restful extends Base
     }
 
     // Create message
-    $message = Babel::restful(Str::singular($this->page), $name, 'delete', $state);
+    $message = Babel::restful($this->item, $name, 'delete', $state);
 
     return array(
       'message' => $message,
