@@ -7,6 +7,7 @@ use \Former\Former;
 use \Input;
 use \Redirect;
 use \Str;
+use \Underscore\Types\String;
 use \Validator;
 use \View;
 
@@ -44,9 +45,10 @@ class Restful extends Base
   public function get_index()
   {
     $items = $this->object->all();
+    $variable = String::from($this->model)->plural()->lower();
 
     return View::make($this->page.'.index')
-      ->with(Str::plural($this->model), $items);
+      ->with($variable->obtain(), $items);
   }
 
   /**
