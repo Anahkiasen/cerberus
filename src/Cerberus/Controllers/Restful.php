@@ -43,7 +43,10 @@ class Restful extends Base
 
   public function get_index()
   {
-    return View::make($this->page.'.index');
+    $items = $this->object->all();
+
+    return View::make($this->page.'.index')
+      ->with(Str::plural($this->model), $items);
   }
 
   /**

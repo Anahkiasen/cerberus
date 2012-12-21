@@ -5,6 +5,8 @@ use \Redirect;
 use \Base_Controller;
 use \Str;
 use \View;
+use \Underscore\Types\Arrays;
+use \Underscore\Types\String;
 
 class Base extends Base_Controller
 {
@@ -43,20 +45,16 @@ class Base extends Base_Controller
     // Define page
     if (!$this->page) {
       $class = get_called_class();
+      $class = String::replace($class, '_', '.');
 
       // Compute controller
-      $controller = str_replace('_', '.', $class);
-      $controller = str_replace('.Controller', null, $controller);
-      $this->controller = strtolower($controller);
-
-      // Compute main page
-      $page = explode('_', $class);
-      $page = $page[sizeof($page) - 2];
-      $this->page = strtolower($page);
+      $controller = String::from($class)->remove('.Controller')->lower();
+      $this->controller = $controller->obtain();
+      $this->page = $this->controller;
     }
 
     // Define model
-    $this->model  = ucfirst(Str::singular($this->page));
+    $this->model = $controller->explode('.')->last()->singular()->title()->obtain();
     $this->object = new $this->model();
 
     // Define fallback page
