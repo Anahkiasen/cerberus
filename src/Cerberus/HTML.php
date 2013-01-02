@@ -62,6 +62,24 @@ class HTML extends \Laravel\HTML
   }
 
   /**
+   * Generates a link to a phone number
+   *
+   * @param integer $tel        The phone number
+   * @param string  $title      The link title
+   * @param array   $attributes Its attributes
+   *
+   * @return string
+   */
+  public static function tel($tel, $title = null, $attributes = array())
+  {
+    $attributes['href'] = 'tel:'.$tel;
+
+    if (!$title) $title = $tel;
+
+    return '<a' .HTML::attributes($attributes). '>' .$title. '</a>';
+  }
+
+  /**
    * Generates a favicon
    *
    * @param string $favicon Path to the favicon
