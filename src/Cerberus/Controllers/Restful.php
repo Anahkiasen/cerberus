@@ -42,6 +42,9 @@ class Restful extends Base
     return isset($model::$rules) ? $model::$rules : array();
   }
 
+  /**
+   * Display all items
+   */
   public function get_index()
   {
     $items = $this->object->all();
