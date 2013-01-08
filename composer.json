@@ -9,11 +9,16 @@
     }
   ],
   "require": {
-    "php": ">=5.3.0"
+    "php": ">=5.3.0",
+    "meido/html": "dev-master"
+  },
+  "require-dev": {
+    "mockery/mockery": "dev-master"
   },
   "autoload": {
     "psr-0": {
       "Cerberus": "src/"
     }
-  }
+  },
+  "minimum-stability": "dev"
 }
