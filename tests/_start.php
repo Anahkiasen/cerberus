@@ -43,6 +43,9 @@ class CerberusTests extends PHPUnit_Framework_TestCase
     $url->shouldReceive('to')->andReturnUsing(function($url) {
       return 'http://test/en/'.$url;
     });
+    $url->shouldReceive('asset')->andReturnUsing(function($url) {
+      return 'http://test/en/'.$url;
+    });
 
     return $url;
   }

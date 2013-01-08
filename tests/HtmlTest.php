@@ -21,4 +21,25 @@ class HtmlTest extends CerberusTests
     $this->assertHTML($matchLink, $image);
     $this->assertHTML($matchImage, $image);
   }
+
+  public function testCanCreateAFavicon()
+  {
+    $favicon = $this->html->favicon('favicon.jpg');
+    $matcher = array(
+      'tag' => 'link',
+      'attributes' => array('rel' => 'shortcut icon', 'href' => 'http://test/en/favicon.jpg'),
+    );
+
+    $this->assertHTML($matcher, $favicon);
+  }
+
+  public function testCanCreateResponsiveMetaTags()
+  {
+    $responsive = $this->html->responsiveTags();
+    $matcher  = "<meta name='apple-mobile-web-app-capable' content='yes' />".PHP_EOL;
+    $matcher .= "<meta name='apple-touch-fullscreen' content='yes' />".PHP_EOL;
+    $matcher .= "<meta name='viewport' content='width=device-width, initial-scale=1.0' />".PHP_EOL;
+
+    $this->assertEquals($matcher, $responsive);
+  }
 }
