@@ -42,4 +42,12 @@ class HtmlTest extends CerberusTests
 
     $this->assertEquals($matcher, $responsive);
   }
+
+  public function testCanCreateATargetBlankLink()
+  {
+    $link = $this->html->blankLink('foo', 'bar', array('class' => 'bar'));
+    $matcher = $this->matchLink('foo', 'bar', array('class' => 'bar', 'target' => '_blank'));
+
+    $this->assertHTML($matcher, $link);
+  }
 }

@@ -8,12 +8,19 @@ class CerberusTests extends PHPUnit_Framework_TestCase
 
   // Matchers ------------------------------------------------------ /
 
-  public function matchLink($href)
+  public function matchLink($href, $text = null, $attributes = array())
   {
-    return array(
+    $link = array('href' => 'http://test/en/'.$href);
+    $attributes = array_merge($link, $attributes);
+
+    $link = array(
       'tag' => 'a',
-      'attributes' => array('href' => 'http://test/en/'.$href),
+      'attributes' => $attributes,
     );
+
+    if ($text) $link['content'] = $text;
+
+    return $link;
   }
 
   // Helpers ------------------------------------------------------- /

@@ -5,6 +5,10 @@ use \Meido\HTML\HTML as MeidoHTML;
 
 class HTML extends MeidoHTML
 {
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// LINKS ///////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
   /**
    * Generates an image wrapped in a link
    *
@@ -22,6 +26,26 @@ class HTML extends MeidoHTML
 
     return $this->decode($link);
   }
+
+  /**
+   * Generates a link that opens in a new tab
+   *
+   * @param string $url        The link
+   * @param string $link       Its text
+   * @param array  $attributes Its attributes
+   *
+   * @return string A link with target=_blank
+   */
+  public function blankLink($url, $link = null, $attributes = array())
+  {
+    $attributes['target'] = '_blank';
+
+    return $this->to($url, $link, $attributes);
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// HEAD TAGS ///////////////////////////
+  ////////////////////////////////////////////////////////////////////
 
   /**
    * Generates a favicon
