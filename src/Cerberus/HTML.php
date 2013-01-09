@@ -43,6 +43,19 @@ class HTML extends MeidoHTML
     return $this->to($url, $link, $attributes);
   }
 
+  /**
+   * Generates a link to the app's homepage
+   *
+   * @param string $text       The link text
+   * @param array  $attributes Its attributes
+   *
+   * @return string A link that points to /
+   */
+  public function homeLink($text, $attributes = array())
+  {
+    return $this->to(null, $text, $attributes);
+  }
+
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// HEAD TAGS ///////////////////////////
   ////////////////////////////////////////////////////////////////////

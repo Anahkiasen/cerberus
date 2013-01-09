@@ -50,4 +50,12 @@ class HtmlTest extends CerberusTests
 
     $this->assertHTML($matcher, $link);
   }
+
+  public function testCanCreateALinkToHome()
+  {
+    $link = $this->html->homeLink('bar', array('class' => 'bar'));
+    $matcher = $this->matchLink('', 'bar', array('class' => 'bar',));
+
+    $this->assertHTML($matcher, $link);
+  }
 }
