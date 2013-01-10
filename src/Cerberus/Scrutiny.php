@@ -69,6 +69,6 @@ class Scrutiny extends TestCase
    */
   protected function assertTagContains($crawler, $tag, $content)
   {
-    $this->assertCount(1, $crawler->filter($tag.':contains("' .$content. '")'), "The tag $tag doesn't contain $content");
+    $this->assertNotCount(0, $crawler->filter($tag.':contains("' .$content. '")'), "The tag $tag doesn't contain $content");
   }
 }
