@@ -3,7 +3,9 @@ namespace Cerberus\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Response;
+
 use Cerberus\HTML;
+use Cerberus\Thumb;
 
 class CerberusServiceProvider extends ServiceProvider
 {
@@ -16,9 +18,12 @@ class CerberusServiceProvider extends ServiceProvider
   {
     $this->registerGlow();
 
-    $this->app['html'] = $this->app->share(function($app)
-    {
+    $this->app['html'] = $this->app->share(function($app) {
       return new HTML($app['url']);
+    });
+
+    $this->app['thumb'] = $this->app->share(function($app) {
+      return new Thumb($app['url']);
     });
   }
 

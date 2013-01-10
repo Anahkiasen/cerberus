@@ -10,7 +10,8 @@
   ],
   "require": {
     "php": ">=5.3.0",
-    "meido/html": "dev-master"
+    "meido/html": "dev-master",
+    "imagine/Imagine": "dev-master"
   },
   "require-dev": {
     "mockery/mockery": "dev-master"
