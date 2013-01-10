@@ -39,18 +39,40 @@ class Thumb
    */
   public function square($image, $size = 200)
   {
+    // Check if the image is in cache
+    if ($cached = $this->cacheOfExists($image)) return $cached;
+
     // Setup Imagine
     $mode  = ImageInterface::THUMBNAIL_OUTBOUND;
     $box   = $this->getSquare($size);
     $cache = $this->getHashOf($image);
 
     // Generate the thumbnail
-    $thumb = $this->getNewImagine()
+    $this->getNewImagine()
       ->open($this->url->asset($image))
       ->thumbnail($box, $mode)
       ->save($cache);
 
     return $cache;
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  /////////////////////////// CORE METHODS ///////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Check if a given image was already processed and is in the cache
+   *
+   * @param string $image The image path
+   *
+   * @return boolean
+   */
+  private function cacheOfExists($image)
+  {
+    $hash = $this->getHashOf($image);
+    if (file_exists($hash)) return $hash;
+
+    return false;
   }
 
   ////////////////////////////////////////////////////////////////////
