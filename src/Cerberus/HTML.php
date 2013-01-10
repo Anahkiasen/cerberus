@@ -36,7 +36,7 @@ class HTML extends MeidoHTML
    *
    * @return string A link with target=_blank
    */
-  public function blankLink($url, $link = null, $attributes = array())
+  public function toBlank($url, $link = null, $attributes = array())
   {
     $attributes['target'] = '_blank';
 
@@ -51,7 +51,7 @@ class HTML extends MeidoHTML
    *
    * @return string A link that points to /
    */
-  public function homeLink($text, $attributes = array())
+  public function toHome($text, $attributes = array())
   {
     return $this->to(null, $text, $attributes);
   }
