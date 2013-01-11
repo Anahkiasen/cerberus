@@ -2,7 +2,6 @@
 namespace Cerberus\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Response;
 
 use Cerberus\HTML;
 use Cerberus\Thumb;
@@ -16,8 +15,6 @@ class CerberusServiceProvider extends ServiceProvider
    */
   public function register()
   {
-    $this->registerGlow();
-
     $this->app['html'] = $this->app->share(function($app) {
       return new HTML($app['url']);
     });
@@ -35,27 +32,5 @@ class CerberusServiceProvider extends ServiceProvider
   public function provides()
   {
     return array('html');
-  }
-
-  /**
-   * Register the Glow javascript helper
-   */
-  private function registerGlow()
-  {
-    $app = $this->app;
-
-    $this->app['router']->get('glow.js', function() use ($app) {
-
-      // Get Illuminate's glow
-      $js = $this->app['files']->get('packages/anahkiasen/cerberus/js/glow.js');
-      $js = str_replace('%BASE%', $this->app['url']->getRequest()->root(), $js);
-      $js = str_replace('%ASSET%', $this->app['url']->asset(''), $js);
-
-      // Set correct header
-      $headers['Content-Type'] = 'application/javascript; charset=utf-8';
-
-      return new Response($js, 200, $headers);
-    });
-
   }
 }
