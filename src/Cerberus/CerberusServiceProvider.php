@@ -1,10 +1,7 @@
 <?php
-namespace Cerberus\Providers;
+namespace Cerberus;
 
 use Illuminate\Support\ServiceProvider;
-
-use Cerberus\HTML;
-use Cerberus\Thumb;
 
 class CerberusServiceProvider extends ServiceProvider
 {
@@ -22,6 +19,8 @@ class CerberusServiceProvider extends ServiceProvider
     $this->app['thumb'] = $this->app->share(function($app) {
       return new Thumb($app['url']);
     });
+
+    $this->backup();
   }
 
   /**
@@ -29,7 +28,7 @@ class CerberusServiceProvider extends ServiceProvider
    */
   public function backup()
   {
-    $backup = new Backup($this->app);
+    $backup = new Backup\Backup($this->app);
     $backup->save();
     $backup->cleanup();
   }
