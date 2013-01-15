@@ -46,7 +46,7 @@ class CerberusServiceProvider extends ServiceProvider
       return new Clean($app);
     });
 
-    $this->commands('command.cerberus.clean');
+    //$this->commands('command.cerberus.clean');
   }
 
   /**
