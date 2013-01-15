@@ -12,6 +12,8 @@ class CerberusServiceProvider extends ServiceProvider
    */
   public function register()
   {
+    $this->package('anahkiasen/cerberus');
+
     $this->app['html'] = $this->app->share(function($app) {
       return new HTML($app['url']);
     });
@@ -21,6 +23,7 @@ class CerberusServiceProvider extends ServiceProvider
     });
 
     $this->backup();
+    $this->registerCommands();
   }
 
   /**
@@ -31,6 +34,19 @@ class CerberusServiceProvider extends ServiceProvider
     $manager = new Backup\Manager($this->app);
     $backup  = new Backup\Backup($this->app['files'], $this->app['db'], $manager);
     $backup->save();
+  }
+
+  /**
+   * Register the artisan commands
+   */
+  public function registerCommands()
+  {
+    $this->app['command.cerberus.clean'] = $this->app->share(function($app)
+    {
+      return new Clean($app);
+    });
+
+    $this->commands('command.cerberus.clean');
   }
 
   /**
