@@ -28,9 +28,9 @@ class CerberusServiceProvider extends ServiceProvider
    */
   public function backup()
   {
-    $backup = new Backup\Backup($this->app);
+    $manager = new Backup\Manager($this->app);
+    $backup  = new Backup\Backup($this->app, $manager);
     $backup->save();
-    $backup->cleanup();
   }
 
   /**

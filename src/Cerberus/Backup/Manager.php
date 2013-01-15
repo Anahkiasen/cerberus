@@ -47,12 +47,7 @@ class Manager
    */
   public function getDateFromFolder($folder)
   {
-    $date  = basename($folder);
-    list($year, $month, $day) = explode('-', $date);
-    $month = intval($month);
-    $day   = intval($day);
-
-    return new \DateTime($date);
+    return new \DateTime(basename($folder));
   }
 
   /**
@@ -140,25 +135,5 @@ class Manager
     }
 
     return $this;
-  }
-
-  ////////////////////////////////////////////////////////////////////
-  ////////////////////////////// HELPERS /////////////////////////////
-  ////////////////////////////////////////////////////////////////////
-
-  /**
-   * Simple check snippet to check if we should continue working
-   *
-   * @return boolean Whether the current date is valid or not
-   */
-  public function checkDate()
-  {
-    if (!$this->date) {
-      $this->debug('error', 'invalid_date');
-
-      return false;
-    }
-
-    return true;
   }
 }

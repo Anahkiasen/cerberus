@@ -22,30 +22,18 @@ class Backup extends Explainer
   protected $app;
 
   /**
-   * Path where the dumps will be saved
-   * @var string
+   * The Manager instance
+   * @var Manager
    */
-  private $storage = null;
-
-  /**
-   * The current date
-   * @var string
-   */
-  private $date;
-
-  /**
-   * Whether debug messages should be printed or not
-   * @var boolean
-   */
-  public $debug = false;
+  private $mananger;
 
   /**
    * Initialize the Backup class
    */
-  public function __construct(\Illuminate\Container\Container $app)
+  public function __construct(\Illuminate\Container\Container $app, Manager $manager)
   {
     $this->app = $app;
-    $this->manager = new Manager($app);
+    $this->manager = $manager;
     $this->connection = $this->app['db']->connection();
   }
 
@@ -55,10 +43,10 @@ class Backup extends Explainer
   public function save()
   {
     // Read dumps for current date
-    $numberDumps = $this->manager->getNumberOfDumpsAt($this->date);
+    $numberDumps = $this->manager->getNumberOfDumpsAt();
     if ($numberDumps > 0) return $this;
 
-    // Backup SQLite databases
+    // Backup databases
     switch ($this->connection->getDriverName()) {
       case 'sqlite':
         return $this->backupSqliteDatabase();
@@ -66,21 +54,14 @@ class Backup extends Explainer
         return $this->backupMySqlDatabase();
     }
 
-    return $this;
-  }
-
-  /**
-   * Clean old saves from the files
-   */
-  public function cleanup()
-  {
+    // Clean old database
     $this->manager->cleanup();
 
     return $this;
   }
 
   ////////////////////////////////////////////////////////////////////
-  ////////////////////////////// HELPERS /////////////////////////////
+  /////////////////////////// BACKUP ROUTINES ////////////////////////
   ////////////////////////////////////////////////////////////////////
 
   /**
@@ -109,29 +90,5 @@ class Backup extends Explainer
     }
 
     return $this;
-  }
-
-  /**
-   * Parse a dump name and return various informations about it
-   *
-   * @param  string $dump Path to a dump
-   * @return array        An array of informations
-   */
-  private function parseDump($dump)
-  {
-    $dumpName = basename($dump);
-
-    // Parse filename
-    preg_match('/([a-z_]+)_(\d{4})-(\d{2})-(\d{2})@(\d{2})-(\d{2})-(\d{2}).sql/', $dumpName, $matches);
-    $unix = mktime($matches[5], $matches[6], $matches[7], $matches[3], $matches[4], $matches[2]);
-
-    return array(
-      'dump'    => $dumpName,
-      'content' => $this->app['files']->get($dump),
-      'date'    => date('Y-m-d', $unix),
-      'hour'    => date('H:i:s', $unix),
-      'table'   => $matches[1],
-      'unix'    => $unix,
-    );
   }
 }
