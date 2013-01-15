@@ -20,7 +20,6 @@ Autoloader::namespaces(array(
 Autoloader::alias('Cerberus\Controllers\Base', 'CerberusBase');
 Autoloader::alias('Cerberus\Controllers\Restful', 'CerberusRestful');
 Autoloader::alias('Cerberus\Models\Elegant', 'Elegant');
-Autoloader::alias('Cerberus\Models\Polyglot', 'Polyglot');
 
 /*
 |---------------------------------------------------------------------
