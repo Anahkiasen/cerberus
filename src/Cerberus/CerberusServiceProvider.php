@@ -25,6 +25,16 @@ class CerberusServiceProvider extends ServiceProvider
   }
 
   /**
+   * Backup the current database
+   */
+  public function backup()
+  {
+    $backup = new Backup($this->app);
+    $backup->save();
+    $backup->cleanup();
+  }
+
+  /**
    * Get the services provided by the provider.
    *
    * @return array
