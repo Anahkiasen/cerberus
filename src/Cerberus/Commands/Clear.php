@@ -1,10 +1,11 @@
 <?php
 namespace Cerberus\Commands;
 
+use \Illuminate\Filesystem\Filesystem;
 use \Underscore\Types\Arrays;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
+use \Illuminate\Console\Command;
+use \Symfony\Component\Console\Input\InputArgument;
+use \Symfony\Component\Console\Input\InputOption;
 
 class Clear extends Command
 {
@@ -27,11 +28,11 @@ class Clear extends Command
    *
    * @return void
    */
-  public function __construct($app)
+  public function __construct(Filesystem $filesystem)
   {
     parent::__construct();
 
-    $this->app = $app;
+    $this->files = $filesystem;
   }
 
   /**
@@ -95,13 +96,13 @@ class Clear extends Command
   {
     foreach ($folders as $folder) {
       $folder  = $this->app->path.'/storage/'.$folder;
-      $files   = $this->app['files']->files($folder);
+      $files   = $this->files->files($folder);
       $deleted = 0;
 
       // Get files
       foreach ($files as $file) {
         $deleted++;
-        $this->app['files']->delete($file);
+        $this->files->delete($file);
       }
 
       $this->info(basename($folder). ' cleaned (' .$deleted. ' files deleted)');
@@ -121,7 +122,7 @@ class Clear extends Command
     // If no folders provided, get all folders
     if (!$folders) {
       $storage = $this->app->path.'/storage/*';
-      $folders = $this->app['files']->glob($storage);
+      $folders = $this->files->glob($storage);
       $folders = Arrays::each($folders, function($folder) { return basename($folder); });
     }
 

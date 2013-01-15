@@ -43,7 +43,7 @@ class CerberusServiceProvider extends ServiceProvider
   {
     $this->app['command.cerberus.clear'] = $this->app->share(function($app)
     {
-      return new Commands\Clear($app);
+      return new Commands\Clear($app['files']);
     });
 
     $this->commands('command.cerberus.clear');
