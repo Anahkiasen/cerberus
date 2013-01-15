@@ -25,7 +25,6 @@ abstract class Elegant extends Eloquent
   {
     // If no input given, fetch all
     if (!$input) $input = Input::get();
-
     return Validator::make($input, static::$rules);
   }
 

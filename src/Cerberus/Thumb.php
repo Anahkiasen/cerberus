@@ -71,7 +71,6 @@ class Thumb
   {
     $hash = $this->getHashOf($image);
     if (file_exists($hash)) return $hash;
-
     return false;
   }
 

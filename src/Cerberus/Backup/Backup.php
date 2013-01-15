@@ -8,7 +8,6 @@
  */
 namespace Cerberus\Backup;
 
-use \Underscore\Types\Arrays;
 use \Illuminate\Filesystem\Filesystem;
 use \Illuminate\Database\DatabaseManager;
 

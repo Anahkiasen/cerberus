@@ -21,7 +21,7 @@ class Manager
     $this->date = date('Y-m-d');
 
     // Create folder if it doesn't exist
-    if(!file_exists($this->storage)) {
+    if (!file_exists($this->storage)) {
       $this->app['files']->makeDirectory($this->storage);
     }
   }
@@ -80,7 +80,6 @@ class Manager
   {
     $folder = $this->getFolderForDate($this->date);
     if (!file_exists($folder)) $this->app['files']->makeDirectory($folder);
-
     return $folder;
   }
 

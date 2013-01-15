@@ -86,8 +86,7 @@ class HTML extends MeidoHTML
     if (String::contains($link, '@')) {
       $class = Arrays::from($link)->explode('@')->get(1);
       $method = 'action';
-    }
-    elseif (Router::find($link)) $method = 'route';
+    } elseif (Router::find($link)) $method = 'route';
     else $method = 'to';
 
     // Parse and decode link
