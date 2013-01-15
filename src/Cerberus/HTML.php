@@ -2,6 +2,9 @@
 namespace Cerberus;
 
 use \Meido\HTML\HTML as MeidoHTML;
+use \Underscore\Types\Arrays;
+use \Underscore\Types\String;
+use \URL;
 
 class HTML extends MeidoHTML
 {
@@ -54,6 +57,45 @@ class HTML extends MeidoHTML
   public function toHome($text, $attributes = array())
   {
     return $this->to(null, $text, $attributes);
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  //////////////////////////////// TABLE /////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Generates an "action" column
+   *
+   * @param string $link       A link, action or route name
+   * @param string $icon       An icon to use
+   * @param array  $parameters Link parameters
+   *
+   * @return string A <td> containing a link
+   */
+  public function actionColumn($link, $icon, $parameters)
+  {
+    // If we didn't directly pass an array of parameters
+    if (!is_array($parameters)) {
+      $parameters = array($parameters->id);
+    }
+
+    // Remember link as class
+    $class = $link;
+
+    // If the link is to a controller
+    if (String::contains($link, '@')) {
+      $class = Arrays::from($link)->explode('@')->get(1);
+      $method = 'action';
+    }
+    elseif (Router::find($link)) $method = 'route';
+    else $method = 'to';
+
+    // Parse and decode link
+    $link = $this->url->to($link, $parameters);
+    $link = $this->$method($link, "<i class='icon-$icon' />");
+    $link = $this->decode($link);
+
+    return '<td class="action ' .$class. '">'.$link.'</td>';
   }
 
   ////////////////////////////////////////////////////////////////////
