@@ -41,12 +41,12 @@ class CerberusServiceProvider extends ServiceProvider
    */
   public function registerCommands()
   {
-    $this->app['command.cerberus.clean'] = $this->app->share(function($app)
+    $this->app['command.cerberus.clear'] = $this->app->share(function($app)
     {
-      return new Clean($app);
+      return new Commands\Clear($app);
     });
 
-    //$this->commands('command.cerberus.clean');
+    $this->commands('command.cerberus.clear');
   }
 
   /**
