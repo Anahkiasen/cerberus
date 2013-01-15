@@ -31,6 +31,16 @@ class Manager
   ////////////////////////////////////////////////////////////////////
 
   /**
+   * Get the path to the SQlite Database
+   *
+   * @return string
+   */
+  public function getSqliteDatabase()
+  {
+    return $this->app->path.'/database/production.sqlite';
+  }
+
+  /**
    * Get all folders
    */
   public function getAllFolders()

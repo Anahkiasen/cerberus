@@ -8,33 +8,38 @@
  */
 namespace Cerberus\Backup;
 
-use \Config;
-use \Lang;
-use \Laravel\Database as DB;
 use \Underscore\Types\Arrays;
+use \Illuminate\Filesystem\Filesystem;
+use \Illuminate\Database\DatabaseManager;
 
 class Backup extends Explainer
 {
   /**
-   * The application instance
-   * @var Container
+   * The Filesystem instance
+   * @var Filesystem
    */
-  protected $app;
+  protected $files;
+
+  /**
+   * The current connection
+   * @var DatabaseManager
+   */
+  protected $connection;
 
   /**
    * The Manager instance
    * @var Manager
    */
-  private $mananger;
+  private $manager;
 
   /**
    * Initialize the Backup class
    */
-  public function __construct(\Illuminate\Container\Container $app, Manager $manager)
+  public function __construct(Filesystem $files, DatabaseManager $database, Manager $manager)
   {
-    $this->app = $app;
-    $this->manager = $manager;
-    $this->connection = $this->app['db']->connection();
+    $this->files      = $files;
+    $this->manager    = $manager;
+    $this->connection = $database->connection();
   }
 
   /**
@@ -72,7 +77,7 @@ class Backup extends Explainer
   private function backupSqliteDatabase()
   {
     $filepath = $this->manager->getFilenameForToday('production').'ite';
-    $this->app['files']->copy($this->app->path.'/database/production.sqlite', $filepath);
+    $this->files->copy($this->manager->getSqliteDatabase(), $filepath);
 
     return $this;
   }
@@ -86,7 +91,7 @@ class Backup extends Explainer
   {
     foreach ($this->getTables() as $table) {
       $filepath = $this->getFolderForToday($table);
-      $this->app['files']->write($filepath, $this->exportTable($table));
+      $this->files->write($filepath, $this->exportTable($table));
     }
 
     return $this;
