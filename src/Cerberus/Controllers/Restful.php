@@ -102,7 +102,7 @@ class Restful extends Base
 
     // If no model already exists, attempt a SHOW COLUMNS
     if (!$attributes) {
-      $attributes = array_pluck(DB::query('SHOW COLUMNS FROM documents'), 'field');
+      $attributes = array_pluck(DB::query('SHOW COLUMNS FROM ' .$this->object->table()), 'field');
     }
 
     // Fetch input and its rules
