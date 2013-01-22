@@ -3,7 +3,7 @@ namespace Cerberus\Controllers;
 
 use \Babel\Babel;
 use \DB;
-use \Former\Former;
+use \Former\Facades\LaravelThree as Former;
 use \Input;
 use \Redirect;
 use \Str;
