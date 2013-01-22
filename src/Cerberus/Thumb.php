@@ -1,6 +1,7 @@
 <?php
 namespace Cerberus;
 
+use \Underscore\Types\String;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Illuminate\Routing\UrlGenerator;
@@ -49,7 +50,7 @@ class Thumb
 
     // Generate the thumbnail
     $this->getNewImagine()
-      ->open($this->url->asset($image))
+      ->open($this->getPathTo($image))
       ->thumbnail($box, $mode)
       ->save($cache);
 
@@ -100,6 +101,22 @@ class Thumb
   private function getSquare($size)
   {
     return new Box($size, $size);
+  }
+
+  /**
+   * Get the path to an image
+   *
+   * @param  string $image The image
+   * @return string Its path
+   */
+  private function getPathTo($image)
+  {
+    // Account for rewritten URLs
+    if (!String::contains($image, 'public')) {
+      $image = 'public/'.$image;
+    }
+
+    return $this->url->asset($image);
   }
 
   /**
