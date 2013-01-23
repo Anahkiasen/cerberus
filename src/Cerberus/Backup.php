@@ -56,8 +56,31 @@ class Backup
     // If we still don't have a valid date, cancel procedure
     if (!$this->checkDate()) return false;
 
-    // Cancel on non MySQL databases
-    if (Config::get('database.default') != 'mysql') return false;
+    // Cancel on non supported drivers
+    $driver = Config::get('database.default');
+    if (!in_array($driver, array('sqlite', 'mysql'))) return false;
+
+    // Read dumps for current date
+    $dumps = $this->getFolderForDate($this->date);
+    $numberDumps = file_exists($dumps) ? sizeof(glob($dumps.'*')) : 0;
+    if ($numberDumps > 0) {
+      $this->debug(
+        'success',
+        'dump_exists',
+         array('date' => $this->date, 'nbdumps' => $numberDumps));
+
+      return $this;
+    }
+
+    // Backup SQLite databases
+    if ($driver == 'sqlite') {
+      $folder = $this->getFolderForDate();
+      File::mkdir($folder);
+      $folder .= 'application.sqlite';
+      File::copy(path('storage').'database'.DS.'application.sqlite', $folder);
+
+      return $this;
+    }
 
     $tables = $this->tables();
     $unsavedTables = array();
@@ -68,18 +91,6 @@ class Backup
       // Get database name
       $database = DB::connection()->config['database'];
       $this->debug('info', 'save_database', array('database' => $database));
-
-      // Read dumps for current date
-      $dumps = $this->getFolderForDate($this->date);
-      $numberDumps = file_exists($dumps) ? sizeof(glob($dumps.'*')) : 0;
-      if ($numberDumps > 0) {
-        $this->debug(
-          'success',
-          'dump_exists',
-           array('date' => $this->date, 'nbdumps' => $numberDumps));
-
-        return $this;
-      }
 
       // If no dumps, save tables
       $folder = $this->getFolderForDate();
@@ -99,6 +110,7 @@ class Backup
       // Make sure all tables were correctly saved
       if (empty($unsavedTables)) $this->debug('success', 'database_saved', array('database' => $database));
       else $this->debug('error', 'tables_unsaved', array('tables' => implode(', ', $unsavedTables)));
+
     } else $this->debug('info', 'database_empty');
 
     return $this;
