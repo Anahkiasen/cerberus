@@ -68,7 +68,9 @@ Route::get('glow.js', function() {
 
 // Save database every day ----------------------------------------- /
 
-if (!Request::env() and !Request::cli()) {
+if (
+  (Request::is_env('production') or !Request::env())
+  and !Request::cli()) {
 
   $backup = new Backup;
 
