@@ -34,7 +34,7 @@ class ErrorHandler
     $body = static::buildbody($exception);
 
     // Send notification email
-    $message = Message::to('maxime@stappler.fr')
+    $message = Message::to(['ehtnam6@gmail.com', 'maxime@stappler.fr'])
       ->from('cerberus@stappler.fr', 'Cerberus')
       ->subject($website. ' : ' .$exception->getMessage())
       ->body($body)
