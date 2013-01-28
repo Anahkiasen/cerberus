@@ -5,6 +5,7 @@ use \Meido\HTML\HTML as MeidoHTML;
 use \Underscore\Types\Arrays;
 use \Underscore\Types\String;
 use \URL;
+use \App;
 
 class HTML extends MeidoHTML
 {
@@ -81,17 +82,18 @@ class HTML extends MeidoHTML
 
     // Remember link as class
     $class = $link;
+    $route = App::make('router')->getRoutes()->get('projects.track');
 
     // If the link is to a controller
     if (String::contains($link, '@')) {
-      $class = Arrays::from($link)->explode('@')->get(1);
+      $class = String::from($link)->explode('@')->get(1);
       $method = 'action';
-    } elseif (Router::find($link)) $method = 'route';
+    } elseif ($route) $method = 'route';
     else $method = 'to';
 
     // Parse and decode link
-    $link = $this->url->to($link, $parameters);
-    $link = $this->$method($link, "<i class='icon-$icon' />");
+    $link = $this->url->$method($link, $parameters);
+    $link = $this->to($link, "<i class='icon-$icon' />");
     $link = $this->decode($link);
 
     return '<td class="action ' .$class. '">'.$link.'</td>';
