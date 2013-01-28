@@ -65,6 +65,32 @@ class HTML extends MeidoHTML
   ////////////////////////////////////////////////////////////////////
 
   /**
+   * A link to a resource action
+   *
+   * @param string $method     The HTTP verb
+   * @param string $route      The resource action
+   * @param array  $parameters Addition parameters
+   * @param array  $attributes Link attributes
+   *
+   * @return string An <a> tag
+   */
+  public function resource($method, $route, $text, $parameters = array(), $attributes = array())
+  {
+    // If we didn't directly pass an array of parameters
+    if (!is_array($parameters)) {
+      $parameters = array($parameters->getKey());
+    }
+
+    // Add verb to attributes
+    $attributes['data-method'] = $method;
+
+    $link = $this->route($route, $text, $parameters, $attributes);
+    $link = $this->decode($link);
+
+    return $link;
+  }
+
+  /**
    * Generates an "action" column
    *
    * @param string $link       A link, action or route name
@@ -77,7 +103,7 @@ class HTML extends MeidoHTML
   {
     // If we didn't directly pass an array of parameters
     if (!is_array($parameters)) {
-      $parameters = array($parameters->id);
+      $parameters = array($parameters->getKey());
     }
 
     // Remember link as class
@@ -127,5 +153,23 @@ class HTML extends MeidoHTML
     $meta .= "<meta name='viewport' content='width=device-width, initial-scale=1.0' />".PHP_EOL;
 
     return $meta;
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  //////////////////////////// MAGIC METHODS /////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  /**
+   * Some shortcuts
+   */
+  public function __call($method, $parameters)
+  {
+    // Resource verbs
+    if (String::endsWith($method, 'Resource')) {
+      $verb = String::remove($method, 'Resource');
+      $parameters = Arrays::prepend($parameters, $verb);
+
+      return call_user_func_array(array($this, 'resource'), $parameters);
+    }
   }
 }

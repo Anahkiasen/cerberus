@@ -1,11 +1,17 @@
-redirect = (link) ->
-  window.location = link
 
-window.action = (link, event, callback) ->
+# Redirection alias ------------------------------------------------ /
+
+redirect = (link) -> window.location = link
+
+# Basic AJAX action ------------------------------------------------ /
+
+action = (link, event, callback) ->
   event.preventDefault()
+  method = link.data 'method' or 'GET'
 
   $.ajax
-    url: link.attr 'href'
+    type: method
+    url : link.attr 'href'
   .done (result) ->
 
     # Parse JSON if it isn't already
@@ -24,6 +30,12 @@ window.action = (link, event, callback) ->
       # Prepend to main form/table
       $('#content form, #content table').prepend result.message
 
+    else console.log result
+
     # Execute the user's callback ---------------------------------- /
 
-    callback result
+    if callback then callback result
+
+# HTTP verbs handling ---------------------------------------------- /
+
+$('a[data-method]').click (event) -> action $(this), event
