@@ -2,6 +2,7 @@
 namespace Cerberus;
 
 use Illuminate\Support\ServiceProvider;
+use App;
 
 class CerberusServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class CerberusServiceProvider extends ServiceProvider
   {
     $this->package('anahkiasen/cerberus');
 
-    $this->app->bind('Symfony\Component\HttpFoundation\Request', 'Illuminate\Http\Request');
+    $this->app->instance('Illuminate\Routing\UrlGenerator', App::make('url'));
     $this->app->singleton('html', 'Cerberus\HTML');
     $this->app->bind('thumb', 'Cerberus\Thumb');
 
