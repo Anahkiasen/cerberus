@@ -14,13 +14,9 @@ class CerberusServiceProvider extends ServiceProvider
   {
     $this->package('anahkiasen/cerberus');
 
-    $this->app['html'] = $this->app->share(function($app) {
-      return new HTML($app['url']);
-    });
-
-    $this->app['thumb'] = $this->app->share(function($app) {
-      return new Thumb($app['url']);
-    });
+    $this->app->bind('Symfony\Component\HttpFoundation\Request', 'Illuminate\Http\Request');
+    $this->app->singleton('html', 'Cerberus\HTML');
+    $this->app->bind('thumb', 'Cerberus\Thumb');
 
     $this->backup();
     $this->registerCommands();
