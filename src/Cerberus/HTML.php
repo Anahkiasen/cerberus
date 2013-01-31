@@ -171,5 +171,7 @@ class HTML extends MeidoHTML
 
       return call_user_func_array(array($this, 'resource'), $parameters);
     }
+
+    return parent::__call($method, $parameters);
   }
 }
