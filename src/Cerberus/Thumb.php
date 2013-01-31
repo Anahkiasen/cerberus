@@ -112,8 +112,8 @@ class Thumb
   private function getPathTo($image)
   {
     // Account for rewritten URLs
-    if (!String::contains($image, 'public')) {
-      $image = 'public/'.$image;
+    if (String::contains($image, 'public')) {
+      $image = String::split($image, 'public');
     }
 
     return $this->url->asset($image);
