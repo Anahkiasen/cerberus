@@ -36,7 +36,7 @@ class Directory
 
     // Remove last element if it's a file
     $last = end($folders);
-    if (empty($last) or String::find('.', $last)) {
+    if (empty($last) or String::find($last, '.')) {
       $folders = Arrays::remove($folders, ($size - 1));
       $size--;
     }

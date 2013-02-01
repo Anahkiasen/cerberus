@@ -285,7 +285,7 @@ class Backup
   public function setDate($date)
   {
     // If given timestamp, parse it to date
-    if (!String::find('-', $date)) {
+    if (!String::find($date, '-')) {
       $date = date('Y-m-d', $date);
     }
 

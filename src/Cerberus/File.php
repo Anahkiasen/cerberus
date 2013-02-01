@@ -9,7 +9,7 @@
 namespace Cerberus;
 
 use \Input;
-use \Underscore\Types\Arrays;
+use \Underscore\Parse;
 
 class File extends \Laravel\File
 {
@@ -26,7 +26,7 @@ class File extends \Laravel\File
    * @param  boolean $append  true: append the content to an exisiting file if available. false: overwrite.
    * @return boolean
    */
-  public static function write($file, $content, $append = false)
+  public static function write($file, $content)
   {
     // Get the files'folder
     $folder = dirname($file);
@@ -35,7 +35,7 @@ class File extends \Laravel\File
     if (!file_exists($folder)) Directory::create($folder);
 
     // Transform array to JSON if necessary
-    if(is_array($content)) $content = Arrays::json($content);
+    if(is_array($content)) $content = Parse::toJSON($content);
 
     return \File::put($file, $content);
   }
