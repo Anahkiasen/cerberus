@@ -12,6 +12,7 @@ use \Config;
 use \Lang;
 use \Laravel\Database as DB;
 use \Underscore\Types\Arrays;
+use \Underscore\Types\String;
 
 class Backup
 {

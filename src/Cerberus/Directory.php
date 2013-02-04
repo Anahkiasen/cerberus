@@ -9,6 +9,7 @@
 namespace Cerberus;
 
 use \Underscore\Types\Arrays;
+use \Underscore\Types\String;
 
 class Directory
 {

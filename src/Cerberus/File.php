@@ -10,6 +10,7 @@ namespace Cerberus;
 
 use \Input;
 use \Underscore\Parse;
+use \Underscore\Types\String;
 
 class File extends \Laravel\File
 {
@@ -125,7 +126,7 @@ class File extends \Laravel\File
     $extension = self::extension($filename);
 
     // Remove extension, sanitize name, put back extension
-    $filename  = String::remove($extension, $filename);
+    $filename  = String::remove($filename, $extension);
     $filename  = String::slugify($filename, '-');
     $filename .= '.' . $extension;
 
