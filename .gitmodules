@@ -18,7 +18,7 @@
 url=git://github.com/jlong/sass-twitter-bootstrap.git
 [submodule "assets/plugins/font-awesome"]
 	path = assets/plugins/font-awesome
-	url = https://Anahkiasen@github.com/Anahkiasen/Font-Awesome.git
+url=git://github.com/FortAwesome/Font-Awesome.git
 [submodule "assets/plugins/nivoslider"]
 	path = assets/plugins/nivoslider
 	url = https://github.com/gilbitron/Nivo-Slider
