@@ -1,4 +1,6 @@
 <?php
+use Cerberus\Toolkit\Server;
+
 class ServerTest extends PHPUnit_Framework_TestCase
 {
 	// Unit Setup -------------------------------------------------- /
@@ -56,6 +58,10 @@ class ServerTest extends PHPUnit_Framework_TestCase
 	{
 		$ip = '88.189.108.137';
 		$location = server::location($ip);
+
+		// Cancel test if API did not respond
+		if($location['statusMessage'] == 'ERROR')
+			self::markTestSkipped('The API did not respond correctly, canceling test');
 
 		self::assertEquals(
 			array(

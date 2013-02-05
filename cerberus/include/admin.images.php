@@ -1,6 +1,15 @@
 <p>Depuis cette page vous pouvez décider de renommer toutes les images d'un dossier selon un format précis. En cliquant sur "Voir les images" vous pouvez aussi renommer/supprimer des images individuellement.</p>
 
 <?php
+use Cerberus\Admin\Admin,
+    Cerberus\Modules\Form,
+    Cerberus\Toolkit\Arrays as a,
+    Cerberus\Toolkit\Database as db,
+    Cerberus\Toolkit\File as f,
+    Cerberus\Toolkit\Language as l,
+    Cerberus\Toolkit\Request as r,
+    Cerberus\Toolkit\String as str;
+
 // Préfixe
 if(isset($_POST['prefixpost'])) $_SESSION['prefix'] = $_POST['prefixpost'];
 if(isset($_GET['noprefix'])) unset($_SESSION['prefix']);
@@ -58,7 +67,7 @@ if(isset($_GET['rename']))
 
 <div class="infoblock alert alert-info">
 	Ajouter un préfixe au renommage automatique (ou <?= str::slink('admin-images', 'supprimer le préfixe enregistré', 'noprefix') ?>) :<br />
-	<?php $form = new forms(array('class' => 'form-search'));
+	<?php $form = new Form(array('class' => 'form-search'));
 	$form->addText('prefixpost', 'Préfixe', $PREFIXE, array('style' => 'padding: 5px'));
 	$form->addSubmit('ok');
 	$form->render();
@@ -142,7 +151,7 @@ if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 	{
 		$name = str_replace('\\', '', $_GET['edit_image']);
 
-		$editImage = new form(false);
+		$editImage = new FormDeprecated(false);
 		$editImage->openFieldset('Editer une image');
 			$editImage->addText('Renommer', '<strong>' .$name. '</strong> sera renommée');
 			$editImage->addHidden('edit_image', $name);
@@ -150,7 +159,7 @@ if(isset($_GET['pictures']) and file_exists(PATH_FILE.$_GET['pictures']))
 		$editImage->closeFieldset();
 	}
 	// Ajouter une image
-	$upload = new form(false, array('action' => url::rewrite('admin-images', array('pictures' => $_GET['pictures']))));
+	$upload = new FormDeprecated(false, array('action' => url::rewrite('admin-images', array('pictures' => $_GET['pictures']))));
 	$upload->openFieldset('Ajouter une image');
 		$upload->addText('caption', 'Description');
 		$upload->addFile('path', 'Chemin vers l\'image');

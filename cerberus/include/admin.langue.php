@@ -1,3 +1,13 @@
+<?php
+use Cerberus\Toolkit\Database as db;
+use Cerberus\Toolkit\Url;
+use Cerberus\Toolkit\Request as r;
+use Cerberus\Admin\Admin;
+use Cerberus\Modules\Form;
+use Cerberus\Core\Config;
+
+?>
+
 <p>Ci-dessous il est possible de modifier les différentes traductions du site. À noter que toute modification aux noms des pages doivent être faites via la page <em>structure</em>.</p>
 
 <style type="text/css">
@@ -76,7 +86,7 @@ $langueAdmin->createList(
 $langueAdmin->addOrEdit($diff, $diffText, $urlAction);
 
 // Formulaire
-$forms = new forms();
+$forms = new Form();
 $forms->values('cerberus_langue');
 
 $forms->openFieldset($diffText. ' une traduction');

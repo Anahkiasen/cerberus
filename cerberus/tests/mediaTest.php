@@ -1,4 +1,6 @@
 <?php
+use Cerberus\Toolkit\Media;
+
 class MediaTest extends PHPUnit_Framework_TestCase
 {
 	public function testImage()
@@ -48,7 +50,7 @@ class MediaTest extends PHPUnit_Framework_TestCase
 		$size = 200;
 		$tt = media::timthumb($file, $size, $size);
 
-		self::assertEquals($tt, PATH_CORE.'class/plugins/timthumb.php?src=' .$file. '&w=' .$size. '&h=' .$size);
+		self::assertEquals($tt, PATH_CORE.'classes/Vendor/timthumb.php?src=' .$file. '&w=' .$size. '&h=' .$size);
 	}
 
 }

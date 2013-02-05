@@ -1,4 +1,9 @@
 <?php
+use Cerberus\Core\Config;
+
+// Dependencies
+use Cerberus\Toolkit\File;
+
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
 	// Setup and Teardown ------------------------------------------ /
@@ -12,7 +17,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
 	public static function tearDownAfterClass()
 	{
-		f::remove(self::$file);
+		file::remove(self::$file);
 	}
 
 	public function tearDown()
@@ -82,7 +87,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	{
 		// Writing fake config file
 		$json = array('testKey' => 'testValue');
-		f::write('temp.json', json_encode($json));
+		file::write('temp.json', json_encode($json));
 
 		// Loading it and checking config value
 		config::load('temp.json');
@@ -92,20 +97,20 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		self::assertEquals($return, 'testValue');
 
 		// Remove temp file
-		f::remove('temp.json');
+		file::remove('temp.json');
 	}
 
 	public function testChangeLoad()
 	{
 		$tempFile = 'test.json';
-		f::write($tempFile, '{"testLoad":"true"}');
+		file::write($tempFile, '{"testLoad":"true"}');
 
 		$change = config::change($tempFile);
 		self::assertFileExists($tempFile);
 		self::assertArrayHasKey('testLoad', config::get());
 		self::assertEquals('true', config::get('testLoad'));
 
-		f::remove($tempFile);
+		file::remove($tempFile);
 	}
 
 	public function testChangeCreate()
@@ -115,7 +120,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$change = config::change($tempFile);
 		self::assertFileExists($tempFile);
 
-		f::remove($tempFile);
+		file::remove($tempFile);
 	}
 
 	public function testLoadErase()
@@ -124,7 +129,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
 		// Writing fake config file
 		$json = array('index' => 'testValue');
-		f::write('temp.json', json_encode($json));
+		file::write('temp.json', json_encode($json));
 
 		// Loading it and checking config value
 		config::load('temp.json');
@@ -134,7 +139,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		self::assertEquals($return, 'testValue');
 
 		// Remove temp file
-		f::remove('temp.json');
+		file::remove('temp.json');
 	}
 
 	public function testMysql()

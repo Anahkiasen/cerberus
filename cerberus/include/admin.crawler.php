@@ -1,4 +1,11 @@
-<?php restore_error_handler() ?>
+<?php
+use Cerberus\Admin\Admin,
+    Cerberus\Modules\Form,
+    Cerberus\Toolkit\Arrays as a,
+    Cerberus\Toolkit\Url;
+
+restore_error_handler();
+?>
 <p>Depuis cette page vous pouvez générer un sitemap ou vider le cache.
 La regénération du cache peut prendre un peu de temps, les pages visitées par le crawler s'afficheront une à une ci-dessous jusqu'à l'affichage du panneau de résumé quand tout sera terminé.<br />
 Ci-dessous vous pouvez appliquer des paramètres qui limiteront la portée du crawler et les pages qu'il pourra visiter.</p>
@@ -19,7 +26,7 @@ $exploration = a::get($_POST, 'exploration', 2);
 $type = a::get($_POST, 'type', 'empty');
 
 // Formulaire de paramètres
-$form = new forms(array('class' => 'form-horizontal'));
+$form = new Form(array('class' => 'form-horizontal'));
 $form->openFieldset('Paramètres');
 	$form->addText('domain', 'Domaine à explorer', $domain);
 	$form->addText('nofollow', 'Ignorer les extensions suivantes', $extensions);
@@ -60,7 +67,7 @@ if(isset($_POST['nofollow']))
 		str::display('Le cache vient d\'être vidé, il va être régénéré page par page, veuillez patienter');
 
 		set_time_limit(10000);
-		include 'cerberus/class/plugins/crawler.crawler.php';
+		include PATH_CORE.'classes/Vendor/crawler.crawler.php';
 
 		// Génération du cache
 		class MyCrawler extends PHPCrawler

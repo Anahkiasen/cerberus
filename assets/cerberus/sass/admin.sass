@@ -1,55 +1,103 @@
+
 @import base
 
-.navbar
-  text-align: center
-  background-image: url("../img/overlay-noir-10.png"), url("../img/overlay-blancnoir-25.png") !important
-  width: 100%
-  margin: 0 auto
-  padding: 4px 0
-  position: relative
-  font-size: small
-  +border-radius(10px, 0)
-  &.bottom
-    background-image: url("../img/overlay-noir-50.png"), url("../img/overlay-blancnoir-25.png") !important
-    +border-radius(0, 10px)
-  a
-    padding: 3px 12px
-    margin-right: 5px
-    color: white
-    text-transform: lowercase
-    text-shadow: 0 2px 0 fade(black, 25)
-    $button: #338ccc
-    &:hover,
-    &.active
-      padding: 3px 11px
-      border: solid grey(20)
-      border-width: 0 1px
-      background-color: lighten($main, 5)
-      +box-shadow(inset 0 2px 5px 0 fade(black, 50))
-    &:active
-      background-color: $button
-      position: relative
-      top: 1px
-    &.active
-      +gradient-auto($button, 15)
-  .section
-    margin: 0
-    position: relative
-    top: -4px
-    padding: 4px
-    color: white
-    float: left
-    +gradient-auto($grayDark, 5)
-    border: none
-    text-align: center
-    text-transform: uppercase
-    width: 75px
+$main: $cerberus
+@import base/cerberus
 
-table
-  background: white
-  color: #333
-  +text-shadow(none)
-  
-.admin #contenu
-  font-family: $sansFontFamily
-  font-weight: 400
+body,
+html
+	width: 100%
+	height: 100%
+
+body
+	background-color: grey(90)
+	background-image: image-url('pattern-45-white.png')
+
+section#admin
+	+container
+	padding: ms(0)
+	min-height: 75%
+
+	background-color: white
+	border: 1px solid fade(black, 25)
+	+box-shadow(0 0 0 10px fade(black, 10))
+
+	color: grey(30)
+	font-family: $sansFontFamily
+
+	& > h1
+		text-align: center
+		font-weight: 200
+		text-transform: uppercase
+		margin-bottom: ms(0)
+		font-size: ms(3)
+		line-height: 1
+		letter-spacing: -0.1em
+		+text-shadow(0 1px 0 white)
+
+// Admin
+#admin-navigation
+	background: grey(90) url('../../cerberus/img/pattern-45-white.png')
+	+box-shadow(inset 0 0 10px 5px fade(black, 20))
+	+border-radius(5px)
+	margin-bottom: 20px
+	h4
+		font:
+			size: 15px
+			weight: 100
+		text-shadow: none
+		background: darken($cerberus, 10)
+		padding: 7px 4px 6px
+		+border-radius(5px)
+		+border-bottom-radius(0)
+		color: white
+		line-height: normal
+		text-align: center
+	.btn-group
+		margin: 0
+		padding: 5px 10px
+		text-align: left
+		&:nth-child(2)
+			padding-top: 7px
+		&.bottom
+			padding-top: 5px
+			padding-bottom: 10px
+		.btn img
+			position: relative
+			top: -2px
+		.category
+			$color: $cerberus
+			+buttonBackground($color, darken($color, 10))
+			:color white
+			+single-text-shadow(fade(black, 25), 0, 1px, 0)
+			:width 110px
+			:font
+				:family $sansFontFamily
+				:weight 100
+
+.form-horizontal
+	$width: 250px
+	.control-group label
+		width: $width
+	.form-actions
+		padding-left: $width
+	.controls
+		margin-left: $width + 20px
+
+fieldset
+	legend
+		@extend %border-box
+		background-color: $cerberus
+		margin-bottom: 0
+		+text-shadow(0 2px 0 fade(black, 50))
+
+table,
+.table
+	background: white
+	color: #333
+	+text-shadow(none)
+
+	th
+		background-color: $cerberus
+		color: white
+		text-align: center

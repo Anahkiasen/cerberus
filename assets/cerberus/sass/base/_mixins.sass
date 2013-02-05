@@ -4,11 +4,11 @@
 
 // Shortcut for rgba() with a percentage-based $opacity
 @function fade($color, $opacity)
-	@return rgba($color, $opacity / 100)
+  @return rgba($color, $opacity / 100)
 
 // Generate a grey on a lightness-scale from 0 to 100
 @function grey($lightness)
-	@return lighten(black, $lightness)
+  @return lighten(black, $lightness)
 
 //////////////////////////////////////////////////////////////
 /////////////////////////// MIXINS ///////////////////////////
@@ -18,106 +18,185 @@
 
 // Changes the current selection color
 =selection($background, $color: white)
-	::selection
-		background: $background
-		color: $color
-	::-moz-selection
-		background: $background
-		color: $color
+  ::selection
+    background: $background
+    color: $color
+  ::-moz-selection
+    background: $background
+    color: $color
 
 // Changes the current font-smoothing mode
 =font-smoothing($smooth)
-	+experimental(font-smoothing, $smooth)
+  +experimental(font-smoothing, $smooth)
+
+// Create a ribbon
+=ribbon($color, $padding: 1em)
+  position: absolute
+  text-align: center
+  font-size: $padding * 2
+  +background-image(linear-gradient(lighten($color, 10), darken($color, 10)))
+  +box-shadow(rgba(black, 0.3) 0 1px 1px)
+  h1
+    font-size: $padding * 1.5
+  &:before, &:after
+    content: ''
+    position: absolute
+    display: block
+    bottom: -1em
+    border: 1.5em solid darken($color, 5)
+    z-index: -1
+  &:before
+    left: -2em
+    border-right-width: 1.5em
+    border-left-color: transparent
+    +box-shadow(1px 1px 1px rgba(black, 0.4))
+  &:after
+    right: -2em
+    border-left-width: 1.5em
+    border-right-color: transparent
+    +box-shadow(-1px 1px 1px rgba(black, 0.4))
+  .content
+    +text-shadow(lighten($color, 10) 0 1px 0)
+    padding: ($padding * 0.7) $padding
+    color: darken($color, 20)
+    &:before, &:after
+      border-color: darken($color, 20) transparent transparent transparent
+      position: absolute
+      display: block
+      border-style: solid
+      bottom: -1em
+      content: ''
+    &:before
+      left: 0
+      border-width: 1em 0 0 1em
+    &:after
+      right: 0
+      border-width: 1em 1em 0 0
+
+  // Stitches ------ /
+
+  $stitchesSize   : 3px
+  $stitchesShadow : 2px $stitchesSize rgba(white, 0.2)
+  $stitchesWhite  : 0 0 2px rgba(black, 0.3)
+
+  .stitches-top,
+  .stitches-bottom
+    border-top: 1px dashed rgba(white, 0.2)
+    +box-shadow($stitchesWhite, 0px $stitchesSize $stitchesShadow)
+  .stitches-top
+    +box-shadow($stitchesWhite, 0px (-1 * $stitchesSize) $stitchesShadow)
+    margin-top: 2px
+  .stitches-bottom
+    margin-bottom: 2px
+
+// Paper curl
+=paper-curl($angleRaw: 10, $opacity: 0.5)
+  $angle: unquote($angleRaw+'deg')
+  &:before, &:after
+    position: absolute
+    width: 40%
+    height: 10px
+    content: ' '
+    left: 12px
+    bottom: ($angleRaw * 4px)
+    background: transparent
+    +transform(skew(-$angle) rotate(-$angle))
+    +box-shadow(0 6px 12px rgba(black, $opacity))
+    z-index: -1
+  &:after
+    left: auto
+    right: 12px
+    +transform(skew($angle) rotate($angle))
 
 // Folded corners (triangles)
 =folded-corners($size, $color, $offset: 0)
-	position: relative
-	&:before,
-	&:after
-		content: ''
-		display: block
-		width: 0
-		height: 0
-		z-index: -5
-		position: absolute
-		border-bottom: $size solid transparent
-		bottom: -$size + $offset
-	&:before
-		left: -$offset
-		border-right: $size solid $color
-	&:after
-		right: -$offset
-		border-left: $size solid $color
+  position: relative
+  &:before,
+  &:after
+    content: ''
+    display: block
+    width: 0
+    height: 0
+    z-index: -5
+    position: absolute
+    border-bottom: $size solid transparent
+    bottom: -$size + $offset
+  &:before
+    left: -$offset
+    border-right: $size solid $color
+  &:after
+    right: -$offset
+    border-left: $size solid $color
 
 @function double-shadow($size: 2px, $blur: 0)
-	@return 0 $size $blur fade(black, 10), inset 0 (-$size) $blur fade(black, 20)
+  @return 0 $size $blur fade(black, 10), inset 0 (-$size) $blur fade(black, 20)
 
 =double-shadow($size: 2px, $blur: 0)
-	+box-shadow(double-shadow($size, $blur))
+  +box-shadow(double-shadow($size, $blur))
 
 // Gradients ----------------------------------------------- /
 
 // Main mixin
 =gradient-auto($color, $difference: $cerberus-gradient-span, $type: vertical, $borders: $cerberus-gradient-borders)
-	@if $type == vertical
-		+gradient-vertical(lighten($color, $difference), darken($color, $difference))
-	@else if $type == vertical-inverse
-		+gradient-vertical(darken($color, $difference), lighten($color, $difference))
-	@else if $type == horizontal
-		+gradient-horizontal(lighten($color, $difference), darken($color, $difference))
-	@else if $type == horizontal-inverse
-		+gradient-horizontal(darken($color, $difference), lighten($color, $difference))
-	@else if $type == radial
-		+gradient-radial(lighten($color, $difference), darken($color, $difference))
+  @if $type == vertical
+    +gradient-vertical(lighten($color, $difference), darken($color, $difference))
+  @else if $type == vertical-inverse
+    +gradient-vertical(darken($color, $difference), lighten($color, $difference))
+  @else if $type == horizontal
+    +gradient-horizontal(lighten($color, $difference), darken($color, $difference))
+  @else if $type == horizontal-inverse
+    +gradient-horizontal(darken($color, $difference), lighten($color, $difference))
+  @else if $type == radial
+    +gradient-radial(lighten($color, $difference), darken($color, $difference))
 
-	// Bordures
-	@if $borders > 0
-		border-top: $borders solid lighten($color, $difference + 10)
-		border-bottom: $borders solid darken($color, $difference + 10)
+  // Bordures
+  @if $borders > 0
+    border-top: $borders solid lighten($color, $difference + 10)
+    border-bottom: $borders solid darken($color, $difference + 10)
 
 // Individual directional mixins
 =gradient-auto-vertical($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
-	+gradient-auto($color, $difference, vertical, $borders)
+  +gradient-auto($color, $difference, vertical, $borders)
 
 =gradient-auto-horizontal($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
-	+gradient-auto($color, $difference, horizontal, $borders)
+  +gradient-auto($color, $difference, horizontal, $borders)
 
 =gradient-auto-radial($color, $difference: $cerberus-gradient-span, $borders: $cerberus-gradient-borders)
-	+gradient-auto($color, $difference, radial, $borders)
+  +gradient-auto($color, $difference, radial, $borders)
 
 // Utilities ------------------------------------------------ /
 
 // Drops a text-shadow of a contrast color
 =text-drop($color, $size: 2px)
-	color: $color
-	+text-shadow(0 $size 0 rgba(contrast-color($color), 0.5))
+  color: $color
+  +text-shadow(0 $size 0 rgba(contrast-color($color), 0.5))
 
 // Creates a beveling text-shadow
 =bevel($size, $opacity: 20)
-	+text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
+  +text-shadow(0 -$size 0 fade(black, $opacity), 0 $size 0 fade(white, $opacity))
 
 // Loads a webfont using the +font-face mixin
 =webfont($name, $font_path, $weight: normal, $style: normal)
-	+font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, $style)
+  +font-face($name, font-files("#{$font_path}.woff","#{$font_path}.ttf","#{$font_path}.otf","#{$font_path}.svgz#FontAwesomeRegular", svg,"#{$font_path}.svg#FontAwesomeRegular", svg),'#{$font_path}.eot', $weight, $style)
 
 // Percentage-based version of rba-background
 =background-fade($color, $opacity)
-	+rgba-background($color, $opacity / 100)
+  +rgba-background($color, $opacity / 100)
 
 // Padding mixins
 =padding-h($padding)
-	padding-left: $padding
-	padding-right: $padding
+  padding-left: $padding
+  padding-right: $padding
 
 =padding-v($padding)
-	padding-top: $padding
-	padding-bottom: $padding
+  padding-top: $padding
+  padding-bottom: $padding
 
 // Margin mixins
 =margin-h($margin)
-	margin-left: $margin
-	margin-right: $margin
+  margin-left: $margin
+  margin-right: $margin
 
 =margin-v($margin)
-	margin-top: $margin
-	margin-bottom: $margin
+  margin-top: $margin
+  margin-bottom: $margin

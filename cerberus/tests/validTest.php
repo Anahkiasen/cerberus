@@ -1,4 +1,6 @@
 <?php
+use Cerberus\Toolkit\Valid;
+
 class ValidTest extends PHPUnit_Framework_TestCase
 {
 	// dataProviders ---------------------------------------------- /

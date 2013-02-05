@@ -1,4 +1,10 @@
 <?php
+use Cerberus\Modules\Timer;
+
+// Dependencies
+use Cerberus\Toolkit\Arrays as a;
+use Cerberus\Toolkit\Content;
+
 class TimerTest extends PHPUnit_Framework_TestCase
 {
 	private static $timer = 'testTimer';

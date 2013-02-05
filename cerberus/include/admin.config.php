@@ -1,4 +1,11 @@
 <?php
+use Cerberus\Admin\Admin,
+    Cerberus\Core\Config,
+    Cerberus\Modules\Form,
+    Cerberus\Toolkit\Arrays as a,
+    Cerberus\Toolkit\String as str,
+    Cerberus\Toolkit\Url;
+
 $arrays = array('cerberus', 'langues');
 $bool = array('rewriting', 'minify', 'bootstrap', 'multi_admin', 'cache', 'logs', 'multilangue');
 
@@ -62,7 +69,7 @@ array(
 );
 
 // Création du formulaire
-$forms = new forms();
+$forms = new Form();
 foreach($configuration as $fieldset => $fields)
 {
 	$forms->openFieldset($fieldset);

@@ -1,4 +1,9 @@
 <?php
+use Cerberus\Toolkit\Content;
+
+// Dependencies
+use Cerberus\Toolkit\File;
+
 class ContentTest extends PHPUnit_Framework_TestCase
 {
 	public function testStart()
@@ -67,12 +72,12 @@ class ContentTest extends PHPUnit_Framework_TestCase
 	public function testLoad()
 	{
 		$file = 'test.php';
-		f::write($file, '<?php echo "This is a test" ?>');
+		file::write($file, '<?php echo "This is a test" ?>');
 
 		$test = content::load($file);
 
 		self::assertEquals('This is a test', $test);
-		f::remove($file);
+		file::remove($file);
 	}
 
 	public function testHeaders()

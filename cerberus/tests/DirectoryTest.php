@@ -1,0 +1,202 @@
+<?php
+use Cerberus\Toolkit\Directory;
+
+// Dependencies
+use Cerberus\Toolkit\File;
+
+class DirectoryTest extends PHPUnit_Framework_TestCase
+{
+	// Variables --------------------------------------------------- /
+
+	private static $dummyFile = 'Dispatch.php';
+	private static $dummyFolder = 'temp/';
+
+	// Tests Setup ------------------------------------------------- /
+
+	public function setUp()
+	{
+		directory::make(self::$dummyFolder);
+	}
+
+	public static function tearDownAfterClass()
+	{
+		directory::remove(self::$dummyFolder);
+	}
+
+	public function tearDown()
+	{
+		directory::remove(self::$dummyFolder);
+	}
+
+	// Data providers  --------------------------------------------- /
+
+	public function paths()
+	{
+		return array(
+			array('this/is/a/path/file.php', 'path', 1, 'a'),
+			array('this/is/a/path', 'path', 2, 'is'),
+			array('cerberus/file.php', 'cerberus', 0, 'cerberus'),
+			array('cerberus', 'cerberus', 0, 'cerberus'),
+			array('this/is/a/path/', 'path', 2, 'is')
+			);
+	}
+
+	// Tests ------------------------------------------------------- /
+
+	public function testMakeSimple()
+	{
+		$folder = self::$dummyFolder.'testFolder';
+		$create = directory::make($folder);
+
+		self::assertFileExists($folder);
+	}
+
+	public function testRead()
+	{
+		$read = directory::read('cerberus/classes/Core/');
+
+		self::assertInternalType('array', $read);
+		self::assertContains(self::$dummyFile, $read);
+		self::assertNotContains('.DS_Store', $read);
+	}
+
+	public function testInspect()
+	{
+		$folder = 'cerberus/classes/Core/';
+
+		$inspect = directory::inspect($folder);
+		self::assertNotEmpty($inspect);
+
+		extract($inspect);
+
+		self::assertEquals('Core', $name);
+		self::assertEquals($folder, $root);
+		self::assertEquals(filemtime($folder), $modified);
+		self::assertContains(self::$dummyFile, $files);
+	}
+
+	public function testRename()
+	{
+		$folder1 = self::$dummyFolder.'rename1';
+		$folder2 = self::$dummyFolder.'rename2';
+
+		// Create folder and rename it
+		directory::make($folder1);
+		$rename = directory::rename($folder1, $folder2);
+
+		// Check if the old one is not there but the new one is
+		self::assertTrue($rename);
+		self::assertFileExists($folder2);
+		self::assertFileNotExists($folder1);
+	}
+
+	/**
+	 * @depends testMakeSimple
+	 */
+	public function testMove()
+	{
+		$folder1 = self::$dummyFolder.'move1';
+		$folder2 = self::$dummyFolder.'move2';
+
+		// Create two basic folders
+		directory::make($folder1);
+		directory::make($folder2);
+
+		// Move one into the other
+		$move = directory::move($folder1, $folder2);
+
+		// Check if the folder moved
+		$dir2 = directory::inspect($folder2);
+		self::assertArrayHasKey('children', $dir2);
+		self::assertContains('move1', $dir2['children']);
+	}
+
+	public function testRemove()
+	{
+		$folder = self::$dummyFolder.'remove1';
+
+		$make = directory::make($folder);
+		self::assertTrue($make);
+		self::assertFileExists($folder);
+
+		$remove = directory::remove($folder);
+		self::assertTrue($remove);
+		self::assertFileNotExists($folder);
+	}
+
+	public function testEmpty()
+	{
+		$folder = self::$dummyFolder.'remove2';
+		$file = $folder.'/test.txt';
+
+		$make = directory::make($folder);
+		self::assertTrue($make);
+		self::assertFileExists($folder);
+
+		$create = file::create($file);
+		self::assertTrue($create);
+		self::assertFileExists($file);
+
+		directory::clean($folder);
+		self::assertFileExists($folder);
+		self::assertFileNotExists($file);
+	}
+
+	/**
+	 * @dataProvider paths
+	 */
+	public function testLast($path = null, $expected = null)
+	{
+		$last = directory::last($path);
+		self::assertEquals($expected, $last);
+	}
+
+	/**
+	 * @dataProvider paths
+	 */
+	public function testNth($path = null, $expectedLast = null, $nth = null, $expected = null)
+	{
+		$nth = directory::nth($path, $nth);
+		self::assertEquals($expected, $nth);
+	}
+
+	public function testMakeComplex()
+	{
+		$folder = self::$dummyFolder.'subTestFolder/subSubTestFolder/';
+		$create = directory::make($folder);
+
+		self::assertFileExists($folder);
+	}
+
+	public function testSize()
+	{
+		$string = 'This is a test';
+
+		$file = self::$dummyFolder.'testFile.txt';
+		file::write($file, $string);
+		$size = directory::size(self::$dummyFolder);
+
+		self::assertEquals($size, strlen($string));
+	}
+
+	public function testSizeRecursive()
+	{
+		$string = 'This is a test';
+
+		$file = self::$dummyFolder.'subfolder/testFile.txt';
+		file::write($file, $string);
+		$size = directory::size(self::$dummyFolder, false, false);
+
+		self::assertEquals($size, 0);
+	}
+
+	public function testModified()
+	{
+		file::write(self::$dummyFolder.'subfolder/file.txt', 'This is a test');
+
+		$modified = directory::modified(self::$dummyFolder);
+		$time = time();
+
+		self::assertEquals($time, $modified);
+	}
+}

@@ -1,4 +1,6 @@
 <?php
+use Cerberus\Toolkit\Cookie;
+
 class CookieTest extends PHPUnit_Framework_TestCase
 {
 	public function testSetCookie()

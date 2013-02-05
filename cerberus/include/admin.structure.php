@@ -1,4 +1,9 @@
 <?php
+use Cerberus\Admin\Admin;
+use Cerberus\Toolkit\Database as db;
+use Cerberus\Toolkit\Language as l;
+use Cerberus\Toolkit\Request as r;
+
 if(r::get('meta_structure'))
 {
 	$metaAdmin = new Admin();
@@ -95,7 +100,7 @@ if(isset($_GET['meta_structure']))
 	else $_GET['edit_meta'] = $meta['id'];
 
 	// Formulaire META
-	$form = new forms(array('action' => url::reload(array('meta_structure' => r::get('meta_structure')))));
+	$form = new Form(array('action' => url::reload(array('meta_structure' => r::get('meta_structure')))));
 	$form->values('cerberus_meta');
 	$titre = r::get('meta_structure') ? l::getTranslation('menu-'.$meta['parent'].'-'.$meta['page'], l::admin_current()) : NULL;
 	$parentTitre = l::getTranslation('menu-'.$meta['parent'], l::admin_current());
@@ -120,7 +125,7 @@ if(isset($_GET['meta_structure']))
 $strucAdmin->addOrEdit($diff, $diffText, $urlAction);
 if(isset($_GET['add_structure']) || isset($_GET['edit_structure']))
 {
-	$form = new forms(array('action' => url::reload($urlAction)));
+	$form = new Form(array('action' => url::reload($urlAction)));
 	$form->values('cerberus_structure');
 	$form->openFieldset($diffText. ' l\'arborescence');
 		$form->addText('page', 'Identifiant de la page');

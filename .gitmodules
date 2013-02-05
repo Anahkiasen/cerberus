@@ -15,7 +15,7 @@
 	url = https://github.com/Modernizr/Modernizr
 [submodule "assets/plugins/bootstrap"]
 	path = assets/plugins/bootstrap
-	url = https://Anahkiasen@github.com/Anahkiasen/sassy-bootstrap.git
+url=git://github.com/jlong/sass-twitter-bootstrap.git
 [submodule "assets/plugins/font-awesome"]
 	path = assets/plugins/font-awesome
 	url = https://Anahkiasen@github.com/Anahkiasen/Font-Awesome.git

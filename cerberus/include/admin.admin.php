@@ -1,4 +1,7 @@
 <?php
+use Cerberus\Admin\Admin;
+use Cerberus\Toolkit\Arrays as a;
+
 if(isset($_POST['edit']))
 {
 	foreach($_POST as $page => $droit)
@@ -16,9 +19,9 @@ $return = a::simplify($langueAdmin->get('navigation'), $return);
 
 if(isset($_GET['edit_admin']) or isset($_GET['add_admin']))
 {
-	$form = new form(false, array('action' => url::rewrite(NULL, $urlAction)));
+	$form = new FormDeprecated(false, array('action' => url::rewrite(NULL, $urlAction)));
 	$form->getValues($langueAdmin->getFieldsTable());
-	$select = new select();
+	$select = new SelectDeprecated();
 
 	$pages = $langueAdmin->get('droits');
 	$form->openFieldset('Pages autorisées');

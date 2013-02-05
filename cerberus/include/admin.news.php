@@ -8,7 +8,7 @@ $newsAdmin->addOrEdit($diff, $diffText, $urlAction);
 cache::delete('{news,actualite}', true);
 
 // Formulaire
-$forms = new forms();
+$forms = new Form();
 $forms->values('cerberus_news');
 $forms->openFieldset($diffText. ' une news');
 {

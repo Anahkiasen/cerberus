@@ -1,4 +1,10 @@
 <?php
+use Cerberus\Modules\Pager;
+
+// Dependencies
+use Cerberus\Core\Navigation;
+use Cerberus\Toolkit\Content;
+
 class PagerTest extends PHPUnit_Framework_TestCase
 {
 	private static $pager   = null;

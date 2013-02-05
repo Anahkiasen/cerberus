@@ -1,4 +1,6 @@
 <?php
+use Cerberus\Toolkit\Session;
+
 class SessionTest extends PHPUnit_Framework_TestCase
 {
 	// Destroy any existing session everytime a function ends
