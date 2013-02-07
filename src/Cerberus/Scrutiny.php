@@ -15,7 +15,7 @@ class Scrutiny extends TestCase
     $unitTesting = true;
     $testEnvironment = 'testing';
 
-    return require __DIR__.'/../../../../../start.php';
+    return require __DIR__.'/../../../../../bootstrap/start.php';
   }
 
   ////////////////////////////////////////////////////////////////////
