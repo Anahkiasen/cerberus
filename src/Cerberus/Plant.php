@@ -36,15 +36,15 @@ class Plant extends Seeder
     });
 
     // Slice for SQLite
-    $slicer = floor(999 / sizeof($data[0]));
-    $slices = array_chunk($data, $slicer);
+    $slicer = floor(999 / sizeof($seeds[0]));
+    $slices = array_chunk($seeds, $slicer);
     foreach ($slices as $slice) {
       DB::table($table)->insert($slice);
     }
 
     // Print number of seeds
     // $element = String::remove(get_called_class(), 'Seeder');
-    // print sizeof($data).' '.lcfirst($element).' seeded successfully'.PHP_EOL;
+    // print sizeof($seeds).' '.lcfirst($element).' seeded successfully'.PHP_EOL;
   }
 
   ////////////////////////////////////////////////////////////////////
