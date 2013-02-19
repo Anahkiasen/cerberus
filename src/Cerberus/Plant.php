@@ -1,6 +1,7 @@
 <?php
 namespace Cerberus;
 
+use DB;
 use Seeder;
 use Underscore\Types\String;
 
