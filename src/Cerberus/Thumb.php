@@ -1,10 +1,11 @@
 <?php
 namespace Cerberus;
 
-use \Underscore\Types\String;
+use App;
+use Illuminate\Routing\UrlGenerator;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
-use Illuminate\Routing\UrlGenerator;
+use Underscore\Types\String;
 
 class Thumb
 {
@@ -31,21 +32,22 @@ class Thumb
   }
 
   /**
-   * Creates a square thumbnail of the provided image
+   * Create a cropped thumb
    *
-   * @param string  $image Path to the image
-   * @param integer $size  The thumbnail size
+   * @param string  $image  Path to the image
+   * @param integer $width
+   * @param integer $height
    *
-   * @return string  The path to the thumbnail
+   * @return string
    */
-  public function square($image, $size = 200)
+  public function create($image, $width = 200, $height = 200)
   {
     // Check if the image is in cache
     if ($cached = $this->cacheOfExists($image)) return $cached;
 
     // Setup Imagine
     $mode  = ImageInterface::THUMBNAIL_OUTBOUND;
-    $box   = $this->getSquare($size);
+    $box   = new Box($width, $height);
     $cache = $this->getHashOf($image);
 
     // Generate the thumbnail
@@ -55,6 +57,19 @@ class Thumb
       ->save($cache);
 
     return $cache;
+  }
+
+  /**
+   * Creates a square thumbnail of the provided image
+   *
+   * @param string  $image Path to the image
+   * @param integer $size  The thumbnail size
+   *
+   * @return string  The path to the thumbnail
+   */
+  public function square($image, $size = 200)
+  {
+    return $this->create($image, $size, $size);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -71,8 +86,8 @@ class Thumb
   private function cacheOfExists($image)
   {
     $hash = $this->getHashOf($image);
-    if (file_exists($hash)) return $hash;
-    return false;
+
+    return file_exists($hash) ? $hash : false;
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -92,18 +107,6 @@ class Thumb
   }
 
   /**
-   * Get a square box
-   *
-   * @param integer $size The box size
-   *
-   * @return Box
-   */
-  private function getSquare($size)
-  {
-    return new Box($size, $size);
-  }
-
-  /**
    * Get the path to an image
    *
    * @param  string $image The image
@@ -113,10 +116,11 @@ class Thumb
   {
     // Account for rewritten URLs
     if (String::contains($image, 'public')) {
-      $image = String::split($image, 'public');
+      $image = String::sliceFrom($image, 'public');
+      $image = String::remove($image, 'public/');
     }
 
-    return $this->url->asset($image);
+    return App::make('path.public').'/'.$image;
   }
 
   /**
