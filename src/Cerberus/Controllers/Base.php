@@ -2,7 +2,7 @@
 namespace Cerberus\Controllers;
 
 use Redirect;
-use Base_Controller;
+use BaseController;
 use View;
 use Underscore\Types\Arrays;
 use Underscore\Types\String;
@@ -44,17 +44,16 @@ class Base extends BaseController
     // Define page
     if (!$this->page) {
       $class = get_called_class();
-      $class = String::toSnakeCase($class);
-      $class = String::replace($class, '_', '.');
+      $core = preg_replace('/([a-z])([A-Z])/', '$1.$2', $class);
 
       // Compute controller
-      $controller = String::from($class)->remove('.Controller')->lower();
-      $this->controller = $controller->obtain();
-      $this->page = $this->controller;
+      $page = String::from($core)->remove('.Controller')->lower()->obtain();
+      $this->controller = get_called_class();
+      $this->page = $page;
     }
 
     // Define model
-    $this->model  = $controller->explode('.')->last()->singular()->title()->obtain();
+    $this->model  = String::from($core)->explode('.')->removeLast()->implode()->singular()->title()->obtain();
     $this->item   = String::lower($this->model);
     $this->object = new $this->model();
 
@@ -63,8 +62,6 @@ class Base extends BaseController
 
     // Share current page with view
     View::share('page', $this->page);
-
-    parent::__construct();
   }
 
   /**
@@ -73,8 +70,8 @@ class Base extends BaseController
   public function __call($method, $parameters)
   {
     // Get view name
-    $view = array_get(explode('_', $method), 1, $method);
-    $view = $this->controller.'.'.$view;
+    $view = preg_replace("/([a-z]+)([A-Z][a-z]+)/", '$2', $method);
+    $view = $this->controller.'.'.String::lower($view);
 
     // Return view if found
     if(View::exists($view)) return View::make($view);
