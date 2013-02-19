@@ -3,6 +3,7 @@ namespace Cerberus;
 
 use DB;
 use Seeder;
+use Underscore\Types\Arrays;
 use Underscore\Types\String;
 
 class Plant extends Seeder
