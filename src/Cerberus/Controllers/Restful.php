@@ -77,7 +77,7 @@ class Restful extends Base
       $item = $this->object->find($item_id);
 
       // If invalid item, redirect to create form
-      if(!$item) return Redirect::to_action($this->here.'@create');
+      if(!$item) return Redirect::action($this->here.'@getCreate');
     } else $item = $item_id;
 
     // Populate form if Former is installed
@@ -130,7 +130,7 @@ class Restful extends Base
     if ($rules) {
       $validation = Validator::make($input, $rules);
       if ($validation->fails()) {
-        $return = Redirect::action($this->controller.'@'.($isAdd ? 'create' : 'update'), array($item->id))
+        $return = Redirect::action($this->controller.'@'.($isAdd ? 'getCreate' : 'getUpdate'), array($item->id))
           ->with_input()
           ->with('items', $item->id)
           ->with_errors($validation);
