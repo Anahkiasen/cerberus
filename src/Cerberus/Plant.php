@@ -2,6 +2,7 @@
 namespace Cerberus;
 
 use Seeder;
+use Underscore\Types\String;
 
 class Plant extends Seeder
 {
