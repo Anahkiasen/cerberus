@@ -44,7 +44,7 @@ class Base extends BaseController
     // Define page
     if (!$this->page) {
       $class = get_called_class();
-      $core = preg_replace('/([a-z])([A-Z])/', '$1.$2', $class);
+      $core = preg_replace('/([a-z])\\\?([A-Z])/', '$1.$2', $class);
 
       // Compute controller
       $page = String::from($core)->remove('.Controller')->lower()->obtain();
@@ -53,7 +53,7 @@ class Base extends BaseController
     }
 
     // Define model
-    $this->model  = String::from($core)->explode('.')->removeLast()->implode()->singular()->title()->obtain();
+    $this->model  = String::from($core)->explode('.')->removeLast()->last()->singular()->title()->obtain();
     $this->item   = String::lower($this->model);
     $this->object = new $this->model();
 
