@@ -71,10 +71,16 @@ class Base extends BaseController
   {
     // Get view name
     $view = preg_replace("/([a-z]+)([A-Z][a-z]+)/", '$2', $method);
-    $view = $this->controller.'.'.String::lower($view);
+    $view = $this->page.'.'.String::lower($view);
 
     // Return view if found
-    if(View::exists($view)) return View::make($view);
+    try {
+      $exists = View::getFinder()->find($view);
+    }
+    catch (InvalidArgumentException $e) {
+      $exists = false;
+    }
+    if($exists) return View::make($view);
 
     // Else throw a 404
     return parent::__call($method, $parameters);
