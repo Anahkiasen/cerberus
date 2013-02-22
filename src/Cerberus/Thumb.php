@@ -50,9 +50,12 @@ class Thumb
     $box   = new Box($width, $height);
     $cache = $this->getHashOf($image);
 
+    $path = $this->getPathTo($image);
+    if (!file_exists($path)) return false;
+
     // Generate the thumbnail
     $this->getNewImagine()
-      ->open($this->getPathTo($image))
+      ->open($path)
       ->thumbnail($box, $mode)
       ->save($cache);
 

@@ -59,8 +59,8 @@ class Restful extends Base
   public function getCreate()
   {
     return View::make($this->form)
-      ->with_item(new $this->model())
-      ->with_mode('create');
+      ->with('item', new $this->model())
+      ->with('mode', 'create');
   }
 
   /**
@@ -86,8 +86,8 @@ class Restful extends Base
     }
 
     return View::make($this->form)
-      ->with_item($item)
-      ->with_mode('update');
+      ->with('item', $item)
+      ->with('mode', 'update');
   }
 
   /**
@@ -131,9 +131,9 @@ class Restful extends Base
       $validation = Validator::make($input, $rules);
       if ($validation->fails()) {
         $return = Redirect::action($this->controller.'@'.($isAdd ? 'getCreate' : 'getUpdate'), array($item->id))
-          ->with_input()
+          ->withInput()
           ->with('items', $item->id)
-          ->with_errors($validation);
+          ->withErrors($validation);
 
         return array(
           'new'     => $isAdd,
