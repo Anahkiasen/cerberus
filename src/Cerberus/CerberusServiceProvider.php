@@ -14,6 +14,7 @@ class CerberusServiceProvider extends ServiceProvider
   public function register()
   {
     $this->package('anahkiasen/cerberus');
+    $this->app['view']->addNamespace('cerberus', __DIR__.'/../views');
 
     $this->app->instance('Illuminate\Routing\UrlGenerator', App::make('url'));
     $this->app->singleton('html', 'Cerberus\HTML');
