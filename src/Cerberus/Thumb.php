@@ -43,12 +43,12 @@ class Thumb
   public function create($image, $width = 200, $height = 200)
   {
     // Check if the image is in cache
-    if ($cached = $this->cacheOfExists($image)) return $cached;
+    if ($cached = $this->cacheOfExists($image, $width, $height)) return $cached;
 
     // Setup Imagine
     $mode  = ImageInterface::THUMBNAIL_OUTBOUND;
     $box   = new Box($width, $height);
-    $cache = $this->getHashOf($image);
+    $cache = $this->getHashOf($image, $width, $height);
 
     $path = $this->getPathTo($image);
     if (!file_exists($path)) return false;
@@ -59,7 +59,7 @@ class Thumb
       ->thumbnail($box, $mode)
       ->save($cache);
 
-    return $cache;
+    return $this->url->asset($cache);
   }
 
   /**
@@ -82,15 +82,17 @@ class Thumb
   /**
    * Check if a given image was already processed and is in the cache
    *
-   * @param string $image The image path
+   * @param string  $image  The image path
+   * @param integer $width  Width of the image
+   * @param integer $height Height of the image
    *
    * @return boolean
    */
-  private function cacheOfExists($image)
+  private function cacheOfExists($image, $width, $height)
   {
-    $hash = $this->getHashOf($image);
+    $hash = $this->getHashOf($image, $width, $height);
 
-    return file_exists($hash) ? $hash : false;
+    return file_exists($hash) ? $this->url->asset($hash) : false;
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -101,12 +103,14 @@ class Thumb
    * Generate a cache hash for an image
    *
    * @param string $image The image name
+   * @param integer $width  Width of the image
+   * @param integer $height Height of the image
    *
    * @return string The cache hash
    */
-  private function getHashOf($image)
+  private function getHashOf($image, $width, $height)
   {
-    return $this->cache.md5($image).'.jpg';
+    return $this->cache.md5($image.'-'.$width.'x'.$height).'.jpg';
   }
 
   /**
