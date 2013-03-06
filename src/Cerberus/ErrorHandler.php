@@ -39,7 +39,7 @@ class ErrorHandler
     // Send notification email
     $message = Mail::send('cerberus::exception', $data, function($mail) use($data, $website) {
       $mail->to('maxime@stappler.fr')->cc('ehtnam6@gmail.com');
-      $mail->from('cerberus@stappler.fr', 'Cerberus');
+      $mail->from('cerberus@laravel.fr', 'Cerberus');
       $mail->subject($website. ' : ' .$data['error']);
     });
 
