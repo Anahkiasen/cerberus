@@ -30,17 +30,18 @@ class ErrorHandler
   protected function sendMail(Exception $exception, $website)
   {
     $data = array(
-      'error' => $exception->getMessage(),
-      'file'  => $exception->getFile(),
-      'line'  => $exception->getLine(),
-      'trace' => $exception->getTraceAsString(),
+      'error'   => $exception->getMessage(),
+      'file'    => $exception->getFile(),
+      'website' => $website,
+      'line'    => $exception->getLine(),
+      'trace'   => $exception->getTraceAsString(),
     );
 
     // Send notification email
     $message = Mail::send('cerberus::exception', $data, function($mail) use($data, $website) {
-      $mail->to('maxime@stappler.fr')->cc('ehtnam6@gmail.com');
+      $mail->to('maxime@stappler.fr');
       $mail->from('cerberus@laravel.fr', 'Cerberus');
-      $mail->subject($website. ' : ' .$data['error']);
+      $mail->subject('['.$website.'] ' .$data['error']);
     });
 
     return View::make('cerberus::exception', $data);
