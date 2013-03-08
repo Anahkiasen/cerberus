@@ -1,12 +1,15 @@
 <?php
 namespace Cerberus;
 
-use \Meido\HTML\HTML as MeidoHTML;
-use \Underscore\Types\Arrays;
-use \Underscore\Types\String;
-use \URL;
-use \App;
+use App;
+use LaravelBook\Laravel4Powerpack\HTML as MeidoHTML;
+use Underscore\Types\Arrays;
+use Underscore\Types\String;
+use URL;
 
+/**
+ * Various HTML helpers for common tasks
+ */
 class HTML extends MeidoHTML
 {
   ////////////////////////////////////////////////////////////////////
