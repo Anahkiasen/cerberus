@@ -96,12 +96,12 @@ class Restful extends Base
   public function customUpdate()
   {
     // Filter out foreign input that aren't model-related
-    $attributes = (array) DB::table($this->object->table())->first();
+    $attributes = (array) DB::table($this->object->getTable())->first();
     $attributes = array_keys($attributes);
 
     // If no model already exists, attempt a SHOW COLUMNS
     if (!$attributes) {
-      $attributes = array_pluck(DB::query('SHOW COLUMNS FROM ' .$this->object->table()), 'field');
+      $attributes = array_pluck(DB::query('SHOW COLUMNS FROM ' .$this->object->getTable()), 'field');
     }
 
     // Fetch input and its rules
@@ -157,7 +157,8 @@ class Restful extends Base
 
     // Create message
     $verb = $isAdd ? 'create' : 'update';
-    $message = Babel::restful($this->item, array_get($input, 'name'), $verb);
+    //$message = Babel::restful($this->item, array_get($input, 'name'), $verb);
+    $message = 'foo';
 
     return array(
       'errors'  => false,
