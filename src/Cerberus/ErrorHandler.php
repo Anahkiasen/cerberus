@@ -17,7 +17,18 @@ class ErrorHandler
    */
   public function __construct(Exception $exception, $website = 'Cerberus')
   {
-    $this->sendMail($exception, $website);
+    $this->exception = $exception;
+    $this->website   = $website;
+  }
+
+  /**
+   * Render the Exception
+   *
+   * @return string
+   */
+  public function render()
+  {
+    return View::make('cerberus::exception', $this->getData());
   }
 
   /**
@@ -27,23 +38,51 @@ class ErrorHandler
    *
    * @return boolean
    */
-  protected function sendMail(Exception $exception, $website)
+  protected function sendMail()
   {
-    $data = array(
-      'error'   => $exception->getMessage(),
-      'file'    => $exception->getFile(),
-      'website' => $website,
-      'line'    => $exception->getLine(),
-      'trace'   => $exception->getTraceAsString(),
-    );
+    $data    = $this->getData();
+    $website = $data['website'];
 
     // Send notification email
-    $message = Mail::send('cerberus::exception', $data, function($mail) use($data, $website) {
+    $message = Mail::send('cerberus::exception', $data, function($mail) use($data) {
       $mail->to('maxime@stappler.fr');
       $mail->from('cerberus@laravel.fr', 'Cerberus');
-      $mail->subject('['.$website.'] ' .$data['error']);
+      $mail->subject('['.$data['website'].'] ' .$data['error']);
     });
+  }
 
-    return View::make('cerberus::exception', $data);
+  ////////////////////////////////////////////////////////////////////
+  ////////////////////////////// HELPERS /////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
+  protected function formatTraceArguments($trace)
+  {
+    foreach ($trace as $id => $stack) {
+      foreach ($stack['args'] as $key => $arg) {
+        if (is_array($arg)) {
+          $trace[$id]['args'][$key] = d($arg);
+        } elseif (is_object($arg)) {
+          $trace[$id]['args'][$key] = get_class($arg);
+        }
+      }
+    }
+
+    return $trace;
+  }
+
+  /**
+   * Get the Exception's data
+   *
+   * @return [type] [description]
+   */
+  protected function getData()
+  {
+    return array(
+      'error'   => $this->exception->getMessage(),
+      'file'    => $this->exception->getFile(),
+      'website' => $this->website,
+      'line'    => $this->exception->getLine(),
+      'trace'   => $this->formatTraceArguments($this->exception->getTrace()),
+    );
   }
 }

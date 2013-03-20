@@ -26,6 +26,17 @@
     <h4>Location:</h4>
     <pre class="well">{{ $file }} on line {{ $line }}</pre>
     <h4>Stack Trace:</h4>
-    <pre class="well">{{ $trace }}</pre>
+    @foreach($trace as $stack)
+      @if (isset($stack['file']))
+        <h5>
+          <abbr title="{{ $stack['file'] }}">{{ basename($stack['file']) }}</abbr>
+          <small>on line {{ $stack['line'] }}</small>
+          called <span class="label label-inverse">{{ $stack['function'] }}</span>  with :
+        </h5>
+        @foreach ($stack['args'] as $arg)
+          <pre class="well">{{{ $arg }}}</pre>
+        @endforeach
+      @endif
+    @endforeach
   </body>
 </html>
