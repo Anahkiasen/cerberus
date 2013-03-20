@@ -55,6 +55,13 @@ class ErrorHandler
   ////////////////////////////// HELPERS /////////////////////////////
   ////////////////////////////////////////////////////////////////////
 
+  /**
+   * Format a trace's arguments
+   *
+   * @param array $trace
+   *
+   * @return array
+   */
   protected function formatTraceArguments($trace)
   {
     foreach ($trace as $id => $stack) {

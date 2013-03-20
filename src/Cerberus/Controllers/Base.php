@@ -1,11 +1,11 @@
 <?php
 namespace Cerberus\Controllers;
 
-use Redirect;
 use BaseController;
-use View;
+use Redirect;
 use Underscore\Types\Arrays;
 use Underscore\Types\String;
+use View;
 
 class Base extends BaseController
 {

@@ -1,7 +1,7 @@
 <?php
 namespace Cerberus\Backup;
 
-use \Underscore\Types\Arrays;
+use Underscore\Methods\ArraysMethods as Arrays;
 
 class Manager
 {

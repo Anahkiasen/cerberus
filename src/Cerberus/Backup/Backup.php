@@ -8,8 +8,8 @@
  */
 namespace Cerberus\Backup;
 
-use \Illuminate\Filesystem\Filesystem;
-use \Illuminate\Database\DatabaseManager;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Database\DatabaseManager;
 
 class Backup extends Explainer
 {

@@ -1,12 +1,12 @@
 <?php
 namespace Cerberus\Controllers;
 
-use Babel\Babel;
 use DB;
 use Former\Facades\Illuminate as Former;
 use Input;
 use Redirect;
-use Underscore\Types\String;
+use Underscore\Methods\ArraysMethods as Arrays;
+use Underscore\Methods\StringMethods as String;
 use Validator;
 use View;
 
@@ -47,10 +47,11 @@ class Restful extends Base
   public function getIndex()
   {
     $items = $this->object->all();
-    $variable = String::from($this->model)->plural()->lower();
+    $variable = String::plural($this->model);
+    $variable = String::lower($variable);
 
     return View::make($this->page.'.index')
-      ->with($variable->obtain(), $items);
+      ->with($variable, $items);
   }
 
   /**
@@ -106,7 +107,7 @@ class Restful extends Base
 
     // Fetch input and its rules
     $input   = $attributes ? Input::only($attributes) : Input::get();
-    $item_id = array_get($input, 'id');
+    $item_id = Arrays::get($input, 'id');
     $isAdd   = !$item_id;
     $item    = $isAdd ? new $this->model() : $this->object->find($item_id);
 
@@ -157,8 +158,8 @@ class Restful extends Base
 
     // Create message
     $verb = $isAdd ? 'create' : 'update';
-    //$message = Babel::restful($this->item, array_get($input, 'name'), $verb);
-    $message = 'foo';
+    //$message = Babel::restful($this->item, Arrays::get($input, 'name'), $verb);
+    $message = 'The item ' .$input['name']. ' was correctly updated';
 
     return array(
       'errors'  => false,
@@ -198,7 +199,8 @@ class Restful extends Base
     }
 
     // Create message
-    $message = Babel::restful($this->item, $name, 'delete', $state);
+    //$message = Babel::restful($this->item, $name, 'delete', $state);
+    $message = 'The item '.$name. ' was correctly deleted';
 
     return array(
       'message' => $message,

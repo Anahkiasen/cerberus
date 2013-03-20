@@ -1,8 +1,8 @@
 <?php
 namespace Cerberus;
 
-use Illuminate\Support\ServiceProvider;
 use App;
+use Illuminate\Support\ServiceProvider;
 
 class CerberusServiceProvider extends ServiceProvider
 {
