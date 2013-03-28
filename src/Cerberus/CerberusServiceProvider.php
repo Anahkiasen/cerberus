@@ -17,7 +17,7 @@ class CerberusServiceProvider extends ServiceProvider
     $this->app['view']->addNamespace('cerberus', __DIR__.'/../../views');
 
     $this->app->instance('Illuminate\Routing\UrlGenerator', App::make('url'));
-    $this->app->singleton('html', 'Cerberus\HTML');
+    $this->app->singleton('cerberus.html', 'Cerberus\HTML');
     $this->app->bind('thumb', 'Cerberus\Thumb');
 
     $this->backup();
