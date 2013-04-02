@@ -87,7 +87,7 @@ class HTML extends HtmlBuilder
     // Add verb to attributes
     $attributes['data-method'] = $method;
 
-    $link = $this->route($route, $text, $parameters, $attributes);
+    $link = $this->linkRoute($route, $text, $parameters, $attributes);
     $link = $this->decode($link);
 
     return $link;
@@ -117,13 +117,12 @@ class HTML extends HtmlBuilder
     if (String::contains($link, '@')) {
       $class = String::explode($link, '@');
       $class = $class[1];
-      $method = 'action';
-    } elseif ($route) $method = 'route';
-    else $method = 'to';
+      $method = 'linkAction';
+    } elseif ($route) $method = 'linkRoute';
+    else $method = 'link';
 
     // Parse and decode link
-    $link = $this->url->$method($link, $parameters);
-    $link = $this->link($link, "<i class='icon-$icon' />");
+    $link = $this->$method($link, "<i class='icon-$icon' />", $parameters);
     $link = $this->decode($link);
 
     return '<td class="action action-' .String::slugify($class). '">'.$link.'</td>';
@@ -175,5 +174,7 @@ class HTML extends HtmlBuilder
 
       return call_user_func_array(array($this, 'resource'), $parameters);
     }
+
+    return parent::__call($method, $parameters);
   }
 }
