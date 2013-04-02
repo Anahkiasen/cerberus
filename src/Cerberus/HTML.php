@@ -126,7 +126,7 @@ class HTML extends HtmlBuilder
     $link = $this->link($link, "<i class='icon-$icon' />");
     $link = $this->decode($link);
 
-    return '<td class="action ' .$class. '">'.$link.'</td>';
+    return '<td class="action action-' .String::slugify($class). '">'.$link.'</td>';
   }
 
   ////////////////////////////////////////////////////////////////////
