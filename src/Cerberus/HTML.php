@@ -2,15 +2,14 @@
 namespace Cerberus;
 
 use App;
-use LaravelBook\Laravel4Powerpack\HTML as MeidoHTML;
-use Underscore\Types\Arrays;
-use Underscore\Types\String;
-use URL;
+use Illuminate\Html\HtmlBuilder;
+use Underscore\Methods\ArraysMethods as Arrays;
+use Underscore\Methods\StringMethods as String;
 
 /**
  * Various HTML helpers for common tasks
  */
-class HTML extends MeidoHTML
+class HTML extends HtmlBuilder
 {
 
   ////////////////////////////////////////////////////////////////////
@@ -30,7 +29,7 @@ class HTML extends MeidoHTML
   public function imageLink($url, $image, $alt = null, $attributes = array())
   {
     $image = $this->image($image, $alt, $attributes);
-    $link = $this->to($url, $image);
+    $link = $this->link($url, $image);
 
     return $this->decode($link);
   }
@@ -44,11 +43,11 @@ class HTML extends MeidoHTML
    *
    * @return string A link with target=_blank
    */
-  public function toBlank($url, $link = null, $attributes = array())
+  public function linkBlank($url, $link = null, $attributes = array())
   {
     $attributes['target'] = '_blank';
 
-    return $this->to($url, $link, $attributes);
+    return $this->link($url, $link, $attributes);
   }
 
   /**
@@ -59,9 +58,9 @@ class HTML extends MeidoHTML
    *
    * @return string A link that points to /
    */
-  public function toHome($text, $attributes = array())
+  public function linkHome($text, $attributes = array())
   {
-    return $this->to(null, $text, $attributes);
+    return $this->link(null, $text, $attributes);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -116,14 +115,15 @@ class HTML extends MeidoHTML
 
     // If the link is to a controller
     if (String::contains($link, '@')) {
-      $class = String::from($link)->explode('@')->get(1);
+      $class = String::explode($link, '@');
+      $class = $class[1];
       $method = 'action';
     } elseif ($route) $method = 'route';
     else $method = 'to';
 
     // Parse and decode link
     $link = $this->url->$method($link, $parameters);
-    $link = $this->to($link, "<i class='icon-$icon' />");
+    $link = $this->link($link, "<i class='icon-$icon' />");
     $link = $this->decode($link);
 
     return '<td class="action ' .$class. '">'.$link.'</td>';
@@ -170,12 +170,10 @@ class HTML extends MeidoHTML
   {
     // Resource verbs
     if (String::endsWith($method, 'Resource')) {
-      $verb = String::remove($method, 'Resource');
+      $verb       = String::remove($method, 'Resource');
       $parameters = Arrays::prepend($parameters, $verb);
 
       return call_user_func_array(array($this, 'resource'), $parameters);
     }
-
-    return parent::__call($method, $parameters);
   }
 }

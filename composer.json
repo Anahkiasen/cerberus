@@ -10,7 +10,8 @@
   ],
   "require": {
     "php": ">=5.3.0",
-    "laravelbook/laravel4-powerpack": "dev-master",
+    "anahkiasen/underscore-php": "dev-master",
+    "illuminate/html": "dev-master",
     "anahkiasen/illuminage": "dev-master"
   },
   "require-dev": {

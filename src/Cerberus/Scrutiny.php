@@ -49,7 +49,7 @@ class Scrutiny extends TestCase
   protected function getPage($url = null)
   {
     $crawler = $this->client->request('GET', '/'.$url);
-    $this->assertTrue($this->client->getResponse()->isOk());
+    $this->assertResponseOk();
 
     return $crawler;
   }

@@ -45,7 +45,7 @@ class HtmlTest extends CerberusTests
 
   public function testCanCreateATargetBlankLink()
   {
-    $link = $this->html->toBlank('foo', 'bar', array('class' => 'bar'));
+    $link = $this->html->linkBlank('foo', 'bar', array('class' => 'bar'));
     $matcher = $this->matchLink('foo', 'bar', array('class' => 'bar', 'target' => '_blank'));
 
     $this->assertHTML($matcher, $link);
@@ -53,7 +53,7 @@ class HtmlTest extends CerberusTests
 
   public function testCanCreateALinkToHome()
   {
-    $link = $this->html->toHome('bar', array('class' => 'bar'));
+    $link = $this->html->linkHome('bar', array('class' => 'bar'));
     $matcher = $this->matchLink('', 'bar', array('class' => 'bar',));
 
     $this->assertHTML($matcher, $link);
