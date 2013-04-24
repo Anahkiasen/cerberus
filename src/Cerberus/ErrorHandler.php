@@ -44,7 +44,7 @@ class ErrorHandler
     $website = $data['website'];
 
     // Send notification email
-    $message = Mail::send('cerberus::exception', $data, function($mail) use($data) {
+    $message = Mail::send('cerberus::exception', $data, function($mail) use ($data) {
       $mail->to('maxime@stappler.fr');
       $mail->from('cerberus@laravel.fr', 'Cerberus');
       $mail->subject('['.$data['website'].'] ' .$data['error']);

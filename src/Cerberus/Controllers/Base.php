@@ -3,7 +3,6 @@ namespace Cerberus\Controllers;
 
 use BaseController;
 use Redirect;
-use Underscore\Types\Arrays;
 use Underscore\Types\String;
 use View;
 
@@ -76,8 +75,7 @@ class Base extends BaseController
     // Return view if found
     try {
       $exists = View::getFinder()->find($view);
-    }
-    catch (InvalidArgumentException $e) {
+    } catch (InvalidArgumentException $e) {
       $exists = false;
     }
     if($exists) return View::make($view);

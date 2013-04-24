@@ -12,38 +12,6 @@ use Underscore\Methods\StringMethods as String;
 class HTML extends HtmlBuilder
 {
 
-  /**
-   * Generate an HTML mailto link.
-   *
-   * The E-Mail address will be obfuscated to protect it from spam bots.
-   *
-   * @param  string $email
-   * @param  string $title
-   * @param  array  $attributes
-   * @return string
-   */
-  public function mailto($email, $title = null, $attributes = array())
-  {
-    $email = $this->email($email);
-
-    if (is_null($title)) $title = $email;
-
-    $email = '&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$email;
-
-    return '<a href="'.$email.'"'.$this->attributes($attributes).'>'.$this->entities($title).'</a>';
-  }
-
-  /**
-   * Obfuscate an e-mail address to prevent spam-bots from sniffing it.
-   *
-   * @param  string $email
-   * @return string
-   */
-  public function email($email)
-  {
-    return str_replace('@', '&#64;', $this->obfuscate($email));
-  }
-
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////// LINKS ///////////////////////////////
   ////////////////////////////////////////////////////////////////////
@@ -208,38 +176,6 @@ class HTML extends HtmlBuilder
     }
 
     return parent::__call($method, $parameters);
-  }
-
-  ////////////////////////////////////////////////////////////////////
-  ///////////////////////////// HELPERS //////////////////////////////
-  ////////////////////////////////////////////////////////////////////
-
-  /**
-   * Obfuscate a string to prevent spam-bots from sniffing it
-   *
-   * @param  string $value
-   * @return string
-   */
-  protected function obfuscate($value)
-  {
-    $safe = null;
-
-    foreach (str_split($value) as $letter) {
-      switch (rand(1, 3)) {
-        case 1:
-          $safe .= '&#'.ord($letter).';';
-          break;
-
-        case 2:
-          $safe .= '&#x'.dechex(ord($letter)).';';
-          break;
-
-        case 3:
-          $safe .= $letter;
-      }
-    }
-
-    return $safe;
   }
 
 }

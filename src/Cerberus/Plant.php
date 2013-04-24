@@ -32,6 +32,7 @@ class Plant extends Seeder
     // Format data
     $seeds = Arrays::each($seeds, function($seed) use ($model) {
       $seed = new $model($seed);
+
       return $seed->getAttributes();
     });
 
