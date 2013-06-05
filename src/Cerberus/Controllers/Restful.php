@@ -106,7 +106,7 @@ class Restful extends Base
     }
 
     // Fetch input and its rules
-    $input   = $attributes ? Input::only($attributes) : Input::get();
+    $input   = Input::all();
     $item_id = Arrays::get($input, 'id');
     $isAdd   = !$item_id;
     $item    = $isAdd ? new $this->model() : $this->object->find($item_id);
@@ -149,7 +149,7 @@ class Restful extends Base
 
     // Save attributes
     $model = $item->fill($input);
-    $model->save();
+    $model->touch();
 
     // Update localized fields
     if (isset($localization)) {
