@@ -70,8 +70,8 @@ class Scrutiny extends TestCase
    */
   protected function assertTagContains(Crawler $crawler, $tag, $content)
   {
-    $elements = $crawler->filter($tag.':contains("' .$content. '")');
+    $tag = utf8_decode($crawler->filter($tag)->text());
 
-    $this->assertNotCount(0, $elements, "The tag $tag doesn't contain $content");
+    $this->assertContains($content, $tag);
   }
 }
