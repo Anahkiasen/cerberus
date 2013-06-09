@@ -1,6 +1,7 @@
 <?php
 namespace Cerberus;
 
+use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Foundation\Testing\TestCase;
 
 class Scrutiny extends TestCase
@@ -12,7 +13,7 @@ class Scrutiny extends TestCase
    */
   public function createApplication()
   {
-    $unitTesting = true;
+    $unitTesting     = true;
     $testEnvironment = 'testing';
 
     return require __DIR__.'/../../../../../bootstrap/start.php';
@@ -25,7 +26,7 @@ class Scrutiny extends TestCase
   /**
    * Check if a particular number of items exist in a page
    */
-  protected function assertNthItemsExist($crawler, $number, $select, $message = null)
+  protected function assertNthItemsExist(Crawler $crawler, $number, $select, $message = null)
   {
     $items = $crawler->filter($select);
     if (!$message) $message = sizeof($items). " instead of $number of `$select` were found in the page";
@@ -36,7 +37,7 @@ class Scrutiny extends TestCase
   /**
    * Check if some items exist in a page
    */
-  protected function assertItemsExist($crawler, $select, $message = null)
+  protected function assertItemsExist(Crawler $crawler, $select, $message = null)
   {
     if (!$message) $message = "The items `$select` were no found in the page";
 
@@ -46,12 +47,12 @@ class Scrutiny extends TestCase
   /**
    * Get the Crawler for a page
    */
-  protected function getPage($url = null)
+  protected function getPage($url = null, $method = 'GET')
   {
-    $crawler = $this->client->request('GET', '/'.$url);
+    $response = $this->client->request($method, $url);
     $this->assertResponseOk();
 
-    return $crawler;
+    return new Crawler($response);
   }
 
   /**
@@ -67,7 +68,7 @@ class Scrutiny extends TestCase
   /**
    * Check if a tag contains something
    */
-  protected function assertTagContains($crawler, $tag, $content)
+  protected function assertTagContains(Crawler $crawler, $tag, $content)
   {
     $this->assertNotCount(0, $crawler->filter($tag.':contains("' .$content. '")'), "The tag $tag doesn't contain $content");
   }
