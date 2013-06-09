@@ -27,6 +27,21 @@ $base-line-height : $base-font-size * $line-height;
 //////////////////////// SHORTCUTS AND ALIASES ///////////////////////
 //////////////////////////////////////////////////////////////////////
 
+// Base font sizes ------------------------------------------------- /
+
+$font-size-xxxsmall : 0.15rem;
+$font-size-xxsmall  : 0.25rem;
+$font-size-xsmall   : 0.4rem;
+$font-size-small    : 0.6rem;
+$font-size-tiny     : 0.75rem;
+$font-size-normal   : 1rem;
+$font-size-heavy    : 1.25rem;
+$font-size-medium   : 1.5rem;
+$font-size-large    : 2.5rem;
+$font-size-xlarge   : 4.25rem;
+$font-size-xxlarge  : 6.75rem;
+$font-size-xxxlarge : 11rem;
+
 // Related mixins -------------------------------------------------- /
 
 // Alias for +adjust-font-size-to
