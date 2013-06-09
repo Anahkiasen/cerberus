@@ -4,8 +4,9 @@
 
 // Base font stack ------------------------------------------------- /
 
-$sans-font-family           : "Open Sans", "open-sans", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
-$serif-font-family          : "Droid Serif", "droid-serif", Georgia, "Times New Roman", Times, serif !default;
+$font-sans  : "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-serif : Georgia, "Times New Roman", Times, serif !default;
+$font-mono  : Monaco, Menlo, Consolas, "Courier New", monospace !default;
 
 // Third party options --------------------------------------------- /
 
@@ -15,31 +16,16 @@ $rhythm-unit                : 'rem' !default;
 // Base sizes  ----------------------------------------------------- /
 
 // Font size
-$base-font-size             : 16px !default;
-$base-size                  : 1rem !default;
+$base-font-size   : 16px !default;
+$base-size        : 1rem !default;
 
 // Line height
-$line-height                : 1.5 !default;
-$base-line-height           : $base-font-size * $line-height;
+$line-height      : 1.5 !default;
+$base-line-height : $base-font-size * $line-height;
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////// SHORTCUTS AND ALIASES ///////////////////////
 //////////////////////////////////////////////////////////////////////
-
-// Base font sizes ------------------------------------------------- /
-
-$xxxsmall : 0.15rem;
-$xxsmall  : 0.25rem;
-$xsmall   : 0.4rem;
-$small    : 0.6rem;
-$tiny     : 0.75rem;
-$normal   : 1rem;
-$heavy    : 1.25rem;
-$medium   : 1.5rem;
-$large    : 2.5rem;
-$xlarge   : 4.25rem;
-$xxlarge  : 6.75rem;
-$xxxlarge : 11rem;
 
 // Related mixins -------------------------------------------------- /
 
