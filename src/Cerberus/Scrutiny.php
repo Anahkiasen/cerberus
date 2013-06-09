@@ -49,10 +49,10 @@ class Scrutiny extends TestCase
    */
   protected function getPage($url = null, $method = 'GET')
   {
-    $response = $this->client->request($method, $url);
+    $response = $this->call($method, '/'.$url);
     $this->assertResponseOk();
 
-    return new Crawler($response);
+    return new Crawler($response->getContent());
   }
 
   /**
@@ -70,6 +70,8 @@ class Scrutiny extends TestCase
    */
   protected function assertTagContains(Crawler $crawler, $tag, $content)
   {
-    $this->assertNotCount(0, $crawler->filter($tag.':contains("' .$content. '")'), "The tag $tag doesn't contain $content");
+    $elements = $crawler->filter($tag.':contains("' .$content. '")');
+
+    $this->assertNotCount(0, $elements, "The tag $tag doesn't contain $content");
   }
 }
