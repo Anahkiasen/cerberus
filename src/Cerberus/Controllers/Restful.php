@@ -1,9 +1,9 @@
 <?php
 namespace Cerberus\Controllers;
 
+use Former;
 use \Babel\Babel;
 use \DB;
-use \Former\Facades\LaravelThree as Former;
 use \Input;
 use \Redirect;
 use \Str;
@@ -84,6 +84,7 @@ class Restful extends Base
     // Populate form if Former is installed
     if (class_exists('Former')) {
       Former::populate($item);
+      Former::withRules($this->rules());
     }
 
     return View::make($this->form)

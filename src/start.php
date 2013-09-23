@@ -2,9 +2,6 @@
 use Cerberus\Backup;
 use Cerberus\Language;
 
-// Add underscore starter
-Bundle::start('underscore');
-
 /*
 |---------------------------------------------------------------------
 | Setup and loadings

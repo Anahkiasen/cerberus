@@ -43,7 +43,9 @@ class Backup
     $this->storage = path('storage').'database/';
 
     // Create folder if it doesn't exist
-    if(!file_exists($this->storage)) Directory::create($this->storage);
+    if(!is_dir($this->storage)) {
+      Directory::create($this->storage);
+    }
 
     // Set current date as default date
     $this->date = date('Y-m-d');
