@@ -2,7 +2,7 @@
 namespace Cerberus\Controllers;
 
 use DB;
-use Former\Facades\Illuminate as Former;
+use Former;
 use Input;
 use Redirect;
 use Underscore\Methods\ArraysMethods as Arrays;
